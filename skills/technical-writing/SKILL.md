@@ -1,11 +1,11 @@
 ---
 name: technical-writing
-description: "Developer-facing technical prose. Use when writing or reviewing documentation, READMEs, RFCs, ADRs, code comments, PR descriptions, commit messages, release notes, changelogs, or runbooks. Apply with $writing; this skill governs structure and sentence rules for these artefacts. Do not use for product UI copy or ordinary chat."
+description: "Technical prose for developers and agents. Use when writing or reviewing documentation, READMEs, RFCs, ADRs, code comments, PR descriptions, commit messages, release notes, changelogs, runbooks, skills, AGENTS.md, CLAUDE.md, or linked agent instructions. Apply with $writing; route by artefact inside. Do not use for product UI copy or ordinary chat."
 ---
 
 # Technical writing
 
-The goal is writing a tired engineer understands on the first read. Four layers get you there, one question each: what kind of document is this, how do sentences address the reader, how much does each sentence carry, and can any sentence be read two ways. Apply all four.
+The goal is writing a tired engineer understands on the first read. Four layers get developer-facing prose there, one question each: what kind of document is this, how do sentences address the reader, how much does each sentence carry, and can any sentence be read two ways. Apply the relevant layers for the artefact below.
 
 ## Relationship to writing
 
@@ -14,6 +14,16 @@ Apply `$writing` first as the baseline for every artefact this skill covers. Thi
 The codebase is the word list. Write the real symbol, file, flag, or command name, not a synonym or a description of it.
 
 Don't invent jargon. Use the words a developer would say out loud: "move", "delete", "a budget that only decreases", not "evacuate", "ratchet", or "endgame". A named pattern is fine when the doc says what it means the first time. Add new offenders and their replacements to the abstract-metaphor rule in `$writing`.
+
+## Choose the artefact
+
+Apply the shared sentence, terminology, and clarity rules in this file to every artefact in scope unless the relevant branch below takes scoped authority.
+
+- For documentation, READMEs, RFCs, ADRs, and runbooks, also apply **Pick the mode first (Diátaxis)**.
+- For code comments, PR descriptions, commit messages, release notes, and changelogs, skip Diátaxis.
+- For skills, `AGENTS.md`, `CLAUDE.md`, and documents reached through agent context pointers, read [Agent instructions](references/agent-instructions.md) instead of applying Diátaxis. When the artefact is a skill, also read [Skill mechanics](references/skill-mechanics.md).
+
+For agent artefacts, **Agent instructions** is the scoped authority. Preserve operational wording and leading words when a general prose rule would weaken a trigger, completion criterion, or other deliberate steering.
 
 ## Pick the mode first (Diátaxis)
 
@@ -106,7 +116,7 @@ The fixes, by layer: "configuration is performed" becomes "`budget.mjs` reads", 
 
 ## Review checklist
 
-Apply to any prose this skill covers. Item 1 applies only to document sets:
+Apply to any prose this skill covers. Item 1 applies only to developer document sets:
 
 1. Is each file one Diátaxis mode, with links where modes meet?
 2. Is every instruction written as a command, with its condition in front?
