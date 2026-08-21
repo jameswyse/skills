@@ -1,0 +1,243 @@
+#!/usr/bin/env python3
+"""Reconcile this repository's skills with the standard user skills directory."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import re
+import sys
+import tempfile
+from pathlib import Path
+from typing import TypedDict
+
+
+MANAGER = "james-skills-sync"
+STATE_VERSION = 1
+STATE_FILENAME = ".james-skills-links.json"
+SKILL_NAME = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+
+
+class State(TypedDict):
+    manager: str
+    version: int
+    source: str
+    links: dict[str, str]
+
+
+class SyncError(Exception):
+    """Raised when continuing could modify an entry the script does not own."""
+
+
+def parse_args() -> argparse.Namespace:
+    default_target = os.environ.get(
+        "AGENT_SKILLS_DIR", str(Path.home() / ".agents" / "skills")
+    )
+    parser = argparse.ArgumentParser(
+        description="Link this repository's skills into ~/.agents/skills safely."
+    )
+    parser.add_argument(
+        "--target",
+        type=Path,
+        default=Path(default_target),
+        help="skills directory to reconcile (default: ~/.agents/skills)",
+    )
+    return parser.parse_args()
+
+
+def path_exists(path: Path) -> bool:
+    """Return true for ordinary paths and broken symlinks."""
+
+    return path.exists() or path.is_symlink()
+
+
+def read_link(path: Path) -> str:
+    return os.readlink(path)
+
+
+def load_state(path: Path) -> State:
+    if not path_exists(path):
+        return {
+            "manager": MANAGER,
+            "version": STATE_VERSION,
+            "source": "",
+            "links": {},
+        }
+
+    if path.is_symlink() or not path.is_file():
+        raise SyncError(f"Refusing to replace non-file sync state: {path}")
+
+    try:
+        raw_state = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise SyncError(f"Cannot read sync state {path}: {error}") from error
+
+    if not isinstance(raw_state, dict):
+        raise SyncError(f"Invalid sync state in {path}")
+    if raw_state.get("manager") != MANAGER:
+        raise SyncError(f"Refusing to replace sync state owned by another tool: {path}")
+    if raw_state.get("version") != STATE_VERSION:
+        raise SyncError(f"Unsupported sync state version in {path}")
+
+    raw_links = raw_state.get("links")
+    if not isinstance(raw_links, dict) or not all(
+        isinstance(name, str) and isinstance(target, str)
+        for name, target in raw_links.items()
+    ):
+        raise SyncError(f"Invalid managed links in {path}")
+
+    source = raw_state.get("source", "")
+    if not isinstance(source, str):
+        raise SyncError(f"Invalid source path in {path}")
+
+    return {
+        "manager": MANAGER,
+        "version": STATE_VERSION,
+        "source": source,
+        "links": dict(raw_links),
+    }
+
+
+def write_state(path: Path, source: Path, links: dict[str, str]) -> None:
+    state: State = {
+        "manager": MANAGER,
+        "version": STATE_VERSION,
+        "source": str(source),
+        "links": dict(sorted(links.items())),
+    }
+    file_descriptor, temporary_name = tempfile.mkstemp(
+        dir=path.parent, prefix=f".{path.name}.", text=True
+    )
+    temporary_path = Path(temporary_name)
+    try:
+        with os.fdopen(file_descriptor, "w", encoding="utf-8") as temporary_file:
+            json.dump(state, temporary_file, indent=2)
+            temporary_file.write("\n")
+        os.replace(temporary_path, path)
+    finally:
+        if temporary_path.exists():
+            temporary_path.unlink()
+
+
+def discover_skills(source: Path) -> dict[str, str]:
+    if not source.is_dir():
+        raise SyncError(f"Skills source directory does not exist: {source}")
+
+    skills: dict[str, str] = {}
+    for candidate in sorted(source.iterdir(), key=lambda path: path.name):
+        if candidate.name.startswith(".") or not candidate.is_dir():
+            continue
+        if not (candidate / "SKILL.md").is_file():
+            continue
+        if not SKILL_NAME.fullmatch(candidate.name):
+            raise SyncError(f"Invalid skill directory name: {candidate.name}")
+        skills[candidate.name] = str(candidate.resolve())
+    return skills
+
+
+def sync(source: Path, destination: Path) -> int:
+    destination.mkdir(parents=True, exist_ok=True)
+    if not destination.is_dir():
+        raise SyncError(f"Skills target is not a directory: {destination}")
+
+    state_path = destination / STATE_FILENAME
+    previous_links = load_state(state_path)["links"]
+    desired_links = discover_skills(source)
+    managed_links: dict[str, str] = {}
+
+    created = 0
+    updated = 0
+    removed = 0
+    conflicts = 0
+
+    for name, desired_target in desired_links.items():
+        installed = destination / name
+        previous_target = previous_links.get(name)
+
+        if not path_exists(installed):
+            installed.symlink_to(desired_target, target_is_directory=True)
+            managed_links[name] = desired_target
+            created += 1
+            print(f"created  {installed} -> {desired_target}")
+            continue
+
+        if not installed.is_symlink():
+            conflicts += 1
+            print(f"conflict {installed} exists and was left unchanged", file=sys.stderr)
+            continue
+
+        installed_target = read_link(installed)
+        if previous_target is None:
+            conflicts += 1
+            print(
+                f"conflict {installed} is an unmanaged symlink and was left unchanged",
+                file=sys.stderr,
+            )
+            continue
+
+        if installed_target != previous_target:
+            conflicts += 1
+            print(
+                f"conflict {installed} changed since the last sync and was left unchanged",
+                file=sys.stderr,
+            )
+            continue
+
+        if installed_target == desired_target:
+            managed_links[name] = desired_target
+            print(f"current  {installed} -> {desired_target}")
+            continue
+
+        installed.unlink()
+        installed.symlink_to(desired_target, target_is_directory=True)
+        managed_links[name] = desired_target
+        updated += 1
+        print(f"updated  {installed} -> {desired_target}")
+
+    for name, previous_target in previous_links.items():
+        if name in desired_links:
+            continue
+
+        installed = destination / name
+        if not path_exists(installed):
+            print(f"absent   {installed}")
+            continue
+        if installed.is_symlink() and read_link(installed) == previous_target:
+            installed.unlink()
+            removed += 1
+            print(f"removed  {installed}")
+            continue
+
+        conflicts += 1
+        print(
+            f"conflict {installed} is no longer managed and was left unchanged",
+            file=sys.stderr,
+        )
+
+    write_state(state_path, source, managed_links)
+    skill_count = len(desired_links)
+    skill_label = "skill" if skill_count == 1 else "skills"
+    print(
+        f"sync complete: {skill_count} {skill_label} present, "
+        f"{created} created, {updated} updated, "
+        f"{removed} removed, {conflicts} conflicts"
+    )
+    return 1 if conflicts else 0
+
+
+def main() -> int:
+    args = parse_args()
+    repository = Path(__file__).resolve().parent.parent
+    source = repository / "skills"
+    destination = args.target.expanduser().absolute()
+
+    try:
+        return sync(source, destination)
+    except (OSError, SyncError) as error:
+        print(f"sync failed: {error}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

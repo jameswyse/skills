@@ -1,0 +1,77 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#   "PyYAML==6.0.3",
+# ]
+# ///
+"""Validate this repository's skills with Codex's bundled validator."""
+
+from __future__ import annotations
+
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+
+REPOSITORY = Path(__file__).resolve().parents[1]
+SKILLS = REPOSITORY / "skills"
+CODEX_HOME = Path(os.environ.get("CODEX_HOME", Path.home() / ".codex"))
+VALIDATOR = (
+    CODEX_HOME
+    / "skills"
+    / ".system"
+    / "skill-creator"
+    / "scripts"
+    / "quick_validate.py"
+)
+
+
+def resolve_skills(arguments: list[str]) -> list[Path]:
+    if not arguments:
+        return sorted(
+            path for path in SKILLS.iterdir() if (path / "SKILL.md").is_file()
+        )
+
+    resolved: list[Path] = []
+    for argument in arguments:
+        candidate = Path(argument)
+        if not candidate.is_absolute() and len(candidate.parts) == 1:
+            candidate = SKILLS / candidate
+        elif not candidate.is_absolute():
+            candidate = REPOSITORY / candidate
+        resolved.append(candidate.resolve())
+    return resolved
+
+
+def main() -> int:
+    if not VALIDATOR.is_file():
+        print(f"Codex skill validator not found: {VALIDATOR}", file=sys.stderr)
+        return 1
+
+    failures = 0
+    for skill in resolve_skills(sys.argv[1:]):
+        if not (skill / "SKILL.md").is_file():
+            print(f"Skill directory not found: {skill}", file=sys.stderr)
+            failures += 1
+            continue
+
+        print(f"{skill.relative_to(REPOSITORY)}: ", end="", flush=True)
+        result = subprocess.run(
+            [sys.executable, str(VALIDATOR), str(skill)],
+            check=False,
+        )
+        if result.returncode != 0:
+            failures += 1
+
+    if failures:
+        print(f"validation failed: {failures} skill(s)", file=sys.stderr)
+        return 1
+
+    print("validation complete")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
