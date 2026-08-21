@@ -36,7 +36,7 @@ Prefer no new test over a bad test. A bad test is one that mostly tests mocks, e
 
 ## Seams: where tests go
 
-A **seam** is the public boundary you test at: the interface where you observe behavior without reaching inside. Tests live at seams, never against internals.
+A **seam** is where a module's interface lives. Test through that interface to observe behaviour without reaching inside. Tests live at seams, never against internals.
 
 **Test only at pre-agreed seams.** Before writing any test, write down the seams under test and confirm them with the user. No test is written at an unconfirmed seam. You can't test everything, so agreeing the seams up front is how testing effort lands on the critical paths and complex logic instead of every edge case.
 

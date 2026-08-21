@@ -16,7 +16,7 @@ Encode the real domain in a data structure instead of scattering it across condi
 - A map, registry, lookup table, or discriminated union instead of branching spread across files.
 - A reducer or command/event model instead of ad hoc state mutations.
 - A module organised around one body of domain knowledge instead of a sequence such as load, validate, transform, and save. Execution order is not ownership.
-- A small module boundary that gathers repeated behaviour, ownership, or invariants.
+- A small module whose interface gathers repeated behaviour, ownership, or invariants.
 - A queue, cache, index, graph/tree, or normalised collection where the data access pattern calls for it.
 - Any other structure that fits. The list above covers the common cases only. When none fits, work out what the code must never allow and how the data gets read, then find the structure that encodes exactly that.
 

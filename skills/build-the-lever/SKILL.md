@@ -12,7 +12,7 @@ Create a file-backed, rerunnable lever for the requested work. Use a codemod or 
 - Work through one representative unit manually when needed to discover the recipe.
 - Encode the smallest deterministic tool that performs or proves that recipe. Do not turn it into a framework.
 - Limit its inputs and write scope to the user's task. Make repeated runs safe.
-- If work is delegated, put the shared recipe, checks and write boundaries in one file outside delegates' write scope.
+- If work is delegated, put the shared recipe, checks and permitted write scope in one file outside delegates' write scope.
 
 ## Prove it
 

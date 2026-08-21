@@ -1,6 +1,6 @@
 # TypeScript patterns
 
-Code examples for each rule in `SKILL.md`. The underlying principles are language-agnostic; apply `$principle-type-system-discipline` and `$principle-boundary-discipline`.
+Code examples for each rule in `SKILL.md`. The underlying principles are language-agnostic; apply `$principle-type-system-discipline` and `$principle-seam-discipline`.
 
 ## Branded types
 
@@ -135,7 +135,7 @@ Every `as` is a potential runtime crash. Cast only after the type system has ver
 // Don't
 const user = data as User;
 
-// Do. Earn the cast at the boundary.
+// Do. Earn the cast at the input seam.
 function parseUser(data: unknown): User {
   if (typeof data !== "object" || data === null) {
     throw new Error("expected object");
@@ -152,7 +152,7 @@ When refactoring an `as` out of existing code, identify why TypeScript can't inf
 
 - Missing discriminant: add one, switch to a discriminated union.
 - Overly wide source type (e.g. `Record<string, unknown>`): narrow it.
-- Untyped boundary: add a parse function or schema.
+- Untyped input seam: add a parse function or schema.
 - Genuinely inexpressible: use a branded type or `satisfies`.
 
 ## Narrowing hierarchy
@@ -235,9 +235,9 @@ const config = { theme: "dark", cols: 3 } satisfies Config;
 // config.theme is "dark" (literal), not string
 ```
 
-## Boundary validation
+## Seam validation
 
-Validate once where data crosses in; trust types inside. Apply `$principle-boundary-discipline` for boundary placement.
+Validate once where data crosses in; trust types inside. Apply `$principle-seam-discipline` for seam placement.
 
 - **Wire formats** (proto, JSON-RPC): parse with `ignoreUnknownFields` so forward-compatible changes don't break old clients.
 - **Persisted JSON:** versioned blob with a try/catch around the parse.
