@@ -7,6 +7,10 @@ description: "Route UI and interface design work to installed specialist skills.
 
 Route interface work to the smallest installed specialist set that covers the request. External skills are optional. Apply their instructions when available, and continue without recreating a missing skill from memory.
 
+## Set the target
+
+For product, UX, or feature-scope tradeoffs, read [Experience first](references/experience.md) before choosing what to build. It governs the intended experience. The specialist skills below govern execution within their domains.
+
 ## Route the task
 
 Let project-specific design rules govern when they differ from an external skill.

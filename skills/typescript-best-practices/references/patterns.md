@@ -1,6 +1,6 @@
 # TypeScript patterns
 
-Code examples for each rule in `SKILL.md`. The underlying principles are language-agnostic; apply `$principle-type-system-discipline` and `$principle-seam-discipline`.
+Code examples for each rule in `SKILL.md`. The language-agnostic type and seam rules live in `$engineering-practices`' design reference.
 
 ## Branded types
 
@@ -237,7 +237,7 @@ const config = { theme: "dark", cols: 3 } satisfies Config;
 
 ## Seam validation
 
-Validate once where data crosses in; trust types inside. Apply `$principle-seam-discipline` for seam placement.
+Validate once where data crosses in; trust types inside. Read `$engineering-practices`' design reference for seam placement.
 
 - **Wire formats** (proto, JSON-RPC): parse with `ignoreUnknownFields` so forward-compatible changes don't break old clients.
 - **Persisted JSON:** versioned blob with a try/catch around the parse.

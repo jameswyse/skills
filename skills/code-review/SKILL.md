@@ -51,6 +51,10 @@ finding is a labelled judgement call:
   object.
 - **Middle Man** — a module mainly delegates. Call the actual owner directly.
 - **Refused Bequest** — a subtype ignores most inherited behaviour. Prefer composition.
+- **Unnecessary Complexity.** The change adds concepts, state, branches, layers, dependencies, or
+  execution paths that its behaviour and constraints do not require. Name the concrete maintenance
+  or correctness cost and the smallest coherent alternative. Do not flag essential domain complexity
+  or mere line count.
 
 ## 2. Run independent reviews
 
