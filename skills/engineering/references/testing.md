@@ -53,6 +53,16 @@ A generated snapshot is not an independent oracle merely because it lives in ano
 it as authoritative only after a person or an independent source has established that it is the
 intended result.
 
+## Use properties when the rule is general
+
+Use a property-based test when an invariant is clearer than a list of examples. Good candidates
+include parsers, smart constructors, normalisation, serialisation round trips, state transitions,
+and idempotence. Use the repository's established property-test tool.
+
+Define the property from an independent requirement. Generated inputs do not make an oracle
+independent when the test repeats the implementation's algorithm. Keep focused examples for
+important failures and edge cases that need clear diagnostics.
+
 ## Preserve valid alternatives
 
 Do not turn a current deployment value, CMS entry, translation, message, generated identifier, or

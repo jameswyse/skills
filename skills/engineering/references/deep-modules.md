@@ -79,6 +79,16 @@ Use the following pair as a design test. **One adapter means a hypothetical seam
 - A fake created only to make a new port look justified is not a second requirement.
 - A single production adapter behind an interface that no caller needs to vary is usually indirection.
 
+## Reuse adapters before adding another seam
+
+Inspect existing adapters and services before creating one. Prefer these choices in order:
+
+1. Reuse a cohesive adapter through the narrow type that the consumer needs.
+2. Extend the adapter when the new operation belongs to the same capability and changes for the same reason.
+3. Create another adapter when reuse would mix unrelated capabilities, expose provider details, or add caller coordination.
+
+At a real external seam, define the port in the consumer's language. Keep its inputs, outputs, and failures in application or domain terms. A wider concrete adapter can satisfy a narrow consumer-owned type. Do not split one cohesive adapter into one-method wrappers.
+
 ## Test through the interface
 
 The **interface is the test surface**. Protect observable outcomes through the same seam callers use. Tests should survive an internal refactor that preserves behaviour.

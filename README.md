@@ -9,23 +9,23 @@ Follows the [Agent Skills specification](https://agentskills.io/specification).
 Three core pillars cover the work I do most often: `$engineering`, `$design` and `$writing`.
 Narrower skills refine those pillars or provide explicit workflows.
 
-| Group | Skill | Purpose |
-| --- | --- | --- |
-| Core | `writing` | Baseline writing rules for every response and written artefact. |
-| Core | `engineering` | Software engineering, simplicity, root-cause fixes, types, tests, dependencies, operations, and verification. |
-| Core | `design` | Routes UX, UI, accessibility, interface copy, visual polish, and motion to installed specialists. |
-| Writing | `technical-writing` | Developer documentation, comments, commits, pull requests, release notes, and agent instructions. |
-| Engineering | `typescript-best-practices` | TypeScript-specific type, validation, and code guidance. |
-| Engineering | `diagnosing-bugs` | Evidence-driven diagnosis for hard bugs and performance regressions. |
-| Engineering | `tdd` | A focused failing-test-first loop when a practical test target exists. |
-| Engineering | `resolving-merge-conflicts` | Conflict resolution during an authorised merge or rebase. |
-| Review | `code-review` | Reviews a diff separately against repository standards and the originating specification. |
-| Engineering | `design-it-twice` | Compares several software module interface designs before choosing one. |
-| Improvement | `improve-codebase` | Finds codebase improvement opportunities and produces a visual report for discussion. |
-| Workflow | `show-me-your-work` | Keeps a reviewable decision trail for long-running or unattended work. |
-| Conversation | `grilling` | Stress-tests a plan or decision through a structured interview. |
-| Conversation | `grill-me` | Explicit shortcut for invoking `grilling`. |
-| Conversation | `bruh` | Restates the previous response in plain language. |
+| Group        | Skill                       | Purpose                                                                                                       |
+| ------------ | --------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Core         | `writing`                   | Baseline writing rules for every response and written artefact.                                               |
+| Core         | `engineering`               | Software engineering, simplicity, root-cause fixes, types, tests, dependencies, operations, and verification. |
+| Core         | `design`                    | Routes UX, UI, accessibility, interface copy, visual polish, and motion to installed specialists.             |
+| Writing      | `technical-writing`         | Developer documentation, comments, commits, pull requests, release notes, and agent instructions.             |
+| Engineering  | `typescript`                | TypeScript-specific type, validation, and code guidance.                                                      |
+| Engineering  | `diagnosing-bugs`           | Evidence-driven diagnosis for hard bugs and performance regressions.                                          |
+| Engineering  | `tdd`                       | A focused failing-test-first loop when a practical test target exists.                                        |
+| Engineering  | `resolving-merge-conflicts` | Conflict resolution during an authorised merge or rebase.                                                     |
+| Review       | `code-review`               | Reviews a diff separately against repository standards and the originating specification.                     |
+| Engineering  | `design-it-twice`           | Compares several software module interface designs before choosing one.                                       |
+| Improvement  | `improve-codebase`          | Finds codebase improvement opportunities and produces a visual report for discussion.                         |
+| Workflow     | `show-me-your-work`         | Keeps a reviewable decision trail for long-running or unattended work.                                        |
+| Conversation | `grilling`                  | Stress-tests a plan or decision through a structured interview.                                               |
+| Conversation | `grill-me`                  | Explicit shortcut for invoking `grilling`.                                                                    |
+| Conversation | `bruh`                      | Restates the previous response in plain language.                                                             |
 
 ## Install with `npx skills`
 
@@ -68,21 +68,21 @@ The upstream `interface-review`, `variant`, and `explain-interface` skills are u
 
 The recommended global set groups related skills by their upstream source:
 
-| Area | Source | Skills |
-| --- | --- | --- |
-| Interface design | `jakubkrehel/skills` | `better-accessibility`, `better-colors`, `better-interface`, `better-layout`, `better-typography`, `better-ui`, `better-writing`, `explain-interface`, `interface-review`, `variant` |
-| Animation | `emilkowalski/skills` | `animate`, `animation-vocabulary`, `find-animation-opportunities`, `improve-animations`, `review-animations` |
-| Apollo and GraphQL | `apollographql/skills` | `apollo-client`, `apollo-server`, `graphql-operations`, `graphql-schema` |
-| Sanity | `sanity-io/agent-toolkit` | `content-experimentation-best-practices`, `content-modeling-best-practices`, `portable-text-conversion`, `portable-text-serialization`, `sanity-best-practices`, `sanity-migration`, `seo-aeo-best-practices` |
-| Sanity with Next.js | `sanity-io/next-sanity` | `sanity-live-cache-components` |
-| React | `vercel-labs/agent-skills` | `vercel-composition-patterns`, `vercel-react-best-practices`, `vercel-react-view-transitions` |
-| Components | `vercel/components.build` | `building-components` |
-| Visual verification | `vercel-labs/before-and-after` | `before-and-after` |
-| Next.js guidance | `vercel-labs/openreview` | `next-best-practices`, `next-cache-components` |
-| Next.js workflows | `vercel/next.js` | `next-cache-components-adoption`, `next-cache-components-optimizer`, `next-dev-loop` |
-| Turborepo | `vercel/turborepo` | `turborepo` |
-| Browser automation | `openai/skills` | `playwright` |
-| Stacked pull requests | `github/gh-stack` | `gh-stack` |
+| Area                  | Source                         | Skills                                                                                                                                                                                                        |
+| --------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Interface design      | `jakubkrehel/skills`           | `better-accessibility`, `better-colors`, `better-interface`, `better-layout`, `better-typography`, `better-ui`, `better-writing`, `explain-interface`, `interface-review`, `variant`                          |
+| Animation             | `emilkowalski/skills`          | `animate`, `animation-vocabulary`, `find-animation-opportunities`, `improve-animations`, `review-animations`                                                                                                  |
+| Apollo and GraphQL    | `apollographql/skills`         | `apollo-client`, `apollo-server`, `graphql-operations`, `graphql-schema`                                                                                                                                      |
+| Sanity                | `sanity-io/agent-toolkit`      | `content-experimentation-best-practices`, `content-modeling-best-practices`, `portable-text-conversion`, `portable-text-serialization`, `sanity-best-practices`, `sanity-migration`, `seo-aeo-best-practices` |
+| Sanity with Next.js   | `sanity-io/next-sanity`        | `sanity-live-cache-components`                                                                                                                                                                                |
+| React                 | `vercel-labs/agent-skills`     | `vercel-composition-patterns`, `vercel-react-best-practices`, `vercel-react-view-transitions`                                                                                                                 |
+| Components            | `vercel/components.build`      | `building-components`                                                                                                                                                                                         |
+| Visual verification   | `vercel-labs/before-and-after` | `before-and-after`                                                                                                                                                                                            |
+| Next.js guidance      | `vercel-labs/openreview`       | `next-best-practices`, `next-cache-components`                                                                                                                                                                |
+| Next.js workflows     | `vercel/next.js`               | `next-cache-components-adoption`, `next-cache-components-optimizer`, `next-dev-loop`                                                                                                                          |
+| Turborepo             | `vercel/turborepo`             | `turborepo`                                                                                                                                                                                                   |
+| Browser automation    | `openai/skills`                | `playwright`                                                                                                                                                                                                  |
+| Stacked pull requests | `github/gh-stack`              | `gh-stack`                                                                                                                                                                                                    |
 
 Install missing recommendations and update the installed recommendations with:
 
@@ -140,3 +140,7 @@ scripts/validate-skills writing technical-writing
 ```
 
 The command supplies its pinned PyYAML dependency through an isolated `uv` environment. It does not modify Homebrew Python or require an activated virtual environment.
+
+## Credits
+
+This is a curated collection. Inspired by many popular skills, with credit to their original authors, including @mattpocock, @poteto, @dmmulroy, and others.

@@ -74,6 +74,17 @@ Do not force an abstraction. Prefer boring code when the current shape is clear,
 
 Converge types and data models when the domain is established, but keep repeated code when an abstraction would encode guesses. Prefer explicit coordination inside one coherent abstraction over special cases spread across callers.
 
+## Classify responsibilities by what changes them
+
+Use these responsibilities to place a decision. They do not require separate folders, classes, or layers.
+
+- Domain code owns meaning, invariants, calculations, and legal state transitions.
+- Application code owns authorisation, policy, coordination, and effect ordering for one operation or capability.
+- Adapter code owns framework, protocol, storage, runtime, and third-party translation.
+- Entrypoint code owns construction, configuration, and resource wiring.
+
+Keep a simple operation together when splitting it would add pass-through calls or hypothetical seams. Split mixed code only when the responsibilities change for different reasons or the separation removes repeated coordination. Apply the repository's established vocabulary when it names these responsibilities clearly.
+
 ## Use the type system as a proof assistant
 
 Use types to eliminate impossible states, mismatched primitives, and unhandled variants at compile time. Prefer defining errors and special cases out of existence over proliferating handlers.
@@ -87,7 +98,7 @@ Use types to eliminate impossible states, mismatched primitives, and unhandled v
 - **Derive from authoritative schemas.** Generate or derive types from protocol, OpenAPI, GraphQL, database, and token definitions instead of maintaining parallel shapes.
 - **Strengthen a type only where partiality appears.** A runtime assertion, null check, or impossible-case throw marks a weak type. Do not add precision that buys no safety and reduces reuse.
 
-For TypeScript syntax and examples, apply `$typescript-best-practices`.
+For TypeScript syntax and examples, apply `$typescript`.
 
 Use these checks:
 
@@ -106,6 +117,7 @@ Place validation, type narrowing, error handling, and framework adaptation at sy
 - Parse raw input into domain types at the input seam.
 - Inside the system, propagate typed data without repeated validation.
 - Expose domain concepts across a seam instead of transport, storage, framework, or wire representations.
+- Keep raw records, SDK values, and provider-specific failures inside the owning adapter or entrypoint.
 - Keep general mechanism inside and special policy at the edge.
 - Prefer pure transforms for parsing, prompt construction, scoring, and assessment.
 

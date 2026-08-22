@@ -9,9 +9,13 @@ Brand primitives so they cannot be mixed up. Validate once at creation. Downstre
 ```ts
 type AgentId = string & { readonly __brand: "AgentId" };
 
-function parseAgentId(input: string): AgentId {
-  if (!isUUID(input)) throw new Error(`Invalid agent id: ${input}`);
-  return input as AgentId;
+type ParseAgentIdResult =
+  | { kind: "parsed"; value: AgentId }
+  | { kind: "invalid" };
+
+function parseAgentId(input: string): ParseAgentIdResult {
+  if (!isUUID(input)) return { kind: "invalid" };
+  return { kind: "parsed", value: input as AgentId };
 }
 
 function focusAgent(id: AgentId): void {
@@ -135,16 +139,21 @@ An unchecked `as` assertion can cause a runtime crash. Prefer narrowing that let
 // Don't
 const user = data as User;
 
-// Do. Earn the assertion at the input seam.
-function parseUser(data: unknown): User {
-  if (typeof data !== "object" || data === null) {
-    throw new Error("expected object");
-  }
-  if (!("id" in data) || typeof data.id !== "string") {
-    throw new Error("expected id");
-  }
-  // ... validate all fields
-  return data as User; // OK, earned cast after full validation
+type User = {
+  id: string;
+  email: string;
+};
+
+type ParseUserResult =
+  | { kind: "parsed"; value: User }
+  | { kind: "invalid" };
+
+// Do. Parse the input into a value the compiler can verify.
+function parseUser(data: unknown): ParseUserResult {
+  if (typeof data !== "object" || data === null) return { kind: "invalid" };
+  if (!("id" in data) || typeof data.id !== "string") return { kind: "invalid" };
+  if (!("email" in data) || typeof data.email !== "string") return { kind: "invalid" };
+  return { kind: "parsed", value: { id: data.id, email: data.email } };
 }
 ```
 
@@ -154,6 +163,8 @@ When refactoring an `as` out of existing code, identify why TypeScript can't inf
 - Overly wide source type (e.g. `Record<string, unknown>`): narrow it.
 - Untyped input seam: add a parse function or schema.
 - Genuinely inexpressible: use a branded type or `satisfies`.
+
+Explain an assertion when its proof depends on a non-local invariant or cannot be reconstructed from the adjacent code. Do not add a comment when the preceding branch or parser makes the proof obvious.
 
 ## Narrowing hierarchy
 
@@ -290,3 +301,34 @@ openFile({
 ```
 
 Skip on hot paths: per-frame render, tokenisers, parsers, anything in a tight loop where the allocation cost matters.
+
+## Explicit API states
+
+Name a choice when a boolean controls behaviour:
+
+```ts
+// Don't. The call does not explain what true means.
+createUser(input, true);
+
+// Do. The value carries the policy.
+createUser(input, { emailVerification: "skip" });
+```
+
+Use `Partial<T>` only when any subset of `T` is valid. Define an operation-specific input when the operation has required fields or a smaller set of legal combinations. Branch on an optional value before calling a function that requires it.
+
+## Expected failures
+
+Use `$engineering`'s [Failures and diagnostics](../../engineering/references/errors.md) guidance. Keep the representation local when the repository has no shared result type:
+
+```ts
+type FindUserResult =
+  | { kind: "found"; user: User }
+  | { kind: "not-found" }
+  | { kind: "unavailable"; cause: unknown };
+```
+
+Callers must handle or propagate every variant. Translate the result into HTTP, CLI, queue, or framework behaviour at the outer seam.
+
+## Precise modules
+
+Name a module after the value or capability that owns its contents, such as `email-address.ts`, `billing-period.ts`, or `string-case.ts`. Keep a generic helper only when no more precise owner exists and the helper is used broadly.

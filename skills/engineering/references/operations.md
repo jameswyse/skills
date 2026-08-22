@@ -21,6 +21,25 @@ Test the operation at each interruption point:
 
 If the result depends on leftover partial state, add reconciliation.
 
+## Bound retries and transactions
+
+Use an ordinary function call or a database transaction for work that completes within one process and one transactional boundary. Use a durable workflow only when progress, delays, or retries must survive process loss or redelivery.
+
+- Keep database transactions short. Do not hold one open across a network call or long-running operation.
+- Put safe, short-lived technical retries beside the external operation that owns them.
+- Put application retry policy with the operation that understands whether another attempt is valid.
+- Put crash-resistant retries in the durable workflow that records their progress.
+
+Every retried mutation needs a concrete idempotency mechanism. Use an idempotency key, a natural unique constraint, a deduplication record, a guarded state transition, or a transactional outbox or inbox according to the system. Do not infer safety from a side effect that is only likely to succeed once.
+
+## Own configuration and resources
+
+Parse environment variables and configuration at startup or the earliest entry seam. Pass typed configuration into application code. Do not scatter environment access through the system.
+
+Keep resource creation, use, and cleanup under an explicit owner. Avoid import-time I/O, connection creation, server startup, and handler registration outside a true entrypoint. Isolate mutable singletons when a framework requires them.
+
+When behaviour depends on time or randomness, pass a clock, a random source, or an explicit value through the nearest useful interface. Keep the dependency local. Do not add an application-wide service when a function parameter is enough.
+
 ## Separate before serialising shared state
 
 When concurrent actors might share mutable state, first ask whether they need the same mutable object. If not, eliminate the shared write target. When sharing is a real invariant, enforce serialisation structurally with a lock, sequential phase, single writer, or atomic compare-and-swap.
