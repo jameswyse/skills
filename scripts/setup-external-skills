@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Install or update the recommended global external skills with npx skills."""
+"""Install or update the recommended global external skills."""
 
 from __future__ import annotations
 
@@ -12,6 +12,14 @@ from collections.abc import Sequence
 
 
 SKILLS_COMMAND = ("npx", "skills@latest")
+AWS_AGENT_TOOLKIT_COMMAND = (
+    "aws",
+    "configure",
+    "agent-toolkit",
+    "--region",
+    "us-east-1",
+)
+SKILL_INSTALL_SOURCES = {"cli.sentry.dev": "https://cli.sentry.dev"}
 RECOMMENDED_SKILLS: dict[str, tuple[str, ...]] = {
     "apollographql/skills": (
         "apollo-client",
@@ -19,6 +27,7 @@ RECOMMENDED_SKILLS: dict[str, tuple[str, ...]] = {
         "graphql-operations",
         "graphql-schema",
     ),
+    "cli.sentry.dev": ("sentry-cli",),
     "emilkowalski/skills": (
         "animate",
         "animation-vocabulary",
@@ -165,13 +174,18 @@ def main() -> int:
             for source, skills in RECOMMENDED_SKILLS.items()
         }
 
+        if args.dry_run:
+            print(f"$ {shlex.join(AWS_AGENT_TOOLKIT_COMMAND)}")
+        else:
+            run(AWS_AGENT_TOOLKIT_COMMAND)
+
         for source, missing in missing_by_source.items():
             if not missing:
                 continue
             command = (
                 *SKILLS_COMMAND,
                 "add",
-                source,
+                SKILL_INSTALL_SOURCES.get(source, source),
                 "--global",
                 "--yes",
                 "--skill",
@@ -207,7 +221,10 @@ def main() -> int:
                 "Recommended skills are still missing: " + ", ".join(missing)
             )
 
-        print(f"setup complete: {len(expected_sources())} recommended skills present")
+        print(
+            "setup complete: AWS Agent Toolkit configured; "
+            f"{len(expected_sources())} npx skills present"
+        )
         return 0
     except (OSError, SetupError) as error:
         print(f"setup failed: {error}", file=sys.stderr)

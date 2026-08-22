@@ -50,6 +50,8 @@ if command == "list":
 
 if command == "add":
     source = args[2]
+    if source == "https://cli.sentry.dev":
+        source = "cli.sentry.dev"
     skill_index = args.index("--skill") + 1
     names = []
     for value in args[skill_index:]:
@@ -70,6 +72,22 @@ raise SystemExit(2)
             encoding="utf-8",
         )
         fake_npx.chmod(0o755)
+
+        fake_aws = self.bin_dir / "aws"
+        fake_aws.write_text(
+            """#!/usr/bin/env python3
+import json
+import os
+import sys
+from pathlib import Path
+
+log_path = Path(os.environ["FAKE_SKILLS_LOG"])
+with log_path.open("a", encoding="utf-8") as log:
+    log.write(json.dumps(sys.argv[1:]) + "\\n")
+""",
+            encoding="utf-8",
+        )
+        fake_aws.chmod(0o755)
         self.environment = {
             **os.environ,
             "PATH": f"{self.bin_dir}{os.pathsep}{os.environ['PATH']}",
@@ -78,7 +96,7 @@ raise SystemExit(2)
         }
 
     def tearDown(self) -> None:
-        for path in (self.log, self.state, self.bin_dir / "npx"):
+        for path in (self.log, self.state, self.bin_dir / "npx", self.bin_dir / "aws"):
             if path.exists():
                 path.unlink()
         self.bin_dir.rmdir()
@@ -104,7 +122,12 @@ raise SystemExit(2)
         names = {record["name"] for record in installed}
         self.assertIn("animate", names)
         self.assertIn("sanity-best-practices", names)
+        self.assertIn("sentry-cli", names)
         self.assertNotIn("emil-design-eng", names)
+        self.assertIn(
+            ["configure", "agent-toolkit", "--region", "us-east-1"],
+            self.commands(),
+        )
 
         self.log.write_text("", encoding="utf-8")
         second = self.run_setup()
@@ -112,9 +135,13 @@ raise SystemExit(2)
         commands = self.commands()
         update = next(command for command in commands if command[1] == "update")
         self.assertIn("animate", update)
+        self.assertIn("sentry-cli", update)
         self.assertIn("vercel-react-best-practices", update)
         self.assertNotIn("emil-design-eng", update)
         self.assertFalse(any(command[1] == "add" for command in commands))
+        self.assertIn(
+            ["configure", "agent-toolkit", "--region", "us-east-1"], commands
+        )
 
     def test_refuses_to_overwrite_a_skill_from_another_source(self) -> None:
         self.state.write_text(
@@ -127,11 +154,17 @@ raise SystemExit(2)
         self.assertEqual(result.returncode, 1)
         self.assertIn("Refusing to overwrite existing skills", result.stderr)
         self.assertFalse(any(command[1] in {"add", "update"} for command in self.commands()))
+        self.assertNotIn(
+            ["configure", "agent-toolkit", "--region", "us-east-1"],
+            self.commands(),
+        )
 
     def test_dry_run_reports_changes_without_installing(self) -> None:
         result = self.run_setup("--dry-run")
 
         self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("aws configure agent-toolkit --region us-east-1", result.stdout)
+        self.assertIn("npx skills@latest add https://cli.sentry.dev", result.stdout)
         self.assertIn("npx skills@latest add", result.stdout)
         self.assertEqual(json.loads(self.state.read_text(encoding="utf-8")), [])
         self.assertFalse(any(command[1] in {"add", "update"} for command in self.commands()))

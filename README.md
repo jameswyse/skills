@@ -84,7 +84,29 @@ The recommended global set groups related skills by their upstream source:
 | Browser automation    | `openai/skills`                | `playwright`                                                                                                                                                                                                  |
 | Stacked pull requests | `github/gh-stack`              | `gh-stack`                                                                                                                                                                                                    |
 
-Install missing recommendations and update the installed recommendations with:
+### Install AWS and Sentry skills
+
+The setup script includes the AWS and Sentry recommendations.
+
+Install the AWS CLI skills with:
+
+```sh
+aws configure agent-toolkit --region us-east-1
+```
+
+The command requires an up-to-date AWS CLI installation. Follow the
+[AWS CLI setup for Agent Toolkit](https://docs.aws.amazon.com/agent-toolkit/latest/userguide/aws-cli.html#aws-cli-setup).
+
+Install the Sentry CLI skill with:
+
+```sh
+npx skills add https://cli.sentry.dev
+```
+
+The command requires an up-to-date Sentry CLI installation. Follow the
+[Sentry CLI documentation](https://cli.sentry.dev/).
+
+Install or update all recommendations with:
 
 ```sh
 scripts/setup-external-skills
@@ -96,7 +118,11 @@ Inspect the commands without changing the global installation:
 scripts/setup-external-skills --dry-run
 ```
 
-The setup script reads the global `npx skills` inventory before making changes. It refuses to overwrite a same-named skill owned by another source. `npx skills` records the external installations in `~/.agents/.skill-lock.json`; the setup script does not manage this repository's live symlinks.
+The setup script runs the AWS Agent Toolkit command and uses `npx skills` for the other
+recommendations. It reads the global `npx skills` inventory before making changes and refuses to
+overwrite a same-named skill owned by another source. `npx skills` records its external
+installations in `~/.agents/.skill-lock.json`. The setup script does not manage this repository's
+live symlinks.
 
 ## Development and using skills locally
 

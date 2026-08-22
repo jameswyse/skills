@@ -1,0 +1,5 @@
+interface:
+  display_name: "Diagnosing Production Incidents"
+  short_description: "Diagnose urgent production incidents safely"
+policy:
+  allow_implicit_invocation: false

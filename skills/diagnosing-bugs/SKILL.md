@@ -1,6 +1,6 @@
 ---
 name: diagnosing-bugs
-description: Diagnosis loop for hard bugs and performance regressions. Use when the user says "diagnose" or "debug this", or reports something broken, throwing, failing, or slow.
+description: Diagnosis loop for hard bugs and performance regressions. Use when the user says "diagnose" or "debug this", or reports something broken, throwing, failing, or slow. For a possible urgent live production incident, suggest diagnosing-production-incidents and continue unless the user invokes it.
 ---
 
 # Diagnosing bugs
@@ -10,6 +10,14 @@ A discipline for hard bugs. Skip phases only when explicitly justified.
 Read [Root-cause fixes](../engineering/references/root-causes.md) before choosing a fix. This skill owns the diagnostic loop. The reference owns fix placement, necessary consumer updates, and when a source fix needs approval.
 
 When exploring the codebase, read `CONTEXT.md` (if it exists) to get a clear mental model of the relevant modules, and check ADRs in the area you're touching.
+
+## Flag possible live production incidents
+
+An ordinary bug found in production remains in this workflow. If the report may describe an urgent live production incident, mention that `$diagnosing-production-incidents` is available for an evidence-first incident workflow. Signals include an active outage, a major production feature being unusable, or an explicit need for immediate recovery.
+
+Make this a non-blocking suggestion. Continue the current diagnostic workflow without waiting for a response. Do not classify a report as an incident merely because production is mentioned.
+
+If the user explicitly invokes `$diagnosing-production-incidents`, that skill owns the workflow. Do not run both diagnostic processes in parallel.
 
 ## Set the authority boundary
 

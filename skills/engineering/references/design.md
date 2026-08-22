@@ -1,6 +1,6 @@
 # Design and maintainability
 
-Choose structures, seams, and types that make the requested behaviour straightforward. Aim for the most result with the least code and reader effort.
+Choose structures, seams, and types that make the requested behaviour straightforward. Aim for the best result with the least code and reader effort.
 
 ## Design for the people who use the work
 
