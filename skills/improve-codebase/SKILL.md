@@ -3,68 +3,68 @@ name: improve-codebase
 description: Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick.
 ---
 
-# Improve Codebase
+# Improve codebase
 
-Surface architectural friction and propose **deepening opportunities**: refactors that turn shallow modules into deep ones. The aim is testability and AI-navigability.
+Find architectural friction and propose **deepening opportunities**, which are refactors that turn shallow modules into deep ones. The aim is testability and AI navigability.
 
 This command is _informed_ by the project's domain model and built on a shared design vocabulary:
 
-- Call the Skill tool with "codebase-design" for the architecture vocabulary (**module**, **interface**, **depth**, **seam**, **adapter**, **leverage**, **locality**) and its principles (the deletion test, "the interface is the test surface", "one adapter = hypothetical seam, two = real"). Use these terms exactly in every suggestion, and don't drift into "component," "service," "API," or "boundary."
+- Call the Skill tool with "codebase-design" for the architecture vocabulary. It defines **module**, **interface**, **depth**, **seam**, **adapter**, **leverage**, and **locality**. It also defines the deletion test, "the interface is the test surface", and "one adapter means a hypothetical seam, two means a real seam". Use these terms exactly in every suggestion. Do not substitute "component", "service", "API", or "boundary".
 - The domain language in the repository, if present, gives names to good seams.
 
 ## Process
 
 ### 1. Explore
 
-**Scope before you scan: YAGNI.** Deepening a module pays off by making future changes to it easier, so put extra weight on the parts of the codebase that have recently changed. Decide *where* to look before you look:
+**Scope the scan with YAGNI.** Deepening a module pays off by making future changes easier, so give extra weight to recently changed parts of the codebase. Decide *where* to look before scanning:
 
-- If the user named a direction (a module, a subsystem, a pain point), take it, and skip the inference below.
-- Otherwise, walk back a good stretch of the commit history (`git log --oneline`) to find the codebase's hot spots, the files and areas that keep coming up, and let those paths pull your attention first. If the changes are scattered with no clear hot spot, widen the net.
+- If the user named a module, subsystem, or problem, start there and skip the inference below.
+- Otherwise, inspect enough commit history with `git log --oneline` to find frequently changed files and areas. Start with those paths. Inspect more paths when changes are scattered without a clear centre.
 
 Read the project's documentation or domain glossary first.
 
-Then spawn an explorer sub-agent to walk the codebase. Don't follow rigid heuristics; explore organically and note where you experience friction:
+Then spawn an explorer subagent to inspect the codebase. Follow evidence from names, imports, callers, tests, and change history. Note where understanding becomes difficult:
 
 - Where does understanding one concept require bouncing between many small modules?
 - Where are modules **shallow**, with an interface nearly as complex as the implementation?
-- Where have pure functions been extracted just for testability, but the real bugs hide in how they're called (no **locality**)?
+- Where have pure functions been extracted only for testability while the real bugs remain in caller coordination with no **locality**?
 - Where do tightly-coupled modules leak across their seams?
 - Which parts of the codebase are untested, or hard to test through their current interface?
 
-Apply the **deletion test** to anything you suspect is shallow: would deleting it concentrate complexity, or just move it? A "yes, concentrates" is the signal you want.
+Apply the **deletion test** to anything you suspect is shallow. Would deleting it concentrate complexity or merely move it? A module earns its place when deletion would spread its complexity across callers.
 
 ### 2. Present candidates as an HTML report
 
-Write a self-contained HTML file to the OS temp directory so nothing lands in the repo. Resolve the temp dir from `$TMPDIR`, falling back to `/tmp` (or `%TEMP%` on Windows), and write to `<tmpdir>/architecture-review-<timestamp>.html` so each run gets a fresh file. Open it for the user (`xdg-open <path>` on Linux, `open <path>` on macOS, `start <path>` on Windows) and tell them the absolute path.
+Write a self-contained HTML file to the operating system's temporary directory so nothing enters the repository. Resolve the directory from `$TMPDIR`, falling back to `/tmp` on Unix or `%TEMP%` on Windows. Write to `<tmpdir>/architecture-review-<timestamp>.html` so each run gets a fresh file. Open it with `xdg-open <path>` on Linux, `open <path>` on macOS, or `start <path>` on Windows. Tell the user the absolute path.
 
-The report uses **Tailwind via CDN** for layout and styling, and **Mermaid via CDN** for diagrams where a graph/flow/sequence reliably communicates the structure. Mix Mermaid with hand-crafted CSS/SVG visuals: use Mermaid when relationships are graph-shaped (call graphs, dependencies, sequences), and hand-built divs/SVG when you want something more editorial (mass diagrams, cross-sections, collapse animations). Each candidate gets a **before/after visualisation**. Be visual.
+Use **Tailwind via CDN** for layout and styling. Use **Mermaid via CDN** when a graph, flow, or sequence communicates the structure clearly. Mix Mermaid with hand-crafted CSS and SVG visuals. Mermaid suits call graphs, dependencies, and sequences. Hand-built elements suit mass diagrams, cross-sections, and collapse animations. Give each candidate a **before-and-after visualisation**.
 
 For each candidate, render a card with:
 
-- **Files**: which files/modules are involved
-- **Problem**: why the current architecture is causing friction
-- **Solution**: plain English description of what would change
-- **Benefits**: explained in terms of locality and leverage, and how tests would improve
-- **Before / After diagram**: side-by-side, custom-drawn, illustrating the shallowness and the deepening
-- **Recommendation strength**: one of `Strong`, `Worth exploring`, `Speculative`, rendered as a badge
+- **Files.** Name the files and modules involved.
+- **Problem.** Explain why the current architecture is difficult to change or understand.
+- **Solution.** Describe the proposed change in plain English.
+- **Benefits.** Explain the locality, leverage, and testing gains.
+- **Before-and-after diagram.** Draw a custom side-by-side comparison of the shallowness and proposed deepening.
+- **Recommendation strength.** Render `Strong`, `Worth exploring`, or `Speculative` as a badge.
 
-End the report with a **Top recommendation** section: which candidate you'd tackle first and why.
+End the report with a **Top recommendation** section that names the first candidate to tackle and explains why.
 
-**Use the repo's documented domain vocabulary for the domain, and the `codebase-design` vocabulary for the architecture.** If the repo's domain vocabulary defines "Order," talk about "the Order intake module," not "the FooBarHandler," and not "the Order service."
+**Use the repository's documented domain vocabulary for the domain and the `codebase-design` vocabulary for the architecture.** If the domain vocabulary defines "Order", write "the Order intake module", not "the FooBarHandler" or "the Order service".
 
-**Documentation conflicts**: if a candidate contradicts an existing documented rule or ADR, only surface it when the friction is real enough to warrant revisiting. Mark it clearly in the card (e.g. a warning callout: _"contradicts XYZ, but worth reopening because…"_). Don't list every theoretical refactor that documentation or an ADR forbids.
+**Documentation conflicts.** If a candidate contradicts a documented rule or ADR, include it only when the observed problem justifies reconsideration. Mark the conflict in a warning callout, such as _"Contradicts XYZ. Reconsider it because..."_ Do not list theoretical refactors that documentation already rules out.
 
 See [HTML-REPORT.md](HTML-REPORT.md) for the full HTML scaffold, diagram patterns, and styling guidance.
 
-Do NOT propose interfaces yet. After the file is written, ask the user: "Which of these would you like to explore?"
+Do not propose interfaces yet. After writing the file, ask the user, "Which of these would you like to explore?"
 
 ### 3. Grilling loop
 
-Once the user picks a candidate, call the Skill tool with "grilling" to walk the decision tree with them: constraints, dependencies, the shape of the deepened module, what sits behind the seam, what tests survive.
+Once the user picks a candidate, call the Skill tool with "grilling" to examine its constraints, dependencies, deepened module, seam contents, and surviving tests.
 
-Side effects happen inline as decisions crystallize; Update the domain documentation as you go, after confirming with the user.
+After the user confirms a decision, update the domain documentation during the same loop.
 
-- **Naming a deepened module after a concept not in the repo's domain vocabulary?** Add the term to it in the appropriate place.
-- **Sharpening a fuzzy term during the conversation?** Update the repo's domain vocabulary right there.
-- **User rejects the candidate with a good reason?** Offer to update documentation, framed as: _"Want me to record this to the documentation so future architecture reviews don't re-suggest it?"_ Only offer when the reason would actually be needed by a future explorer to avoid re-suggesting the same thing; skip ephemeral reasons ("not worth it right now") and self-evident ones.
-- **Want to explore alternative interfaces for the deepened module?** Call the Skill tool with "codebase-design" and use its design-it-twice parallel sub-agent pattern.
+- When a deepened module uses a concept missing from the repository's domain vocabulary, add the term in the appropriate place.
+- When the conversation sharpens a vague term, update the repository's domain vocabulary immediately.
+- When the user rejects a candidate for a reason future reviews need, offer to record that reason in the documentation. Ask, _"Should I record this in the documentation so future architecture reviews do not suggest it again?"_ Skip temporary reasons such as "not worth it right now" and self-evident reasons.
+- To explore alternative interfaces for the deepened module, call the Skill tool with "codebase-design" and use its design-it-twice parallel subagent pattern.

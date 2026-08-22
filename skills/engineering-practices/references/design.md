@@ -6,7 +6,7 @@ Choose structures, seams, and types that make the requested behaviour straightfo
 
 The user is whoever consumes the work. For a library or internal interface, that is the colleague who imports it. The engineer who maintains the code next is a user too. Weigh their experience alongside implementation cost, and explain impact from their seat.
 
-Foundations should serve the experience. Foundational thinking governs the sequence of work; the intended experience governs the target.
+Foundations should serve the experience. Foundational thinking governs the sequence of work. The intended experience governs the target.
 
 ## Redesign from the requirement
 
@@ -21,17 +21,17 @@ When producing a design, state the chosen foundation, rejected alternatives, and
 
 ## Use the least machinery
 
-Fight for simplicity throughout design and implementation. Writing code is cheap for an agent, which makes over-engineering easy. Borrow a human maintainer's fatigue.
+Fight for simplicity throughout design and implementation. Writing code is cheap for an agent, which makes over-engineering easy. Account for the maintenance effort a human developer must bear.
 
 The simplest design is the one with the least total complexity that still expresses the required behaviour and constraints. Do not confuse simplicity with fewer lines, fewer files, or less explicit domain modelling. A locally concise change that creates caller coordination, hidden state, or parallel paths makes the system more complex.
 
 - Prefer deletion. When refactoring or improving, look for removals before additions.
-- Maintain a flat call hierarchy. A rich interface that hides substantial work is useful; a chain of pass-through calls is not. If answering a question requires tracing through more than three files or layers, flatten it.
+- Maintain a flat call hierarchy. A rich interface that hides substantial work is useful. A chain of pass-through calls is not. If answering a question requires tracing through more than three files or layers, flatten it.
 - Consolidate decisions. Put one choice behind one source of truth instead of repeating it across callers.
 - Make the smallest change that solves the problem. Fewer lines beat elegant boilerplate.
 - When a change threads a signal through types, schemas, pipelines, or similar layers, look for a more direct path.
 - Remove small pass-throughs, representation leaks, and duplicated choices before they spread.
-- Remove in-scope dead weight before adding scaffolding. Put foundations that benefit every later phase, such as shared types or necessary test infrastructure, before feature work.
+- Remove in-scope dead weight before adding supporting code. Put foundations that benefit every later phase, such as shared types or necessary test infrastructure, before feature work.
 
 If a human developer would find the code exhausting to maintain, simplify it.
 

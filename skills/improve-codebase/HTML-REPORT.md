@@ -1,6 +1,6 @@
-# HTML Report Format
+# HTML report format
 
-The architectural review is rendered as a single self-contained HTML file in the OS temp directory. Tailwind and Mermaid both come from CDNs. Mermaid handles graph-shaped diagrams reliably; hand-built divs and inline SVG handle the more editorial visuals (mass diagrams, cross-sections). Mix the two: don't lean on Mermaid for everything, it'll start to look generic.
+Render the architectural review as one self-contained HTML file in the operating system's temporary directory. Load Tailwind and Mermaid from CDNs. Use Mermaid for graph-shaped diagrams. Use hand-built elements and inline SVG for mass diagrams, cross-sections, and other custom visuals. Mix both approaches so the report does not look generic.
 
 ## Scaffold
 
@@ -16,8 +16,8 @@ The architectural review is rendered as a single self-contained HTML file in the
       mermaid.initialize({ startOnLoad: true, theme: "neutral", securityLevel: "loose" });
     </script>
     <style>
-      /* small custom layer for things Tailwind doesn't cover cleanly:
-         dashed seam lines, hand-drawn-feeling arrow heads, etc. */
+      /* Small custom layer for details Tailwind does not cover cleanly,
+         such as dashed seam lines and custom arrow heads. */
       .seam { stroke-dasharray: 4 4; }
       .leak { stroke: #dc2626; }
       .deep { background: linear-gradient(135deg, #0f172a, #1e293b); }
@@ -35,22 +35,22 @@ The architectural review is rendered as a single self-contained HTML file in the
 
 ## Header
 
-Repo name, date, and a compact legend: solid box = module, dashed line = seam, red arrow = leakage, thick dark box = deep module. No introduction paragraph. Straight into the candidates.
+Show the repository name, date, and a compact legend. A solid box means module, a dashed line means seam, a red arrow means leakage, and a thick dark box means deep module. Omit an introduction and begin with the candidates.
 
 ## Candidate card
 
-The diagrams carry the weight. Prose is sparse, plain, and uses the glossary terms (from the `codebase-design` skill) without ceremony.
+Make the diagrams explain the structure. Keep prose sparse and plain. Use the glossary terms from the `codebase-design` skill directly.
 
 Each candidate is one `<article>`:
 
-- **Title**: short, names the deepening (e.g. "Collapse the Order intake pipeline").
-- **Badge row**: recommendation strength (`Strong` = emerald, `Worth exploring` = amber, `Speculative` = slate), plus a tag for the dependency category (`in-process`, `local-substitutable`, `ports & adapters`, `mock`).
-- **Files**: monospaced list, `font-mono text-sm`.
-- **Before / After diagram**: the centrepiece. Two columns, side by side. See patterns below.
-- **Problem**: one sentence. What hurts.
-- **Solution**: one sentence. What changes.
-- **Wins**: bullets, ≤6 words each. e.g. "Tests hit one interface", "Pricing logic stops leaking", "Delete 4 shallow wrappers".
-- **Documentation or ADR callout** (if applicable): in an amber-tinted box.
+- **Title.** Use a short name for the deepening, such as "Collapse the Order intake pipeline".
+- **Badge row.** Show recommendation strength with `Strong` in emerald, `Worth exploring` in amber, or `Speculative` in slate. Add a dependency tag for `in-process`, `local-substitutable`, `ports and adapters`, or `mock`.
+- **Files.** Use a monospaced list with `font-mono text-sm`.
+- **Before-and-after diagram.** Use two side-by-side columns as the centrepiece. See the patterns below.
+- **Problem.** Use one sentence to name what is difficult.
+- **Solution.** Use one sentence to name what changes.
+- **Wins.** Use bullets of six words or fewer, such as "Tests hit one interface", "Pricing logic stops leaking", or "Delete 4 shallow wrappers".
+- **Documentation or ADR callout.** When applicable, use an amber-tinted box.
 
 No paragraphs of explanation. If the diagram needs a paragraph to be understood, redraw the diagram.
 
@@ -58,9 +58,9 @@ No paragraphs of explanation. If the diagram needs a paragraph to be understood,
 
 Pick the pattern that fits the candidate. Mix them. Don't make every diagram look the same. Variety is part of the point.
 
-### Mermaid graph (the workhorse for dependencies / call flow)
+### Mermaid graph for dependencies and call flow
 
-Use a Mermaid `flowchart` or `graph` when the point is "X calls Y calls Z, and look at the mess." Wrap it in a Tailwind-styled card so it doesn't feel parachuted in. Style with classDef to colour leakage edges red and the deep module dark. Sequence diagrams work well for "before: 6 round-trips; after: 1."
+Use a Mermaid `flowchart` or `graph` to show a chain such as "X calls Y, then Y calls Z". Put it in a Tailwind-styled card that matches the report. Use `classDef` to colour leakage edges red and the deep module dark. Sequence diagrams work well when six round trips become one.
 
 ```html
 <div class="rounded-lg border border-slate-200 bg-white p-4">
@@ -75,29 +75,29 @@ Use a Mermaid `flowchart` or `graph` when the point is "X calls Y calls Z, and l
 </div>
 ```
 
-### Hand-built boxes-and-arrows (when Mermaid's layout fights you)
+### Hand-built boxes and arrows
 
-Modules as `<div>`s with borders and labels. Arrows as inline SVG `<line>` or `<path>` elements positioned absolutely over a relative container. Reach for this when you want the "after" diagram to feel like one thick-bordered deep module with greyed-out internals, since Mermaid won't render that with the right weight.
+Render modules as bordered and labelled `<div>` elements. Render arrows as inline SVG `<line>` or `<path>` elements positioned over a relative container. Use this pattern when the "after" diagram needs one thick-bordered deep module with greyed-out internals and Mermaid cannot produce the layout.
 
-### Cross-section (good for layered shallowness)
+### Cross-section for layered shallowness
 
-Stack horizontal bands (`h-12 border-l-4`) to show layers a call passes through. Before: 6 thin layers each doing nothing. After: 1 thick band labelled with the consolidated responsibility.
+Stack horizontal bands with `h-12 border-l-4` to show layers a call passes through. The before view has six thin layers that add no useful work. The after view has one thick band labelled with the consolidated responsibility.
 
-### Mass diagram (good for "interface as wide as implementation")
+### Mass diagram for interface and implementation size
 
-Two rectangles per module: one for interface surface area, one for implementation. Before: interface rectangle is nearly as tall as the implementation rectangle (shallow). After: interface rectangle is short, implementation rectangle is tall (deep).
+Use two rectangles per module, one for interface size and one for implementation size. In the before view, both rectangles are nearly the same height, which indicates a shallow module. In the after view, the interface rectangle is short and the implementation rectangle is tall, which indicates a deep module.
 
 ### Call-graph collapse
 
-Before: a tree of function calls rendered as nested boxes. After: the same tree collapsed into one box, with the now-internal calls shown faded inside it.
+In the before view, render a tree of function calls as nested boxes. In the after view, collapse the tree into one box and fade the calls that are now internal.
 
 ## Style guidance
 
-- Lean editorial, not corporate-dashboard. Generous whitespace. Serif optional for headings (`font-serif` works well with stone/slate).
-- Colour sparingly: one accent (emerald or indigo) plus red for leakage and amber for warnings.
-- Keep diagrams ~320px tall so before/after sits comfortably side by side without scrolling.
+- Use an editorial layout rather than a corporate dashboard. Leave generous whitespace. A serif heading font is optional. `font-serif` works well with stone and slate.
+- Use colour sparingly. Choose one accent, either emerald or indigo. Reserve red for leakage and amber for warnings.
+- Keep diagrams approximately 320px tall so the before-and-after views fit side by side without scrolling.
 - Use `text-xs uppercase tracking-wider` for module labels inside diagrams, so they read as schematic, not as UI.
-- The only scripts are the Tailwind CDN and the Mermaid ESM import. The report is otherwise static: no app code, no interactivity beyond Mermaid's own rendering.
+- Use only the Tailwind CDN script and Mermaid ESM import. Keep the rest of the report static, with no application code or interactivity beyond Mermaid's rendering.
 
 ## Top recommendation section
 
@@ -107,17 +107,24 @@ One larger card. Candidate name, one sentence on why, anchor link to its card. T
 
 Plain English, concise, but the architectural nouns and verbs come straight from the `codebase-design` skill. Concision is not an excuse to drift.
 
-**Use exactly:** module, interface, implementation, depth, deep, shallow, seam, adapter, leverage, locality.
+Use these terms exactly:
 
-**Never substitute:** component, service, unit (for module) · API, signature (for interface) · boundary (for seam) · layer, wrapper (for module, when you mean module).
+`module`, `interface`, `implementation`, `depth`, `deep`, `shallow`, `seam`, `adapter`, `leverage`, and `locality`.
 
-**Phrasings that fit the style:**
+Do not substitute these terms:
 
-- "Order intake module is shallow: interface nearly matches the implementation."
+- Use `module`, not `component`, `service`, or `unit`.
+- Use `interface`, not `API` or `signature`.
+- Use `seam`, not `boundary`.
+- Use `module`, not `layer` or `wrapper`, when module is the intended concept.
+
+These phrasings fit the style:
+
+- "Order intake module is shallow. Its interface nearly matches the implementation."
 - "Pricing leaks across the seam."
-- "Deepen: one interface, one place to test."
-- "Two adapters justify the seam: HTTP in prod, in-memory in tests."
+- "Deepen it. Use one interface and one place to test."
+- "Two adapters justify the seam. Use HTTP in production and an in-memory adapter in tests."
 
-**Wins bullets** name the gain in glossary terms: *"locality: bugs concentrate in one module"*, *"leverage: one interface, N call sites"*, *"interface shrinks; implementation absorbs the wrappers"*. Don't write *"easier to maintain"* or *"cleaner code"*, because those terms aren't in the glossary and don't earn their place.
+Use glossary terms in the wins bullets. Examples include *"locality keeps bugs in one module"*, *"leverage gives N call sites one interface"*, and *"the interface shrinks while the implementation absorbs the wrappers"*. Do not write *"easier to maintain"* or *"cleaner code"* because those terms do not name the mechanism.
 
-No hedging, no throat-clearing, no "it's worth noting that…". If a sentence could be a bullet, make it a bullet. If a bullet could be cut, cut it. If a term isn't in the `codebase-design` skill glossary, reach for one that is before inventing a new one.
+Do not hedge or preface a point with phrases such as "it is worth noting that". Turn a sentence into a bullet when that makes it easier to scan. Cut bullets that add nothing. Before inventing a term, look for one in the `codebase-design` glossary.

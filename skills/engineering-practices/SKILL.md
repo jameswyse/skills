@@ -22,7 +22,7 @@ Complexity inhibits understanding and robustness. Simplicity makes change easier
 - Continue safe, reversible work covered by the requested outcome. Infer ordinary implementation details from the request, repository conventions, and current evidence.
 - Scope follows the root cause, not the initially expected file list. Prefer a small source fix and the necessary consumer, test, or type updates over local exceptions, fallback paths, or compensating complexity.
 - Search for the same defect elsewhere. Fix minor, clearly equivalent instances when leaving them would preserve inconsistent behaviour.
-- Pause when the correct fix significantly changes the intended result, a public or external contract, data, dependencies, infrastructure, product risk, or the size of the work. Explain why the broader source fix is preferable to a local workaround.
+- Pause when the correct fix significantly changes the intended result, a public or external interface, data, dependencies, infrastructure, product risk, or the size of the work. Explain why the broader source fix is preferable to a local workaround.
 - Preserve unrelated work. Do not publish, message, commit, push, delete data, or affect external systems unless the user authorised that action.
 
 ## Safety
@@ -53,7 +53,7 @@ Complexity inhibits understanding and robustness. Simplicity makes change easier
 
 Read each reference when its trigger first appears, including when the task changes phase later in a long thread.
 
-- For an unexpected problem, a tempting guard or workaround, or a reported bug, read [Root-cause fixes](references/root-causes.md). For a hard bug or performance regression, also apply `$diagnosing-bugs`; it owns the diagnostic loop, while the reference owns fix placement.
+- For an unexpected problem, a tempting guard or workaround, or a reported bug, read [Root-cause fixes](references/root-causes.md). For a hard bug or performance regression, also apply `$diagnosing-bugs`. It owns the diagnostic loop, while the reference owns fix placement.
 - Before substantial type, state, data-structure, module, interface, or refactor decisions, or when a new requirement does not fit the current design, read [Design and maintainability](references/design.md).
 - For a sweep, migration, internal interface transition, or other multi-step change, read [Execution and migration](references/execution.md).
 - For commands, lifecycle work, retries, restarts, scheduling, or concurrent writers, read [Reliable operations](references/operations.md).

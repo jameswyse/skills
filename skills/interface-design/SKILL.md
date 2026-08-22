@@ -1,6 +1,6 @@
 ---
 name: interface-design
-description: "Route UI and interface design work to installed specialist skills. For change reviews, ask the user to invoke $interface-review; for variants, $variant; for interface explanations, $explain-interface. Route other UI creation, review, copy, polish, and motion work to the exact interface or animation skills listed in this skill. Do not use for software architecture or codebase design."
+description: "Route UI and interface design work to installed specialist skills. For change reviews, ask the user to invoke $interface-review. For variants, ask the user to invoke $variant. For interface explanations, ask the user to invoke $explain-interface. Route other UI creation, review, copy, polish, and motion work to the exact interface or animation skills listed in this skill. Do not use for software architecture or codebase design."
 ---
 
 # Interface design

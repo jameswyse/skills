@@ -4,7 +4,7 @@ Code examples for each rule in `SKILL.md`. The language-agnostic type and seam r
 
 ## Branded types
 
-Brand primitives so they can't be mixed up. Validate once at creation; downstream code trusts the type.
+Brand primitives so they cannot be mixed up. Validate once at creation. Downstream code trusts the type.
 
 ```ts
 type AgentId = string & { readonly __brand: "AgentId" };
@@ -19,11 +19,11 @@ function focusAgent(id: AgentId): void {
 }
 ```
 
-Match the `readonly __brand: 'X'` shape; don't invent a new convention.
+Match the `readonly __brand: 'X'` shape. Do not invent a new convention.
 
 ## Discriminated unions
 
-If a bug forces the question "wait, can this combination actually happen?", the type is too loose. Model variants with a literal discriminant: every variant shares the field name and each variant's value is unique, so impossible combos can't be represented.
+If a bug makes a field combination questionable, the type is too loose. Model variants with a literal discriminant. Every variant shares the field name and each variant's value is unique, so impossible combinations cannot be represented.
 
 ```ts
 // Don't. Boolean + optionals lets contradictory states exist.
@@ -65,7 +65,7 @@ Where a plain `T[]` arrives, narrow once with a guard. The fact then travels in 
 const isNonEmpty = <T>(arr: T[]): arr is NonEmpty<T> => arr.length > 0;
 ```
 
-Even length, as pairs. TypeScript has no refinement types (no `arr.length % 2 === 0` at the type level); you don't need one:
+Represent even length as pairs. TypeScript has no refinement types for facts such as `arr.length % 2 === 0` at the type level. You do not need one:
 
 ```ts
 type Pairs<T> = [T, T][];
@@ -77,7 +77,7 @@ A time range, as start plus duration:
 // Don't: a comment holds the invariant
 type TimeRange = { start: Date; end: Date }; // start <= end
 
-// Do: a negative range can't be written; derive end when needed
+// Do. A negative range cannot be written. Derive the end when needed.
 type TimeRange = { start: Date; durationMs: number };
 ```
 
@@ -94,18 +94,18 @@ const sum = (xs: number[]) => xs.reduce((a, b) => a + b, 0); // [] is 0, fine
 Strengthen when the loose type forces a lie at a use site. The tells are `!`, `arr[0] as T`, and a "should never happen" throw:
 
 ```ts
-// Don't: partiality smuggled past the compiler
+// Don't. The assertion hides partiality from the compiler.
 function newestSession(sessions: Session[]): Session {
   return sessions.at(0)!;
 }
 
-// Do: strengthen the input; the assertion disappears
+// Do. Strengthen the input so the assertion disappears.
 function newestSession(sessions: NonEmpty<Session>): Session {
   return sessions[0];
 }
 ```
 
-Weakening the result to `Session | undefined` is the other total signature. Either way the empty case lands at the call site, the one place that knows what empty means.
+Weakening the result to `Session | undefined` is the other total signature. Either way, the call site handles the empty case because it knows what empty means.
 
 ## `unknown` over `any`
 
@@ -120,7 +120,7 @@ function handle(input: any) {
 // Do
 function handle(input: unknown) {
   if (typeof input === "object" && input !== null && "foo" in input) {
-    // narrowed; compiler verifies access
+    // Narrowed. The compiler verifies access.
   }
 }
 ```
@@ -129,7 +129,7 @@ External sources include RPC payloads, `JSON.parse`, `postMessage`, IPC, file co
 
 ## No `as` casts
 
-Every `as` is a potential runtime crash. Cast only after the type system has verified the claim.
+An unchecked `as` cast can cause a runtime crash. Cast only after the type system has verified the claim.
 
 ```ts
 // Don't
@@ -159,9 +159,9 @@ When refactoring an `as` out of existing code, identify why TypeScript can't inf
 
 From best to last-resort:
 
-1. **Discriminated union switch / if.** Compiler narrows automatically.
+1. **Discriminated union switch or `if`.** The compiler narrows automatically.
 2. **`in` operator.** `"key" in obj` narrows to variants containing that key.
-3. **`typeof` / `instanceof`.** For primitives and class instances.
+3. **`typeof` or `instanceof`.** Use these for primitives and class instances.
 4. **User-defined type guard.** When the above aren't enough.
 5. **`as` cast.** Only after validation.
 
@@ -174,7 +174,7 @@ function area(s: Shape): number {
 
 ## Type guards
 
-A guard must actually verify the claim. A lying guard is worse than `as` because the bug hides behind a name that says it's safe.
+A guard must verify its claim. A false guard is worse than `as` because its misleading name makes the bug harder to find.
 
 ```ts
 function isCircle(s: Shape): s is Shape & { kind: "circle" } {
@@ -220,7 +220,7 @@ function handle(s: Shape): void {
 }
 ```
 
-Return-style in value-returning switches; void-style in statement switches.
+Use the return style in value-returning switches. Use the void style in statement switches.
 
 ## `satisfies` over `as`
 
@@ -237,10 +237,10 @@ const config = { theme: "dark", cols: 3 } satisfies Config;
 
 ## Seam validation
 
-Validate once where data crosses in; trust types inside. Read `$engineering-practices`' design reference for seam placement.
+Validate once where data enters. Trust types inside. Read `$engineering-practices`' design reference for seam placement.
 
 - **Wire formats** (proto, JSON-RPC): parse with `ignoreUnknownFields` so forward-compatible changes don't break old clients.
-- **Persisted JSON:** versioned blob with a try/catch around the parse.
+- **Persisted JSON.** Use a versioned blob with `try` and `catch` around the parse.
 - **Don't re-validate** deep in call chains.
 
 ## Schema-derived types
@@ -264,7 +264,7 @@ function renderChecks(s: Pick<ChecksMessage, "totalCount" | "checks">) {
 }
 ```
 
-Reach for `Pick`, `Omit`, `Parameters`, `ReturnType`, `Awaited`, `typeof` before writing a new interface.
+Reach for `Pick`, `Omit`, `Parameters`, `ReturnType`, `Awaited`, or `typeof` before writing a new interface.
 
 ## Object args
 

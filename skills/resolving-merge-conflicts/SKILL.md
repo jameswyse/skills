@@ -5,7 +5,7 @@ description: "Resolve conflicts during an authorised in-progress Git merge or re
 
 1. **See the current state** of the merge or rebase. Check Git history, the conflicting files, and the existing staged, unstaged, and untracked changes. Preserve unrelated work.
 
-2. **Find the primary sources** for each conflict. Understand deeply why each change was made, and what the original intent was. Read the commit messages, check the PRs, check original issues/tickets.
+2. **Find the primary sources** for each conflict. Understand why each change was made and what the original intent was. Read the commit messages, PRs, and original issues.
 
 3. **Resolve each hunk.** Preserve both intents where possible. Where they are incompatible, pick the intent that matches the merge's stated goal and note the trade-off. Do not invent new behaviour. Do not abort or restart the operation unless the user asks.
 

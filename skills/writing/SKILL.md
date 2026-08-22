@@ -5,7 +5,7 @@ description: "Baseline prose rules for every assistant response and written arte
 
 # Writing
 
-Write concise, direct en-AU prose; preserve the intended meaning and tone while removing stock AI phrasing and corporate filler.
+Write concise, direct en-AU prose. Preserve the intended meaning and tone while removing stock AI phrasing and corporate filler.
 
 ## Scope and precedence
 

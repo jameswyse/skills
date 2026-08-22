@@ -1,6 +1,6 @@
 ---
 name: show-me-your-work
-description: "Keep a reviewable decision trail for long-running or unattended work: a TSV log with one row per decision (what, why, evidence, result). Local by default; commit it when a reviewer needs the trail to trust the result. Use for autonomous or multi-phase runs, or work a human reviews after stepping away."
+description: "Keep a reviewable decision trail for long-running or unattended work. Use a TSV log with one row per decision, covering what, why, evidence, and result. Keep it local by default. Commit it when a reviewer needs the trail to trust the result. Use for autonomous or multi-phase runs, or work a human reviews after stepping away."
 ---
 
 # Show me your work
@@ -9,18 +9,18 @@ For work a human reviews after the fact, a decision trail lets them reconstruct 
 
 ## The format
 
-A single TSV file, one row per decision. TSV because GitHub renders it as a sortable table, `column -s$'\t' -t` and spreadsheets read it, and a row appends with one command. Cells stay single-line. Evidence is a pointer, not prose.
+Use one TSV file with one row per decision. GitHub renders TSV as a sortable table. Spreadsheets and `column -s$'\t' -t` can also read it, and one command can append a row. Keep cells on one line. Evidence is a pointer, not prose.
 
 Copy `references/decision-log-template.tsv` (the header row) to start a clean log. Columns:
 
 - **ts.** ISO8601 timestamp. The timeline axis.
 - **phase.** The phase or workstream.
 - **decision.** What was chosen or done, one line.
-- **why.** The reason in plain words. If a principle drove it, say it plainly (`explored options first, this was a one-way door`), not as a jargon tag.
-- **evidence.** A link or path that proves it: commit SHA, PR number, `file:line`, or an artefact, trace, or screenshot path. Never a paragraph.
-- **result.** The outcome or predicate state: `tests green`, `reverted`, `pixel-diff 0`, `INCONCLUSIVE`, `open`.
+- **why.** The reason in plain words. If a principle drove it, say it plainly, such as `explored options first because this was hard to reverse`. Do not use a jargon tag.
+- **evidence.** A link or path that proves it, such as a commit SHA, PR number, `file:line`, artefact, trace, or screenshot path. Never a paragraph.
+- **result.** The outcome or predicate state, such as `tests green`, `reverted`, `pixel-diff 0`, `INCONCLUSIVE`, or `open`.
 
-An example, plain-spoken so a reviewer reads it at a glance. This is illustration only; don't copy these rows into a real log.
+A reviewer can read this plain example at a glance. It is for illustration only. Do not copy these rows into a real log.
 
 ```
 ts	phase	decision	why	evidence	result
@@ -34,15 +34,15 @@ ts	phase	decision	why	evidence	result
 
 Write each entry the way you'd tell a teammate what you did. Plain words, concrete actions, no AI speak or abstract jargon. Apply `$writing` to log text too. A reviewer should understand each row without decoding it.
 
-Use the helper so rows stay well-formed: `scripts/log.sh <logfile> <phase> <decision> <why> <evidence> <result>`. It stamps `ts`, writes the header on first use, strips stray tabs/newlines, and prefixes any cell starting with `=`, `+`, `-`, or `@` with a single quote so a reviewer opening the log in a spreadsheet doesn't trigger formula execution. A bare `printf` appending a row works too, but mind those same bytes if cells come from generated or user-supplied text.
+Use `scripts/log.sh <logfile> <phase> <decision> <why> <evidence> <result>` so rows stay well formed. The helper stamps `ts`, writes the header on first use, and strips stray tabs and newlines. It prefixes a cell that starts with `=`, `+`, `-`, or `@` with a single quote so a spreadsheet does not execute it as a formula. A bare `printf` can also append a row. Apply the same protection when cells contain generated or user-supplied text.
 
-Log decision points and checkpoints, not every action: a fork chosen, a unit completed with its verification result, a pivot or revert with its trigger, a blocker surfaced, a gate fixed. For loop runs, one row per iteration. Skip the trivial and self-evident.
+Log decision points and checkpoints, not every action. Examples include choosing a fork, completing a unit with its verification result, changing direction, reverting after a trigger, finding a blocker, or fixing a check. For loop runs, write one row per iteration. Skip trivial and self-evident actions.
 
 ## Where it lives
 
-By default the log is a working artefact, not committed. Keep it at `decisions.tsv` in the work dir, or `.audit/<task-slug>.tsv` when several efforts run at once, and leave it out of git. Most work doesn't need a committed trail; the local log still keeps the run honest and can be discarded after.
+By default, the log is an uncommitted working artefact. Keep it at `decisions.tsv`, or `.audit/<task-slug>.tsv` when several efforts run at once, and leave it out of Git. Most work does not need a committed trail. The local log still records the run accurately and can be discarded afterwards.
 
-Commit it only when the work is ambitious enough that a reviewer needs the trail to trust the result: a large cross-language port, a multi-week migration, anything where confidence has to be shown rather than assumed. A committed log renders as a table in the PR.
+Commit the log only when a reviewer needs the trail to trust an ambitious result. Examples include a large cross-language port or multi-week migration where the work must demonstrate confidence. A committed log renders as a table in the PR.
 
 ## Rules
 
@@ -52,7 +52,7 @@ Commit it only when the work is ambitious enough that a reviewer needs the trail
 
 ## Audit the log against the transcript
 
-At the end of the run, before handing back, check the log told the truth. Read this run's transcript under the active workspace's `agent-transcripts/` directory (the system prompt names the path). Don't glob across `~/.cursor/projects/*/`; that reads unrelated private chats. Walk the log against what actually happened:
+At the end of the run, check that the log is accurate before handing back. Read this run's transcript under the active workspace's `agent-transcripts/` directory. The system prompt names the path. Do not glob across `~/.cursor/projects/*/` because that reads unrelated private chats. Compare the log with what happened:
 
 - Every row maps to a real action. Cut invented or aspirational entries.
 - Each row's evidence resolves and shows what the row claims.
@@ -63,19 +63,19 @@ Fix the log, not the story. If the work diverged from what a row claims, the row
 
 ## Cross-model review of the trail
 
-Before handing back, you must spawn a subagent on a different model family from the one that did the work. Self-review is not a substitute; the point is fresh eyes you cannot bring yourself. The subagent reads the audit trail and the run's transcript, then flags what the user should pay attention to. Not a redo of the work, a scan for what's suboptimal or risky.
+Before handing back, you must spawn a subagent from a different model family than the one that did the work. Self-review is not a substitute for an independent perspective. The subagent reads the audit trail and the run's transcript, then flags what the user should examine. It does not redo the work. It looks for weak or risky decisions.
 
 - Decisions logged with weak or absent evidence.
 - Verification steps skipped or claimed without proof in the transcript.
-- Choices that look risky in hindsight (premature, scope-creeping, papering over a symptom).
+- Choices that look risky in hindsight, such as premature decisions, unjustified scope expansion, or changes that hide a symptom.
 - Gaps the user would otherwise miss on a casual skim.
 
-Every reply for a run that produced a trail ends with an "Attention" section. Lead with the reviewer's model on its own line (`reviewed by <model>`), then list each flag pointing to specific rows or moments. "No flags" is a valid value; the model name is not. The self-audit asks if the log told the truth; this asks what the user should still scrutinise even when it did.
+Every reply for a run that produced a trail ends with an "Attention" section. Put the reviewer's model on its own line as `reviewed by <model>`, then list each flag with a reference to specific rows or moments. "No flags" is a valid value. The model name alone is not. The self-audit checks whether the log is accurate. This review identifies what the user should still scrutinise.
 
 ## Reviewing the trail
 
-Read top to bottom, follow the evidence pointers, spot-check. GitHub renders a committed TSV as a table; `column -s$'\t' -t decisions.tsv` renders it in a terminal. A row whose evidence doesn't resolve, or whose result is unverified, is the audit catching a gap.
+Read from top to bottom, follow the evidence pointers, and check a sample. GitHub renders a committed TSV as a table. `column -s$'\t' -t decisions.tsv` renders it in a terminal. A row with missing evidence or an unverified result exposes a gap.
 
 ## Composing this skill
 
-Other skills route their audit trail here instead of inventing one. Reference it by name and let it own the format; don't restate the columns.
+Other skills route their audit trail here instead of inventing one. Reference this skill by name and let it own the format. Do not restate the columns.
