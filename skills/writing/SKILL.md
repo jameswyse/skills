@@ -11,9 +11,12 @@ Write concise, direct en-AU prose; preserve the intended meaning and tone while 
 
 Apply this skill to every response and written artefact. When a narrower writing skill also applies, use both. The narrower skill governs decisions within its stated scope. This skill remains the baseline for everything it does not override.
 
+For user-facing product or interface copy, apply `$better-writing` when it is available. It owns UX-copy decisions. Do not apply it to ordinary assistant responses, developer documentation, code comments, commit messages, or pull-request descriptions.
+
 ## Locale
 
 - Use Australian spelling and punctuation in prose and user-visible copy unless the user or source material requires another locale.
+- Use US spelling for code identifiers you create. Preserve existing identifiers and project conventions.
 - Keep code identifiers, API names, product names and quotations unchanged.
 - When relevant, format dates as DD/MM/YYYY.
 

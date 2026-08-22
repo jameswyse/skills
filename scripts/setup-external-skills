@@ -1,0 +1,218 @@
+#!/usr/bin/env python3
+"""Install or update the recommended global external skills with npx skills."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import shlex
+import subprocess
+import sys
+from collections.abc import Sequence
+
+
+SKILLS_COMMAND = ("npx", "skills@latest")
+RECOMMENDED_SKILLS: dict[str, tuple[str, ...]] = {
+    "apollographql/skills": (
+        "apollo-client",
+        "apollo-server",
+        "graphql-operations",
+        "graphql-schema",
+    ),
+    "emilkowalski/skills": (
+        "animate",
+        "animation-vocabulary",
+        "find-animation-opportunities",
+        "improve-animations",
+        "review-animations",
+    ),
+    "github/gh-stack": ("gh-stack",),
+    "jakubkrehel/skills": (
+        "better-accessibility",
+        "better-colors",
+        "better-interface",
+        "better-layout",
+        "better-typography",
+        "better-ui",
+        "better-writing",
+        "explain-interface",
+        "interface-review",
+        "variant",
+    ),
+    "openai/skills": ("playwright",),
+    "sanity-io/agent-toolkit": (
+        "content-experimentation-best-practices",
+        "content-modeling-best-practices",
+        "portable-text-conversion",
+        "portable-text-serialization",
+        "sanity-best-practices",
+        "sanity-migration",
+        "seo-aeo-best-practices",
+    ),
+    "sanity-io/next-sanity": ("sanity-live-cache-components",),
+    "vercel-labs/agent-skills": (
+        "vercel-composition-patterns",
+        "vercel-react-best-practices",
+        "vercel-react-view-transitions",
+    ),
+    "vercel-labs/before-and-after": ("before-and-after",),
+    "vercel-labs/openreview": (
+        "next-best-practices",
+        "next-cache-components",
+    ),
+    "vercel/components.build": ("building-components",),
+    "vercel/next.js": (
+        "next-cache-components-adoption",
+        "next-cache-components-optimizer",
+        "next-dev-loop",
+    ),
+    "vercel/turborepo": ("turborepo",),
+}
+
+
+class SetupError(Exception):
+    """Raised when setup cannot proceed without overwriting another owner."""
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Install missing recommended skills and update installed ones globally."
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="print the changes without installing or updating skills",
+    )
+    return parser.parse_args()
+
+
+def run(command: Sequence[str], *, capture: bool = False) -> str:
+    if not capture:
+        print(f"$ {shlex.join(command)}", flush=True)
+    result = subprocess.run(
+        command,
+        check=False,
+        capture_output=capture,
+        text=True,
+    )
+    if result.returncode != 0:
+        detail = result.stderr.strip() if capture else "command failed"
+        raise SetupError(f"{shlex.join(command)}: {detail}")
+    return result.stdout
+
+
+def list_global_skills() -> dict[str, str | None]:
+    output = run((*SKILLS_COMMAND, "list", "--global", "--json"), capture=True)
+    try:
+        records = json.loads(output)
+    except json.JSONDecodeError as error:
+        raise SetupError(f"npx skills returned invalid JSON: {error}") from error
+
+    if not isinstance(records, list):
+        raise SetupError("npx skills returned a non-list global inventory")
+
+    installed: dict[str, str | None] = {}
+    for record in records:
+        if not isinstance(record, dict):
+            raise SetupError("npx skills returned an invalid global skill record")
+        name = record.get("name")
+        source = record.get("source")
+        if not isinstance(name, str):
+            raise SetupError("npx skills returned a global skill without a name")
+        if source is not None and not isinstance(source, str):
+            raise SetupError(f"npx skills returned an invalid source for {name}")
+        installed[name] = source
+    return installed
+
+
+def expected_sources() -> dict[str, str]:
+    expected: dict[str, str] = {}
+    for source, skills in RECOMMENDED_SKILLS.items():
+        for skill in skills:
+            if skill in expected:
+                raise SetupError(
+                    f"Recommended skill {skill} is listed for both "
+                    f"{expected[skill]} and {source}"
+                )
+            expected[skill] = source
+    return expected
+
+
+def ensure_no_conflicts(installed: dict[str, str | None]) -> None:
+    conflicts = [
+        f"{name} is owned by {installed[name] or 'an unmanaged local source'}, not {source}"
+        for name, source in expected_sources().items()
+        if name in installed and installed[name] != source
+    ]
+    if conflicts:
+        details = "\n".join(f"- {conflict}" for conflict in conflicts)
+        raise SetupError(f"Refusing to overwrite existing skills:\n{details}")
+
+
+def main() -> int:
+    args = parse_args()
+    try:
+        installed = list_global_skills()
+        ensure_no_conflicts(installed)
+
+        installed_recommendations = sorted(
+            name
+            for name, source in expected_sources().items()
+            if installed.get(name) == source
+        )
+        missing_by_source = {
+            source: tuple(name for name in skills if name not in installed)
+            for source, skills in RECOMMENDED_SKILLS.items()
+        }
+
+        for source, missing in missing_by_source.items():
+            if not missing:
+                continue
+            command = (
+                *SKILLS_COMMAND,
+                "add",
+                source,
+                "--global",
+                "--yes",
+                "--skill",
+                *missing,
+            )
+            if args.dry_run:
+                print(f"$ {shlex.join(command)}")
+            else:
+                run(command)
+
+        if installed_recommendations:
+            command = (
+                *SKILLS_COMMAND,
+                "update",
+                *installed_recommendations,
+                "--global",
+                "--yes",
+            )
+            if args.dry_run:
+                print(f"$ {shlex.join(command)}")
+            else:
+                run(command)
+
+        if args.dry_run:
+            print("dry run complete")
+            return 0
+
+        final_inventory = list_global_skills()
+        ensure_no_conflicts(final_inventory)
+        missing = sorted(set(expected_sources()) - set(final_inventory))
+        if missing:
+            raise SetupError(
+                "Recommended skills are still missing: " + ", ".join(missing)
+            )
+
+        print(f"setup complete: {len(expected_sources())} recommended skills present")
+        return 0
+    except (OSError, SetupError) as error:
+        print(f"setup failed: {error}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
