@@ -77,11 +77,11 @@ A time range, as start plus duration:
 // Don't: a comment holds the invariant
 type TimeRange = { start: Date; end: Date }; // start <= end
 
-// Do. A negative range cannot be written. Derive the end when needed.
+// Prefer one source of truth for ordering. Derive the end when needed.
 type TimeRange = { start: Date; durationMs: number };
 ```
 
-Keep `durationMs` a plain number. Brand it (per Branded types) only if a raw number could be passed where a duration is expected, not by reflex. A `Pairs<T>` is an even-length list under the interpretation you give it, the same way `{ start, durationMs }` is a range. Pick the representation that makes the bad state unconstructable, then expose the reading you need on top (`pairs.flat()`, a `rangeEnd()` helper).
+This representation removes contradictory `start` and `end` pairs, but a plain `number` does not encode non-negativity. Validate `durationMs` when the range is created. Brand it only when values commonly cross typed boundaries or a raw number could be passed where a duration is expected. Constructive modelling removes invalid combinations that the type structure can express. Runtime validation still owns numeric refinements that TypeScript cannot express. Expose the reading you need on top, such as `pairs.flat()` or a `rangeEnd()` helper.
 
 ## Simplest total type
 
@@ -127,20 +127,20 @@ function handle(input: unknown) {
 
 External sources include RPC payloads, `JSON.parse`, `postMessage`, IPC, file contents, environment variables, database results.
 
-## No `as` casts
+## Avoid unchecked `as` assertions
 
-An unchecked `as` cast can cause a runtime crash. Cast only after the type system has verified the claim.
+An unchecked `as` assertion can cause a runtime crash. Prefer narrowing that lets TypeScript verify the claim. Use an assertion only after runtime validation or when expressing a proven invariant that TypeScript cannot infer.
 
 ```ts
 // Don't
 const user = data as User;
 
-// Do. Earn the cast at the input seam.
+// Do. Earn the assertion at the input seam.
 function parseUser(data: unknown): User {
   if (typeof data !== "object" || data === null) {
     throw new Error("expected object");
   }
-  if (!("id" in data) || typeof (data as Record<string, unknown>).id !== "string") {
+  if (!("id" in data) || typeof data.id !== "string") {
     throw new Error("expected id");
   }
   // ... validate all fields

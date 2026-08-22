@@ -86,7 +86,8 @@ Ask:
 > 3. Every named test smell from the Testing reference when the scope contains tests.
 > Separate hard documented breaches from
 > baseline judgement calls. Repository rules override the baseline. Skip tooling-enforced issues.
-> Stay under 400 words.
+> Prioritise by severity. If the report would exceed 400 words, return the first batch and state how
+> many supported findings remain.
 
 ### Spec agent
 
@@ -94,9 +95,20 @@ Provide the same scope information and the spec path or contents. Ask:
 
 > Report missing or partial requirements, unrequested behaviour or scope creep, and apparently
 > implemented requirements whose implementation looks wrong. Quote the relevant spec
-> line for every finding. Stay under 400 words.
+> line for every finding. If the report would exceed 400 words, return the first batch and state how
+> many supported findings remain.
 
-## 3. Report
+## 3. Verify and report
 
-Present the reports, verbatim or lightly cleaned, under `## Standards` and `## Spec`. Do not merge
-or rerank them. End with one line giving each axis's finding count and worst issue, if any.
+Treat both reports as leads, not proof. Request any remaining batches, then verify every candidate
+finding yourself:
+
+1. Re-open the cited hunk and its surrounding context.
+2. Read the cited rule or spec line from its source.
+3. Confirm the concrete correctness, maintenance, or requirement impact.
+4. Reject findings that are unsupported, duplicated, outside the fixed scope, or already handled.
+
+Make one final pass over the complete scope for high-risk issues the agents missed. Present only
+verified findings, in your own words, under `## Standards` and `## Spec`. Merge duplicates within an
+axis, but do not merge or rerank findings across the two axes. End with one line giving each axis's
+verified finding count and worst issue, if any.

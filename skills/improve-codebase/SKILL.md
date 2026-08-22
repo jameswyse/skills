@@ -35,9 +35,9 @@ Apply the **deletion test** to anything you suspect is shallow. Would deleting i
 
 ### 2. Present candidates as an HTML report
 
-Write a self-contained HTML file to the operating system's temporary directory so nothing enters the repository. Resolve the directory from `$TMPDIR`, falling back to `/tmp` on Unix or `%TEMP%` on Windows. Write to `<tmpdir>/architecture-review-<timestamp>.html` so each run gets a fresh file. Open it with `xdg-open <path>` on Linux, `open <path>` on macOS, or `start <path>` on Windows. Tell the user the absolute path.
+Write one HTML file to the operating system's temporary directory so nothing enters the repository. Resolve the directory from `$TMPDIR`, falling back to `/tmp` on Unix or `%TEMP%` on Windows. Write to `<tmpdir>/architecture-review-<timestamp>.html` so each run gets a fresh file. Open it with `xdg-open <path>` on Linux, `open <path>` on macOS, or `start <path>` on Windows. Tell the user the absolute path.
 
-Use **Tailwind via CDN** for layout and styling. Use **Mermaid via CDN** when a graph, flow, or sequence communicates the structure clearly. Mix Mermaid with hand-crafted CSS and SVG visuals. Mermaid suits call graphs, dependencies, and sequences. Hand-built elements suit mass diagrams, cross-sections, and collapse animations. Give each candidate a **before-and-after visualisation**.
+The report is single-file, not offline. Use **Tailwind via CDN** for layout and styling. Use **Mermaid via CDN** when a graph, flow, or sequence communicates the structure clearly. If the environment has no network access, use inline CSS and SVG instead. When Mermaid is available, mix it with hand-crafted CSS and SVG visuals. Mermaid suits call graphs, dependencies, and sequences. Hand-built elements suit mass diagrams, cross-sections, and collapse animations. Give each candidate a **before-and-after visualisation**.
 
 For each candidate, render a card with:
 
@@ -50,7 +50,7 @@ For each candidate, render a card with:
 
 End the report with a **Top recommendation** section that names the first candidate to tackle and explains why.
 
-**Use the repository's documented domain vocabulary for the domain and the deep-module vocabulary for the architecture.** If the domain vocabulary defines "Order", write "the Order intake module", not "the FooBarHandler" or "the Order service".
+**Use the repository's documented domain vocabulary for the domain and the deep-module vocabulary for the architecture.** Preserve exact framework, protocol, domain, and symbol names. When `module` names the architectural concept, write "the Order intake module". When the report names an existing `OrderService` symbol, keep `OrderService`.
 
 **Documentation conflicts.** If a candidate contradicts a documented rule or ADR, include it only when the observed problem justifies reconsideration. Mark the conflict in a warning callout, such as _"Contradicts XYZ. Reconsider it because..."_ Do not list theoretical refactors that documentation already rules out.
 
@@ -62,9 +62,9 @@ Do not propose interfaces yet. After writing the file, ask the user, "Which of t
 
 Once the user picks a candidate, apply `$grilling` to examine its constraints, dependencies, deepened module, seam contents, and surviving tests.
 
-After the user confirms a decision, update the domain documentation during the same loop.
+After the user confirms a decision, offer to update the domain documentation during the same loop. The decision does not itself authorise file changes. Update documentation only when the user asks you to record it.
 
-- When a deepened module uses a concept missing from the repository's domain vocabulary, add the term in the appropriate place.
-- When the conversation sharpens a vague term, update the repository's domain vocabulary immediately.
+- When a deepened module uses a concept missing from the repository's domain vocabulary, offer to add the term in the appropriate place.
+- When the conversation sharpens a vague term, offer to update the repository's domain vocabulary.
 - When the user rejects a candidate for a reason future reviews need, offer to record that reason in the documentation. Ask, _"Should I record this in the documentation so future architecture reviews do not suggest it again?"_ Skip temporary reasons such as "not worth it right now" and self-evident reasons.
 - When the candidate needs a new interface with several credible shapes, offer Design It Twice before converging. If the user accepts or directly requests alternatives, apply `$design-it-twice`.

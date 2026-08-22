@@ -11,6 +11,12 @@ Read [Root-cause fixes](../engineering/references/root-causes.md) before choosin
 
 When exploring the codebase, read `CONTEXT.md` (if it exists) to get a clear mental model of the relevant modules, and check ADRs in the area you're touching.
 
+## Set the authority boundary
+
+Diagnosis does not authorise a fix or persistent repository changes. When the user asks only for diagnosis, debugging, or an explanation, keep the working tree unchanged. Build the feedback loop from existing commands, runtime inspection, or temporary artefacts outside the repository. Ask before adding repository instrumentation or changing a production environment.
+
+Continue through Phase 5 only when the user asked for a fix. A request to investigate a problem authorises Phases 1 to 4 and the diagnosis completion gate below.
+
 ## Redact
 
 This skill requires visible commands, outputs, and captured artefacts. **Redact every secret first.** Write `<REDACTED>` in its place. Build loops against environment variables so credentials stay in the environment rather than in visible output. Captured artefacts can contain authentication headers. Quote only the lines that carry the signal.
@@ -24,6 +30,8 @@ If the redacted output is not enough to diagnose the bug, say so and ask the use
 Spend disproportionate effort here. **Be aggressive. Be creative. Refuse to give up.**
 
 ### Ways to construct one, in roughly this order
+
+Choose a loop that fits the authorised scope. For diagnosis-only work, prefer an existing test or a command that needs no repository changes. Keep throwaway scripts, fixtures, and captures in the operating system's temporary directory unless the user authorised adding them to the repository.
 
 1. **Failing test** at whichever seam reaches the bug, whether unit, integration, or end to end.
 2. **Curl or HTTP script** against a running development server.
@@ -115,11 +123,24 @@ Tool preference:
 2. **Targeted logs** at the seams that distinguish hypotheses.
 3. Never "log everything and grep".
 
+For diagnosis-only work, add logs only through existing runtime controls or after the user authorises temporary instrumentation.
+
 **Tag every debug log** with a unique prefix, such as `[DEBUG-a4f2]`. Cleanup then becomes a single grep. Remove every tagged log before completion.
 
 **Performance branch.** Logs usually provide weak evidence for performance regressions. Establish a baseline with a timing harness, `performance.now()`, a profiler, or a query plan. Then bisect. Measure first and fix second.
 
-## Phase 5: Fix and add a regression test
+## Diagnosis completion gate
+
+Once the evidence identifies the root cause, state the cause, the evidence that distinguishes it from the rejected hypotheses, the affected scope, and the smallest coherent fix.
+
+If the user requested diagnosis only:
+
+- Remove all `[DEBUG-...]` instrumentation and temporary artefacts.
+- Report the feedback-loop command and its redacted failing output.
+- State that the working tree was not changed and no fix was applied.
+- Stop without entering Phase 5.
+
+## Phase 5: Fix and add a regression test when authorised
 
 Write the regression test **before the fix**, but only if there is a **correct seam** for it.
 
@@ -135,12 +156,13 @@ If a correct seam exists:
 4. Watch it pass.
 5. Re-run the Phase 1 feedback loop against the original (un-minimised) scenario.
 
-## Phase 6: Cleanup
+## Phase 6: Verify and clean up the authorised fix
 
-Required before declaring done:
+Required before declaring the fix done:
 
 - [ ] The original reproduction no longer fails. Run the Phase 1 loop again.
 - [ ] The regression test passes, or the absence of a suitable seam is documented.
 - [ ] All `[DEBUG-...]` instrumentation is removed. Search for the prefix.
-- [ ] Throwaway prototypes are deleted or moved to a clearly marked debug location.
-- [ ] The correct hypothesis is stated in the commit or PR description so the next debugger can use it.
+- [ ] Throwaway artefacts are removed from the temporary directory or kept only at a location the user requested.
+- [ ] The confirmed cause and its evidence are stated plainly.
+- [ ] The correct hypothesis is stated in the commit or PR description when the task includes writing one.

@@ -1,8 +1,10 @@
 # HTML report format
 
-Render the architectural review as one self-contained HTML file in the operating system's temporary directory. Load Tailwind and Mermaid from CDNs. Use Mermaid for graph-shaped diagrams. Use hand-built elements and inline SVG for mass diagrams, cross-sections, and other custom visuals. Mix both approaches so the report does not look generic.
+Render the architectural review as one HTML file in the operating system's temporary directory. The report is single-file, not offline. Load Tailwind and Mermaid from CDNs when the environment has network access. Otherwise use inline CSS and SVG. In network-backed reports, use Mermaid for graph-shaped diagrams. Use hand-built elements and inline SVG for mass diagrams, cross-sections, and other custom visuals. Mix both approaches when they are available so the report does not look generic.
 
 ## Scaffold
+
+Use this scaffold when the report can load CDN resources. For an offline report, remove the script tags and use inline CSS and SVG.
 
 ```html
 <!doctype html>
@@ -44,7 +46,7 @@ Make the diagrams explain the structure. Keep prose sparse and plain. Use the te
 Each candidate is one `<article>`:
 
 - **Title.** Use a short name for the deepening, such as "Collapse the Order intake pipeline".
-- **Badge row.** Show recommendation strength with `Strong` in emerald, `Worth exploring` in amber, or `Speculative` in slate. Add a dependency tag for `in-process`, `local-substitutable`, `ports and adapters`, or `mock`.
+- **Badge row.** Show recommendation strength with `Strong` in emerald, `Worth exploring` in amber, or `Speculative` in slate. Add a dependency tag for `in-process`, `local-substitutable`, `remote and owned`, or `external and unowned`.
 - **Files.** Use a monospaced list with `font-mono text-sm`.
 - **Before-and-after diagram.** Use two side-by-side columns as the centrepiece. See the patterns below.
 - **Problem.** Use one sentence to name what is difficult.
@@ -97,7 +99,7 @@ In the before view, render a tree of function calls as nested boxes. In the afte
 - Use colour sparingly. Choose one accent, either emerald or indigo. Reserve red for leakage and amber for warnings.
 - Keep diagrams approximately 320px tall so the before-and-after views fit side by side without scrolling.
 - Use `text-xs uppercase tracking-wider` for module labels inside diagrams, so they read as schematic, not as UI.
-- Use only the Tailwind CDN script and Mermaid ESM import. Keep the rest of the report static, with no application code or interactivity beyond Mermaid's rendering.
+- In a network-backed report, limit external dependencies to the Tailwind CDN script and Mermaid ESM import. In an offline report, keep CSS and SVG inline. Keep the rest of the report static, with no application code or interactivity beyond Mermaid's rendering.
 
 ## Top recommendation section
 
@@ -107,16 +109,11 @@ One larger card. Candidate name, one sentence on why, anchor link to its card. T
 
 Use plain, concise English. Take the architectural nouns and verbs from [Deep modules](../engineering/references/deep-modules.md). Concision is not an excuse to drift.
 
-Use these terms exactly:
+Use these terms exactly when they name the deep-module concepts:
 
 `module`, `interface`, `implementation`, `depth`, `deep`, `shallow`, `seam`, `adapter`, `leverage`, and `locality`.
 
-Do not substitute these terms:
-
-- Use `module`, not `component`, `service`, or `unit`.
-- Use `interface`, not `API` or `signature`.
-- Use `seam`, not `boundary`.
-- Use `module`, not `layer` or `wrapper`, when module is the intended concept.
+Preserve established framework, protocol, code, and domain terms when they are exact. A React component remains a component, an HTTP API remains an API, and a repository type or symbol keeps its real name. Use `module`, `interface`, and `seam` for the architectural concepts instead of renaming exact terms to fit the glossary.
 
 These phrasings fit the style:
 
