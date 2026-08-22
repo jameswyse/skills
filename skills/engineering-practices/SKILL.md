@@ -56,6 +56,7 @@ Read each reference when its trigger first appears, including when the task chan
 - For an unexpected problem, a tempting guard or workaround, or a reported bug, read [Root-cause fixes](references/root-causes.md). For a hard bug or performance regression, also apply `$diagnosing-bugs`. It owns the diagnostic loop, while the reference owns fix placement.
 - Before substantial type, state, data-structure, module, interface, or refactor decisions, or when a new requirement does not fit the current design, read [Design and maintainability](references/design.md).
 - Before assessing module depth, compressing an interface, placing a seam, choosing adapters, or deciding where tests should observe behaviour, read [Deep modules](references/deep-modules.md).
+- Before writing, changing, or reviewing tests, read [Testing](references/testing.md).
 - For a sweep, migration, internal interface transition, or other multi-step change, read [Execution and migration](references/execution.md).
 - For commands, lifecycle work, retries, restarts, scheduling, or concurrent writers, read [Reliable operations](references/operations.md).
 - Before declaring any engineering change complete, read [Verification and learning](references/verification.md).
