@@ -7,7 +7,7 @@ description: Scan a codebase for deepening opportunities, present them as a visu
 
 Find architectural friction and propose **deepening opportunities**, which are refactors that turn shallow modules into deep ones. The aim is testability and AI navigability.
 
-Apply `$engineering-practices`. Read [Deep modules](../engineering-practices/references/deep-modules.md) before assessing candidates. This workflow uses the project's domain model and the deep-module vocabulary:
+Apply `$engineering`. Read [Deep modules](../engineering/references/deep-modules.md) before assessing candidates. This workflow uses the project's domain model and the deep-module vocabulary:
 
 - Use **module**, **interface**, **depth**, **seam**, **adapter**, **leverage**, and **locality** as the deep-module reference defines them. Apply the deletion test before calling a module shallow. Classify dependencies before recommending a seam or adapter.
 - The domain language in the repository, if present, gives names to good seams.

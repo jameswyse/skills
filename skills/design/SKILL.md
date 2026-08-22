@@ -1,11 +1,13 @@
 ---
-name: interface-design
-description: "Route UI and interface design work to installed specialist skills. For change reviews, ask the user to invoke $interface-review. For variants, ask the user to invoke $variant. For interface explanations, ask the user to invoke $explain-interface. Route other UI creation, review, copy, polish, and motion work to the exact interface or animation skills listed in this skill. Do not use for software architecture or codebase design."
+name: design
+description: "User-facing product and interface design router for UX, UI, interaction, visual presentation, accessibility, copy, and motion. Apply for interface design, implementation, or review. For implementation, also apply $engineering. For change reviews, ask the user to invoke $interface-review. For variants, ask the user to invoke $variant. For interface explanations, ask the user to invoke $explain-interface. Do not use for software architecture, APIs, schemas, modules, or data models."
 ---
 
-# Interface design
+# Design
 
-Route interface work to the smallest installed specialist set that covers the request. External skills are optional. Apply their instructions when available, and continue without recreating a missing skill from memory.
+Route user-facing product and interface work to the smallest installed specialist set that covers the request. External skills are optional. Apply their instructions when available, and continue without recreating a missing skill from memory.
+
+For interface implementation, also apply `$engineering`. It owns implementation quality, architecture, data, types, tests, dependencies, and tooling. This skill owns experience, interaction, visual presentation, accessibility, interface copy, and motion decisions.
 
 ## Set the target
 

@@ -5,7 +5,7 @@ description: TypeScript best practices. Use when reading or editing any .ts or .
 
 # TypeScript best practices
 
-Apply `$engineering-practices` first. This skill grounds its type and seam rules in TypeScript syntax.
+Apply `$engineering` first. This skill grounds its type and seam rules in TypeScript syntax.
 
 | Rule | Summary |
 |------|---------|
@@ -19,7 +19,7 @@ Apply `$engineering-practices` first. This skill grounds its type and seam rules
 | Type guards | Must verify the claim. A lying guard is worse than `as` because the bug hides behind a name that says it's safe. Name them `isX` or `hasX`. |
 | Exhaustiveness | Inline `const _exhaustive: never = x;` in default arms so the compiler errors when a new variant is added. |
 | `satisfies` over `as` | Validates the value without widening literal types. |
-| Seam validation | Parse where data crosses in, into a named domain type. `Record<string, unknown>` (however spelt) stops at that parse. Trust types inside. Read `$engineering-practices`' design reference for seam placement. |
+| Seam validation | Parse where data crosses in, into a named domain type. `Record<string, unknown>` (however spelt) stops at that parse. Trust types inside. Read `$engineering`'s design reference for seam placement. |
 | Schema-derived types | Reach for `Pick`/`Omit`/`Parameters`/`ReturnType`/`Awaited`/`typeof` before declaring a new interface. |
 | Object args | Pass objects, not positional, so argument order is self-documenting. Skip on hot paths (per-frame render, tokenisers, parsers). |
 | Real tests | Don't mock what you can run. Prefer the framework's real test primitives with leak checks and disposable resources. Verify UI in a running build. Mock only what you can't run locally. |

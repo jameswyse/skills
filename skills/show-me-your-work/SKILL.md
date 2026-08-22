@@ -48,7 +48,7 @@ Commit the log only when a reviewer needs the trail to trust an ambitious result
 
 - One row is one decision or checkpoint. If it doesn't fit on one line, the decision isn't crisp yet.
 - Append-only. A wrong call gets a new row that supersedes it. Never edit or delete history.
-- Prefer evidence produced by committed scripts over hand-made one-offs, so a reviewer can re-run it. Read [Verification and learning](../engineering-practices/references/verification.md#encode-lessons-in-structure) when the evidence should become a lasting guardrail.
+- Prefer evidence produced by committed scripts over hand-made one-offs, so a reviewer can re-run it. Read [Verification and learning](../engineering/references/verification.md#encode-lessons-in-structure) when the evidence should become a lasting guardrail.
 
 ## Audit the log against the transcript
 

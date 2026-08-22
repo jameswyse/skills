@@ -1,25 +1,67 @@
-# Skills
+# Agent Skills
 
-Personal skills following the [Agent Skills specification](https://agentskills.io/specification).
+A VERY opinionated personal skills library for software engineering, design and writing.
+
+Follows the [Agent Skills specification](https://agentskills.io/specification).
+
+## Included skills
+
+Three core pillars cover the work I do most often. `writing` governs prose, `engineering` governs
+software, and `design` governs user-facing product and interface decisions. Narrower skills refine
+those pillars or provide explicit workflows.
+
+| Group | Skill | Purpose |
+| --- | --- | --- |
+| Core | `writing` | Baseline prose rules for every response and written artefact. |
+| Core | `engineering` | Software engineering, simplicity, root-cause fixes, types, tests, dependencies, operations, and verification. |
+| Core | `design` | Routes UX, UI, accessibility, interface copy, visual polish, and motion to installed specialists. |
+| Writing | `technical-writing` | Developer documentation, comments, commits, pull requests, release notes, and agent instructions. |
+| Engineering | `typescript-best-practices` | TypeScript-specific type, validation, and code guidance. |
+| Engineering | `diagnosing-bugs` | Evidence-driven diagnosis for hard bugs and performance regressions. |
+| Engineering | `tdd` | A focused failing-test-first loop when a practical test target exists. |
+| Engineering | `resolving-merge-conflicts` | Conflict resolution during an authorised merge or rebase. |
+| Review | `code-review` | Reviews a diff separately against repository standards and the originating specification. |
+| Engineering | `design-it-twice` | Compares several software module interface designs before choosing one. |
+| Improvement | `improve-codebase` | Finds codebase deepening opportunities and produces a visual report for discussion. |
+| Workflow | `show-me-your-work` | Keeps a reviewable decision trail for long-running or unattended work. |
+| Conversation | `grilling` | Stress-tests a plan or decision through a structured interview. |
+| Conversation | `grill-me` | Explicit shortcut for invoking `grilling`. |
+| Conversation | `bruh` | Restates the previous response in plain language. |
 
 ## Install with `npx skills`
 
-List or install skills with:
+List the repository's skills or install the three core pillars:
 
 ```sh
 npx skills add jameswyse/skills --list
 npx skills add jameswyse/skills --skill writing
+npx skills add jameswyse/skills --skill engineering
+npx skills add jameswyse/skills --skill design
 ```
+
+## Configure global invocation
+
+After installing the core skills, add this block to `~/.codex/AGENTS.md` so Codex loads the right
+pillar for each task:
+
+```md
+Use $writing for all responses.
+Use $engineering whenever reading, writing, reviewing, or changing code, tests, dependencies, package management, developer tooling, software architecture, APIs, schemas, modules, or data models.
+Use $design for user-facing product experience, UX, UI, interaction, visual presentation, accessibility, interface copy, or motion. For interface implementation, use both $engineering and $design.
+```
+
+Use the equivalent global agent-instructions file when an agent does not read
+`~/.codex/AGENTS.md`.
 
 ## Optional external skills
 
 Skills in this repository can defer specialised work to external skills when they are installed. The external skills stay owned by `npx skills`; this repository does not copy or modify them.
 
-`interface-design` routes interface work to the installed [`jakubkrehel/skills`](https://github.com/jakubkrehel/skills) family. It uses that family's own workflow and domain routing. `writing` also delegates user-facing interface copy to `better-writing` when available.
+`design` routes interface work to the installed [`jakubkrehel/skills`](https://github.com/jakubkrehel/skills) family. It uses that family's own workflow and domain routing. `writing` also delegates user-facing interface copy to `better-writing` when available.
 
 Animation work routes to the focused skills from [`emilkowalski/skills`](https://github.com/emilkowalski/skills). `animate` builds motion, `review-animations` reviews it, `improve-animations` audits it, `find-animation-opportunities` finds useful additions, and `animation-vocabulary` names effects.
 
-The upstream `interface-review`, `variant`, and `explain-interface` skills are user-invoked. Invoke them explicitly as `$interface-review`, `$variant`, or `$explain-interface`. The local `interface-design` router identifies those cases but does not replace their invocation policy.
+The upstream `interface-review`, `variant`, and `explain-interface` skills are user-invoked. Invoke them explicitly as `$interface-review`, `$variant`, or `$explain-interface`. The local `design` router identifies those cases but does not replace their invocation policy.
 
 ## Recommended specialist skills
 

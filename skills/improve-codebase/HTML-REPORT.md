@@ -39,7 +39,7 @@ Show the repository name, date, and a compact legend. A solid box means module, 
 
 ## Candidate card
 
-Make the diagrams explain the structure. Keep prose sparse and plain. Use the terms from [Deep modules](../engineering-practices/references/deep-modules.md) directly.
+Make the diagrams explain the structure. Keep prose sparse and plain. Use the terms from [Deep modules](../engineering/references/deep-modules.md) directly.
 
 Each candidate is one `<article>`:
 
@@ -105,7 +105,7 @@ One larger card. Candidate name, one sentence on why, anchor link to its card. T
 
 ## Tone
 
-Use plain, concise English. Take the architectural nouns and verbs from [Deep modules](../engineering-practices/references/deep-modules.md). Concision is not an excuse to drift.
+Use plain, concise English. Take the architectural nouns and verbs from [Deep modules](../engineering/references/deep-modules.md). Concision is not an excuse to drift.
 
 Use these terms exactly:
 

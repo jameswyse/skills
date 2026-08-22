@@ -9,11 +9,11 @@ Review two axes separately. **Standards** covers repository rules and code smell
 the originating request, issue, or PRD. A change can pass either axis and fail the other. Do not
 merge or rerank their findings.
 
-Apply `$engineering-practices` as the baseline for code, tests, dependencies, package management,
+Apply `$engineering` as the baseline for code, tests, dependencies, package management,
 and developer tooling. When the scope contains tests, read its
-[Testing](../engineering-practices/references/testing.md) reference and use its named test smells.
+[Testing](../engineering/references/testing.md) reference and use its named test smells.
 When a finding depends on design, module depth, interface compression, seam placement, or
-simplicity, read the relevant engineering-practices reference before reporting it.
+simplicity, read the relevant engineering reference before reporting it.
 
 ## 1. Fix the scope
 
@@ -34,7 +34,7 @@ For working-tree reviews, the user request is the spec. Otherwise find it in ord
 references in commit messages, a user-supplied path, then a matching Markdown file under `docs/` or
 `specs/`. If none exists, skip the Spec agent and report "no spec available".
 
-Standards sources are repository files that define how code is written, `$engineering-practices`
+Standards sources are repository files that define how code is written, `$engineering`
 and its triggered references, plus this smell baseline. Repository rules override the baseline.
 Tooling-enforced issues are out of scope. Smells are evidence to investigate, not automatic
 refactoring instructions. Confirm the concrete maintenance or correctness cost in the diff, then
@@ -77,7 +77,7 @@ Spawn the applicable agents in parallel. Do not let them edit files.
 ### Standards agent
 
 Provide the scope command, commit list when applicable, complete untracked file contents, every
-standards-source path, the triggered engineering-practices references, and the full baseline above.
+standards-source path, the triggered engineering references, and the full baseline above.
 Ask:
 
 > Report by file and hunk:
