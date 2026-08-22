@@ -22,10 +22,8 @@ Narrower skills refine those pillars or provide explicit workflows.
 | Review       | `code-review`               | Reviews a diff separately against repository standards and the originating specification.                     |
 | Engineering  | `design-it-twice`           | Compares several software module interface designs before choosing one.                                       |
 | Improvement  | `improve-codebase`          | Finds codebase improvement opportunities and produces a visual report for discussion.                         |
-| Workflow     | `show-me-your-work`         | Keeps a reviewable decision trail for long-running or unattended work.                                        |
 | Conversation | `grilling`                  | Stress-tests a plan or decision through a structured interview.                                               |
 | Conversation | `grill-me`                  | Explicit shortcut for invoking `grilling`.                                                                    |
-| Conversation | `bruh`                      | Restates the previous response in plain language.                                                             |
 
 ## Install with `npx skills`
 
