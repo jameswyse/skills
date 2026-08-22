@@ -39,7 +39,7 @@ Show the repository name, date, and a compact legend. A solid box means module, 
 
 ## Candidate card
 
-Make the diagrams explain the structure. Keep prose sparse and plain. Use the glossary terms from the `codebase-design` skill directly.
+Make the diagrams explain the structure. Keep prose sparse and plain. Use the terms from [Deep modules](../engineering-practices/references/deep-modules.md) directly.
 
 Each candidate is one `<article>`:
 
@@ -105,7 +105,7 @@ One larger card. Candidate name, one sentence on why, anchor link to its card. T
 
 ## Tone
 
-Plain English, concise, but the architectural nouns and verbs come straight from the `codebase-design` skill. Concision is not an excuse to drift.
+Use plain, concise English. Take the architectural nouns and verbs from [Deep modules](../engineering-practices/references/deep-modules.md). Concision is not an excuse to drift.
 
 Use these terms exactly:
 
@@ -127,4 +127,4 @@ These phrasings fit the style:
 
 Use glossary terms in the wins bullets. Examples include *"locality keeps bugs in one module"*, *"leverage gives N call sites one interface"*, and *"the interface shrinks while the implementation absorbs the wrappers"*. Do not write *"easier to maintain"* or *"cleaner code"* because those terms do not name the mechanism.
 
-Do not hedge or preface a point with phrases such as "it is worth noting that". Turn a sentence into a bullet when that makes it easier to scan. Cut bullets that add nothing. Before inventing a term, look for one in the `codebase-design` glossary.
+Do not hedge or preface a point with phrases such as "it is worth noting that". Turn a sentence into a bullet when that makes it easier to scan. Cut bullets that add nothing. Before inventing a term, look for one in the deep-module glossary.

@@ -42,7 +42,7 @@ A **seam** is where a module's interface lives. Test through that interface to o
 
 Ask: "What's the public interface, and which seams should we test?"
 
-When the interface itself is in question, call the Skill tool with "codebase-design" for the vocabulary. This includes questions about module depth, seam placement, and what the interface should expose. The skill is the shared source of the module, interface, depth, seam, adapter, leverage, and locality terms. Consult it as reference rather than running it as a session.
+When the interface itself is in question, read `$engineering-practices`' [Deep modules](../engineering-practices/references/deep-modules.md) reference. It owns the module, interface, depth, seam, adapter, leverage, and locality vocabulary.
 
 ## Anti-patterns
 

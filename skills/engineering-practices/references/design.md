@@ -42,9 +42,9 @@ Maintainability is the work a reader must do to understand code. Track two indep
 1. **Layers to trace.** Count the indirections between the question and the answer.
 2. **State to hold.** Count the hidden or mutable facts the reader must keep in mind.
 
-Collapse layers that do not earn their keep: wrappers with one caller, adapters with no second implementation, and indirection added for a hypothetical future. Adjacent layers should change the abstraction. A layer that repeats the same methods and arguments adds reader load without compression.
+Collapse layers that do not earn their keep: wrappers with one caller and indirection added for a hypothetical future. Adjacent layers should change the abstraction. A layer that repeats the same methods and arguments adds reader load without compression.
 
-Demand interface compression. A broad interface that hides little complexity makes readers learn both the interface and its implementation. Prefer interfaces that hide meaningful decisions.
+For module depth, interface compression, seam placement, adapters, and interface-focused testing, read [Deep modules](deep-modules.md).
 
 Shrink state scope. Prefer pure functions over mutation, locals over fields, fields over module state, and module state over globals. Derive values instead of synchronising copies. Name an invariant at the interface so each consumer learns it once.
 

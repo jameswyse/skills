@@ -7,9 +7,9 @@ description: Scan a codebase for deepening opportunities, present them as a visu
 
 Find architectural friction and propose **deepening opportunities**, which are refactors that turn shallow modules into deep ones. The aim is testability and AI navigability.
 
-This command is _informed_ by the project's domain model and built on a shared design vocabulary:
+Apply `$engineering-practices`. Read [Deep modules](../engineering-practices/references/deep-modules.md) before assessing candidates. This workflow uses the project's domain model and the deep-module vocabulary:
 
-- Call the Skill tool with "codebase-design" for the architecture vocabulary. It defines **module**, **interface**, **depth**, **seam**, **adapter**, **leverage**, and **locality**. It also defines the deletion test, "the interface is the test surface", and "one adapter means a hypothetical seam, two means a real seam". Use these terms exactly in every suggestion. Do not substitute "component", "service", "API", or "boundary".
+- Use **module**, **interface**, **depth**, **seam**, **adapter**, **leverage**, and **locality** as the deep-module reference defines them. Apply the deletion test before calling a module shallow. Classify dependencies before recommending a seam or adapter.
 - The domain language in the repository, if present, gives names to good seams.
 
 ## Process
@@ -50,7 +50,7 @@ For each candidate, render a card with:
 
 End the report with a **Top recommendation** section that names the first candidate to tackle and explains why.
 
-**Use the repository's documented domain vocabulary for the domain and the `codebase-design` vocabulary for the architecture.** If the domain vocabulary defines "Order", write "the Order intake module", not "the FooBarHandler" or "the Order service".
+**Use the repository's documented domain vocabulary for the domain and the deep-module vocabulary for the architecture.** If the domain vocabulary defines "Order", write "the Order intake module", not "the FooBarHandler" or "the Order service".
 
 **Documentation conflicts.** If a candidate contradicts a documented rule or ADR, include it only when the observed problem justifies reconsideration. Mark the conflict in a warning callout, such as _"Contradicts XYZ. Reconsider it because..."_ Do not list theoretical refactors that documentation already rules out.
 
@@ -60,11 +60,11 @@ Do not propose interfaces yet. After writing the file, ask the user, "Which of t
 
 ### 3. Grilling loop
 
-Once the user picks a candidate, call the Skill tool with "grilling" to examine its constraints, dependencies, deepened module, seam contents, and surviving tests.
+Once the user picks a candidate, apply `$grilling` to examine its constraints, dependencies, deepened module, seam contents, and surviving tests.
 
 After the user confirms a decision, update the domain documentation during the same loop.
 
 - When a deepened module uses a concept missing from the repository's domain vocabulary, add the term in the appropriate place.
 - When the conversation sharpens a vague term, update the repository's domain vocabulary immediately.
 - When the user rejects a candidate for a reason future reviews need, offer to record that reason in the documentation. Ask, _"Should I record this in the documentation so future architecture reviews do not suggest it again?"_ Skip temporary reasons such as "not worth it right now" and self-evident reasons.
-- To explore alternative interfaces for the deepened module, call the Skill tool with "codebase-design" and use its design-it-twice parallel subagent pattern.
+- When the candidate needs a new interface with several credible shapes, offer Design It Twice before converging. If the user accepts or directly requests alternatives, apply `$design-it-twice`.
