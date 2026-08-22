@@ -1,13 +1,13 @@
 ---
 name: engineering
-description: "Baseline software engineering rules for code, tests, dependencies, package management, developer tooling, architecture, APIs, schemas, modules, and data models. Apply whenever reading, writing, reviewing, or changing them. Fix problems at their source and route design, execution, operations, and verification guidance from this skill. For user-facing experience and interface decisions, also apply $design."
+description: "Baseline software engineering rules for code, tests, dependencies, package management, developer tooling, architecture, APIs, schemas, modules, and data models. Apply whenever reading, writing, reviewing, or changing them. Fix problems at their source and route design, execution, operations, and verification guidance from this skill. For user-facing experience and interface decisions, also apply $ux."
 ---
 
 # Engineering
 
 Apply these rules as the baseline for software engineering. When a narrower skill also applies, use both. The narrower skill may strengthen or refine these rules within its scope, but must not weaken them.
 
-For user-facing interface implementation, also apply `$design`. It owns experience, interaction, visual presentation, accessibility, interface copy, and motion decisions. This skill owns implementation quality, architecture, data, types, tests, dependencies, and tooling.
+For user-facing interface implementation, also apply `$ux`. It owns experience, interaction, visual presentation, accessibility, interface copy, and motion decisions. This skill owns implementation quality, architecture, data, types, tests, dependencies, and tooling.
 
 ## Fight for simplicity
 

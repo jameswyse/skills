@@ -1,9 +1,9 @@
 ---
-name: design
-description: "User-facing product and interface design router for UX, UI, interaction, visual presentation, accessibility, copy, and motion. Apply for interface design, implementation, or review. For implementation, also apply $engineering. For change reviews, ask the user to invoke $interface-review. For variants, ask the user to invoke $variant. For interface explanations, ask the user to invoke $explain-interface. Do not use for software architecture, APIs, schemas, modules, or data models."
+name: ux
+description: "User-facing product and interface design router for UX, UI, interaction, visual presentation, accessibility, interface copy, and motion. Apply for user-facing product or interface design, implementation, or review. For implementation, also apply $engineering. For change reviews, ask the user to invoke $interface-review. For variants, ask the user to invoke $variant. For interface explanations, ask the user to invoke $explain-interface. Do not use for software design, architecture, APIs, schemas, modules, or data models."
 ---
 
-# Design
+# UX
 
 Route user-facing product and interface work to the smallest installed specialist set that covers the request. External skills are optional. Apply their instructions when available, and continue without recreating a missing skill from memory.
 
