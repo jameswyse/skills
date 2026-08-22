@@ -1,18 +1,17 @@
 # Agent Skills
 
-A VERY opinionated personal skills library for software engineering, design and writing.
+A very opinionated personal skills library for software engineering, design and writing. 
 
 Follows the [Agent Skills specification](https://agentskills.io/specification).
 
 ## Included skills
 
-Three core pillars cover the work I do most often. `writing` governs prose, `engineering` governs
-software, and `design` governs user-facing product and interface decisions. Narrower skills refine
-those pillars or provide explicit workflows.
+Three core pillars cover the work I do most often: `$engineering`, `$design` and `$writing`.
+Narrower skills refine those pillars or provide explicit workflows.
 
 | Group | Skill | Purpose |
 | --- | --- | --- |
-| Core | `writing` | Baseline prose rules for every response and written artefact. |
+| Core | `writing` | Baseline writing rules for every response and written artefact. |
 | Core | `engineering` | Software engineering, simplicity, root-cause fixes, types, tests, dependencies, operations, and verification. |
 | Core | `design` | Routes UX, UI, accessibility, interface copy, visual polish, and motion to installed specialists. |
 | Writing | `technical-writing` | Developer documentation, comments, commits, pull requests, release notes, and agent instructions. |
@@ -22,7 +21,7 @@ those pillars or provide explicit workflows.
 | Engineering | `resolving-merge-conflicts` | Conflict resolution during an authorised merge or rebase. |
 | Review | `code-review` | Reviews a diff separately against repository standards and the originating specification. |
 | Engineering | `design-it-twice` | Compares several software module interface designs before choosing one. |
-| Improvement | `improve-codebase` | Finds codebase deepening opportunities and produces a visual report for discussion. |
+| Improvement | `improve-codebase` | Finds codebase improvement opportunities and produces a visual report for discussion. |
 | Workflow | `show-me-your-work` | Keeps a reviewable decision trail for long-running or unattended work. |
 | Conversation | `grilling` | Stress-tests a plan or decision through a structured interview. |
 | Conversation | `grill-me` | Explicit shortcut for invoking `grilling`. |
