@@ -12,6 +12,8 @@ Apply `$engineering`. Read [Deep modules](../engineering/references/deep-modules
 - Use **module**, **interface**, **depth**, **seam**, **adapter**, **leverage**, and **locality** as the deep-module reference defines them. Apply the deletion test before calling a module shallow. Classify dependencies before recommending a seam or adapter.
 - The domain language in the repository, if present, gives names to good seams.
 
+Recommend `$improve-codebase-organisation` when the primary problem is tree navigation, file or directory naming, companion-file ownership, or shallow filesystem structure without a qualified deepening. Organisation evidence may support an architecture candidate, but it does not bypass the qualification gate.
+
 ## Process
 
 ### 1. Establish the scope

@@ -59,7 +59,7 @@ Use this scaffold when the report can load CDN resources. For an offline report,
       <section id="findings-summary">...</section>
       <section id="top-recommendation">...</section>
       <section id="candidates" class="space-y-8">...</section>
-      <section id="architecture-follow-ups">...</section>
+      <section id="specialist-follow-ups">...</section>
       <section id="coverage-gaps">...</section>
     </main>
   </body>
@@ -194,9 +194,9 @@ Use a sequence diagram for startup, shutdown, retries, scheduling, or concurrent
 
 Use a compact dependency graph only when the finding depends on transitive weight, duplicated capability, runtime loading, or an unjustified build step. Preserve exact package and tool names.
 
-## Architecture follow-ups
+## Architecture and organisation follow-ups
 
-Put module-depth, seam, adapter, and substantial interface observations in a separate section. Explain why each belongs in `$improve-codebase-architecture`. Do not assign them a standards rank or let them displace the top standards recommendation.
+Put module-depth, seam, adapter, and substantial interface observations in a separate section. Explain why each belongs in `$improve-codebase-architecture`. Put repository-wide tree, placement, naming, and companion-file observations in the same section and explain why they belong in `$improve-codebase-organisation`. Do not assign these observations a standards rank or let them displace the top standards recommendation.
 
 ## Style guidance
 

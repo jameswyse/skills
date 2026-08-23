@@ -29,7 +29,7 @@ Software development, diagnosis, reviews, and maintenance.
 
 | Skill                             | Purpose                                                                                                        |
 | --------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `engineering`                     | Software engineering, simplicity, root-cause fixes, types, tests, dependencies, operations, and verification.  |
+| `engineering`                     | Software engineering, simplicity, organisation, naming, types, tests, dependencies, and verification.          |
 | `typescript`                      | TypeScript-specific type, validation, and code guidance.                                                       |
 | `diagnosing-bugs`                 | Evidence-driven diagnosis for hard bugs and performance regressions.                                           |
 | `diagnosing-production-incidents` | Read-only evidence collection and diagnosis for urgent live production incidents.                              |
@@ -39,6 +39,7 @@ Software development, diagnosis, reviews, and maintenance.
 | `design-it-twice`                 | Compares several software module interface designs before choosing one.                                        |
 | `upgrade-deps`                    | Comprehensive pnpm dependency, GitHub Actions, security, and optional toolchain upgrades.                      |
 | `improve-codebase-architecture`   | Finds deep-module and seam improvements across a codebase, then produces a visual report.                      |
+| `improve-codebase-organisation`   | Reviews codebase structure, ownership, filenames, shallow paths, and companion-file ownership.                 |
 | `improve-codebase-security`       | Reviews trust boundaries, access control, secrets, sensitive data, and dependency risk.                        |
 | `improve-codebase-standards`      | Reviews a codebase against repository and engineering standards, then produces a visual report.                |
 

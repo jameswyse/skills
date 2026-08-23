@@ -14,6 +14,9 @@ and developer tooling. When the scope contains tests, read its
 [Testing](../engineering/references/testing.md) reference and use its named test smells.
 When a finding depends on design, module depth, interface compression, seam placement, or
 simplicity, read the relevant engineering reference before reporting it.
+When the scope adds, moves, renames, splits, merges, or deletes files or directories, read
+[Codebase organisation and naming](../engineering/references/organisation-and-naming.md). Apply it
+to the affected subtree, authoritative imports, naming patterns, and companion-file ownership.
 
 Treat security as part of Standards when the diff changes a trust boundary, authentication,
 authorisation, sensitive data, secret handling, permissions, security configuration, or the

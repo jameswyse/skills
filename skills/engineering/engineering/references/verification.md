@@ -21,6 +21,8 @@ Prefer a deterministic, repeatable command or script when the result is complex 
 
 Before final verification, make a simplicity pass over the affected path. Remove concepts, state, branches, layers, dependencies, execution paths, and sources of truth that the finished design no longer needs. Confirm that the change did not merely move complexity into callers or retain a parallel path.
 
+When the change added, moved, renamed, split, merged, or deleted files or directories, apply the finish pass in [Codebase organisation and naming](organisation-and-naming.md). Inspect the finished subtree, filenames, authoritative imports, and companion-file ownership.
+
 Completion requires direct evidence for every significant behaviour change. State any path that could not be exercised and why.
 
 ## Encode lessons in structure

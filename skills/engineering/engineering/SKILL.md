@@ -15,6 +15,8 @@ Complexity inhibits understanding and robustness. Simplicity makes change easier
 
 - Minimise the total number of concepts, states, branches, layers, dependencies, execution paths, and sources of truth required by the behaviour and its constraints.
 - Judge simplicity across the affected system, not by local line count. Moving complexity into callers or hiding it behind an abstraction is not simplification.
+- Treat the repository tree and filenames as part of each module's interface. A reader should be able to predict where a capability lives and what a file contains without following forwarding layers.
+- Before changing a module, inspect its surrounding tree and naming patterns. After changing it, confirm that every affected path still has a clear owner, name, and purpose.
 - At each meaningful step, ask what can be deleted, combined, derived, moved to its source, or made unnecessary before proceeding.
 - Reconsider the design when implementation requires repeated coordination, special cases, defensive checks, or signals threaded through several layers.
 - Include small, adjacent simplifications when they make the result coherent, remove compensating complexity, or prevent a decision from remaining scattered. Report unrelated opportunities instead. Pause when simplification would significantly change the intended result, a public or external interface, dependencies, risk, or the size of the work.
@@ -52,7 +54,7 @@ Complexity inhibits understanding and robustness. Simplicity makes change easier
 ## Repository conventions
 
 - Prefer pnpm for JavaScript and TypeScript package management.
-- Prefer named exports. Use barrels for types only.
+- Prefer named exports and direct imports from the authoritative module. Keep a re-exporting entrypoint only when it defines a deliberate supported interface.
 
 ## Dependencies
 
@@ -65,6 +67,7 @@ Read each reference when its trigger first appears, including when the task chan
 - For an unexpected problem, a tempting guard or workaround, or a reported bug, read [Root-cause fixes](references/root-causes.md). For a hard bug or performance regression, also apply `$diagnosing-bugs`. It owns the diagnostic loop, while the reference owns fix placement.
 - Before substantial type, state, data-structure, module, interface, or refactor decisions, or when a new requirement does not fit the current design, read [Design and maintainability](references/design.md).
 - Before assessing module depth, compressing an interface, placing a seam, choosing adapters, or deciding where tests should observe behaviour, read [Deep modules](references/deep-modules.md).
+- Before adding, moving, renaming, splitting, merging, or reviewing files or directories, read [Codebase organisation and naming](references/organisation-and-naming.md).
 - Before designing, changing, or reviewing failure handling, error types, error translation, or diagnostic context, read [Failures and diagnostics](references/errors.md).
 - Before writing, changing, or reviewing tests, read [Testing](references/testing.md).
 - For a sweep, migration, internal interface transition, or other multi-step change, read [Execution and migration](references/execution.md).
