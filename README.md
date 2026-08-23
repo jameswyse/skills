@@ -46,11 +46,11 @@ Software development, diagnosis, reviews, and maintenance.
 
 Structured workflows for sharpening plans and decisions.
 
-| Skill      | Purpose                                                                             |
-| ---------- | ----------------------------------------------------------------------------------- |
-| `grilling` | Stress-tests a plan or decision through a structured interview.                     |
-| `grill-me` | Explicit shortcut for invoking `grilling`.                                          |
-| `handoff`  | Compacts the current conversation into a copy-ready handoff for another agent.      |
+| Skill      | Purpose                                                                        |
+| ---------- | ------------------------------------------------------------------------------ |
+| `grilling` | Matt Pococks's grilling skill, vendored for completeness.                      |
+| `grill-me` | Explicit shortcut for invoking `grilling`.                                     |
+| `handoff`  | Compacts the current conversation into a copy-ready handoff for another agent. |
 
 ## Install with `npx skills`
 
