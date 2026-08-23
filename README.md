@@ -1,35 +1,60 @@
 # Agent Skills
 
-A very opinionated personal skills library for software engineering, UX design and writing.
+My personal opinionated skills library for software engineering, UX design and writing.
 
 Follows the [Agent Skills specification](https://agentskills.io/specification).
 
 ## Included skills
 
-Three core pillars cover the work I do most often: `$engineering`, `$ux` and `$writing`.
-Narrower skills refine those pillars or provide explicit workflows.
+### Writing
 
-| Group        | Skill                           | Purpose                                                                                                       |
-| ------------ | ------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| Core         | `writing`                       | Baseline writing rules for every response and written artefact.                                               |
-| Core         | `engineering`                   | Software engineering, simplicity, root-cause fixes, types, tests, dependencies, operations, and verification. |
-| Core         | `ux`                            | Routes product design, UX, UI, accessibility, interface copy, visual polish, and motion.                      |
-| Writing      | `technical-writing`             | Developer documentation, comments, commits, pull requests, release notes, and agent instructions.             |
-| Engineering  | `typescript`                    | TypeScript-specific type, validation, and code guidance.                                                      |
-| Engineering  | `diagnosing-bugs`               | Evidence-driven diagnosis for hard bugs and performance regressions.                                          |
-| Engineering  | `tdd`                           | A focused failing-test-first loop when a practical test target exists.                                        |
-| Engineering  | `resolving-merge-conflicts`     | Conflict resolution during an authorised merge or rebase.                                                     |
-| Review       | `code-review`                   | Reviews a diff separately against repository standards and the originating specification.                     |
-| Engineering  | `design-it-twice`               | Compares several software module interface designs before choosing one.                                       |
-| Improvement  | `improve-codebase-architecture` | Finds deep-module and seam improvements across a codebase, then produces a visual report.                      |
-| Improvement  | `improve-codebase-security`     | Reviews trust boundaries, access control, secrets, sensitive data, and dependency risk.                       |
-| Improvement  | `improve-codebase-standards`    | Reviews a codebase against repository and engineering standards, then produces a visual report.                |
-| Conversation | `grilling`                      | Stress-tests a plan or decision through a structured interview.                                               |
-| Conversation | `grill-me`                      | Explicit shortcut for invoking `grilling`.                                                                    |
+Rules for responses, written artefacts, and developer documentation.
+
+| Skill               | Purpose                                                                                           |
+| ------------------- | ------------------------------------------------------------------------------------------------- |
+| `writing`           | Baseline writing rules for every response and written artefact.                                   |
+| `technical-writing` | Developer documentation, comments, commits, pull requests, release notes, and agent instructions. |
+
+### UX and design
+
+Product design and user-facing interface work.
+
+| Skill | Purpose                                                                                  |
+| ----- | ---------------------------------------------------------------------------------------- |
+| `ux`  | Routes product design, UX, UI, accessibility, interface copy, visual polish, and motion. |
+
+### Engineering
+
+Software development, diagnosis, reviews, and maintenance.
+
+| Skill                             | Purpose                                                                                                        |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `engineering`                     | Software engineering, simplicity, root-cause fixes, types, tests, dependencies, operations, and verification.  |
+| `typescript`                      | TypeScript-specific type, validation, and code guidance.                                                       |
+| `diagnosing-bugs`                 | Evidence-driven diagnosis for hard bugs and performance regressions.                                           |
+| `diagnosing-production-incidents` | Read-only evidence collection and diagnosis for urgent live production incidents.                              |
+| `tdd`                             | A focused failing-test-first loop when a practical test target exists.                                         |
+| `resolving-merge-conflicts`       | Conflict resolution during an authorised merge or rebase.                                                      |
+| `code-review`                     | Reviews a diff separately against repository standards and the originating specification.                      |
+| `design-it-twice`                 | Compares several software module interface designs before choosing one.                                        |
+| `upgrade-deps`                    | Comprehensive pnpm dependency, GitHub Actions, security, and optional toolchain upgrades.                      |
+| `improve-codebase-architecture`   | Finds deep-module and seam improvements across a codebase, then produces a visual report.                      |
+| `improve-codebase-security`       | Reviews trust boundaries, access control, secrets, sensitive data, and dependency risk.                        |
+| `improve-codebase-standards`      | Reviews a codebase against repository and engineering standards, then produces a visual report.                |
+
+### Productivity
+
+Structured workflows for sharpening plans and decisions.
+
+| Skill      | Purpose                                                                             |
+| ---------- | ----------------------------------------------------------------------------------- |
+| `grilling` | Stress-tests a plan or decision through a structured interview.                     |
+| `grill-me` | Explicit shortcut for invoking `grilling`.                                          |
+| `handoff`  | Compacts the current conversation into a copy-ready handoff for another agent.      |
 
 ## Install with `npx skills`
 
-List the repository's skills or install the three core pillars:
+List the repository's skills or install the baseline skills:
 
 ```sh
 npx skills add jameswyse/skills --list
@@ -169,4 +194,5 @@ The command supplies its pinned PyYAML dependency through an isolated `uv` envir
 
 ## Credits
 
-This is a curated collection. Inspired by many popular skills, with credit to their original authors, including @mattpocock, @poteto, @dmmulroy, and others.
+This curated collection draws on skills and ideas from [`mattpocock/skills`](https://github.com/mattpocock/skills),
+[`poteto/noodle`](https://github.com/poteto/noodle), [`dmmulroy/skills`](https://github.com/dmmulroy/skills) and others.
