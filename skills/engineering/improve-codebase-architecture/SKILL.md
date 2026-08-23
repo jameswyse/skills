@@ -14,6 +14,8 @@ Apply `$engineering`. Read [Deep modules](../engineering/references/deep-modules
 
 Recommend `$improve-codebase-organisation` when the primary problem is tree navigation, file or directory naming, companion-file ownership, or shallow filesystem structure without a qualified deepening. Organisation evidence may support an architecture candidate, but it does not bypass the qualification gate.
 
+Before naming a proposed module or path, read [Codebase organisation and naming](../engineering/references/organisation-and-naming.md). A `*Contract` or `*Policy` file that only gathers types, constants, schemas, configuration, or flags is an organisation change, not a deepening opportunity.
+
 ## Process
 
 ### 1. Establish the scope

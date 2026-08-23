@@ -35,7 +35,7 @@ Follow evidence from paths, imports, exports, callers, tests, stories, styles, f
 
 - one capability scattered across unrelated technical directories;
 - shared directories containing code with one real owner;
-- vague names that do not predict contents or responsibility, including catch-all directories whose children have clearer owners;
+- vague names that do not predict contents or responsibility, including `*Contract` or `*Policy` files whose real contents are types, constants, schemas, configuration, or flags, and catch-all directories whose children have clearer owners;
 - sibling modules that express the same pattern with inconsistent names;
 - re-export-only files, one-caller forwarding modules, and dispatchers that own no choice;
 - tiny type or helper files without independent meaning;

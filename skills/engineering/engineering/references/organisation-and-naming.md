@@ -18,13 +18,14 @@ Do not impose domain-driven design, layered architecture, or another taxonomy on
 
 Read a path from left to right. Each segment should narrow the reader's expectation of what the file contains and who owns it.
 
-- Name a file after its specific concept, operation, or main implementation. Prefer `quoteEligibility.ts` to `policy.ts` and `CmsBlock.ts` to `model.ts`.
-- Treat unqualified names such as `model`, `contract`, `policy`, `service`, `common`, `shared`, `helper`, and `utils` as prompts to look for a more specific owner, not as bans. Keep one when it is the clearest honest grouping available.
+- Name a behaviour or implementation file after its specific concept, operation, or main export. Prefer `quoteEligibility.ts` to `policy.ts` and `CmsBlock.ts` to `model.ts`.
+- Do not use `Contract` or `Policy` as generic filename suffixes. Names such as `paymentContract.ts` and `paymentPolicy.ts` hide whether the file contains types, constants, validation, configuration, or behaviour. Preserve the word only when it is established domain or external-protocol vocabulary and the file owns that exact concept.
+- Do not create or split files merely to group types or constants. Keep them with their owner when practical. When a separate support file already has a clear reason to exist and no more specific concept names it, prefer an honest contents-based name such as `types.ts` or `constants.ts` over a generic `*Contract` or `*Policy` name.
+- Treat unqualified names such as `model`, `service`, `common`, `shared`, `helper`, and `utils` as prompts to look for a more specific owner, not as bans. Keep one when it is the clearest honest grouping available.
 - When no clearer owner exists, prefer a small `utils` or similar directory with specifically named files over leaving several support files loose in a top-level grouping directory. Move a file out when a better owner emerges, and split the directory if its contents form clearer groups.
 - Match the basename of a primary implementation to its main export when language and framework conventions permit it.
 - Use recognisable patterns across siblings. A reader who understands one member of a family should be able to predict the others.
 - Preserve framework-mandated filenames such as route entrypoints. Use the surrounding directories and owned modules to supply the missing context.
-- Keep a small type beside the code that owns its meaning. Give it a separate file only when the type is an independently useful concept with several consumers or implementations.
 
 If a reader cannot make a useful prediction from a path, improve the name or the ownership before adding documentation that explains the surprise.
 
