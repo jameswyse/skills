@@ -151,13 +151,17 @@ live symlinks.
 
 ## Development and using skills locally
 
+Source skills live under `skills/<group>/<skill-name>`. The groups organise the repository for
+people; installed skills remain flat so agents continue to find them by skill name.
+
 Run the sync script:
 
 ```sh
 scripts/sync-skills
 ```
 
-It links every skill in this repository into `~/.agents/skills`. Edits to a linked skill are available immediately because the installed entry points to this working tree.
+It discovers every grouped skill and links it into `~/.agents/skills/<skill-name>`. Edits to a
+linked skill are available immediately because the installed entry points to this working tree.
 
 The script keeps a private ownership record at `~/.agents/skills/.james-skills-links.json`. On later runs it:
 

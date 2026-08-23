@@ -10,6 +10,7 @@
 from __future__ import annotations
 
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -17,6 +18,7 @@ from pathlib import Path
 
 REPOSITORY = Path(__file__).resolve().parents[1]
 SKILLS = REPOSITORY / "skills"
+SKILL_NAME = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 CODEX_HOME = Path(os.environ.get("CODEX_HOME", Path.home() / ".codex"))
 VALIDATOR = (
     CODEX_HOME
@@ -28,17 +30,37 @@ VALIDATOR = (
 )
 
 
+class ValidationError(Exception):
+    """Raised when the grouped skill source cannot be resolved safely."""
+
+
+def discover_skills() -> dict[str, Path]:
+    discovered: dict[str, Path] = {}
+    for skill_file in sorted(SKILLS.glob("*/*/SKILL.md")):
+        skill = skill_file.parent
+        group = skill.parent
+        if group.name.startswith(".") or skill.name.startswith("."):
+            continue
+        if not SKILL_NAME.fullmatch(group.name):
+            raise ValidationError(f"Invalid skill group directory name: {group.name}")
+        if not SKILL_NAME.fullmatch(skill.name):
+            raise ValidationError(f"Invalid skill directory name: {skill.name}")
+        if skill.name in discovered:
+            raise ValidationError(f"Duplicate skill directory name: {skill.name}")
+        discovered[skill.name] = skill.resolve()
+    return discovered
+
+
 def resolve_skills(arguments: list[str]) -> list[Path]:
+    discovered = discover_skills()
     if not arguments:
-        return sorted(
-            path for path in SKILLS.iterdir() if (path / "SKILL.md").is_file()
-        )
+        return [discovered[name] for name in sorted(discovered)]
 
     resolved: list[Path] = []
     for argument in arguments:
         candidate = Path(argument)
         if not candidate.is_absolute() and len(candidate.parts) == 1:
-            candidate = SKILLS / candidate
+            candidate = discovered.get(argument, SKILLS / candidate)
         elif not candidate.is_absolute():
             candidate = REPOSITORY / candidate
         resolved.append(candidate.resolve())
@@ -50,8 +72,14 @@ def main() -> int:
         print(f"Codex skill validator not found: {VALIDATOR}", file=sys.stderr)
         return 1
 
+    try:
+        skills = resolve_skills(sys.argv[1:])
+    except ValidationError as error:
+        print(f"validation failed: {error}", file=sys.stderr)
+        return 1
+
     failures = 0
-    for skill in resolve_skills(sys.argv[1:]):
+    for skill in skills:
         if not (skill / "SKILL.md").is_file():
             print(f"Skill directory not found: {skill}", file=sys.stderr)
             failures += 1

@@ -125,13 +125,18 @@ def discover_skills(source: Path) -> dict[str, str]:
         raise SyncError(f"Skills source directory does not exist: {source}")
 
     skills: dict[str, str] = {}
-    for candidate in sorted(source.iterdir(), key=lambda path: path.name):
-        if candidate.name.startswith(".") or not candidate.is_dir():
+    skill_files = sorted(source.glob("*/*/SKILL.md"))
+    for skill_file in skill_files:
+        candidate = skill_file.parent
+        group = candidate.parent
+        if group.name.startswith(".") or candidate.name.startswith("."):
             continue
-        if not (candidate / "SKILL.md").is_file():
-            continue
+        if not SKILL_NAME.fullmatch(group.name):
+            raise SyncError(f"Invalid skill group directory name: {group.name}")
         if not SKILL_NAME.fullmatch(candidate.name):
             raise SyncError(f"Invalid skill directory name: {candidate.name}")
+        if candidate.name in skills:
+            raise SyncError(f"Duplicate skill directory name: {candidate.name}")
         skills[candidate.name] = str(candidate.resolve())
     return skills
 
