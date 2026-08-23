@@ -43,20 +43,28 @@ Apply the **deletion test** to anything you suspect is shallow. Would deleting i
 
 Write one HTML file to the operating system's temporary directory so nothing enters the repository. Resolve the directory from `$TMPDIR`, falling back to `/tmp` on Unix or `%TEMP%` on Windows. Write to `<tmpdir>/architecture-review-<timestamp>.html` so each run gets a fresh file. Open it with `xdg-open <path>` on Linux, `open <path>` on macOS, or `start <path>` on Windows. Tell the user the absolute path.
 
-The report is single-file, not offline. Use **Tailwind via CDN** for layout and styling. Use **Mermaid via CDN** when a graph, flow, or sequence communicates the structure clearly. If the environment has no network access, use inline CSS and SVG instead. When Mermaid is available, mix it with hand-crafted CSS and SVG visuals. Mermaid suits call graphs, dependencies, and sequences. Hand-built elements suit mass diagrams, cross-sections, and collapse animations. Give each candidate a **before-and-after visualisation**.
+The report is one static HTML file. When network access is available, load Tailwind and Mermaid from CDNs. Use Mermaid when a graph, flow, or sequence communicates the structure clearly. Without network access, use inline CSS and SVG. Mix Mermaid with hand-crafted CSS and SVG visuals when each suits a different relationship. Mermaid suits call graphs, dependencies, and sequences. Hand-built elements suit mass diagrams, cross-sections, and call-graph collapse. Give each candidate a **before-and-after visualisation**.
 
-Show the reviewed revision, working-tree state, requested scope, coverage, and coverage gaps before the candidate cards.
+Order the report for an engineer choosing what to explore:
+
+1. Header and repository state.
+2. Full-width review boundary and evidence or verification.
+3. Compact candidate counts and the top recommendation.
+4. Ranked candidates.
+5. Remaining coverage gaps.
+
+The review boundary states the requested scope, major areas inspected, sampled or excluded areas, and coverage gaps. Evidence or verification names the inspected callers, tests, documentation, deletion-test result, and any commands or runtime paths that affect confidence. Keep both sections full width and separate.
 
 For each candidate, render a card with:
 
 - **Files.** Name the files and modules involved.
 - **Problem.** Explain why the current architecture is difficult to change or understand.
-- **Solution.** Describe the proposed change in plain English.
+- **Proposed deepening.** Highlight the proposed change in plain English.
 - **Benefits.** Explain the locality, leverage, and testing gains.
-- **Before-and-after diagram.** Draw a custom side-by-side comparison of the shallowness and proposed deepening.
+- **Before-and-after diagram.** Draw a full-width side-by-side comparison of the shallowness and proposed deepening.
 - **Recommendation strength.** Render `Strong`, `Worth exploring`, or `Speculative` as a badge.
 
-End the report with a **Top recommendation** section that names the first candidate to tackle and explains why.
+Place a compact horizontal **Top recommendation** before the candidate cards. Name the first candidate to explore, explain why it comes first, and link to the full candidate. Keep diagrams in the candidate card.
 
 **Use the repository's documented domain vocabulary for the domain and the deep-module vocabulary for the architecture.** Preserve exact framework, protocol, domain, and symbol names. When `module` names the architectural concept, write "the Order intake module". When the report names an existing `OrderService` symbol, keep `OrderService`.
 
