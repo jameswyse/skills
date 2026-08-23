@@ -1,6 +1,6 @@
 # Agent Skills
 
-My personal opinionated skills library for software engineering, UX design and writing.
+My personal opinionated skills library for software engineering, UX design, writing and productivity.
 
 Follows the [Agent Skills specification](https://agentskills.io/specification).
 
