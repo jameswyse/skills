@@ -4,9 +4,9 @@ Design state-changing operations for crashes, restarts, retries, and concurrent 
 
 ## Run the repository's toolchain
 
-Before running repository JavaScript or TypeScript commands, inspect the repository's runtime and package-manager declarations. Treat `.node-version`, `.nvmrc`, `.tool-versions`, mise or Volta configuration, `engines`, `devEngines`, and `packageManager` as configuration, not documentation to approximate.
+Before the first repository JavaScript or TypeScript command in a task, compare the active toolchain with the repository's runtime and package-manager declarations. Treat exact pins as exact and ranges as compatibility constraints. If they match, keep the current environment.
 
-Activate the declared Node.js version with the repository's established version manager, then activate the exact package-manager version through its established Corepack or setup path. In a non-interactive shell, initialise the version manager's environment for that shell before selecting the repository version. Confirm both active versions before installation, generation, linting, testing, building, or other repository commands. When declarations disagree, resolve the conflict from repository automation and instructions before running checks.
+If they do not match, select a compatible toolchain once through repository setup or an available version manager. Run state-changing setup serially before parallel checks, never inside each parallel branch. Prefer process-scoped selection when available. Resolve conflicting declarations from repository automation and instructions.
 
 If the declared toolchain is unavailable, stop the affected checks and report them as not verified. Output from a different runtime is diagnostic evidence at most. It is not successful verification of the repository.
 

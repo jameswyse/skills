@@ -33,7 +33,7 @@ Do not use Git history, the current issue, or the working tree to narrow an unqu
 
 Read the project's instructions and documentation before exploring the code. Identify the repository's verification commands and the tools that already enforce its standards. Use repository-provided inspection or verification commands when they do not require source or configuration changes.
 
-Before running a repository Node.js or package-manager command, activate the versions declared by the repository. Follow `$engineering`'s reliable-operations guidance, then record `node --version` and the package-manager version. If the declared toolchain is unavailable, do not substitute a different version and treat its output as verification. Report the affected checks as not verified.
+Before verification, apply `$engineering`'s toolchain check once for the task. Record the active versions and whether they satisfy the repository declarations. Report affected checks as not verified when no compatible toolchain is available.
 
 ### 2. Find candidates
 
