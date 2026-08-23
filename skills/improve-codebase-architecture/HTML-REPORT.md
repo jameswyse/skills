@@ -1,4 +1,4 @@
-# HTML report format
+# Architecture HTML report format
 
 Render the architectural review as one HTML file in the operating system's temporary directory. The report is single-file, not offline. Load Tailwind and Mermaid from CDNs when the environment has network access. Otherwise use inline CSS and SVG. In network-backed reports, use Mermaid for graph-shaped diagrams. Use hand-built elements and inline SVG for mass diagrams, cross-sections, and other custom visuals. Mix both approaches when they are available so the report does not look generic.
 
@@ -28,6 +28,7 @@ Use this scaffold when the report can load CDN resources. For an offline report,
   <body class="bg-stone-50 text-slate-900 font-sans">
     <main class="max-w-5xl mx-auto px-6 py-12 space-y-12">
       <header>...</header>
+      <section id="coverage">...</section>
       <section id="candidates" class="space-y-10">...</section>
       <section id="top-recommendation">...</section>
     </main>
@@ -37,7 +38,7 @@ Use this scaffold when the report can load CDN resources. For an offline report,
 
 ## Header
 
-Show the repository name, date, and a compact legend. A solid box means module, a dashed line means seam, a red arrow means leakage, and a thick dark box means deep module. Omit an introduction and begin with the candidates.
+Show the repository name, date, reviewed revision, working-tree state, requested scope, and a compact legend. A solid box means module, a dashed line means seam, a red arrow means leakage, and a thick dark box means deep module. Follow the header with a compact coverage map. Mark uninspected or partially inspected areas as coverage gaps. Omit an introduction and begin with the coverage map.
 
 ## Candidate card
 

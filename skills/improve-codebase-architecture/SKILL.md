@@ -1,9 +1,9 @@
 ---
-name: improve-codebase
-description: Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick.
+name: improve-codebase-architecture
+description: Review an entire codebase for deep-module and seam improvements, present them in a visual HTML report, then grill through the selected candidate. Use recent changes or a specific repository area only when the user explicitly requests that scope.
 ---
 
-# Improve codebase
+# Improve codebase architecture
 
 Find architectural friction and propose **deepening opportunities**, which are refactors that turn shallow modules into deep ones. The aim is testability and AI navigability.
 
@@ -14,16 +14,22 @@ Apply `$engineering`. Read [Deep modules](../engineering/references/deep-modules
 
 ## Process
 
-### 1. Explore
+### 1. Establish the scope
 
-**Scope the scan with YAGNI.** Deepening a module pays off by making future changes easier, so give extra weight to recently changed parts of the codebase. Decide *where* to look before scanning:
+Review the entire codebase by default. Inventory the repository's projects, packages, entrypoints, domain areas, tests, and configuration. Inspect every major area at a useful level before ranking candidates. State any area that the review could not inspect as a coverage gap.
 
-- If the user named a module, subsystem, or problem, start there and skip the inference below.
-- Otherwise, inspect enough commit history with `git log --oneline` to find frequently changed files and areas. Start with those paths. Inspect more paths when changes are scattered without a clear centre.
+Use a narrower scope only when the user explicitly requests one:
 
-Read the project's documentation or domain glossary first.
+- If the user asks to review recent changes or commits, inspect the requested history and the affected paths.
+- If the user names a repository area, module, subsystem, or problem, inspect that area and the callers or dependencies needed to judge it.
 
-Then spawn an explorer subagent to inspect the codebase. Follow evidence from names, imports, callers, tests, and change history. Note where understanding becomes difficult:
+Do not use Git history, the current issue, or the working tree to narrow an unqualified invocation. Inspect the working tree only to preserve unrelated work and describe the reviewed state.
+
+Read the project's instructions, documentation, architecture guidance, ADRs, and domain glossary before exploring the code.
+
+### 2. Explore
+
+Then spawn an explorer subagent to inspect the codebase. Follow evidence from names, imports, callers, tests, configuration, and documentation. Note where understanding becomes difficult:
 
 - Where does understanding one concept require bouncing between many small modules?
 - Where are modules **shallow**, with an interface nearly as complex as the implementation?
@@ -33,11 +39,13 @@ Then spawn an explorer subagent to inspect the codebase. Follow evidence from na
 
 Apply the **deletion test** to anything you suspect is shallow. Would deleting it concentrate complexity or merely move it? A module earns its place when deletion would spread its complexity across callers.
 
-### 2. Present candidates as an HTML report
+### 3. Present candidates as an HTML report
 
 Write one HTML file to the operating system's temporary directory so nothing enters the repository. Resolve the directory from `$TMPDIR`, falling back to `/tmp` on Unix or `%TEMP%` on Windows. Write to `<tmpdir>/architecture-review-<timestamp>.html` so each run gets a fresh file. Open it with `xdg-open <path>` on Linux, `open <path>` on macOS, or `start <path>` on Windows. Tell the user the absolute path.
 
 The report is single-file, not offline. Use **Tailwind via CDN** for layout and styling. Use **Mermaid via CDN** when a graph, flow, or sequence communicates the structure clearly. If the environment has no network access, use inline CSS and SVG instead. When Mermaid is available, mix it with hand-crafted CSS and SVG visuals. Mermaid suits call graphs, dependencies, and sequences. Hand-built elements suit mass diagrams, cross-sections, and collapse animations. Give each candidate a **before-and-after visualisation**.
+
+Show the reviewed revision, working-tree state, requested scope, coverage, and coverage gaps before the candidate cards.
 
 For each candidate, render a card with:
 
@@ -58,7 +66,7 @@ See [HTML-REPORT.md](HTML-REPORT.md) for the full HTML scaffold, diagram pattern
 
 Do not propose interfaces yet. After writing the file, ask the user, "Which of these would you like to explore?"
 
-### 3. Grilling loop
+### 4. Grilling loop
 
 Once the user picks a candidate, apply `$grilling` to examine its constraints, dependencies, deepened module, seam contents, and surviving tests.
 

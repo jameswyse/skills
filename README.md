@@ -9,21 +9,22 @@ Follows the [Agent Skills specification](https://agentskills.io/specification).
 Three core pillars cover the work I do most often: `$engineering`, `$ux` and `$writing`.
 Narrower skills refine those pillars or provide explicit workflows.
 
-| Group        | Skill                       | Purpose                                                                                                       |
-| ------------ | --------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| Core         | `writing`                   | Baseline writing rules for every response and written artefact.                                               |
-| Core         | `engineering`               | Software engineering, simplicity, root-cause fixes, types, tests, dependencies, operations, and verification. |
-| Core         | `ux`                        | Routes product design, UX, UI, accessibility, interface copy, visual polish, and motion.                      |
-| Writing      | `technical-writing`         | Developer documentation, comments, commits, pull requests, release notes, and agent instructions.             |
-| Engineering  | `typescript`                | TypeScript-specific type, validation, and code guidance.                                                      |
-| Engineering  | `diagnosing-bugs`           | Evidence-driven diagnosis for hard bugs and performance regressions.                                          |
-| Engineering  | `tdd`                       | A focused failing-test-first loop when a practical test target exists.                                        |
-| Engineering  | `resolving-merge-conflicts` | Conflict resolution during an authorised merge or rebase.                                                     |
-| Review       | `code-review`               | Reviews a diff separately against repository standards and the originating specification.                     |
-| Engineering  | `design-it-twice`           | Compares several software module interface designs before choosing one.                                       |
-| Improvement  | `improve-codebase`          | Finds codebase improvement opportunities and produces a visual report for discussion.                         |
-| Conversation | `grilling`                  | Stress-tests a plan or decision through a structured interview.                                               |
-| Conversation | `grill-me`                  | Explicit shortcut for invoking `grilling`.                                                                    |
+| Group        | Skill                           | Purpose                                                                                                       |
+| ------------ | ------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Core         | `writing`                       | Baseline writing rules for every response and written artefact.                                               |
+| Core         | `engineering`                   | Software engineering, simplicity, root-cause fixes, types, tests, dependencies, operations, and verification. |
+| Core         | `ux`                            | Routes product design, UX, UI, accessibility, interface copy, visual polish, and motion.                      |
+| Writing      | `technical-writing`             | Developer documentation, comments, commits, pull requests, release notes, and agent instructions.             |
+| Engineering  | `typescript`                    | TypeScript-specific type, validation, and code guidance.                                                      |
+| Engineering  | `diagnosing-bugs`               | Evidence-driven diagnosis for hard bugs and performance regressions.                                          |
+| Engineering  | `tdd`                           | A focused failing-test-first loop when a practical test target exists.                                        |
+| Engineering  | `resolving-merge-conflicts`     | Conflict resolution during an authorised merge or rebase.                                                     |
+| Review       | `code-review`                   | Reviews a diff separately against repository standards and the originating specification.                     |
+| Engineering  | `design-it-twice`               | Compares several software module interface designs before choosing one.                                       |
+| Improvement  | `improve-codebase-architecture` | Finds deep-module and seam improvements across a codebase, then produces a visual report.                      |
+| Improvement  | `improve-codebase-standards`    | Reviews a codebase against repository and engineering standards, then produces a visual report.                |
+| Conversation | `grilling`                      | Stress-tests a plan or decision through a structured interview.                                               |
+| Conversation | `grill-me`                      | Explicit shortcut for invoking `grilling`.                                                                    |
 
 ## Install with `npx skills`
 
