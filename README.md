@@ -22,6 +22,7 @@ Narrower skills refine those pillars or provide explicit workflows.
 | Review       | `code-review`                   | Reviews a diff separately against repository standards and the originating specification.                     |
 | Engineering  | `design-it-twice`               | Compares several software module interface designs before choosing one.                                       |
 | Improvement  | `improve-codebase-architecture` | Finds deep-module and seam improvements across a codebase, then produces a visual report.                      |
+| Improvement  | `improve-codebase-security`     | Reviews trust boundaries, access control, secrets, sensitive data, and dependency risk.                       |
 | Improvement  | `improve-codebase-standards`    | Reviews a codebase against repository and engineering standards, then produces a visual report.                |
 | Conversation | `grilling`                      | Stress-tests a plan or decision through a structured interview.                                               |
 | Conversation | `grill-me`                      | Explicit shortcut for invoking `grilling`.                                                                    |

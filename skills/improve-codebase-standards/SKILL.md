@@ -14,6 +14,7 @@ Keep this review distinct from narrower workflows:
 - Use `$code-review` when the task is to approve or find defects in a specific change. Keep an explicitly requested recent-history standards scan in this workflow.
 - Use `$diagnosing-bugs` for a known failure or performance regression.
 - Recommend `$upgrade-deps` for a comprehensive dependency refresh.
+- Use `$improve-codebase-security` for a dedicated security review. Report a concrete security flaw discovered here, but do not expand this workflow into a general security audit.
 - Recommend `$improve-codebase-architecture` when the primary improvement requires deeper modules, a different seam, or a substantial interface redesign. Do not include that work in the standards ranking.
 
 ## Process

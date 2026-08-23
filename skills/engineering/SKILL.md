@@ -31,6 +31,13 @@ Complexity inhibits understanding and robustness. Simplicity makes change easier
 
 - Never run or implement recursive deletion without explicit user consent.
 
+## Security
+
+- For security-sensitive changes, identify the protected assets, attacker-controlled inputs, trust boundaries, and credible misuse paths before choosing the design.
+- Treat authentication and authorisation as separate decisions. Enforce authorisation at the server-side operation or data boundary that owns the protected action.
+- Keep secrets and sensitive data out of source code, client bundles, logs, errors, traces, metrics, snapshots, and fixtures. Give credentials and permissions only the scope they need.
+- Test representative allowed and denied paths for sensitive operations, including object or tenant isolation when it applies.
+
 ## Design and types
 
 - Prefer simple, strictly typed code that makes invalid states unrepresentable.
@@ -49,7 +56,7 @@ Complexity inhibits understanding and robustness. Simplicity makes change easier
 
 ## Dependencies
 
-- Add a dependency only when its maintenance, security, licence, transitive dependency, and runtime costs are justified.
+- Add a dependency only when its maintenance, security, licence, provenance, transitive dependency, install-time code, and runtime costs are justified.
 
 ## Read the relevant reference
 

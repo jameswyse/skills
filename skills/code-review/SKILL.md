@@ -15,6 +15,11 @@ and developer tooling. When the scope contains tests, read its
 When a finding depends on design, module depth, interface compression, seam placement, or
 simplicity, read the relevant engineering reference before reporting it.
 
+Treat security as part of Standards when the diff changes a trust boundary, authentication,
+authorisation, sensitive data, secret handling, permissions, security configuration, or the
+dependency graph. Keep this check scoped to the diff and the context needed to verify it. Use
+`$improve-codebase-security` only when the user requests a dedicated security review.
+
 ## 1. Fix the scope
 
 - When the user supplies a fixed point, verify it with `git rev-parse`, capture `git diff <ref>...HEAD` once, and
@@ -108,7 +113,7 @@ finding yourself:
 3. Confirm the concrete correctness, maintenance, or requirement impact.
 4. Reject findings that are unsupported, duplicated, outside the fixed scope, or already handled.
 
-Make one final pass over the complete scope for high-risk issues the agents missed. Present only
+Make one final pass over the complete scope for high-risk correctness or security issues the agents missed. Present only
 verified findings, in your own words, under `## Standards` and `## Spec`. Merge duplicates within an
 axis, but do not merge or rerank findings across the two axes. End with one line giving each axis's
 verified finding count and worst issue, if any.
