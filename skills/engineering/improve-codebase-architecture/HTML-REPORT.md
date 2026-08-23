@@ -2,6 +2,22 @@
 
 Render the architecture review as one static HTML file in the operating system's temporary directory. Load Tailwind and Mermaid from CDNs when the environment has network access. Otherwise use inline CSS and SVG. Use Mermaid for graph-shaped diagrams. Use hand-built elements and inline SVG for mass diagrams, cross-sections, and other custom visuals.
 
+## Visual contract
+
+The architecture and standards reports share one visual system. Copy the scaffold and component classes in this file. Replace content and repeat candidate articles, but preserve the shell. Architecture diagrams may add local styles without restyling the document around them.
+
+The rendered report has these invariants:
+
+- A light `bg-stone-50` page with `text-slate-900` content. Do not declare a dark `color-scheme`.
+- One centred `max-w-6xl` document with `space-y-10` vertical rhythm.
+- A `text-4xl` report title, not an oversized display heading.
+- White major surfaces with restrained slate borders and `shadow-sm`.
+- Indigo as the only general accent. Emerald marks a `Strong` candidate or verified pass. Amber marks uncertainty or a documentation conflict. Red marks demonstrated leakage.
+- No gradient page background, glass panel, dashboard metric card, or decorative glow.
+- Dark surfaces only for code blocks and individual nodes inside a diagram.
+
+If a generated report looks like a dashboard, restyle it before handoff.
+
 ## Scaffold
 
 Use this scaffold when the report can load CDN resources. For an offline report, remove the script tags and use inline CSS and SVG.
@@ -62,11 +78,16 @@ Use this scaffold when the report can load CDN resources. For an offline report,
   </head>
   <body class="bg-stone-50 font-sans text-slate-900 antialiased">
     <main class="mx-auto max-w-6xl space-y-10 px-4 py-10 sm:px-6 lg:px-8">
-      <header>...</header>
-      <section id="review-boundary" class="w-full">...</section>
-      <section id="evidence" class="w-full">...</section>
-      <section id="candidate-summary">...</section>
-      <section id="top-recommendation">...</section>
+      <header class="border-b border-slate-300 pb-7">
+        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-700">Architecture review</p>
+        <h1 class="mt-3 text-4xl font-semibold tracking-tight">{{repo name}}</h1>
+        <div class="mt-5 flex flex-wrap gap-x-7 gap-y-2 text-sm text-slate-600">...</div>
+        <p class="mt-4 max-w-4xl text-sm leading-6 text-slate-600">{{working-tree state and review purpose}}</p>
+      </header>
+      <section id="review-boundary" class="w-full rounded-lg border border-slate-200 bg-white p-6 shadow-sm">...</section>
+      <section id="evidence" class="w-full rounded-lg border border-slate-200 bg-white p-6 shadow-sm">...</section>
+      <section id="candidate-summary" class="border-y border-slate-300 py-4">...</section>
+      <section id="top-recommendation" class="grid gap-6 border-s-4 border-indigo-600 bg-white p-6 shadow-sm lg:grid-cols-[minmax(0,2fr)_minmax(16rem,1fr)]">...</section>
       <section id="candidates" class="space-y-8">...</section>
       <section id="coverage-gaps">...</section>
     </main>
@@ -78,17 +99,17 @@ Use this scaffold when the report can load CDN resources. For an offline report,
 
 Show the repository name, date, reviewed revision, and working-tree state in the header. Follow it with the review boundary and evidence before candidate counts or recommendations.
 
-Render the review boundary and evidence as two full-width sections, one after the other. Do not place them in a shared grid or side-by-side columns.
+Render the review boundary and evidence as two full-width white sections, one after the other. Do not place them in a shared grid or side-by-side columns. Keep the content inside each section in one vertical flow. Do not use a grid of mini-cards.
 
-**Review boundary.** Show the requested scope, major areas inspected, and areas sampled or excluded. Use a full-width list or description list. Include a method detail only when it limits confidence.
+**Review boundary.** Show the requested scope and one coverage-map verdict for each major area: a qualified candidate, inspected with no qualified candidate, or a named coverage gap. Use a full-width list or description list. Include a method detail only when it limits confidence.
 
-**Evidence and verification.** Show the concrete evidence used to assess depth. Name the relevant callers, tests, documented ownership or ADRs, and the deletion-test result. List commands or runtime paths only when they affect confidence. Mark anything not exercised as `Not verified`.
+**Evidence and verification.** Show the concrete evidence used to assess depth. Name the relevant callers, tests, documented ownership or ADRs, and the current-structure test result. Include change or defect signals and a prior-candidate comparison when available. List commands or runtime paths only when they affect confidence. Mark anything not exercised as `Not verified`.
 
 Do not calculate an architecture-health score. If the review finds no credible candidates, keep these two sections and replace the candidate list with a direct conclusion.
 
 ## Candidate summary
 
-Use one compact line or small description list for the counts, such as `2 Strong · 1 Worth exploring`. Counts describe the report inventory, not the codebase's health.
+Use one compact line or small description list for the counts, such as `2 Strong · 1 Worth exploring`. Counts describe the candidate inventory, not the codebase's health. Do not add tracked-file, source-line, test-file, package, or task-count metric cards.
 
 ## Top recommendation
 
@@ -103,7 +124,7 @@ Place the recommendation after the review boundary, evidence, and compact counts
   <div>
     <p class="text-xs font-semibold uppercase tracking-wider text-indigo-700">Top recommendation</p>
     <h2 id="top-recommendation-title" class="mt-2 text-2xl font-semibold tracking-tight">...</h2>
-    <p class="mt-3 max-w-3xl text-sm leading-6 text-slate-600">Why this candidate comes first and what the deepening absorbs.</p>
+    <p class="mt-3 max-w-3xl text-sm leading-6 text-slate-600">Which evidence puts this candidate first and what the deepening absorbs.</p>
   </div>
   <div class="grid content-start gap-3 bg-slate-50 p-4 text-sm sm:grid-cols-3 lg:grid-cols-1">
     <p><span class="block text-slate-500">Strength</span>Strong</p>
@@ -123,10 +144,12 @@ Each candidate is one `<article>`. On wide screens, use one top-level grid with 
 
 - **Title.** Use a short name for the deepening, such as "Collapse the Order intake pipeline".
 - **Badge row.** Show `Strong` in emerald, `Worth exploring` in amber, or `Speculative` in slate. Add one dependency tag: `in-process`, `local-substitutable`, `remote and owned`, or `external and unowned`.
+- **Current evidence.** Use short bullets to name the caller coordination, leaked knowledge, change pain, defects, or test gap that qualified the candidate. Counts and similar shapes are supporting evidence only.
 - **Problem.** Name the current coordination, leaked decision, or shallow interface.
 - **Proposed deepening.** Highlight what the module absorbs and what its callers stop knowing.
 - **Files.** Use a monospaced list of exact files, modules, and symbols.
 - **Wins.** Use short bullets naming locality, leverage, interface reduction, or testing gains.
+- **Why it ranks here.** State why the candidate outranks or follows the others. Use observed maintenance pain, caller knowledge removed, user or operational impact, test-surface improvement, net complexity reduction, confidence, and risk.
 - **Documentation or ADR callout.** When applicable, use an amber warning with the conflicting rule and why it merits reconsideration.
 - **Before-and-after diagram.** Place it after the top-level grid so it spans the full article width.
 
@@ -208,7 +231,8 @@ In the current view, render a tree of function calls as nested boxes. In the pro
 
 ## Style guidance
 
-- Use the same concise editorial shell as the standards report: stone page, slate text, white evidence surfaces, indigo accent, restrained borders, and small shadows.
+- Preserve the visual contract and exact shell classes above. The standards report is the source design, not a loose reference.
+- Keep custom CSS local to code treatment and diagrams. Do not redefine the page background, global heading scale, document width, panels, or general colour palette.
 - Use indigo for the proposal and selected architecture. Reserve red for demonstrated leakage and amber for warnings or documentation conflicts.
 - Reserve emerald for the `Strong` badge or verified passed result. Do not use a green-tinted recommendation or proposal surface.
 - Give inline `<code>` a visible neutral surface and border. Give non-Mermaid `<pre>` blocks a dark, bordered surface with enough padding to read as code at a glance.
@@ -216,6 +240,18 @@ In the current view, render a tree of function calls as nested boxes. In the pro
 - Use `text-xs uppercase tracking-wider` for schematic module labels.
 - Keep exact repository paths, symbols, frameworks, protocols, and domain terms.
 - Limit network dependencies to the Tailwind CDN script and Mermaid ESM import. Keep the rest of the report static.
+
+## Render check
+
+Inspect the actual HTML after generation at a desktop width and at `320px` before handoff.
+
+- The page background is light stone and has no background image.
+- The document stays centred and no wider than `max-w-6xl`.
+- The review boundary and evidence are full-width, single-column sections.
+- Candidate cards have only one top-level two-thirds plus one-third grid. Their contents are vertical stacks.
+- The before-and-after comparison spans the candidate width and stacks at the narrow viewport.
+- The page has no horizontal overflow. Code scrolls inside its own block.
+- Headings keep a clear descending hierarchy and diagrams retain visible `Current` and `Proposed` labels.
 
 ## Tone
 
