@@ -32,6 +32,8 @@ Do not use Git history, the current issue, or the working tree to narrow an unqu
 
 Read the project's instructions and documentation before exploring the code. Identify the repository's verification commands and the tools that already enforce its standards. Use repository-provided inspection or verification commands when they do not require source or configuration changes.
 
+Before running a repository Node.js or package-manager command, activate the versions declared by the repository. Follow `$engineering`'s reliable-operations guidance, then record `node --version` and the package-manager version. If the declared toolchain is unavailable, do not substitute a different version and treat its output as verification. Report the affected checks as not verified.
+
 ### 2. Find candidates
 
 Use the engineering rules as search directions, not quotas. Follow evidence across the repository:
@@ -59,26 +61,44 @@ Do not repeat formatter, linter, compiler, or test output as a recommendation. U
 
 Rank candidates as `Strong`, `Worth exploring`, or `Speculative`. Prefer high-confidence improvements with a clear verification path. Do not pad the report. A review may conclude that the codebase has no worthwhile standards improvements.
 
+Prefer fresh verification when it is safe and proportionate. Use the repository's uncached verification entrypoint when one exists. For Turborepo, prefer the repository's uncached command or force the relevant tasks instead of relying on cache hits. Run a fresh build for a candidate whose behaviour depends on build output. Cached results can guide exploration, but they do not replace fresh evidence when an uncached check is available. When fresh verification is too costly or unavailable, run the narrowest useful uncached check and state what remains unverified.
+
 ### 4. Present the HTML report
 
 Write one HTML file to the operating system's temporary directory so nothing enters the repository. Resolve the directory from `$TMPDIR`, falling back to `/tmp` on Unix or `%TEMP%` on Windows. Write to `<tmpdir>/standards-review-<timestamp>.html` so each run gets a fresh file. Open it with `xdg-open <path>` on Linux, `open <path>` on macOS, or `start <path>` on Windows. Tell the user the absolute path.
 
-The report is single-file, not offline. Use Tailwind via CDN for layout and styling. Use Mermaid via CDN when a graph, flow, or sequence clarifies a finding. If the environment has no network access, use inline CSS and SVG instead.
+The report is one static HTML file. When network access is available, load Tailwind and Mermaid from CDNs. Use Mermaid only when a graph, flow, or sequence clarifies a finding. Without network access, use inline CSS and SVG.
 
-Show the reviewed revision, working-tree state, requested scope, coverage, and coverage gaps. For each candidate, include:
+Order the report for an engineer deciding what to do next:
+
+1. Header and repository state.
+2. Review boundary and verification evidence.
+3. Compact finding counts and the top recommendation.
+4. Ranked candidates.
+5. Architecture follow-ups and remaining coverage gaps.
+
+Keep the review boundary. It defines what the findings can claim. Include the requested scope, major areas inspected, sampled or excluded areas, and coverage gaps. Omit generic method narration such as searches performed or files opened. Include a method detail only when it changes confidence in the result.
+
+Report verification as evidence, not as a health score. Show the exact toolchain and whether it matched repository pins, the command or interaction, cache state, result, and what each check established. Distinguish fresh results from cache hits. Name builds, runtime paths, browser flows, or external integrations that were not exercised. Do not use Turbo task counts alone as verification statistics, and do not label the codebase `Clean` when the checks covered only part of it.
+
+For each candidate, include:
 
 - **Files and symbols.** Name the inspected code.
-- **Standard.** Cite the repository rule or engineering guidance.
+- **Standard.** Cite the exact repository rule, `$engineering` section, or engineering reference that applies.
 - **Evidence.** Show the current cost or risk.
-- **Improvement.** Describe the source fix in plain English.
+- **Improvement.** Highlight the smallest coherent source fix so it is easy to find while scanning.
 - **Benefit.** Name the concrete reduction in complexity, risk, or verification effort.
 - **Effort and risk.** Use relative labels without invented precision.
 - **Verification.** Name the checks and observable behaviour.
 - **Recommendation strength.** Render `Strong`, `Worth exploring`, or `Speculative` as a badge.
 
+For a local code change, show a short current-versus-proposed comparison when it explains the improvement faster than prose. Use exact current code and a concrete proposed shape, keep each excerpt to the lines needed to show the decision, and omit the comparison when it would only repeat the text.
+
+Prefer short lists when a section contains several facts, changes, benefits, or checks. Keep a sentence when it carries one idea. Do not join independent points into a dense paragraph.
+
 Use a visual only when it makes the evidence or proposed change easier to understand. See [HTML-REPORT.md](HTML-REPORT.md) for the report scaffold and visual patterns.
 
-End with a top recommendation. Put architectural observations in a separate follow-up section that suggests `$improve-codebase-architecture` without ranking them against standards candidates.
+Make the top recommendation a compact horizontal section without a diagram. Use the available width for its reason, source fix, effort, risk, and link to the full candidate. Put architectural observations in a separate follow-up section that suggests `$improve-codebase-architecture` without ranking them against standards candidates.
 
 After writing the report, ask the user, "Which of these would you like to improve?"
 
