@@ -72,4 +72,4 @@ Read each reference when its trigger first appears, including when the task chan
 - Before writing, changing, or reviewing tests, read [Testing](references/testing.md).
 - For a sweep, migration, internal interface transition, or other multi-step change, read [Execution and migration](references/execution.md).
 - For commands, lifecycle work, retries, restarts, scheduling, or concurrent writers, read [Reliable operations](references/operations.md).
-- Before declaring any engineering change complete, read [Verification and learning](references/verification.md).
+- Before declaring any engineering change complete, read [Verification, review, and learning](references/verification.md).
