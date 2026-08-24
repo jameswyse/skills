@@ -97,4 +97,4 @@ Removing patterns is half the job. Sterile, voiceless writing is just as obvious
 
 - Transitions/Filler: "Furthermore," "moreover," "in conclusion," "in today's digital landscape," "it is important to note."
 - Imagery/Metaphors: "Delve," "tapestry of," "symphony of," "testament to," "beacon," "journey."
-- Corporate Buzzwords: "Material" (as a filler noun), "materially" for degree (use "significantly", "to a larger degree", or name the concrete effect), "contract" (used metaphorically), "leverage," "utilise," "harness," "game-changer," "load-bearing", "revolutionise", "seamlessly."
+- Buzzwords: "Material" (as a filler noun), "materially" for degree (use "significantly", "to a larger degree", or name the concrete effect), "contract" (used metaphorically), "leverage," "utilise," "harness," "game-changer," "load-bearing", "revolutionise."
