@@ -1,6 +1,6 @@
 ---
 name: engineering
-description: "Baseline software engineering rules for code, tests, dependencies, package management, developer tooling, architecture, APIs, schemas, modules, and data models. Apply whenever reading, writing, reviewing, or changing them. Fix problems at their source and route design, execution, operations, and verification guidance from this skill. For user-facing experience and interface decisions, also apply $ux."
+description: "Baseline software engineering rules for code, tests, dependencies, package management, developer tooling, architecture, APIs, schemas, modules, and data models. Apply when reading, changing, or assessing those subjects. Skip $engineering for routine Git operations that only inspect or change repository state, even when the affected files contain code. Route design, execution, operations, and verification guidance from this skill. For user-facing interface decisions, also apply $ux."
 ---
 
 # Engineering
