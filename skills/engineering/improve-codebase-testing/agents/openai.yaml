@@ -1,0 +1,5 @@
+interface:
+  display_name: "Improve Codebase Testing"
+  short_description: "Audit tests and behavioural guarantees"
+policy:
+  allow_implicit_invocation: false

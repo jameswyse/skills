@@ -40,8 +40,10 @@ Software development, diagnosis, reviews, and maintenance.
 | `upgrade-deps`                    | Comprehensive pnpm dependency, GitHub Actions, security, and optional toolchain upgrades.                      |
 | `improve-codebase-architecture`   | Finds deep-module and seam improvements across a codebase, then produces a visual report.                      |
 | `improve-codebase-organisation`   | Reviews codebase structure, ownership, filenames, shallow paths, and companion-file ownership.                 |
+| `improve-codebase-performance`    | Benchmarks and improves a selected critical path, then produces a measured before-and-after report.            |
 | `improve-codebase-security`       | Reviews trust boundaries, access control, secrets, sensitive data, and dependency risk.                        |
 | `improve-codebase-standards`      | Reviews a codebase against repository and engineering standards, then produces a visual report.                |
+| `improve-codebase-testing`        | Ranks every test by value, maps behavioural guarantees, and produces a visual testing report.                  |
 
 ### Productivity
 
