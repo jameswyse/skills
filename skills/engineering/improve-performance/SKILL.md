@@ -1,9 +1,9 @@
 ---
-name: improve-codebase-performance
+name: improve-performance
 description: Measure and improve performance in a user-selected codebase, application, feature, function, or critical path through reproducible benchmarks, profiling, controlled experiments, and a before-and-after HTML report. Use only when the user explicitly requests a measured performance optimisation workflow.
 ---
 
-# Improve codebase performance
+# Improve performance
 
 Make the selected path measurably faster without changing its required behaviour or moving the cost somewhere unmeasured.
 

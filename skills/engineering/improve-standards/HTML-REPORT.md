@@ -196,7 +196,7 @@ Use a compact dependency graph only when the finding depends on transitive weigh
 
 ## Architecture and organisation follow-ups
 
-Put module-depth, seam, adapter, and substantial interface observations in a separate section. Explain why each belongs in `$improve-codebase-architecture`. Put repository-wide tree, placement, naming, and companion-file observations in the same section and explain why they belong in `$improve-codebase-organisation`. Do not assign these observations a standards rank or let them displace the top standards recommendation.
+Put module-depth, seam, adapter, and substantial interface observations in a separate section. Explain why each belongs in `$improve-architecture`. Put repository-wide tree, placement, naming, and companion-file observations in the same section and explain why they belong in `$improve-organisation`. Do not assign these observations a standards rank or let them displace the top standards recommendation.
 
 ## Style guidance
 

@@ -1,5 +1,5 @@
 interface:
-  display_name: "Improve Codebase Security"
+  display_name: "Improve Security"
   short_description: "Run a focused codebase security review"
 policy:
   allow_implicit_invocation: false

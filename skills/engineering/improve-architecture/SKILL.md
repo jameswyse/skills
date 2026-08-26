@@ -1,9 +1,9 @@
 ---
-name: improve-codebase-architecture
+name: improve-architecture
 description: Review an entire codebase for deep-module and seam improvements, present them in a visual HTML report, then grill through the selected candidate. Use recent changes or a specific repository area only when the user explicitly requests that scope.
 ---
 
-# Improve codebase architecture
+# Improve architecture
 
 Find architectural friction and propose **deepening opportunities**, which are refactors that turn shallow modules into deep ones. The aim is testability and AI navigability.
 
@@ -12,7 +12,7 @@ Apply `$engineering`. Read [Deep modules](../engineering/references/deep-modules
 - Use **module**, **interface**, **depth**, **seam**, **adapter**, **leverage**, and **locality** as the deep-module reference defines them. Apply the deletion test before calling a module shallow. Classify dependencies before recommending a seam or adapter.
 - The domain language in the repository, if present, gives names to good seams.
 
-Recommend `$improve-codebase-organisation` when the primary problem is tree navigation, file or directory naming, companion-file ownership, or shallow filesystem structure without a qualified deepening. Organisation evidence may support an architecture candidate, but it does not bypass the qualification gate.
+Recommend `$improve-organisation` when the primary problem is tree navigation, file or directory naming, companion-file ownership, or shallow filesystem structure without a qualified deepening. Organisation evidence may support an architecture candidate, but it does not bypass the qualification gate.
 
 Before naming a proposed module or path, read [Codebase organisation and naming](../engineering/references/organisation-and-naming.md). A `*Contract` or `*Policy` file that only gathers types, constants, schemas, configuration, or flags is an organisation change, not a deepening opportunity.
 

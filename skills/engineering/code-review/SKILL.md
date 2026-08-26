@@ -21,7 +21,7 @@ to the affected subtree, authoritative imports, naming patterns, and companion-f
 Treat security as part of Standards when the diff changes a trust boundary, authentication,
 authorisation, sensitive data, secret handling, permissions, security configuration, or the
 dependency graph. Keep this check scoped to the diff and the context needed to verify it. Use
-`$improve-codebase-security` only when the user requests a dedicated security review.
+`$improve-security` only when the user requests a dedicated security review.
 
 ## 1. Fix the scope
 

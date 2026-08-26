@@ -1,9 +1,9 @@
 ---
-name: improve-codebase-standards
+name: improve-standards
 description: Review an entire codebase against its repository rules and $engineering, then present evidence-backed improvements in a visual HTML report. Use recent changes or a specific repository area only when the user explicitly requests that scope.
 ---
 
-# Improve codebase standards
+# Improve standards
 
 Find concrete opportunities to improve an existing codebase's correctness, simplicity, maintainability, testability, tooling, and operations. Present the evidence before changing code.
 
@@ -14,9 +14,9 @@ Keep this review distinct from narrower workflows:
 - Use `$code-review` when the task is to approve or find defects in a specific change. Keep an explicitly requested recent-history standards scan in this workflow.
 - Use `$diagnosing-bugs` for a known failure or performance regression.
 - Recommend `$upgrade-deps` for a comprehensive dependency refresh.
-- Use `$improve-codebase-security` for a dedicated security review. Report a concrete security flaw discovered here, but do not expand this workflow into a general security audit.
-- Recommend `$improve-codebase-architecture` when the primary improvement requires deeper modules, a different seam, or a substantial interface redesign. Do not include that work in the standards ranking.
-- Recommend `$improve-codebase-organisation` when the primary improvement requires a repository-wide tree, placement, filename, or companion-file audit. Report a concrete organisation problem discovered here, but do not expand this workflow into that audit.
+- Use `$improve-security` for a dedicated security review. Report a concrete security flaw discovered here, but do not expand this workflow into a general security audit.
+- Recommend `$improve-architecture` when the primary improvement requires deeper modules, a different seam, or a substantial interface redesign. Do not include that work in the standards ranking.
+- Recommend `$improve-organisation` when the primary improvement requires a repository-wide tree, placement, filename, or companion-file audit. Report a concrete organisation problem discovered here, but do not expand this workflow into that audit.
 
 ## Process
 
@@ -99,7 +99,7 @@ Prefer short lists when a section contains several facts, changes, benefits, or 
 
 Use a visual only when it makes the evidence or proposed change easier to understand. See [HTML-REPORT.md](HTML-REPORT.md) for the report scaffold and visual patterns.
 
-Make the top recommendation a compact horizontal section without a diagram. Use the available width for its reason, source fix, effort, risk, and link to the full candidate. Put architecture and organisation observations in a separate follow-up section. Route them to `$improve-codebase-architecture` or `$improve-codebase-organisation` without ranking them against standards candidates.
+Make the top recommendation a compact horizontal section without a diagram. Use the available width for its reason, source fix, effort, risk, and link to the full candidate. Put architecture and organisation observations in a separate follow-up section. Route them to `$improve-architecture` or `$improve-organisation` without ranking them against standards candidates.
 
 After writing the report, ask the user, "Which of these would you like to improve?"
 

@@ -1,5 +1,5 @@
 interface:
-  display_name: "Improve Codebase Performance"
+  display_name: "Improve Performance"
   short_description: "Benchmark and improve a selected critical path"
 policy:
   allow_implicit_invocation: false

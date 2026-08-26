@@ -1,9 +1,9 @@
 ---
-name: improve-codebase-testing
+name: improve-testing
 description: Audit a whole repository or user-selected area by inventorying every test, ranking each test by the guarantee it protects, finding weak and removable tests, mapping important unprotected behaviour, assessing test tooling, and producing a visual HTML report. Use only when the user explicitly requests a testing audit or test-suite improvement review.
 ---
 
-# Improve codebase testing
+# Improve testing
 
 Assess whether the test suite gives useful evidence that the code is correct. Treat line and branch coverage as supporting data only. The main unit of coverage is an important behavioural guarantee.
 

@@ -1,5 +1,5 @@
 interface:
-  display_name: "Improve Codebase Testing"
+  display_name: "Improve Testing"
   short_description: "Audit tests and behavioural guarantees"
 policy:
   allow_implicit_invocation: false

@@ -1,9 +1,9 @@
 ---
-name: improve-codebase-security
+name: improve-security
 description: Review a codebase, subsystem, or diff for evidence-backed security risks in trust boundaries, authentication, authorisation, secret handling, sensitive data, and dependencies. Use only when the user explicitly requests a focused security review or hardening assessment.
 ---
 
-# Improve codebase security
+# Improve security
 
 Find concrete security weaknesses and present the evidence before changing code. Apply
 `$engineering` as the baseline.

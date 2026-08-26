@@ -12,13 +12,13 @@ INVENTORY_SCRIPT = (
     Path(__file__).resolve().parents[1]
     / "skills"
     / "engineering"
-    / "improve-codebase-testing"
+    / "improve-testing"
     / "scripts"
     / "collect_test_inventory.py"
 )
 
 
-class ImproveCodebaseTestingInventoryTest(unittest.TestCase):
+class ImproveTestingInventoryTest(unittest.TestCase):
     def invoke_inventory(
         self, root: Path, *arguments: str
     ) -> subprocess.CompletedProcess[str]:

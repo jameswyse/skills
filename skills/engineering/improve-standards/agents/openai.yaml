@@ -1,5 +1,5 @@
 interface:
-  display_name: "Improve Codebase Standards"
+  display_name: "Improve Standards"
   short_description: "Review whole-codebase engineering standards"
 policy:
   allow_implicit_invocation: false

@@ -1,5 +1,5 @@
 interface:
-  display_name: "Improve Codebase Organisation"
+  display_name: "Improve Organisation"
   short_description: "Review codebase structure and filenames"
 policy:
   allow_implicit_invocation: false
