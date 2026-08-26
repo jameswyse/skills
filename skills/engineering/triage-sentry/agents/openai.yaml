@@ -1,0 +1,4 @@
+interface:
+  display_name: "Sentry Triage"
+  short_description: "Triage one issue or a whole Sentry project"
+  default_prompt: "Use $triage-sentry to review the supplied Sentry issue key, or the full project when no key is supplied."
