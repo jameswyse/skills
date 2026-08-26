@@ -9,6 +9,19 @@ Apply these rules as the baseline for software engineering. When a narrower skil
 
 For user-facing interface implementation, also apply `$ux`. It owns experience, interaction, visual presentation, accessibility, interface copy, and motion decisions. This skill owns implementation quality, architecture, data, types, tests, dependencies, and tooling.
 
+## Test work requires the testing reference
+
+Before planning, proposing, writing, changing, or reviewing any test, read [Testing](references/testing.md). Read it before making test decisions, even when tests are a small part of the task or appear only after implementation has started.
+
+Do not add a test merely because production code changed or because adding a test feels expected. A new test needs all of these:
+
+- An observable runtime behaviour or invariant that it protects.
+- The caller or user seam where that behaviour can be observed.
+- An independent source for the expected result.
+- A plausible defect in runtime behaviour that the test would catch.
+
+If any item is missing, improve the test design or do not add the test. File-content checks, source-shape assertions, export-presence checks, mock choreography, snapshots accepted only because they are current, and guarantees already enforced by types or static analysis do not satisfy this gate.
+
 ## Fight for simplicity
 
 Complexity inhibits understanding and robustness. Simplicity makes change easier. Actively seek the simplest complete design throughout design, implementation, and review.
@@ -50,6 +63,7 @@ Complexity inhibits understanding and robustness. Simplicity makes change easier
 
 - Write durable tests that protect observable behaviour or reproduce a regression.
 - Do not add tests that merely prove an edit, an implementation detail, or a static type guarantee.
+- Prefer no new test over one that cannot pass the test-work gate above.
 
 ## Repository conventions
 
@@ -69,7 +83,6 @@ Read each reference when its trigger first appears, including when the task chan
 - Before assessing module depth, compressing an interface, placing a seam, choosing adapters, or deciding where tests should observe behaviour, read [Deep modules](references/deep-modules.md).
 - Before adding, moving, renaming, splitting, merging, or reviewing files or directories, read [Codebase organisation and naming](references/organisation-and-naming.md).
 - Before designing, changing, or reviewing failure handling, error types, error translation, or diagnostic context, read [Failures and diagnostics](references/errors.md).
-- Before writing, changing, or reviewing tests, read [Testing](references/testing.md).
 - For a sweep, migration, internal interface transition, or other multi-step change, read [Execution and migration](references/execution.md).
 - For commands, lifecycle work, retries, restarts, scheduling, or concurrent writers, read [Reliable operations](references/operations.md).
 - Before declaring any engineering change complete, read [Verification, review, and learning](references/verification.md).

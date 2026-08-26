@@ -4,6 +4,19 @@ Use tests to protect observable behaviour through interfaces that callers use. A
 survives changes to implementation, configurable content, and wording when the behaviour remains
 the same.
 
+## Apply the test gate first
+
+Do not add a test merely because production code changed, a file was added, or coverage feels
+expected. Before adding a test, be able to complete this statement with concrete details:
+
+> This test fails when [observable runtime behaviour] breaks at [caller or user seam], and its
+> expected result comes from [independent requirement, specification, known result, or maintained fixture].
+
+Also name a plausible defect in runtime behaviour that the test would catch. If the statement or
+defect is unclear, improve the design or do not add the test. A check for file contents, source
+shape, an export, a mocked helper call, a current snapshot, or a type-system guarantee is not a
+substitute for observable behaviour.
+
 ## Define what the test protects
 
 Before writing a test, identify:
@@ -114,5 +127,7 @@ automatic reason to rewrite a test.
   protecting behaviour. Replace it with an observable outcome or remove it.
 
 Prefer no new test over one whose signal is weak or whose maintenance cost exceeds the behaviour it
-protects. Remove tests for superseded internals when replacement tests protect the same observable
-behaviour. Do not weaken an existing assertion merely to match an incorrect implementation.
+protects. Code changes do not require a matching test change when existing tests already protect
+the behaviour or the change has no meaningful runtime behaviour to exercise. Remove tests for
+superseded internals when replacement tests protect the same observable behaviour. Do not weaken
+an existing assertion merely to match an incorrect implementation.
