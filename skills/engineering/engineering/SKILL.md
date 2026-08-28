@@ -7,7 +7,8 @@ description: "Baseline software engineering rules for code, tests, dependencies,
 
 Apply these rules as the baseline for software engineering. When a narrower skill also applies, use both. The narrower skill may strengthen or refine these rules within its scope, but must not weaken them.
 
-For user-facing interface implementation, also apply `$ux`. It owns experience, interaction, visual presentation, accessibility, interface copy, and motion decisions. This skill owns implementation quality, architecture, data, types, tests, dependencies, and tooling.
+- This skill owns implementation quality, architecture, data, types, tests, dependencies, and tooling.
+- For user-facing interface implementation that isn't well defined, also apply `$ux`. It owns experience, interaction, visual presentation, accessibility, interface copy, and motion decisions. 
 
 ## Test work requires the testing reference
 
@@ -45,6 +46,7 @@ Complexity inhibits understanding and robustness. Simplicity makes change easier
 ## Safety
 
 - Never run or implement recursive deletion without explicit user consent.
+- Use `trash` or equivalent for data deletion. Do not delete data without a clear, explicit, and reversible user action.
 
 ## Security
 
