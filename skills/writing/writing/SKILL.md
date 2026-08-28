@@ -13,6 +13,23 @@ Apply this skill to every response and written artefact. When a narrower writing
 
 For user-facing product or interface copy, apply `$better-writing` when it is available. It owns UX-copy decisions. Do not apply it to ordinary assistant responses, developer documentation, code comments, commit messages, or pull-request descriptions.
 
+## Final output gate
+
+Hard bans are pass or fail when the listed use applies. After every other edit and before sending any prose:
+
+1. Scan the final draft for every entry under **Hard bans**.
+2. Rewrite each prohibited use, then scan the edited draft again.
+3. Preserve a match only when quoting or discussing source wording, or preserving a code identifier, API name, product name, command, or user-requested text.
+
+Name the concrete action, fact, difference, or effect instead of swapping in a near-synonym.
+
+### Hard bans
+
+- Transitions and filler: "Furthermore," "moreover," "in conclusion," "in today's digital landscape," "it is important to note."
+- Imagery and metaphors: "Delve," "tapestry of," "symphony of," "testament to," "beacon," "journey."
+- Buzzwords: "Material" as a filler noun, "contract" used metaphorically, "leverage," "utilise," "harness," "game-changer," "load-bearing," and "revolutionise."
+- "Materially" used for degree. Name the actual difference or effect. Rewrite "So there are two materially different future designs" as "So there are two different ways we could design this." If the difference is known, state it instead.
+
 ## Locale
 
 - Use Australian spelling and punctuation in prose and user-visible copy unless the user or source material requires another locale.
@@ -22,10 +39,11 @@ For user-facing product or interface copy, apply `$better-writing` when it is av
 
 ## Process
 
-1. Scan for the patterns below.
-2. Rewrite. Preserve meaning, match intended tone.
+1. Draft the response or artefact.
+2. Apply every relevant pattern check below. Rewrite while preserving meaning and matching the intended tone.
 3. Add soul (see next section).
 4. Self-audit: "What makes this obviously AI-generated?" Fix remaining tells.
+5. Apply the final output gate after every other edit.
 
 ## Adding soul
 
@@ -92,9 +110,3 @@ Removing patterns is half the job. Sterile, voiceless writing is just as obvious
 30. **Active voice.** Prefer it. Catch "is/are/was/were + past participle" and name the actor: "queries are validated" becomes "the compiler validates queries", "the file is parsed by the loader" becomes "the loader parses the file". Passive is fine only when the actor is unknown or genuinely doesn't matter.
 31. **Cut adverbs, or use a stronger verb.** "runs quickly" becomes "is fast" or the number. "significantly improves" becomes the measured delta. An adverb propping up a weak verb means the verb is wrong.
 32. **Prefer the plain word.** "utilise" becomes "use", "leverage" becomes "use", "facilitate" becomes "help", "numerous" becomes "many", "in the event that" becomes "if". The fancier synonym is rarely clearer.
-
-### Forbidden language
-
-- Transitions/Filler: "Furthermore," "moreover," "in conclusion," "in today's digital landscape," "it is important to note."
-- Imagery/Metaphors: "Delve," "tapestry of," "symphony of," "testament to," "beacon," "journey."
-- Buzzwords: "Material" (as a filler noun), "materially" for degree (use "significantly", "to a larger degree", or name the concrete effect), "contract" (used metaphorically), "leverage," "utilise," "harness," "game-changer," "load-bearing", "revolutionise."
