@@ -7,7 +7,7 @@ description: Review an entire codebase's tree, module placement, filenames, comp
 
 Review the repository tree as an interface for maintainers. Find structures that make a capability difficult to locate or follow, then present evidence before changing files.
 
-Apply `$engineering`. Read [Codebase organisation and naming](../engineering/references/organisation-and-naming.md) before inspecting the tree. Read [Deep modules](../engineering/references/deep-modules.md) before judging whether a file, directory, or interface is shallow.
+Apply `$engineering` and follow its reference routing. Read its organisation and naming guidance before inspecting the tree. Read its deep-module guidance before judging whether a file, directory, or interface is shallow.
 
 Keep this workflow distinct from broader reviews:
 
