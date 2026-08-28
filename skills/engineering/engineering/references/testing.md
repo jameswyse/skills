@@ -41,6 +41,25 @@ tests cannot identify clearly. If ordinary behaviour can be tested only by reach
 interface, reconsider the module shape. Read [Deep modules](deep-modules.md) when the interface or
 seam is in question.
 
+## Keep execution cost proportionate
+
+Treat wall time, CPU, memory, I/O, process or browser startup, DOM size, and external resource use
+as part of the test design. Exercise the smallest workload and cheapest reliable seam that still
+protects the stated guarantee and catches its plausible defect. Do not render a whole application
+or large collection through a full UI when a smaller runtime seam protects the same guarantee. Do
+not repeat expensive setup across adjacent tests when one scenario can protect the same logical
+outcome with useful diagnostics.
+
+Use timings, CI failures, retries, timeouts, memory exhaustion, and worker crashes as strong cost
+evidence. During implementation and review, also inspect obvious multiplicative work and consider
+how fixture growth and suite concurrency will affect it. Do not impose a universal duration or
+data-size threshold. Browser, integration, large-data, and performance tests can justify higher
+cost when their execution level or scale is part of the guarantee.
+
+When a test becomes flaky or times out under contention, first remove work that the guarantee does
+not need and isolate shared-resource contention. A larger timeout or more retries does not correct
+disproportionate work and can make the full suite slower and less stable.
+
 ## Use an independent oracle
 
 Derive expected values from a requirement, specification, known literal, worked example, or
@@ -123,6 +142,14 @@ automatic reason to rewrite a test.
   analysis. Delete it unless runtime behaviour differs.
 - **Timing-dependent test.** The test relies on real time, arbitrary delays, shared state, or
   uncontrolled scheduling. Control the source of variation or wait for the resulting condition.
+- **Disproportionately expensive test.** The test consumes wall time, CPU, memory, I/O, processes,
+  browsers, DOM nodes, or external resources beyond what its unique guarantee needs. Warning signs
+  include exercising a narrow invariant through a whole application or full UI, pushing a large or
+  growing collection through an expensive seam, repeating heavyweight setup for overlapping
+  assertions, and increasing timeouts or retries to tolerate the work. Confirm the cost or scaling
+  risk and the guarantee, then reduce the workload, use a cheaper reliable seam, or combine an
+  overlapping scenario without weakening behaviour or diagnostics. Do not flag a justified costly
+  test from scale alone.
 - **Edit-proof test.** The test proves that a line, file, export, or other edit exists without
   protecting behaviour. Replace it with an observable outcome or remove it.
 
