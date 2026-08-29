@@ -1,4 +1,6 @@
 __pycache__/
 *.py[cod]
 assets
+!skills/productivity/skill-doctor/assets/
+!skills/productivity/skill-doctor/assets/pierre-diffs.js
 /NOTES.md
