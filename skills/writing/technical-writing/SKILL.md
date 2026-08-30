@@ -100,7 +100,7 @@ Source: Kohl, The Global English Style Guide (SAS Press). Guideline text fetched
 - `$writing` owns the catalogue of slop patterns: AI vocabulary, filler, hedging, and formatting tells.
 - PR descriptions and commit messages are writing too. Every layer except Diátaxis applies to them.
 - Product UI strings are not documentation. Use your product's copy guidelines for those.
-- For durable Markdown artefacts, put one space inside each table pipe. Pad every cell and separator so the column boundaries align in plain text.
+- For Markdown files committed to the repository, put one space inside each table pipe. Pad every cell and separator so the column boundaries align in plain text.
 - Indent code snippets with spaces. Write real paths and real symbols. Make every count or tree claim true at the commit that lands it, and include the command that regenerates it.
 
 ## Worked example
