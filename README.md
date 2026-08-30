@@ -54,7 +54,6 @@ Structured workflows for sharpening plans and decisions.
 | `grilling` | Matt Pococks's grilling skill, vendored for completeness.                      |
 | `grill-me` | Explicit shortcut for invoking `grilling`.                                     |
 | `handoff`  | Compacts the current conversation into a copy-ready handoff for another agent. |
-| `skill-doctor` | Grades installed skills from local agent conversations and drafts evidence-backed improvements. |
 
 ## Install with `npx skills`
 
