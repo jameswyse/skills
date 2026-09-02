@@ -53,6 +53,15 @@ if command == "add":
     if source == "https://cli.sentry.dev":
         source = "cli.sentry.dev"
     skill_index = args.index("--skill") + 1
+    agent_names = {
+        "codex": "Codex",
+        "claude-code": "Claude Code",
+    }
+    agents = [
+        agent_names[args[index + 1]]
+        for index, value in enumerate(args)
+        if value == "--agent"
+    ]
     names = []
     for value in args[skill_index:]:
         if value.startswith("-"):
@@ -60,7 +69,7 @@ if command == "add":
         names.append(value)
     known = {record["name"]: record for record in state}
     for name in names:
-        known[name] = {"name": name, "source": source}
+        known[name] = {"name": name, "source": source, "agents": agents}
     state_path.write_text(json.dumps(list(known.values())), encoding="utf-8")
     raise SystemExit(0)
 
@@ -139,13 +148,19 @@ with log_path.open("a", encoding="utf-8") as log:
         self.assertIn("vercel-react-best-practices", update)
         self.assertNotIn("emil-design-eng", update)
         self.assertFalse(any(command[1] == "add" for command in commands))
-        self.assertIn(
-            ["configure", "agent-toolkit", "--region", "us-east-1"], commands
-        )
+        self.assertIn(["configure", "agent-toolkit", "--region", "us-east-1"], commands)
 
     def test_refuses_to_overwrite_a_skill_from_another_source(self) -> None:
         self.state.write_text(
-            json.dumps([{"name": "animate", "source": "another/source"}]),
+            json.dumps(
+                [
+                    {
+                        "name": "animate",
+                        "source": "another/source",
+                        "agents": ["Codex"],
+                    }
+                ]
+            ),
             encoding="utf-8",
         )
 
@@ -153,11 +168,42 @@ with log_path.open("a", encoding="utf-8") as log:
 
         self.assertEqual(result.returncode, 1)
         self.assertIn("Refusing to overwrite existing skills", result.stderr)
-        self.assertFalse(any(command[1] in {"add", "update"} for command in self.commands()))
+        self.assertFalse(
+            any(command[1] in {"add", "update"} for command in self.commands())
+        )
         self.assertNotIn(
             ["configure", "agent-toolkit", "--region", "us-east-1"],
             self.commands(),
         )
+
+    def test_adds_missing_claude_binding_for_an_installed_skill(self) -> None:
+        self.state.write_text(
+            json.dumps(
+                [
+                    {
+                        "name": "animate",
+                        "source": "emilkowalski/skills",
+                        "agents": ["Codex"],
+                    }
+                ]
+            ),
+            encoding="utf-8",
+        )
+
+        result = self.run_setup()
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        add = next(
+            command
+            for command in self.commands()
+            if command[1] == "add" and command[2] == "emilkowalski/skills"
+        )
+        self.assertIn("animate", add)
+        self.assertIn("claude-code", add)
+        installed = {
+            record["name"]: record for record in json.loads(self.state.read_text())
+        }
+        self.assertIn("Claude Code", installed["animate"]["agents"])
 
     def test_dry_run_reports_changes_without_installing(self) -> None:
         result = self.run_setup("--dry-run")
@@ -166,8 +212,11 @@ with log_path.open("a", encoding="utf-8") as log:
         self.assertIn("aws configure agent-toolkit --region us-east-1", result.stdout)
         self.assertIn("npx skills@latest add https://cli.sentry.dev", result.stdout)
         self.assertIn("npx skills@latest add", result.stdout)
+        self.assertIn("--agent codex --agent claude-code", result.stdout)
         self.assertEqual(json.loads(self.state.read_text(encoding="utf-8")), [])
-        self.assertFalse(any(command[1] in {"add", "update"} for command in self.commands()))
+        self.assertFalse(
+            any(command[1] in {"add", "update"} for command in self.commands())
+        )
 
 
 if __name__ == "__main__":

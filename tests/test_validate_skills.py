@@ -1,9 +1,7 @@
 from __future__ import annotations
 
-import os
 import shutil
 import subprocess
-import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -15,45 +13,21 @@ SOURCE_SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "validate-skil
 class ValidateSkillsTest(unittest.TestCase):
     root: Path
     repository: Path
-    codex_home: Path
-    log: Path
     skills: list[Path]
     groups: list[Path]
 
     def setUp(self) -> None:
         self.root = Path(tempfile.mkdtemp(prefix="skills-validation-test-"))
         self.repository = self.root / "repository"
-        self.codex_home = self.root / "codex"
-        self.log = self.root / "validator.log"
         self.skills = []
         self.groups = []
 
         scripts = self.repository / "scripts"
         scripts.mkdir(parents=True)
-        shutil.copyfile(SOURCE_SCRIPT, scripts / "validate-skills")
-
-        validator = (
-            self.codex_home
-            / "skills"
-            / ".system"
-            / "skill-creator"
-            / "scripts"
-            / "quick_validate.py"
-        )
-        validator.parent.mkdir(parents=True)
-        validator.write_text(
-            """from __future__ import annotations
-
-import os
-import sys
-from pathlib import Path
-
-with Path(os.environ["VALIDATOR_LOG"]).open("a", encoding="utf-8") as log:
-    log.write(f"{sys.argv[1]}\\n")
-""",
-            encoding="utf-8",
-        )
-        self.add_skill("writing", "writing")
+        self.skill = self.add_skill("writing", "writing")
+        repository_script = scripts / "validate-skills"
+        shutil.copyfile(SOURCE_SCRIPT, repository_script)
+        repository_script.chmod(0o755)
 
     def tearDown(self) -> None:
         for skill in self.skills:
@@ -70,7 +44,6 @@ with Path(os.environ["VALIDATOR_LOG"]).open("a", encoding="utf-8") as log:
         skills_root = self.repository / "skills"
         if skills_root.exists():
             skills_root.rmdir()
-
         repository_script = self.repository / "scripts" / "validate-skills"
         if repository_script.exists():
             repository_script.unlink()
@@ -79,29 +52,6 @@ with Path(os.environ["VALIDATOR_LOG"]).open("a", encoding="utf-8") as log:
             repository_scripts.rmdir()
         if self.repository.exists():
             self.repository.rmdir()
-
-        validator = (
-            self.codex_home
-            / "skills"
-            / ".system"
-            / "skill-creator"
-            / "scripts"
-            / "quick_validate.py"
-        )
-        if validator.exists():
-            validator.unlink()
-        for directory in (
-            validator.parent,
-            validator.parent.parent,
-            validator.parent.parent.parent,
-            validator.parent.parent.parent.parent,
-            self.codex_home,
-        ):
-            if directory.exists():
-                directory.rmdir()
-
-        if self.log.exists():
-            self.log.unlink()
         self.root.rmdir()
 
     def add_skill(self, group: str, name: str) -> Path:
@@ -118,50 +68,91 @@ with Path(os.environ["VALIDATOR_LOG"]).open("a", encoding="utf-8") as log:
     def run_validation(self, *arguments: str) -> subprocess.CompletedProcess[str]:
         return subprocess.run(
             [
-                sys.executable,
                 str(self.repository / "scripts" / "validate-skills"),
                 *arguments,
             ],
             check=False,
             capture_output=True,
             text=True,
-            env={
-                **os.environ,
-                "CODEX_HOME": str(self.codex_home),
-                "VALIDATOR_LOG": str(self.log),
-            },
         )
 
-    def validated_paths(self) -> list[Path]:
-        if not self.log.exists():
-            return []
-        return [Path(line) for line in self.log.read_text().splitlines()]
-
-    def test_validates_grouped_skill_by_name(self) -> None:
+    def test_validates_grouped_skill_by_name_without_codex(self) -> None:
         result = self.run_validation("writing")
 
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(
-            self.validated_paths(),
-            [(self.repository / "skills" / "writing" / "writing").resolve()],
-        )
+        self.assertIn("skills/writing/writing", result.stdout)
+        self.assertIn("validation complete", result.stdout)
 
     def test_validates_every_grouped_skill_in_name_order(self) -> None:
-        typescript = self.add_skill("engineering", "typescript")
+        self.add_skill("engineering", "typescript")
 
         result = self.run_validation()
 
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(
-            self.validated_paths(),
-            [typescript.resolve(), self.skills[0].resolve()],
+        self.assertLess(
+            result.stdout.index("skills/engineering/typescript"),
+            result.stdout.index("skills/writing/writing"),
         )
 
     def test_accepts_repository_relative_grouped_path(self) -> None:
         result = self.run_validation("skills/writing/writing")
 
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(self.validated_paths(), [self.skills[0].resolve()])
+        self.assertIn("skills/writing/writing", result.stdout)
+
+    def test_accepts_claude_code_frontmatter(self) -> None:
+        (self.skill / "SKILL.md").write_text(
+            "---\n"
+            "name: writing\n"
+            "description: Test skill.\n"
+            "disable-model-invocation: true\n"
+            "argument-hint: '[file]'\n"
+            "---\n",
+            encoding="utf-8",
+        )
+
+        result = self.run_validation("writing")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_rejects_unknown_frontmatter_and_mismatched_name(self) -> None:
+        (self.skill / "SKILL.md").write_text(
+            "---\n"
+            "name: another-name\n"
+            "description: Test skill.\n"
+            "unknown-field: true\n"
+            "---\n",
+            encoding="utf-8",
+        )
+
+        result = self.run_validation("writing")
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("Unexpected frontmatter fields: unknown-field", result.stderr)
+        self.assertIn("must match field 'name'", result.stderr)
+
+    def test_rejects_non_string_frontmatter_field_name(self) -> None:
+        (self.skill / "SKILL.md").write_text(
+            "---\nname: writing\ndescription: Test skill.\n1: invalid\n---\n",
+            encoding="utf-8",
+        )
+
+        result = self.run_validation("writing")
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("Frontmatter field names must be strings", result.stderr)
+        self.assertNotIn("Traceback", result.stderr)
+
+    def test_rejects_unfinished_description(self) -> None:
+        (self.skill / "SKILL.md").write_text(
+            "---\nname: writing\ndescription: '[TODO: finish this]'\n---\n",
+            encoding="utf-8",
+        )
+
+        result = self.run_validation("writing")
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("unfinished TODO placeholder", result.stderr)
 
     def test_rejects_duplicate_skill_names_across_groups(self) -> None:
         self.add_skill("productivity", "writing")
@@ -170,7 +161,6 @@ with Path(os.environ["VALIDATOR_LOG"]).open("a", encoding="utf-8") as log:
 
         self.assertEqual(result.returncode, 1)
         self.assertIn("Duplicate skill directory name: writing", result.stderr)
-        self.assertEqual(self.validated_paths(), [])
 
 
 if __name__ == "__main__":

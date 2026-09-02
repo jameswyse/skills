@@ -1,12 +1,13 @@
 ---
 name: improve-security
 description: Review a codebase, subsystem, or diff for evidence-backed security risks in trust boundaries, authentication, authorisation, secret handling, sensitive data, and dependencies. Use only when the user explicitly requests a focused security review or hardening assessment.
+disable-model-invocation: true
 ---
 
 # Improve security
 
-Find concrete security weaknesses and present the evidence before changing code. Apply
-`$engineering` as the baseline.
+Find concrete security weaknesses and present the evidence before changing code. Call the Skill
+tool for "engineering" as the baseline.
 
 This is a focused engineering review. It is not a comprehensive scanner, compliance audit,
 penetration test, or incident-response process. Recommend Codex Security or a qualified human
@@ -101,6 +102,6 @@ found within the reviewed coverage.
 Do not include secret values, complete exploit payloads, or instructions for attacking a live
 system. Use the minimum safe reproduction needed to support the finding.
 
-Selection does not authorise a fix. Make changes only when the user asks for implementation. Apply
-`$engineering`, fix the source problem, and verify the protected behaviour when implementation is
+Selection does not authorise a fix. Make changes only when the user asks for implementation. Call
+the Skill tool for "engineering", fix the source problem, and verify the protected behaviour when implementation is
 authorised.

@@ -1,13 +1,14 @@
 ---
 name: upgrade-deps
 description: "Upgrade every dependency in a pnpm project or workspace, including GitHub Actions, audit remediation, dependency-policy cleanup, and optional Node.js or pnpm toolchain updates. Use for a comprehensive dependency refresh, not a single-package update."
+disable-model-invocation: true
 ---
 
 # Upgrade dependencies
 
-Upgrade the complete pnpm project to the newest compatible stable dependency set. Apply
-`$engineering`. Treat repository instructions, the workspace definition, the manifests, and the
-lockfile as the sources of truth.
+Upgrade the complete pnpm project to the newest compatible stable dependency set. Call the Skill
+tool for "engineering". Treat repository instructions, the workspace definition, the manifests,
+and the lockfile as the sources of truth.
 
 The request authorises local changes required to complete the upgrade. It does not authorise a
 commit, push, publication, deployment, or unrelated cleanup.
@@ -24,8 +25,8 @@ Finish only when all of these conditions hold:
   remain.
 - Every repository-provided full verification command passes. If none exists, all available format,
   lint, typecheck, build, and test checks pass.
-- `$code-review` has reviewed the complete change, every verified finding has been fixed, and the
-  affected checks have been repeated.
+- The "code-review" skill has reviewed the complete change, every verified finding has been fixed,
+  and the affected checks have been repeated.
 - The final outdated scan, available peer check, frozen-lockfile install, and audit pass. If the
   environment prevents a required check, report the run as blocked instead of complete.
 
@@ -204,7 +205,7 @@ the repository's documented finish order. If the repository defines no order, us
 2. Run a frozen-lockfile install and the available peer check.
 3. Run the repository's canonical full verification command, including production builds and full
    tests when that command provides them.
-4. Run `$code-review` against the complete working-tree change. Fix every verified finding.
+4. Call the Skill tool for "code-review" against the complete working-tree change. Fix every verified finding.
 5. Repeat affected checks and the full verification command after review fixes.
 6. Run `git diff --check`, the recursive outdated scan with GitHub Actions, the full audit, and the
    production audit.

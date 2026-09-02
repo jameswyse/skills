@@ -67,7 +67,7 @@ Name the surviving protection. If an important guarantee would be lost, classify
 
 ## Identify tests that fall short
 
-Use the smell names from `$engineering`'s Testing reference where they fit:
+Use the smell names from the engineering skill's Testing reference where they fit:
 
 - `Implementation-coupled test`
 - `Private mock`

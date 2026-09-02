@@ -1,13 +1,14 @@
 ---
 name: diagnosing-production-incidents
 description: Diagnose urgent live production incidents through authorised reproduction and read-only evidence collection. Invoke explicitly after a production outage or major failure has been classified as an incident. Use diagnosing-bugs for ordinary bugs found in production.
+disable-model-invocation: true
 ---
 
 # Diagnose production incidents
 
 Use this skill only when the user invokes it explicitly. The invocation means the user has classified the problem as an urgent production incident. Do not invent an organisation-specific severity.
 
-This skill owns the incident workflow. Do not run `$diagnosing-bugs` alongside it. Diagnose the incident, describe urgent mitigation options, and stop before any fix, rollback, deployment, configuration change, restart, scaling action, feature-flag change, or external communication unless the user separately authorises that action.
+This skill owns the incident workflow. Do not run the "diagnosing-bugs" skill alongside it. Diagnose the incident, describe urgent mitigation options, and stop before any fix, rollback, deployment, configuration change, restart, scaling action, feature-flag change, or external communication unless the user separately authorises that action.
 
 Keep the default investigation operationally read-only. Querying approved evidence sources, inspecting code and configuration, and creating authorised local temporary diagnostics are allowed. Production instrumentation is a separate change with a separate approval gate.
 

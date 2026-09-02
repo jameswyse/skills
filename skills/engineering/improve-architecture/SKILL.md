@@ -1,18 +1,19 @@
 ---
 name: improve-architecture
 description: Review an entire codebase for deep-module and seam improvements, present them in a visual HTML report, then grill through the selected candidate. Use recent changes or a specific repository area only when the user explicitly requests that scope.
+disable-model-invocation: true
 ---
 
 # Improve architecture
 
 Find architectural friction and propose **deepening opportunities**, which are refactors that turn shallow modules into deep ones. The aim is testability and AI navigability.
 
-Apply `$engineering`. Read [Deep modules](../engineering/references/deep-modules.md) before assessing candidates. This workflow uses the project's domain model and the deep-module vocabulary:
+Call the Skill tool for "engineering". Read [Deep modules](../engineering/references/deep-modules.md) before assessing candidates. This workflow uses the project's domain model and the deep-module vocabulary:
 
 - Use **module**, **interface**, **depth**, **seam**, **adapter**, **leverage**, and **locality** as the deep-module reference defines them. Apply the deletion test before calling a module shallow. Classify dependencies before recommending a seam or adapter.
 - The domain language in the repository, if present, gives names to good seams.
 
-Recommend `$improve-organisation` when the primary problem is tree navigation, file or directory naming, companion-file ownership, or shallow filesystem structure without a qualified deepening. Organisation evidence may support an architecture candidate, but it does not bypass the qualification gate.
+Recommend the user-invoked "improve-organisation" skill when the primary problem is tree navigation, file or directory naming, companion-file ownership, or shallow filesystem structure without a qualified deepening. Organisation evidence may support an architecture candidate, but it does not bypass the qualification gate.
 
 Before naming a proposed module or path, read [Codebase organisation and naming](../engineering/references/organisation-and-naming.md). A `*Contract` or `*Policy` file that only gathers types, constants, schemas, configuration, or flags is an organisation change, not a deepening opportunity.
 
@@ -108,11 +109,11 @@ Before handoff, inspect the rendered report at a desktop width and at `320px`. C
 
 ### 4. Grilling loop
 
-Once the user picks a candidate, apply `$grilling` to examine its constraints, dependencies, deepened module, seam contents, and surviving tests.
+Once the user picks a candidate, call the Skill tool for "grilling" to examine its constraints, dependencies, deepened module, seam contents, and surviving tests.
 
 After the user confirms a decision, offer to update the domain documentation during the same loop. The decision does not itself authorise file changes. Update documentation only when the user asks you to record it.
 
 - When a deepened module uses a concept missing from the repository's domain vocabulary, offer to add the term in the appropriate place.
 - When the conversation sharpens a vague term, offer to update the repository's domain vocabulary.
 - When the user rejects a candidate for a reason future reviews need, offer to record that reason in the documentation. Ask, _"Should I record this in the documentation so future architecture reviews do not suggest it again?"_ Skip temporary reasons such as "not worth it right now" and self-evident reasons.
-- When the candidate needs a new interface with several credible shapes, offer Design It Twice before converging. If the user accepts or directly requests alternatives, apply `$design-it-twice`.
+- When the candidate needs a new interface with several credible shapes, offer Design It Twice before converging. If the user accepts or directly requests alternatives, call the Skill tool for "design-it-twice".

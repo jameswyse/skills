@@ -1,13 +1,14 @@
 ---
 name: improve-performance
 description: Measure and improve performance in a user-selected codebase, application, feature, function, or critical path through reproducible benchmarks, profiling, controlled experiments, and a before-and-after HTML report. Use only when the user explicitly requests a measured performance optimisation workflow.
+disable-model-invocation: true
 ---
 
 # Improve performance
 
 Make the selected path measurably faster without changing its required behaviour or moving the cost somewhere unmeasured.
 
-Apply `$engineering`. Apply `$diagnosing-bugs` as well when the work concerns an unexpected performance regression or the measurements conflict with expectations. Apply an available framework or runtime performance skill only after the repository and the diagnosed bottleneck justify it. For example, use a matching Next.js cache skill for a confirmed Next.js caching problem rather than for every slow Next.js page.
+Call the Skill tool for "engineering". Call the Skill tool for "diagnosing-bugs" as well when the work concerns an unexpected performance regression or the measurements conflict with expectations. Apply an available framework or runtime performance skill only after the repository and the diagnosed bottleneck justify it. For example, use a matching Next.js cache skill for a confirmed Next.js caching problem rather than for every slow Next.js page.
 
 ## Choose the intake and set the target
 
@@ -23,7 +24,7 @@ For a specific improvement request, resolve consequential unknowns before buildi
 - required behaviour and unacceptable trade-offs;
 - constraints on dependencies, architecture, compatibility, memory, cost, or delivery time.
 
-Ask a compact set of direct questions when the unknowns are independent and few. When several consequential decisions remain, their answers depend on each other, or the acceptable solution could change substantially, apply `$grilling`. Use its design tree and recommended answers until the user confirms the shared understanding. Do not start instrumentation or implementation before that confirmation.
+Ask a compact set of direct questions when the unknowns are independent and few. When several consequential decisions remain, their answers depend on each other, or the acceptable solution could change substantially, call the Skill tool for "grilling". Use its design tree and recommended answers until the user confirms the shared understanding. Do not start instrumentation or implementation before that confirmation.
 
 Write a short performance brief before changing product code:
 
@@ -118,4 +119,4 @@ Inspect the rendered report at a desktop width and at `320px`. Confirm that the 
 
 ## Finish the code change
 
-Remove disposable instrumentation and profiling artefacts from the product diff. Keep a benchmark or marker only when it has continuing value, stable overhead, and a clear owner. Run the repository's proportionate verification, inspect the complete diff and untracked files, and apply the finished-diff review required by `$engineering`.
+Remove disposable instrumentation and profiling artefacts from the product diff. Keep a benchmark or marker only when it has continuing value, stable overhead, and a clear owner. Run the repository's proportionate verification, inspect the complete diff and untracked files, and apply the finished-diff review required by the engineering skill.

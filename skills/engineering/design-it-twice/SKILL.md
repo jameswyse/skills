@@ -7,7 +7,7 @@ description: "Design several genuinely different interfaces for a chosen module 
 
 Ousterhout calls this "Design It Twice" because the first interface is unlikely to be the best. Compare genuinely different designs before committing to one.
 
-Apply `$engineering`. Read [Deep modules](../engineering/references/deep-modules.md) before framing the alternatives. Use the repository's documented domain vocabulary when it exists.
+Call the Skill tool for "engineering". Read [Deep modules](../engineering/references/deep-modules.md) before framing the alternatives. Use the repository's documented domain vocabulary when it exists.
 
 Do not change production code while comparing designs. If the user also requested implementation, finish the comparison and recommendation first.
 

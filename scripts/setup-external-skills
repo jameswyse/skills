@@ -9,6 +9,7 @@ import shlex
 import subprocess
 import sys
 from collections.abc import Sequence
+from typing import TypedDict
 
 
 SKILLS_COMMAND = ("npx", "skills@latest")
@@ -20,6 +21,8 @@ AWS_AGENT_TOOLKIT_COMMAND = (
     "us-east-1",
 )
 SKILL_INSTALL_SOURCES = {"cli.sentry.dev": "https://cli.sentry.dev"}
+TARGET_AGENTS = ("codex", "claude-code")
+TARGET_AGENT_DISPLAY_NAMES = frozenset({"Codex", "Claude Code"})
 RECOMMENDED_SKILLS: dict[str, tuple[str, ...]] = {
     "apollographql/skills": (
         "apollo-client",
@@ -83,6 +86,11 @@ class SetupError(Exception):
     """Raised when setup cannot proceed without overwriting another owner."""
 
 
+class InstalledSkill(TypedDict):
+    source: str | None
+    agents: frozenset[str]
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Install missing recommended skills and update installed ones globally."
@@ -110,7 +118,7 @@ def run(command: Sequence[str], *, capture: bool = False) -> str:
     return result.stdout
 
 
-def list_global_skills() -> dict[str, str | None]:
+def list_global_skills() -> dict[str, InstalledSkill]:
     output = run((*SKILLS_COMMAND, "list", "--global", "--json"), capture=True)
     try:
         records = json.loads(output)
@@ -120,17 +128,22 @@ def list_global_skills() -> dict[str, str | None]:
     if not isinstance(records, list):
         raise SetupError("npx skills returned a non-list global inventory")
 
-    installed: dict[str, str | None] = {}
+    installed: dict[str, InstalledSkill] = {}
     for record in records:
         if not isinstance(record, dict):
             raise SetupError("npx skills returned an invalid global skill record")
         name = record.get("name")
         source = record.get("source")
+        agents = record.get("agents")
         if not isinstance(name, str):
             raise SetupError("npx skills returned a global skill without a name")
         if source is not None and not isinstance(source, str):
             raise SetupError(f"npx skills returned an invalid source for {name}")
-        installed[name] = source
+        if not isinstance(agents, list) or not all(
+            isinstance(agent, str) for agent in agents
+        ):
+            raise SetupError(f"npx skills returned invalid agents for {name}")
+        installed[name] = {"source": source, "agents": frozenset(agents)}
     return installed
 
 
@@ -147,11 +160,12 @@ def expected_sources() -> dict[str, str]:
     return expected
 
 
-def ensure_no_conflicts(installed: dict[str, str | None]) -> None:
+def ensure_no_conflicts(installed: dict[str, InstalledSkill]) -> None:
     conflicts = [
-        f"{name} is owned by {installed[name] or 'an unmanaged local source'}, not {source}"
+        f"{name} is owned by "
+        f"{installed[name]['source'] or 'an unmanaged local source'}, not {source}"
         for name, source in expected_sources().items()
-        if name in installed and installed[name] != source
+        if name in installed and installed[name]["source"] != source
     ]
     if conflicts:
         details = "\n".join(f"- {conflict}" for conflict in conflicts)
@@ -167,10 +181,15 @@ def main() -> int:
         installed_recommendations = sorted(
             name
             for name, source in expected_sources().items()
-            if installed.get(name) == source
+            if name in installed and installed[name]["source"] == source
         )
         missing_by_source = {
-            source: tuple(name for name in skills if name not in installed)
+            source: tuple(
+                name
+                for name in skills
+                if name not in installed
+                or not TARGET_AGENT_DISPLAY_NAMES.issubset(installed[name]["agents"])
+            )
             for source, skills in RECOMMENDED_SKILLS.items()
         }
 
@@ -188,6 +207,7 @@ def main() -> int:
                 SKILL_INSTALL_SOURCES.get(source, source),
                 "--global",
                 "--yes",
+                *(argument for agent in TARGET_AGENTS for argument in ("--agent", agent)),
                 "--skill",
                 *missing,
             )
@@ -215,7 +235,14 @@ def main() -> int:
 
         final_inventory = list_global_skills()
         ensure_no_conflicts(final_inventory)
-        missing = sorted(set(expected_sources()) - set(final_inventory))
+        missing = sorted(
+            name
+            for name in expected_sources()
+            if name not in final_inventory
+            or not TARGET_AGENT_DISPLAY_NAMES.issubset(
+                final_inventory[name]["agents"]
+            )
+        )
         if missing:
             raise SetupError(
                 "Recommended skills are still missing: " + ", ".join(missing)

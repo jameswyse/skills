@@ -13,11 +13,11 @@ When exploring the codebase, read `CONTEXT.md` (if it exists) to get a clear men
 
 ## Flag possible live production incidents
 
-An ordinary bug found in production remains in this workflow. If the report may describe an urgent live production incident, mention that `$diagnosing-production-incidents` is available for an evidence-first incident workflow. Signals include an active outage, a major production feature being unusable, or an explicit need for immediate recovery.
+An ordinary bug found in production remains in this workflow. If the report may describe an urgent live production incident, mention that the user-invoked "diagnosing-production-incidents" skill is available for an evidence-first incident workflow. Signals include an active outage, a major production feature being unusable, or an explicit need for immediate recovery.
 
 Make this a non-blocking suggestion. Continue the current diagnostic workflow without waiting for a response. Do not classify a report as an incident merely because production is mentioned.
 
-If the user explicitly invokes `$diagnosing-production-incidents`, that skill owns the workflow. Do not run both diagnostic processes in parallel.
+If the user explicitly invokes "diagnosing-production-incidents", that skill owns the workflow. Do not run both diagnostic processes in parallel.
 
 ## Set the authority boundary
 

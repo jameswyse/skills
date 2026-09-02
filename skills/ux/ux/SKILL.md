@@ -1,13 +1,13 @@
 ---
 name: ux
-description: "User-facing product and interface design router for UX, UI, interaction, visual presentation, accessibility, interface copy, and motion. Apply for user-facing product or interface design, implementation, or review. For implementation, also apply $engineering. For change reviews, ask the user to invoke $interface-review. For variants, ask the user to invoke $variant. For interface explanations, ask the user to invoke $explain-interface. Do not use for software design, architecture, APIs, schemas, modules, or data models."
+description: "User-facing product and interface design router for UX, UI, interaction, visual presentation, accessibility, interface copy, and motion. Apply for user-facing product or interface design, implementation, or review. For implementation, also apply the engineering skill. For change reviews, ask the user to invoke interface-review. For variants, ask the user to invoke variant. For interface explanations, ask the user to invoke explain-interface. Do not use for software design, architecture, APIs, schemas, modules, or data models."
 ---
 
 # UX
 
 Route user-facing product and interface work to the smallest installed specialist set that covers the request. External skills are optional. Apply their instructions when available, and continue without recreating a missing skill from memory.
 
-For interface implementation, also apply `$engineering`. It owns implementation quality, architecture, data, types, tests, dependencies, and tooling. This skill owns experience, interaction, visual presentation, accessibility, interface copy, and motion decisions.
+For interface implementation, call the Skill tool for "engineering". It owns implementation quality, architecture, data, types, tests, dependencies, and tooling. This skill owns experience, interaction, visual presentation, accessibility, interface copy, and motion decisions.
 
 ## Set the target
 
@@ -19,10 +19,10 @@ Let project-specific design rules govern when they differ from an external skill
 
 ### Interface skills
 
-- `interface-review`: review uncommitted changes, a branch, a commit range, or a pull request for interface quality. This skill is user-invoked. If it fits and the user did not name it, ask them to invoke `$interface-review`.
+- `interface-review`: review uncommitted changes, a branch, a commit range, or a pull request for interface quality. This skill is user-invoked. If it fits and the user did not name it, ask them to invoke "interface-review" explicitly.
 - `better-interface`: review a whole screen, flow, feature, or repository. It routes the review to all installed `better-*` domain owners and consolidates their findings.
-- `variant`: build several genuinely different versions of one piece of UI behind a picker. This skill is user-invoked. If it fits and the user did not name it, ask them to invoke `$variant`.
-- `explain-interface`: explain how a live interface or named visual effect was built, or reconstruct it from a screenshot. This skill is user-invoked. If it fits and the user did not name it, ask them to invoke `$explain-interface`.
+- `variant`: build several genuinely different versions of one piece of UI behind a picker. This skill is user-invoked. If it fits and the user did not name it, ask them to invoke "variant" explicitly.
+- `explain-interface`: explain how a live interface or named visual effect was built, or reconstruct it from a screenshot. This skill is user-invoked. If it fits and the user did not name it, ask them to invoke "explain-interface" explicitly.
 - `better-accessibility`: own accessibility, keyboard, focus, semantics, assistive technology, and reduced-motion requirements.
 - `better-layout`: own structure, spacing, grouping, responsive layout, and spatial RTL.
 - `better-writing`: own user-facing interface copy, terminology, voice, labels, errors, and empty states.
@@ -47,4 +47,4 @@ Use one authority for each design decision.
 - When motion is the explicit subject, the selected animation skill owns motion values and behaviour. Do not also apply `better-ui` motion rules.
 - The relevant interface skills still own accessibility, layout, typography, colour, and interface copy. `better-accessibility` owns reduced-motion requirements.
 - For a holistic interface review without an explicit motion focus, let `better-interface` and its `better-ui` handoff own motion within that review.
-- Apply `$writing` as the prose baseline. For user-facing interface copy, let `better-writing` govern UX-copy decisions when it is available.
+- Call the Skill tool for "writing" as the prose baseline. For user-facing interface copy, let `better-writing` govern UX-copy decisions when it is available.

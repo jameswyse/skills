@@ -17,6 +17,7 @@ class SyncSkillsTest(unittest.TestCase):
     root: Path
     repository: Path
     target: Path
+    claude_target: Path
     skill: Path
     created_skills: list[Path]
     created_groups: list[Path]
@@ -25,6 +26,7 @@ class SyncSkillsTest(unittest.TestCase):
         self.root = Path(tempfile.mkdtemp(prefix="skills-sync-test-"))
         self.repository = self.root / "repository"
         self.target = self.root / "installed"
+        self.claude_target = self.root / "claude" / "skills"
         scripts = self.repository / "scripts"
         self.skill = self.repository / "skills" / "writing" / "writing"
         self.created_skills = [self.skill]
@@ -38,20 +40,25 @@ class SyncSkillsTest(unittest.TestCase):
         )
 
     def tearDown(self) -> None:
-        installed_skill = self.target / "writing"
-        if installed_skill.is_symlink() or installed_skill.is_file():
-            installed_skill.unlink()
-        elif installed_skill.is_dir():
-            marker = installed_skill / "marker"
-            if marker.exists():
-                marker.unlink()
-            installed_skill.rmdir()
+        for target in (self.claude_target, self.target):
+            installed_skill = target / "writing"
+            if installed_skill.is_symlink() or installed_skill.is_file():
+                installed_skill.unlink()
+            elif installed_skill.is_dir():
+                marker = installed_skill / "marker"
+                if marker.exists():
+                    marker.unlink()
+                installed_skill.rmdir()
 
-        state = self.target / STATE_FILENAME
-        if state.exists():
-            state.unlink()
-        if self.target.exists():
-            self.target.rmdir()
+            state = target / STATE_FILENAME
+            if state.exists():
+                state.unlink()
+            if target.exists():
+                target.rmdir()
+
+        claude_root = self.root / "claude"
+        if claude_root.exists():
+            claude_root.rmdir()
 
         for skill in self.created_skills:
             skill_file = skill / "SKILL.md"
@@ -84,6 +91,8 @@ class SyncSkillsTest(unittest.TestCase):
                 str(self.repository / "scripts" / "sync-skills"),
                 "--target",
                 str(self.target),
+                "--claude-target",
+                str(self.claude_target),
             ],
             check=False,
             capture_output=True,
@@ -108,6 +117,12 @@ class SyncSkillsTest(unittest.TestCase):
         installed = self.target / "writing"
         self.assertTrue(installed.is_symlink())
         self.assertEqual(installed.readlink(), self.skill.resolve())
+        claude_installed = self.claude_target / "writing"
+        self.assertTrue(claude_installed.is_symlink())
+        self.assertEqual(
+            (self.claude_target / claude_installed.readlink()).resolve(),
+            installed.resolve(),
+        )
 
         second = self.run_sync()
         self.assertEqual(second.returncode, 0, second.stderr)
@@ -119,6 +134,7 @@ class SyncSkillsTest(unittest.TestCase):
         third = self.run_sync()
         self.assertEqual(third.returncode, 0, third.stderr)
         self.assertFalse(installed.is_symlink())
+        self.assertFalse(claude_installed.is_symlink())
         self.assertIn("removed", third.stdout)
         self.assertIn("sync complete: 0 skills present", third.stdout)
 
@@ -145,6 +161,40 @@ class SyncSkillsTest(unittest.TestCase):
         self.assertEqual(result.returncode, 1)
         self.assertTrue(installed.is_symlink())
         self.assertEqual(installed.readlink(), self.skill)
+
+    def test_leaves_existing_claude_skill_directory_unchanged(self) -> None:
+        installed = self.claude_target / "writing"
+        installed.mkdir(parents=True)
+        marker = installed / "marker"
+        marker.write_text("existing\n", encoding="utf-8")
+
+        result = self.run_sync()
+
+        self.assertEqual(result.returncode, 1)
+        self.assertEqual(marker.read_text(encoding="utf-8"), "existing\n")
+        state = json.loads(
+            (self.claude_target / STATE_FILENAME).read_text(encoding="utf-8")
+        )
+        self.assertEqual(state["links"], {})
+
+    def test_rejects_identical_canonical_and_claude_targets(self) -> None:
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(self.repository / "scripts" / "sync-skills"),
+                "--target",
+                str(self.target),
+                "--claude-target",
+                str(self.target),
+            ],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("must be different directories", result.stderr)
+        self.assertFalse(self.target.exists())
 
     def test_updates_managed_link_when_skill_moves_between_groups(self) -> None:
         first = self.run_sync()

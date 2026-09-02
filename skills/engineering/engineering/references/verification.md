@@ -27,7 +27,7 @@ Completion requires direct evidence for every significant behaviour change. Stat
 
 ## Review the finished diff
 
-Repository-specific review instructions may replace or refine this step. Otherwise, when `$code-review` is available and the change warrants independent review, apply it to the finished diff. Treat changes to observable behaviour, tests, public interfaces, stored data or schemas, dependencies, security boundaries, developer tooling, or module structure as warranting review. Do this before declaring the implementation complete. A formatting-only or similarly mechanical change may rely on the repository's normal checks when those checks directly cover its risk.
+Repository-specific review instructions may replace or refine this step. Otherwise, when the "code-review" skill is available and the change warrants independent review, call the Skill tool for "code-review" on the finished diff. Treat changes to observable behaviour, tests, public interfaces, stored data or schemas, dependencies, security boundaries, developer tooling, or module structure as warranting review. Do this before declaring the implementation complete. A formatting-only or similarly mechanical change may rely on the repository's normal checks when those checks directly cover its risk.
 
 Resolve verified findings that fall within the authorised change. Report findings that require broader scope. Repeat the review after fixes that substantially change the diff. Also repeat it when repository instructions require a clean review loop.
 

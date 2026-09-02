@@ -1,19 +1,20 @@
 ---
 name: improve-organisation
 description: Review an entire codebase's tree, module placement, filenames, companion-file ownership, and shallow filesystem structure. Use when the user explicitly requests a codebase organisation, naming, locality, or repository-structure audit rather than a general architecture or standards review.
+disable-model-invocation: true
 ---
 
 # Improve organisation
 
 Review the repository tree as an interface for maintainers. Find structures that make a capability difficult to locate or follow, then present evidence before changing files.
 
-Apply `$engineering` and follow its reference routing. Read its organisation and naming guidance before inspecting the tree. Read its deep-module guidance before judging whether a file, directory, or interface is shallow.
+Call the Skill tool for "engineering" and follow its reference routing. Read its organisation and naming guidance before inspecting the tree. Read its deep-module guidance before judging whether a file, directory, or interface is shallow.
 
 Keep this workflow distinct from broader reviews:
 
-- Use `$code-review` to approve or find defects in a particular diff.
-- Use `$improve-architecture` when the main problem requires a deeper module, a different seam, or substantial interface redesign.
-- Use `$improve-standards` for correctness, types, tests, tooling, operations, and general maintenance standards.
+- Call the Skill tool for "code-review" to approve or find defects in a particular diff.
+- Recommend the user-invoked "improve-architecture" skill when the main problem requires a deeper module, a different seam, or substantial interface redesign.
+- Recommend the user-invoked "improve-standards" skill for correctness, types, tests, tooling, operations, and general maintenance standards.
 
 ## Establish the scope
 

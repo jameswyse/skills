@@ -9,8 +9,8 @@ Review two axes separately. **Standards** covers repository rules and code smell
 the originating request, issue, or PRD. A change can pass either axis and fail the other. Do not
 merge or rerank their findings.
 
-Apply `$engineering` as the baseline for code, tests, dependencies, package management,
-and developer tooling. When the scope contains tests, read its
+Call the Skill tool for "engineering" as the baseline for code, tests, dependencies, package
+management, and developer tooling. When the scope contains tests, read its
 [Testing](../engineering/references/testing.md) reference and use its named test smells.
 When a finding depends on design, module depth, interface compression, seam placement, or
 simplicity, read the relevant engineering reference before reporting it.
@@ -20,8 +20,8 @@ to the affected subtree, authoritative imports, naming patterns, and companion-f
 
 Treat security as part of Standards when the diff changes a trust boundary, authentication,
 authorisation, sensitive data, secret handling, permissions, security configuration, or the
-dependency graph. Keep this check scoped to the diff and the context needed to verify it. Use
-`$improve-security` only when the user requests a dedicated security review.
+dependency graph. Keep this check scoped to the diff and the context needed to verify it. Recommend
+the user-invoked "improve-security" skill only when the user requests a dedicated security review.
 
 ## 1. Fix the scope
 
@@ -44,7 +44,7 @@ For working-tree reviews, the user request is the spec. Otherwise find it in ord
 references in commit messages, a user-supplied path, then a matching Markdown file under `docs/` or
 `specs/`. If none exists, skip the Spec agent and report "no spec available".
 
-Standards sources are repository files that define how code is written, `$engineering`
+Standards sources are repository files that define how code is written, the engineering skill
 and its triggered references, plus this smell baseline. Repository rules override the baseline.
 
 Smells are evidence to investigate, not automatic refactoring instructions. Confirm the concrete

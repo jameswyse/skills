@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Reconcile this repository's skills with the standard user skills directory."""
+"""Reconcile this repository's skills with canonical and agent directories."""
 
 from __future__ import annotations
 
@@ -31,17 +31,33 @@ class SyncError(Exception):
 
 
 def parse_args() -> argparse.Namespace:
-    default_target = os.environ.get(
-        "AGENT_SKILLS_DIR", str(Path.home() / ".agents" / "skills")
+    default_target = Path(
+        os.environ.get(
+            "AGENT_SKILLS_DIR", str(Path.home() / ".agents" / "skills")
+        )
+    )
+    default_claude_target = Path(
+        os.environ.get(
+            "CLAUDE_SKILLS_DIR", str(Path.home() / ".claude" / "skills")
+        )
     )
     parser = argparse.ArgumentParser(
-        description="Link this repository's skills into ~/.agents/skills safely."
+        description=(
+            "Link this repository's skills into the canonical skills directory "
+            "and bind them into Claude Code safely."
+        )
     )
     parser.add_argument(
         "--target",
         type=Path,
-        default=Path(default_target),
+        default=default_target,
         help="skills directory to reconcile (default: ~/.agents/skills)",
+    )
+    parser.add_argument(
+        "--claude-target",
+        type=Path,
+        default=default_claude_target,
+        help="Claude Code skills directory to reconcile (default: ~/.claude/skills)",
     )
     return parser.parse_args()
 
@@ -141,14 +157,15 @@ def discover_skills(source: Path) -> dict[str, str]:
     return skills
 
 
-def sync(source: Path, destination: Path) -> int:
+def reconcile(
+    source: Path, destination: Path, desired_links: dict[str, str]
+) -> tuple[int, dict[str, str]]:
     destination.mkdir(parents=True, exist_ok=True)
     if not destination.is_dir():
         raise SyncError(f"Skills target is not a directory: {destination}")
 
     state_path = destination / STATE_FILENAME
     previous_links = load_state(state_path)["links"]
-    desired_links = discover_skills(source)
     managed_links: dict[str, str] = {}
 
     created = 0
@@ -228,17 +245,33 @@ def sync(source: Path, destination: Path) -> int:
         f"{created} created, {updated} updated, "
         f"{removed} removed, {conflicts} conflicts"
     )
-    return 1 if conflicts else 0
+    return (1 if conflicts else 0), managed_links
+
+
+def sync(source: Path, canonical: Path, claude: Path) -> int:
+    if canonical.resolve() == claude.resolve():
+        raise SyncError("Canonical and Claude Code targets must be different directories")
+
+    source_links = discover_skills(source)
+    canonical_status, canonical_links = reconcile(source, canonical, source_links)
+
+    claude_links = {
+        name: os.path.relpath(canonical / name, start=claude)
+        for name in canonical_links
+    }
+    claude_status, _ = reconcile(canonical, claude, claude_links)
+    return 1 if canonical_status or claude_status else 0
 
 
 def main() -> int:
     args = parse_args()
     repository = Path(__file__).resolve().parent.parent
     source = repository / "skills"
-    destination = args.target.expanduser().absolute()
+    canonical = args.target.expanduser().absolute()
+    claude = args.claude_target.expanduser().absolute()
 
     try:
-        return sync(source, destination)
+        return sync(source, canonical, claude)
     except (OSError, SyncError) as error:
         print(f"sync failed: {error}", file=sys.stderr)
         return 1

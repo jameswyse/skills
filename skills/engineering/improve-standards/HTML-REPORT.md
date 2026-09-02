@@ -120,7 +120,7 @@ Each column is one full-width vertical stack. Do not place another grid, multi-c
 - **Title.** Name the improvement, such as "Derive completion from one state".
 - **Badge row.** Show recommendation strength with `Strong` in emerald, `Worth exploring` in amber, or `Speculative` in slate. Add `Small`, `Medium`, or `Large` effort and `Low`, `Medium`, or `High` risk.
 - **Files and symbols.** Use a monospaced list with `font-mono text-sm`.
-- **Standard.** Name the exact repository rule, `$engineering` section, or linked engineering reference. Do not cite `$engineering` without the rule.
+- **Standard.** Name the exact repository rule, engineering skill section, or linked engineering reference. Do not cite the engineering skill without the rule.
 - **Evidence.** Quote only the small code fragment, tool result, or repeated pattern needed to prove the problem.
 - **Improvement.** State the smallest coherent source fix.
 - **Benefit.** Name what the change removes, prevents, or makes directly verifiable.
@@ -196,7 +196,7 @@ Use a compact dependency graph only when the finding depends on transitive weigh
 
 ## Architecture and organisation follow-ups
 
-Put module-depth, seam, adapter, and substantial interface observations in a separate section. Explain why each belongs in `$improve-architecture`. Put repository-wide tree, placement, naming, and companion-file observations in the same section and explain why they belong in `$improve-organisation`. Do not assign these observations a standards rank or let them displace the top standards recommendation.
+Put module-depth, seam, adapter, and substantial interface observations in a separate section. Explain why each belongs in the user-invoked "improve-architecture" skill. Put repository-wide tree, placement, naming, and companion-file observations in the same section and explain why they belong in the user-invoked "improve-organisation" skill. Do not assign these observations a standards rank or let them displace the top standards recommendation.
 
 ## Style guidance
 

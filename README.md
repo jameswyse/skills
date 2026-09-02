@@ -57,14 +57,17 @@ Structured workflows for sharpening plans and decisions.
 
 ## Install with `npx skills`
 
-List the repository's skills or install the baseline skills:
+List the repository's skills or install the baseline skills globally for Codex and Claude Code:
 
 ```sh
-npx skills add jameswyse/skills --list
-npx skills add jameswyse/skills --skill writing
-npx skills add jameswyse/skills --skill engineering
-npx skills add jameswyse/skills --skill ux
+npx skills@latest add jameswyse/skills --list
+npx skills@latest add jameswyse/skills --global --agent codex --agent claude-code --skill writing --skill engineering --skill ux --yes
 ```
+
+With Codex and Claude Code selected together, `npx skills` keeps a canonical copy under
+`~/.agents/skills` and symlinks it into Claude Code. A single non-universal agent target is copied
+by the current CLI even when `--copy` is omitted. Pass `--copy` explicitly only when independent
+copies are wanted or the target filesystem cannot use symlinks.
 
 ## Configure global invocation
 
@@ -79,8 +82,24 @@ Use $engineering whenever reading, writing, reviewing, or changing code, tests, 
 Use $ux for user-facing product and interface design, UX, UI, interaction, visual presentation, accessibility, interface copy, or motion. For interface implementation, use both $engineering and $ux.
 ```
 
-Use the equivalent global agent-instructions file when an agent does not read
-`~/.codex/AGENTS.md`.
+Claude Code reads `~/.claude/CLAUDE.md`. Import the Codex instructions and translate skill calls to
+Claude's Skill tool:
+
+```md
+@../.codex/AGENTS.md
+
+## Claude Code
+
+When the imported instructions say to use a skill, call the Skill tool for that skill.
+Call the Skill tool for "writing" for every response.
+Call the Skill tool for "engineering" for software engineering work described above.
+Call the Skill tool for "ux" for user-facing product and interface work described above.
+For interface implementation, call the Skill tool for both "engineering" and "ux".
+```
+
+Skills with `disable-model-invocation: true` remain available through `/skill-name`, but Claude does
+not load or call them automatically. This is a Claude Code extension to the Agent Skills
+frontmatter. Strict Agent Skills packaging and upload tools may reject it.
 
 ## Optional external skills
 
@@ -90,7 +109,7 @@ Skills in this repository can defer specialised work to external skills when the
 
 Animation work routes to the focused skills from [`emilkowalski/skills`](https://github.com/emilkowalski/skills). `animate` builds motion, `review-animations` reviews it, `improve-animations` audits it, `find-animation-opportunities` finds useful additions, and `animation-vocabulary` names effects.
 
-The upstream `interface-review`, `variant`, and `explain-interface` skills are user-invoked. Invoke them explicitly as `$interface-review`, `$variant`, or `$explain-interface`. The local `ux` router identifies those cases but does not replace their invocation policy.
+The upstream `interface-review`, `variant`, and `explain-interface` skills are user-invoked. Invoke them explicitly with the syntax supported by the current agent, such as `$interface-review` in Codex or `/interface-review` in Claude Code. The local `ux` router identifies those cases but does not replace their invocation policy.
 
 ## Recommended specialist skills
 
@@ -147,10 +166,10 @@ scripts/setup-external-skills --dry-run
 ```
 
 The setup script runs the AWS Agent Toolkit command and uses `npx skills` for the other
-recommendations. It reads the global `npx skills` inventory before making changes and refuses to
-overwrite a same-named skill owned by another source. `npx skills` records its external
-installations in `~/.agents/.skill-lock.json`. The setup script does not manage this repository's
-live symlinks.
+recommendations. It installs the `npx skills` recommendations for both Codex and Claude Code. It
+reads the global `npx skills` inventory before making changes and refuses to overwrite a same-named
+skill owned by another source. `npx skills` records its external installations in
+`~/.agents/.skill-lock.json`. The setup script does not manage this repository's live symlinks.
 
 ## Development and using skills locally
 
@@ -163,21 +182,26 @@ Run the sync script:
 scripts/sync-skills
 ```
 
-It discovers every grouped skill and links it into `~/.agents/skills/<skill-name>`. Edits to a
-linked skill are available immediately because the installed entry points to this working tree.
+It discovers every grouped skill, links it into `~/.agents/skills/<skill-name>`, then links
+`~/.claude/skills/<skill-name>` to that canonical entry. Edits are available immediately because
+the canonical entry points to this working tree.
 
-The script keeps a private ownership record at `~/.agents/skills/.james-skills-links.json`. On later runs it:
+The script keeps a private ownership record in both managed skills directories. On later runs it:
 
 - creates links for new skills;
 - updates links it previously created;
 - removes its links when their source skills no longer exist; and
 - leaves existing files, directories and unmanaged symlinks untouched.
 
-A conflict is reported and causes a non-zero exit status. Use `--target` to exercise the sync against another directory:
+A conflict is reported and causes a non-zero exit status. Pass both targets to exercise the sync
+without changing the global installation:
 
 ```sh
-scripts/sync-skills --target /tmp/agent-skills-test
+scripts/sync-skills --target /tmp/agent-skills-test --claude-target /tmp/claude-skills-test
 ```
+
+Do not let `npx skills` and `scripts/sync-skills` manage the same local skill. Use `npx skills` for
+released installations and the sync script for this working tree.
 
 Run the sync tests with:
 
@@ -185,7 +209,7 @@ Run the sync tests with:
 python3 -m unittest discover -s tests
 ```
 
-Validate every skill with Codex's bundled validator:
+Validate every skill against the Agent Skills fields and the supported Claude Code extensions:
 
 ```sh
 scripts/validate-skills
@@ -197,7 +221,11 @@ Pass skill names to validate a smaller set:
 scripts/validate-skills writing technical-writing
 ```
 
-The command supplies its pinned PyYAML dependency through an isolated `uv` environment. It does not modify Homebrew Python or require an activated virtual environment.
+The command supplies its pinned PyYAML dependency through an isolated `uv` environment. It does
+not require Codex, modify Homebrew Python, or require an activated virtual environment.
+
+In Claude Code, run `/skills` to confirm discovery. This repository's `code-review` skill overrides
+Claude Code's bundled `/code-review`; use Claude's `/review` alias when you want the bundled review.
 
 ## Credits
 

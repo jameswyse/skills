@@ -98,7 +98,7 @@ Use types to eliminate impossible states, mismatched primitives, and unhandled v
 - **Derive from authoritative schemas.** Generate or derive types from protocol, OpenAPI, GraphQL, database, and token definitions instead of maintaining parallel shapes.
 - **Strengthen a type only where partiality appears.** A runtime assertion, null check, or impossible-case throw marks a weak type. Do not add precision that buys no safety and reduces reuse.
 
-For TypeScript syntax and examples, apply `$typescript`.
+For TypeScript syntax and examples, call the Skill tool for "typescript".
 
 Use these checks:
 

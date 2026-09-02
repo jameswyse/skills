@@ -1,6 +1,6 @@
 # TypeScript patterns
 
-Code examples for each rule in `SKILL.md`. The language-agnostic type and seam rules live in `$engineering`'s design reference.
+Code examples for each rule in `SKILL.md`. The language-agnostic type and seam rules live in the engineering skill's design reference.
 
 ## Branded types
 
@@ -248,7 +248,7 @@ const config = { theme: "dark", cols: 3 } satisfies Config;
 
 ## Seam validation
 
-Validate once where data enters. Trust types inside. Read `$engineering`'s design reference for seam placement.
+Validate once where data enters. Trust types inside. Read the engineering skill's design reference for seam placement.
 
 - **Wire formats** (proto, JSON-RPC): parse with `ignoreUnknownFields` so forward-compatible changes don't break old clients.
 - **Persisted JSON.** Use a versioned blob with `try` and `catch` around the parse.
@@ -318,7 +318,7 @@ Use `Partial<T>` only when any subset of `T` is valid. Define an operation-speci
 
 ## Expected failures
 
-Use `$engineering`'s [Failures and diagnostics](../../engineering/references/errors.md) guidance. Keep the representation local when the repository has no shared result type:
+Use the engineering skill's [Failures and diagnostics](../../engineering/references/errors.md) guidance. Keep the representation local when the repository has no shared result type:
 
 ```ts
 type FindUserResult =

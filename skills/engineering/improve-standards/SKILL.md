@@ -1,22 +1,23 @@
 ---
 name: improve-standards
-description: Review an entire codebase against its repository rules and $engineering, then present evidence-backed improvements in a visual HTML report. Use recent changes or a specific repository area only when the user explicitly requests that scope.
+description: Review an entire codebase against its repository rules and the engineering skill, then present evidence-backed improvements in a visual HTML report. Use recent changes or a specific repository area only when the user explicitly requests that scope.
+disable-model-invocation: true
 ---
 
 # Improve standards
 
 Find concrete opportunities to improve an existing codebase's correctness, simplicity, maintainability, testability, tooling, and operations. Present the evidence before changing code.
 
-Apply `$engineering` as the baseline. Repository instructions and established conventions take precedence. Read each engineering reference when its trigger appears. Apply `$ux` when a candidate concerns the user-facing experience.
+Call the Skill tool for "engineering" as the baseline. Repository instructions and established conventions take precedence. Read each engineering reference when its trigger appears. Call the Skill tool for "ux" when a candidate concerns the user-facing experience.
 
 Keep this review distinct from narrower workflows:
 
-- Use `$code-review` when the task is to approve or find defects in a specific change. Keep an explicitly requested recent-history standards scan in this workflow.
-- Use `$diagnosing-bugs` for a known failure or performance regression.
-- Recommend `$upgrade-deps` for a comprehensive dependency refresh.
-- Use `$improve-security` for a dedicated security review. Report a concrete security flaw discovered here, but do not expand this workflow into a general security audit.
-- Recommend `$improve-architecture` when the primary improvement requires deeper modules, a different seam, or a substantial interface redesign. Do not include that work in the standards ranking.
-- Recommend `$improve-organisation` when the primary improvement requires a repository-wide tree, placement, filename, or companion-file audit. Report a concrete organisation problem discovered here, but do not expand this workflow into that audit.
+- Call the Skill tool for "code-review" when the task is to approve or find defects in a specific change. Keep an explicitly requested recent-history standards scan in this workflow.
+- Call the Skill tool for "diagnosing-bugs" for a known failure or performance regression.
+- Recommend the user-invoked "upgrade-deps" skill for a comprehensive dependency refresh.
+- Recommend the user-invoked "improve-security" skill for a dedicated security review. Report a concrete security flaw discovered here, but do not expand this workflow into a general security audit.
+- Recommend the user-invoked "improve-architecture" skill when the primary improvement requires deeper modules, a different seam, or a substantial interface redesign. Do not include that work in the standards ranking.
+- Recommend the user-invoked "improve-organisation" skill when the primary improvement requires a repository-wide tree, placement, filename, or companion-file audit. Report a concrete organisation problem discovered here, but do not expand this workflow into that audit.
 
 ## Process
 
@@ -33,7 +34,7 @@ Do not use Git history, the current issue, or the working tree to narrow an unqu
 
 Read the project's instructions and documentation before exploring the code. Identify the repository's verification commands and the tools that already enforce its standards. Use repository-provided inspection or verification commands when they do not require source or configuration changes.
 
-Before verification, apply `$engineering`'s toolchain check once for the task. Record the active versions and whether they satisfy the repository declarations. Report affected checks as not verified when no compatible toolchain is available.
+Before verification, apply the engineering skill's toolchain check once for the task. Record the active versions and whether they satisfy the repository declarations. Report affected checks as not verified when no compatible toolchain is available.
 
 ### 2. Find candidates
 
@@ -85,7 +86,7 @@ Report verification as evidence, not as a health score. Show the exact toolchain
 For each candidate, include:
 
 - **Files and symbols.** Name the inspected code.
-- **Standard.** Cite the exact repository rule, `$engineering` section, or engineering reference that applies.
+- **Standard.** Cite the exact repository rule, engineering skill section, or engineering reference that applies.
 - **Evidence.** Show the current cost or risk.
 - **Improvement.** Highlight the smallest coherent source fix so it is easy to find while scanning.
 - **Benefit.** Name the concrete reduction in complexity, risk, or verification effort.
@@ -99,7 +100,7 @@ Prefer short lists when a section contains several facts, changes, benefits, or 
 
 Use a visual only when it makes the evidence or proposed change easier to understand. See [HTML-REPORT.md](HTML-REPORT.md) for the report scaffold and visual patterns.
 
-Make the top recommendation a compact horizontal section without a diagram. Use the available width for its reason, source fix, effort, risk, and link to the full candidate. Put architecture and organisation observations in a separate follow-up section. Route them to `$improve-architecture` or `$improve-organisation` without ranking them against standards candidates.
+Make the top recommendation a compact horizontal section without a diagram. Use the available width for its reason, source fix, effort, risk, and link to the full candidate. Put architecture and organisation observations in a separate follow-up section. Route them to the user-invoked "improve-architecture" or "improve-organisation" skill without ranking them against standards candidates.
 
 After writing the report, ask the user, "Which of these would you like to improve?"
 
@@ -107,4 +108,4 @@ After writing the report, ask the user, "Which of these would you like to improv
 
 Treat the report as a snapshot. Revalidate the selected candidate against the current working tree before designing or implementing a change.
 
-Selection does not authorise file changes. Make changes only when the user asks for implementation. Within that authority, apply `$engineering`, make the smallest coherent source fix, and verify the real behaviour before reporting completion.
+Selection does not authorise file changes. Make changes only when the user asks for implementation. Within that authority, apply the engineering skill, make the smallest coherent source fix, and verify the real behaviour before reporting completion.

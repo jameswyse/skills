@@ -1,6 +1,6 @@
 ---
 name: technical-writing
-description: "Technical prose for developers and agents. Use when writing or reviewing documentation, READMEs, RFCs, ADRs, code comments, PR descriptions, commit messages, release notes, changelogs, runbooks, skills, AGENTS.md, CLAUDE.md, or linked agent instructions. Apply with $writing. Route by artefact inside. Do not use for product UI copy or ordinary chat."
+description: "Technical prose for developers and agents. Use when writing or reviewing documentation, READMEs, RFCs, ADRs, code comments, PR descriptions, commit messages, release notes, changelogs, runbooks, skills, AGENTS.md, CLAUDE.md, or linked agent instructions. Apply with the writing skill. Route by artefact inside. Do not use for product UI copy or ordinary chat."
 ---
 
 # Technical writing
@@ -9,11 +9,11 @@ The goal is writing a tired engineer understands on the first read. Four layers 
 
 ## Relationship to writing
 
-Apply `$writing` first as the baseline for every artefact this skill covers. This skill owns technical-document structure, developer terminology, instructions, and sentence clarity. When a rule here differs from `$writing`, follow this skill for the technical artefact.
+Call the Skill tool for "writing" first. It is the baseline for every artefact this skill covers. This skill owns technical-document structure, developer terminology, instructions, and sentence clarity. When a rule here differs from the writing skill, follow this skill for the technical artefact.
 
 The codebase is the word list. Write the real symbol, file, flag, or command name, not a synonym or a description of it.
 
-Don't invent jargon. Use the words a developer would say out loud: "move", "delete", "a budget that only decreases", not "evacuate", "ratchet", or "endgame". A named pattern is fine when the doc says what it means the first time. Add new offenders and their replacements to the abstract-metaphor rule in `$writing`.
+Don't invent jargon. Use the words a developer would say out loud: "move", "delete", "a budget that only decreases", not "evacuate", "ratchet", or "endgame". A named pattern is fine when the doc says what it means the first time. Add new offenders and their replacements to the abstract-metaphor rule in the writing skill.
 
 ## Choose the artefact
 
@@ -97,7 +97,7 @@ Source: Kohl, The Global English Style Guide (SAS Press). Guideline text fetched
 
 ## Voice and repo specifics
 
-- `$writing` owns the catalogue of slop patterns: AI vocabulary, filler, hedging, and formatting tells.
+- The writing skill owns the catalogue of slop patterns: AI vocabulary, filler, hedging, and formatting tells.
 - PR descriptions and commit messages are writing too. Every layer except Diátaxis applies to them.
 - Product UI strings are not documentation. Use your product's copy guidelines for those.
 - For Markdown files committed to the repository, put one space inside each table pipe. Pad every cell and separator so the column boundaries align in plain text.
@@ -113,7 +113,7 @@ After:
 
 > `budget.mjs` reads the committed budget from `budget.json` and counts the files that import protos. If the count exceeds the budget, CI fails. Run `budget.mjs --write` only to lower the budget.
 
-The fixes, by layer: "configuration is performed" becomes "`budget.mjs` reads", so someone does something (Google). "Ratchet" goes away. The script's real filename does the naming (jargon rule). The five-noun string breaks up into plain clauses (Global English). The hedge "note that it's important to remember" is deleted (`$writing`). The failure condition moves ahead of the step it explains (STE). The buried "should only be done when lowering" becomes a command with "only" next to its verb (STE). "If exceeded" gets a subject: the count (Global English).
+The fixes, by layer: "configuration is performed" becomes "`budget.mjs` reads", so someone does something (Google). "Ratchet" goes away. The script's real filename does the naming (jargon rule). The five-noun string breaks up into plain clauses (Global English). The writing skill deletes the hedge "note that it's important to remember". The failure condition moves ahead of the step it explains (STE). The buried "should only be done when lowering" becomes a command with "only" next to its verb (STE). "If exceeded" gets a subject: the count (Global English).
 
 ## Review checklist
 

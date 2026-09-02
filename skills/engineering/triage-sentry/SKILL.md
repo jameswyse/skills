@@ -7,9 +7,9 @@ description: Triage one supplied Sentry issue key or every issue in a project, r
 
 Assess the selected Sentry scope from its events and relevant source, then give the user one reviewable action plan before changing Sentry or the repository.
 
-Use `$sentry-cli` when it is available. Follow its guidance, prefer dedicated `sentry issue` commands, use structured output with selected fields, and use `sentry schema` plus `sentry api` only for operations the dedicated commands do not support.
+Call the Skill tool for "sentry-cli" when it is available. Follow its guidance, prefer dedicated `sentry issue` commands, use structured output with selected fields, and use `sentry schema` plus `sentry api` only for operations the dedicated commands do not support.
 
-Chrome is a fallback, not a parallel source. Use `$chrome:control-chrome` only when the CLI is unavailable, fails after an appropriate retry, or cannot perform a required operation. Before controlling Chrome, ask the user to approve browser control and confirm that Sentry is already signed in in the Chrome profile to be used. Approval to use the CLI does not imply approval to control Chrome.
+Chrome is a fallback, not a parallel source. Call the Skill tool for "chrome:control-chrome" only when the CLI is unavailable, fails after an appropriate retry, or cannot perform a required operation. Before controlling Chrome, ask the user to approve browser control and confirm that Sentry is already signed in in the Chrome profile to be used. Approval to use the CLI does not imply approval to control Chrome.
 
 Do not expose authentication tokens, cookies, request bodies, complete headers, raw personal data, or other sensitive event data in commands, outputs, comments, reports, or saved files. Prefer named issue and event fields. Do not dump a complete event merely because it is available.
 
@@ -23,15 +23,15 @@ Use project-wide mode only when the user does not supply an issue key or ID.
 
 ## Establish the target
 
-In single-issue mode, treat the supplied short key as the exact read-only target. Use `sentry issue view <key>`, verify that the returned short key matches, and take the organisation and project from that issue. If the project was not already known, ask the user to confirm the resolved `org/project` and whether to save it in the project-level `AGENTS.md`. Do not ask them to restate a project the lookup already resolved.
+In single-issue mode, treat the supplied short key as the exact read-only target. Use `sentry issue view <key>`, verify that the returned short key matches, and take the organisation and project from that issue. If the project was not already known, ask the user to confirm the resolved `org/project` and whether to save it in the project-level agent instructions. Do not ask them to restate a project the lookup already resolved.
 
-In project-wide mode, treat the target as known only when the user supplied it or the project-level `AGENTS.md` records it. Resolve the Sentry target in this order:
+In project-wide mode, treat the target as known only when the user supplied it or the project-level `AGENTS.md` or `CLAUDE.md` records it. Resolve the Sentry target in this order:
 
-1. Use an explicit `org/project` from the user's request or the project-level `AGENTS.md` that governs the current directory.
+1. Use an explicit `org/project` from the user's request or the project-level agent instructions that govern the current directory.
 2. Otherwise, let the CLI auto-detect a candidate and check it with a benign read. Ask the user to confirm the candidate before collecting issues.
 3. If auto-detection is missing, ambiguous, or wrong, ask the user for the Sentry organisation and project. Do not guess from a DSN, repository name, or an unrelated project.
 
-Whenever a project-wide target was not already known, ask whether to save the confirmed target in the project-level `AGENTS.md`. If they agree, add or update one concise entry under a `## Sentry` heading:
+Whenever a project-wide target was not already known, ask whether to save the confirmed target in the project-level agent instructions. If they agree, add or update one concise entry under a `## Sentry` heading:
 
 ```markdown
 ## Sentry
@@ -39,7 +39,7 @@ Whenever a project-wide target was not already known, ask whether to save the co
 - Default project: `org/project`
 ```
 
-Use the repository root's `AGENTS.md`, not a user-global file. Preserve existing instructions and avoid duplicate headings or entries. Asking to save the target does not block read-only triage.
+If the repository root's `CLAUDE.md` imports `AGENTS.md`, save the entry in `AGENTS.md`. Otherwise, use the repository-root instruction file loaded by the current agent. If both files exist without an import and neither owns the Sentry entry, ask the user which file should own it. Never use a user-global file. Preserve existing instructions and avoid duplicate headings or entries. Asking to save the target does not block read-only triage.
 
 Before any mutation, verify that the authenticated Sentry identity can access the exact `org/project` and repeat that target in the proposed action plan. If CLI authentication is missing or expired, ask the user to complete the CLI's login flow. Never ask them to paste a token.
 

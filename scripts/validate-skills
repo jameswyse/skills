@@ -5,29 +5,45 @@
 #   "PyYAML==6.0.3",
 # ]
 # ///
-"""Validate this repository's skills with Codex's bundled validator."""
+"""Validate this repository's Agent Skills and Claude Code extensions."""
 
 from __future__ import annotations
 
-import os
 import re
-import subprocess
 import sys
 from pathlib import Path
+
+import yaml
 
 
 REPOSITORY = Path(__file__).resolve().parents[1]
 SKILLS = REPOSITORY / "skills"
 SKILL_NAME = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
-CODEX_HOME = Path(os.environ.get("CODEX_HOME", Path.home() / ".codex"))
-VALIDATOR = (
-    CODEX_HOME
-    / "skills"
-    / ".system"
-    / "skill-creator"
-    / "scripts"
-    / "quick_validate.py"
-)
+FRONTMATTER = re.compile(r"^---\n(.*?)\n---", re.DOTALL)
+STANDARD_FIELDS = {
+    "name",
+    "description",
+    "license",
+    "compatibility",
+    "metadata",
+    "allowed-tools",
+}
+CLAUDE_FIELDS = {
+    "when_to_use",
+    "argument-hint",
+    "arguments",
+    "disable-model-invocation",
+    "user-invocable",
+    "model",
+    "effort",
+    "context",
+    "agent",
+    "background",
+    "hooks",
+    "paths",
+    "shell",
+}
+ALLOWED_FIELDS = STANDARD_FIELDS | CLAUDE_FIELDS
 
 
 class ValidationError(Exception):
@@ -67,11 +83,160 @@ def resolve_skills(arguments: list[str]) -> list[Path]:
     return resolved
 
 
-def main() -> int:
-    if not VALIDATOR.is_file():
-        print(f"Codex skill validator not found: {VALIDATOR}", file=sys.stderr)
-        return 1
+def validate_string(
+    frontmatter: dict[str, object], field: str, *, maximum: int | None = None
+) -> list[str]:
+    if field not in frontmatter:
+        return []
+    value = frontmatter[field]
+    if not isinstance(value, str) or not value.strip():
+        return [f"Field '{field}' must be a non-empty string"]
+    if maximum is not None and len(value) > maximum:
+        return [f"Field '{field}' exceeds {maximum} characters"]
+    return []
 
+
+def validate_string_or_list(frontmatter: dict[str, object], field: str) -> list[str]:
+    if field not in frontmatter:
+        return []
+    value = frontmatter[field]
+    if isinstance(value, str) and value.strip():
+        return []
+    if isinstance(value, list) and value and all(
+        isinstance(item, str) and item.strip() for item in value
+    ):
+        return []
+    return [f"Field '{field}' must be a non-empty string or list of strings"]
+
+
+def validate_body(body: str) -> list[str]:
+    fence_marker: str | None = None
+    fence_length = 0
+    for line in body.splitlines():
+        fence = re.match(
+            r"^[ \t]*(?:(?:[-+*]|\d+[.)])[ \t]+)?(`{3,}|~{3,})(.*)$", line
+        )
+        if fence:
+            marker = fence.group(1)
+            if fence_marker is None:
+                fence_marker = marker[0]
+                fence_length = len(marker)
+            elif (
+                marker[0] == fence_marker
+                and len(marker) >= fence_length
+                and not fence.group(2).strip()
+            ):
+                fence_marker = None
+                fence_length = 0
+            continue
+        if fence_marker is None and re.fullmatch(
+            r"[ ]{0,3}\[TODO:[^\n]*\][ \t]*", line
+        ):
+            return ["Skill instructions contain an unfinished TODO placeholder"]
+    return []
+
+
+def validate_skill(skill: Path) -> list[str]:
+    skill_file = skill / "SKILL.md"
+    if not skill_file.is_file():
+        return [f"Skill directory not found: {skill}"]
+
+    content = skill_file.read_text(encoding="utf-8")
+    match = FRONTMATTER.match(content)
+    if match is None:
+        return ["SKILL.md must start with YAML frontmatter"]
+    try:
+        frontmatter = yaml.safe_load(match.group(1))
+    except yaml.YAMLError as error:
+        return [f"Invalid YAML frontmatter: {error}"]
+    if not isinstance(frontmatter, dict):
+        return ["Frontmatter must be a YAML mapping"]
+
+    problems: list[str] = []
+    if not all(isinstance(field, str) for field in frontmatter):
+        return ["Frontmatter field names must be strings"]
+
+    unexpected = sorted(set(frontmatter) - ALLOWED_FIELDS)
+    if unexpected:
+        problems.append("Unexpected frontmatter fields: " + ", ".join(unexpected))
+
+    for required in ("name", "description"):
+        if required not in frontmatter:
+            problems.append(f"Missing required field: {required}")
+
+    problems.extend(validate_string(frontmatter, "name", maximum=64))
+    name = frontmatter.get("name")
+    if isinstance(name, str) and name:
+        if not SKILL_NAME.fullmatch(name):
+            problems.append(
+                "Field 'name' must use lowercase letters, digits, and single hyphens"
+            )
+        if name != skill.name:
+            problems.append(
+                f"Skill directory name '{skill.name}' must match field 'name' '{name}'"
+            )
+
+    problems.extend(validate_string(frontmatter, "description", maximum=1024))
+    description = frontmatter.get("description")
+    if isinstance(description, str) and description.strip().startswith("[TODO:"):
+        problems.append("Field 'description' contains an unfinished TODO placeholder")
+    if isinstance(description, str) and ("<" in description or ">" in description):
+        problems.append("Field 'description' cannot contain angle brackets")
+    when_to_use = frontmatter.get("when_to_use", "")
+    if isinstance(description, str) and isinstance(when_to_use, str):
+        if len(description) + len(when_to_use) > 1536:
+            problems.append(
+                "Fields 'description' and 'when_to_use' exceed Claude Code's "
+                "combined 1536-character listing limit"
+            )
+
+    for field, maximum in (
+        ("license", None),
+        ("compatibility", 500),
+        ("when_to_use", None),
+        ("argument-hint", None),
+        ("model", None),
+        ("agent", None),
+    ):
+        problems.extend(validate_string(frontmatter, field, maximum=maximum))
+
+    for field in ("allowed-tools", "arguments", "paths"):
+        problems.extend(validate_string_or_list(frontmatter, field))
+
+    for field in (
+        "disable-model-invocation",
+        "user-invocable",
+        "background",
+    ):
+        if field in frontmatter and not isinstance(frontmatter[field], bool):
+            problems.append(f"Field '{field}' must be a boolean")
+
+    if "metadata" in frontmatter and not isinstance(frontmatter["metadata"], dict):
+        problems.append("Field 'metadata' must be a mapping")
+    if "hooks" in frontmatter and not isinstance(frontmatter["hooks"], dict):
+        problems.append("Field 'hooks' must be a mapping")
+    if "context" in frontmatter and frontmatter["context"] != "fork":
+        problems.append("Field 'context' must be 'fork'")
+    if "effort" in frontmatter and frontmatter["effort"] not in {
+        "low",
+        "medium",
+        "high",
+        "xhigh",
+        "max",
+    }:
+        problems.append("Field 'effort' has an unsupported value")
+    if "shell" in frontmatter and frontmatter["shell"] not in {
+        "bash",
+        "powershell",
+        0,
+    }:
+        problems.append("Field 'shell' must be 'bash', 'powershell', or 0")
+
+    problems.extend(validate_body(content[match.end() :]))
+    return problems
+
+
+def main() -> int:
     try:
         skills = resolve_skills(sys.argv[1:])
     except ValidationError as error:
@@ -80,18 +245,14 @@ def main() -> int:
 
     failures = 0
     for skill in skills:
-        if not (skill / "SKILL.md").is_file():
-            print(f"Skill directory not found: {skill}", file=sys.stderr)
+        print(f"{skill.relative_to(REPOSITORY)}:")
+        problems = validate_skill(skill)
+        if problems:
             failures += 1
-            continue
-
-        print(f"{skill.relative_to(REPOSITORY)}: ", end="", flush=True)
-        result = subprocess.run(
-            [sys.executable, str(VALIDATOR), str(skill)],
-            check=False,
-        )
-        if result.returncode != 0:
-            failures += 1
+            for problem in problems:
+                print(f"  - {problem}", file=sys.stderr)
+        else:
+            print("  valid")
 
     if failures:
         print(f"validation failed: {failures} skill(s)", file=sys.stderr)

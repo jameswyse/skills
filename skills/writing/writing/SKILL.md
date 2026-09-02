@@ -11,7 +11,7 @@ Write concise, direct en-AU prose. Preserve the intended meaning and tone while 
 
 Apply this skill to every response and written artefact. When a narrower writing skill also applies, use both. The narrower skill governs decisions within its stated scope. This skill remains the baseline for everything it does not override.
 
-For user-facing product or interface copy, apply `$better-writing` when it is available. It owns UX-copy decisions. Do not apply it to ordinary assistant responses, developer documentation, code comments, commit messages, or pull-request descriptions.
+For user-facing product or interface copy, call the Skill tool for "better-writing" when it is available. It owns UX-copy decisions. Do not apply it to ordinary assistant responses, developer documentation, code comments, commit messages, or pull-request descriptions.
 
 ## Final output gate
 
