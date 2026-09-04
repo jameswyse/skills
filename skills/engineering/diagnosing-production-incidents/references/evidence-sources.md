@@ -11,7 +11,7 @@ Explicit user choice wins. Otherwise use this order:
 3. Use a browser when the user chose it, authenticated UI access is required, or no suitable connector, API, or CLI exists.
 4. Ask for a redacted export when direct access is unavailable.
 
-Search the available and deferred tools before choosing a browser for semantic work. If Chrome is the agreed route and the "chrome:control-chrome" skill is available, call the Skill tool for "chrome:control-chrome" before browser work. Never inspect browser cookies, storage, profiles, passwords, or session stores.
+Search the available and deferred tools before choosing a browser for semantic work. If Chrome is the agreed route and the "chrome:control-chrome" skill is available, use the "chrome:control-chrome" skill before browser work. Never inspect browser cookies, storage, profiles, passwords, or session stores.
 
 Verify access with a benign identity or metadata request. Confirm the account, project, region, and environment from the returned value rather than an assumption. If login is required, give the user the exact sign-in step and wait. Never ask the user to paste a credential or token.
 

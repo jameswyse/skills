@@ -9,7 +9,7 @@ Review two axes separately. **Standards** covers repository rules and code smell
 the originating request, issue, or PRD. A change can pass either axis and fail the other. Do not
 merge or rerank their findings.
 
-Call the Skill tool for "engineering" as the baseline for code, tests, dependencies, package
+Use the "engineering" skill as the baseline for code, tests, dependencies, package
 management, and developer tooling. When the scope contains tests, read its
 [Testing](../engineering/references/testing.md) reference and use its named test smells.
 When a finding depends on design, module depth, interface compression, seam placement, or
@@ -137,8 +137,8 @@ Ask:
 > configuration candidates as findings.
 > Separate hard documented breaches from baseline judgement calls. Repository rules override the
 > baseline. Skip other tooling-enforced issues.
-> Prioritise by severity. If the report would exceed 400 words, return the first batch and state how
-> many supported findings remain.
+> Prioritise by severity. Return all supported findings concisely. If the tool output limit would
+> truncate the report, return the first batch and state how many supported findings remain.
 
 ### Spec agent
 
@@ -146,8 +146,8 @@ Ask:
 
 > Report missing or partial requirements, unrequested behaviour or scope creep, and apparently
 > implemented requirements whose implementation looks wrong. Quote the relevant spec
-> line for every finding. If the report would exceed 400 words, return the first batch and state how
-> many supported findings remain.
+> line for every finding. Return all supported findings concisely. If the tool output limit would
+> truncate the report, return the first batch and state how many supported findings remain.
 
 ## 3. Verify and report
 

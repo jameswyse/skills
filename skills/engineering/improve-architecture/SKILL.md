@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Find architectural friction and propose **deepening opportunities**, which are refactors that turn shallow modules into deep ones. The aim is testability and AI navigability.
 
-Call the Skill tool for "engineering". Read [Deep modules](../engineering/references/deep-modules.md) before assessing candidates. This workflow uses the project's domain model and the deep-module vocabulary:
+Use the "engineering" skill. Read [Deep modules](../engineering/references/deep-modules.md) before assessing candidates. This workflow uses the project's domain model and the deep-module vocabulary:
 
 - Use **module**, **interface**, **depth**, **seam**, **adapter**, **leverage**, and **locality** as the deep-module reference defines them. Apply the deletion test before calling a module shallow. Classify dependencies before recommending a seam or adapter.
 - The domain language in the repository, if present, gives names to good seams.
@@ -109,11 +109,11 @@ Before handoff, inspect the rendered report at a desktop width and at `320px`. C
 
 ### 4. Grilling loop
 
-Once the user picks a candidate, call the Skill tool for "grilling" to examine its constraints, dependencies, deepened module, seam contents, and surviving tests.
+Once the user picks a candidate, use the "grilling" skill to examine its constraints, dependencies, deepened module, seam contents, and surviving tests.
 
 After the user confirms a decision, offer to update the domain documentation during the same loop. The decision does not itself authorise file changes. Update documentation only when the user asks you to record it.
 
 - When a deepened module uses a concept missing from the repository's domain vocabulary, offer to add the term in the appropriate place.
 - When the conversation sharpens a vague term, offer to update the repository's domain vocabulary.
 - When the user rejects a candidate for a reason future reviews need, offer to record that reason in the documentation. Ask, _"Should I record this in the documentation so future architecture reviews do not suggest it again?"_ Skip temporary reasons such as "not worth it right now" and self-evident reasons.
-- When the candidate needs a new interface with several credible shapes, offer Design It Twice before converging. If the user accepts or directly requests alternatives, call the Skill tool for "design-it-twice".
+- When the candidate needs a new interface with several credible shapes, offer Design It Twice before converging. If the user accepts or directly requests alternatives, use the "design-it-twice" skill.

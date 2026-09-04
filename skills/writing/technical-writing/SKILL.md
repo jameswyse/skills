@@ -9,7 +9,7 @@ The goal is writing a tired engineer understands on the first read. Four layers 
 
 ## Relationship to writing
 
-Call the Skill tool for "writing" first. It is the baseline for every artefact this skill covers. This skill owns technical-document structure, developer terminology, instructions, and sentence clarity. When a rule here differs from the writing skill, follow this skill for the technical artefact.
+Use the "writing" skill first. It is the baseline for every artefact this skill covers. This skill owns technical-document structure, developer terminology, instructions, and sentence clarity. When a rule here differs from the writing skill, follow this skill for the technical artefact.
 
 The codebase is the word list. Write the real symbol, file, flag, or command name, not a synonym or a description of it.
 
@@ -20,7 +20,8 @@ Don't invent jargon. Use the words a developer would say out loud: "move", "dele
 Apply the shared sentence, terminology, and clarity rules in this file to every artefact in scope unless the relevant branch below takes scoped authority.
 
 - For documentation, READMEs, RFCs, ADRs, and runbooks, also apply **Pick the mode first (Diátaxis)**.
-- For code comments, PR descriptions, commit messages, release notes, and changelogs, skip Diátaxis.
+- For code comments, commit messages, release notes, and changelogs, skip Diátaxis.
+- For PR descriptions, skip Diátaxis and also use the "show-me" skill. Include the smallest visual that clarifies the changed structure, control flow, data flow, or before-and-after relationship.
 - For skills, `AGENTS.md`, `CLAUDE.md`, and documents reached through agent context pointers, read [Agent instructions](references/agent-instructions.md) instead of applying Diátaxis. When the artefact is a skill, also read [Skill mechanics](references/skill-mechanics.md).
 
 For agent artefacts, **Agent instructions** is the scoped authority. Preserve operational wording and leading words when a general prose rule would weaken a trigger, completion criterion, or other deliberate steering.

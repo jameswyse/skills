@@ -8,12 +8,12 @@ disable-model-invocation: true
 
 Find concrete opportunities to improve an existing codebase's correctness, simplicity, maintainability, testability, tooling, and operations. Present the evidence before changing code.
 
-Call the Skill tool for "engineering" as the baseline. Repository instructions and established conventions take precedence. Read each engineering reference when its trigger appears. Call the Skill tool for "ux" when a candidate concerns the user-facing experience.
+Use the "engineering" skill as the baseline. Repository instructions and established conventions take precedence. Read each engineering reference when its trigger appears. Use the "ux" skill when a candidate concerns the user-facing experience.
 
 Keep this review distinct from narrower workflows:
 
-- Call the Skill tool for "code-review" when the task is to approve or find defects in a specific change. Keep an explicitly requested recent-history standards scan in this workflow.
-- Call the Skill tool for "diagnosing-bugs" for a known failure or performance regression.
+- Use the "code-review" skill when the task is to approve or find defects in a specific change. Keep an explicitly requested recent-history standards scan in this workflow.
+- Use the "diagnosing-bugs" skill for a known failure or performance regression.
 - Recommend the user-invoked "upgrade-deps" skill for a comprehensive dependency refresh.
 - Recommend the user-invoked "improve-security" skill for a dedicated security review. Report a concrete security flaw discovered here, but do not expand this workflow into a general security audit.
 - Recommend the user-invoked "improve-architecture" skill when the primary improvement requires deeper modules, a different seam, or a substantial interface redesign. Do not include that work in the standards ranking.

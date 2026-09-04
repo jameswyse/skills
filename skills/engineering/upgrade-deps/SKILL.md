@@ -205,7 +205,7 @@ the repository's documented finish order. If the repository defines no order, us
 2. Run a frozen-lockfile install and the available peer check.
 3. Run the repository's canonical full verification command, including production builds and full
    tests when that command provides them.
-4. Call the Skill tool for "code-review" against the complete working-tree change. Fix every verified finding.
+4. Use the "code-review" skill against the complete working-tree change. Fix every verified finding.
 5. Repeat affected checks and the full verification command after review fixes.
 6. Run `git diff --check`, the recursive outdated scan with GitHub Actions, the full audit, and the
    production audit.

@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Make the selected path measurably faster without changing its required behaviour or moving the cost somewhere unmeasured.
 
-Call the Skill tool for "engineering". Call the Skill tool for "diagnosing-bugs" as well when the work concerns an unexpected performance regression or the measurements conflict with expectations. Apply an available framework or runtime performance skill only after the repository and the diagnosed bottleneck justify it. For example, use a matching Next.js cache skill for a confirmed Next.js caching problem rather than for every slow Next.js page.
+Use the "engineering" skill. Use the "diagnosing-bugs" skill as well when the work concerns an unexpected performance regression or the measurements conflict with expectations. Apply an available framework or runtime performance skill only after the repository and the diagnosed bottleneck justify it. For example, use a matching Next.js cache skill for a confirmed Next.js caching problem rather than for every slow Next.js page.
 
 ## Choose the intake and set the target
 
@@ -24,7 +24,7 @@ For a specific improvement request, resolve consequential unknowns before buildi
 - required behaviour and unacceptable trade-offs;
 - constraints on dependencies, architecture, compatibility, memory, cost, or delivery time.
 
-Ask a compact set of direct questions when the unknowns are independent and few. When several consequential decisions remain, their answers depend on each other, or the acceptable solution could change substantially, call the Skill tool for "grilling". Use its design tree and recommended answers until the user confirms the shared understanding. Do not start instrumentation or implementation before that confirmation.
+Ask a compact set of direct questions when the unknowns are independent and few. When several consequential decisions remain, their answers depend on each other, or the acceptable solution could change substantially, use the "grilling" skill. Use its design tree and recommended answers until the user confirms the shared understanding. Do not start instrumentation or implementation before that confirmation.
 
 Write a short performance brief before changing product code:
 

@@ -8,7 +8,8 @@ description: "Baseline software engineering rules for code, tests, dependencies,
 Apply these rules as the baseline for software engineering. When a narrower skill also applies, use both. The narrower skill may strengthen or refine these rules within its scope, but must not weaken them.
 
 - This skill owns implementation quality, architecture, data, types, tests, dependencies, and tooling.
-- For user-facing interface implementation that isn't well defined, call the Skill tool for "ux". It owns experience, interaction, visual presentation, accessibility, interface copy, and motion decisions.
+- For user-facing interface implementation that isn't well defined, use the "ux" skill. It owns experience, interaction, visual presentation, accessibility, interface copy, and motion decisions.
+- When explaining code or code changes, or answering questions about code, also use the "show-me" skill. It owns the smallest useful diagram or code-shape sketch.
 
 ## Test work requires the testing reference
 
@@ -80,7 +81,7 @@ Complexity inhibits understanding and robustness. Simplicity makes change easier
 
 Read each reference when its trigger first appears, including when the task changes phase later in a long thread.
 
-- For an unexpected problem, a tempting guard or workaround, or a reported bug, read [Root-cause fixes](references/root-causes.md). For a hard bug or performance regression, also call the Skill tool for "diagnosing-bugs". It owns the diagnostic loop, while the reference owns fix placement.
+- For an unexpected problem, a tempting guard or workaround, or a reported bug, read [Root-cause fixes](references/root-causes.md). For a hard bug or performance regression, also use the "diagnosing-bugs" skill. It owns the diagnostic loop, while the reference owns fix placement.
 - Before substantial type, state, data-structure, module, interface, or refactor decisions, or when a new requirement does not fit the current design, read [Design and maintainability](references/design.md).
 - Before assessing module depth, compressing an interface, placing a seam, choosing adapters, or deciding where tests should observe behaviour, read [Deep modules](references/deep-modules.md).
 - Before adding, moving, renaming, splitting, merging, or reviewing files or directories, read [Codebase organisation and naming](references/organisation-and-naming.md).

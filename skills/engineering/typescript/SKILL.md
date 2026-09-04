@@ -5,7 +5,7 @@ description: TypeScript best practices. Use when reading or editing any .ts or .
 
 # TypeScript
 
-Call the Skill tool for "engineering" first. This skill grounds its type and seam rules in TypeScript syntax.
+Use the "engineering" skill first. This skill grounds its type and seam rules in TypeScript syntax.
 
 | Rule                            | Summary                                                                                                                                                                                                                                                                              |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |

@@ -26,7 +26,7 @@ Fight for simplicity throughout design and implementation. Writing code is cheap
 The simplest design is the one with the least total complexity that still expresses the required behaviour and constraints. Do not confuse simplicity with fewer lines, fewer files, or less explicit domain modelling. A locally concise change that creates caller coordination, hidden state, or parallel paths makes the system more complex.
 
 - Prefer deletion. When refactoring or improving, look for removals before additions.
-- Maintain a flat call hierarchy. A rich interface that hides substantial work is useful. A chain of pass-through calls is not. If answering a question requires tracing through more than three files or layers, flatten it.
+- Maintain a flat call hierarchy. A rich interface that hides substantial work is useful. A chain of pass-through calls is not. Flatten pass-through files or layers that add no decision or abstraction.
 - Consolidate decisions. Put one choice behind one source of truth instead of repeating it across callers.
 - Make the smallest change that solves the problem. Fewer lines beat elegant boilerplate.
 - When a change threads a signal through types, schemas, pipelines, or similar layers, look for a more direct path.
@@ -50,7 +50,7 @@ Shrink state scope. Prefer pure functions over mutation, locals over fields, fie
 
 Identify who owns each state transition. When concurrent actors can change the same state, isolate their writes or define explicit serialisation.
 
-Before adding a layer or mutable state, ask whether it reduces reader load elsewhere by at least as much. A new reader should be able to answer "where does this come from?" and "what can change it?" in under 30 seconds. If not, cut layers or state.
+Before adding a layer or mutable state, ask whether it reduces reader load elsewhere by at least as much. A new reader should be able to find where state comes from and what can change it without tracing unrelated indirection. If not, cut layers or state.
 
 ## Model the domain
 
@@ -98,7 +98,7 @@ Use types to eliminate impossible states, mismatched primitives, and unhandled v
 - **Derive from authoritative schemas.** Generate or derive types from protocol, OpenAPI, GraphQL, database, and token definitions instead of maintaining parallel shapes.
 - **Strengthen a type only where partiality appears.** A runtime assertion, null check, or impossible-case throw marks a weak type. Do not add precision that buys no safety and reduces reuse.
 
-For TypeScript syntax and examples, call the Skill tool for "typescript".
+For TypeScript syntax and examples, use the "typescript" skill.
 
 Use these checks:
 

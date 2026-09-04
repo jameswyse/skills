@@ -8,11 +8,11 @@ disable-model-invocation: true
 
 Review the repository tree as an interface for maintainers. Find structures that make a capability difficult to locate or follow, then present evidence before changing files.
 
-Call the Skill tool for "engineering" and follow its reference routing. Read its organisation and naming guidance before inspecting the tree. Read its deep-module guidance before judging whether a file, directory, or interface is shallow.
+Use the "engineering" skill and follow its reference routing. Read its organisation and naming guidance before inspecting the tree. Read its deep-module guidance before judging whether a file, directory, or interface is shallow.
 
 Keep this workflow distinct from broader reviews:
 
-- Call the Skill tool for "code-review" to approve or find defects in a particular diff.
+- Use the "code-review" skill to approve or find defects in a particular diff.
 - Recommend the user-invoked "improve-architecture" skill when the main problem requires a deeper module, a different seam, or substantial interface redesign.
 - Recommend the user-invoked "improve-standards" skill for correctness, types, tests, tooling, operations, and general maintenance standards.
 

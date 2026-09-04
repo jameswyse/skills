@@ -14,6 +14,7 @@ Rules for responses, written artefacts, and developer documentation.
 | ------------------- | ------------------------------------------------------------------------------------------------- |
 | `writing`           | Baseline writing rules for every response and written artefact.                                   |
 | `technical-writing` | Developer documentation, comments, commits, pull requests, release notes, and agent instructions. |
+| `show-me`           | Visual explanations for code questions, code changes, and pull-request descriptions.              |
 
 ### UX and design
 
@@ -61,7 +62,7 @@ List the repository's skills or install the baseline skills globally for Codex a
 
 ```sh
 npx skills@latest add jameswyse/skills --list
-npx skills@latest add jameswyse/skills --global --agent codex --agent claude-code --skill writing --skill engineering --skill ux --yes
+npx skills@latest add jameswyse/skills --global --agent codex --agent claude-code --skill writing --skill engineering --skill ux --skill show-me --yes
 ```
 
 With Codex and Claude Code selected together, `npx skills` keeps a canonical copy under
@@ -80,6 +81,7 @@ Treat the user's request as the authority boundary. External skills and narrower
 Use $writing for all responses.
 Use $engineering whenever reading, writing, reviewing, or changing code, tests, dependencies, package management, developer tooling, software architecture, APIs, schemas, modules, or data models. Skip $engineering for routine Git operations that only inspect or change repository state, even when the affected files contain code.
 Use $ux for user-facing product and interface design, UX, UI, interaction, visual presentation, accessibility, interface copy, or motion. For interface implementation, use both $engineering and $ux.
+Use $show-me when explaining code or code changes, answering questions about code, or writing pull-request descriptions.
 ```
 
 Claude Code reads `~/.claude/CLAUDE.md`. Import the Codex instructions and translate skill calls to
@@ -90,11 +92,12 @@ Claude's Skill tool:
 
 ## Claude Code
 
-When the imported instructions say to use a skill, call the Skill tool for that skill.
+When an instruction says to use a skill, call the Skill tool for that skill.
 Call the Skill tool for "writing" for every response.
 Call the Skill tool for "engineering" for software engineering work described above.
 Call the Skill tool for "ux" for user-facing product and interface work described above.
 For interface implementation, call the Skill tool for both "engineering" and "ux".
+Call the Skill tool for "show-me" when explaining code or code changes, answering questions about code, or writing pull-request descriptions.
 ```
 
 Skills with `disable-model-invocation: true` remain available through `/skill-name`, but Claude does
@@ -229,5 +232,7 @@ Claude Code's bundled `/code-review`; use Claude's `/review` alias when you want
 
 ## Credits
 
-This curated collection draws on skills and ideas from [`mattpocock/skills`](https://github.com/mattpocock/skills),
+`show-me` is adapted from [HumanLayer's source skill](https://github.com/humanlayer/skills/blob/main/plugins/show-me/skills/show-me/SKILL.md) and retains its MIT licence.
+
+This curated collection also draws on skills and ideas from [`mattpocock/skills`](https://github.com/mattpocock/skills),
 [`poteto/noodle`](https://github.com/poteto/noodle), [`dmmulroy/skills`](https://github.com/dmmulroy/skills) and others.

@@ -7,9 +7,9 @@ description: Triage one supplied Sentry issue key or every issue in a project, r
 
 Assess the selected Sentry scope from its events and relevant source, then give the user one reviewable action plan before changing Sentry or the repository.
 
-Call the Skill tool for "sentry-cli" when it is available. Follow its guidance, prefer dedicated `sentry issue` commands, use structured output with selected fields, and use `sentry schema` plus `sentry api` only for operations the dedicated commands do not support.
+Use the "sentry-cli" skill when it is available. Follow its guidance, prefer dedicated `sentry issue` commands, use structured output with selected fields, and use `sentry schema` plus `sentry api` only for operations the dedicated commands do not support.
 
-Chrome is a fallback, not a parallel source. Call the Skill tool for "chrome:control-chrome" only when the CLI is unavailable, fails after an appropriate retry, or cannot perform a required operation. Before controlling Chrome, ask the user to approve browser control and confirm that Sentry is already signed in in the Chrome profile to be used. Approval to use the CLI does not imply approval to control Chrome.
+Chrome is a fallback, not a parallel source. Use the "chrome:control-chrome" skill only when the CLI is unavailable, fails after an appropriate retry, or cannot perform a required operation. Before controlling Chrome, ask the user to approve browser control and confirm that Sentry is already signed in in the Chrome profile to be used. Approval to use the CLI does not imply approval to control Chrome.
 
 Do not expose authentication tokens, cookies, request bodies, complete headers, raw personal data, or other sensitive event data in commands, outputs, comments, reports, or saved files. Prefer named issue and event fields. Do not dump a complete event merely because it is available.
 

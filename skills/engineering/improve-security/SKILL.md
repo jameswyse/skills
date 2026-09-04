@@ -102,6 +102,6 @@ found within the reviewed coverage.
 Do not include secret values, complete exploit payloads, or instructions for attacking a live
 system. Use the minimum safe reproduction needed to support the finding.
 
-Selection does not authorise a fix. Make changes only when the user asks for implementation. Call
-the Skill tool for "engineering", fix the source problem, and verify the protected behaviour when implementation is
+Selection does not authorise a fix. Make changes only when the user asks for implementation. Use
+the "engineering" skill, fix the source problem, and verify the protected behaviour when implementation is
 authorised.

@@ -35,7 +35,7 @@ If the redacted output is not enough to diagnose the bug, say so and ask the use
 
 **This is the skill.** Everything else supports it. If you have a **tight** binary signal that goes red on _this_ bug, you can find the cause. Bisection, hypothesis testing, and instrumentation all consume that signal. Code reading alone cannot replace it.
 
-Spend disproportionate effort here. **Be aggressive. Be creative. Refuse to give up.**
+Spend enough effort here to produce the tight, red-capable command required by the completion criterion below.
 
 ### Ways to construct one, in roughly this order
 
