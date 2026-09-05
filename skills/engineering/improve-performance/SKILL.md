@@ -24,7 +24,7 @@ For a specific improvement request, resolve consequential unknowns before buildi
 - required behaviour and unacceptable trade-offs;
 - constraints on dependencies, architecture, compatibility, memory, cost, or delivery time.
 
-Ask a compact set of direct questions when the unknowns are independent and few. When several consequential decisions remain, their answers depend on each other, or the acceptable solution could change substantially, use the "grilling" skill. Use its design tree and recommended answers until the user confirms the shared understanding. Do not start instrumentation or implementation before that confirmation.
+Ask a compact set of direct questions when the consequential unknowns are independent and few. When consequential decisions depend on each other, use the "grilling" skill for those decisions and preserve its interview pauses. Proceed without a new confirmation when the request and evidence already establish the workload, success criterion, and acceptable trade-offs. Continue independent authorised measurement or investigation while waiting; do not begin work that depends on an unanswered decision.
 
 Write a short performance brief before changing product code:
 
@@ -35,7 +35,7 @@ Write a short performance brief before changing product code:
 - secondary guardrails for correctness, memory, CPU, network weight, tail latency, or another affected resource;
 - the selected scope, relevant exclusions, and current working-tree state.
 
-Infer and state any detail that the request and repository make clear so the user can correct it. The performance brief is ready when no unstated assumption can change the workload, success criterion, or acceptable solution.
+Infer and state any detail that the request and repository make clear so the user can correct it. The performance brief is ready when consequential choices are established and routine assumptions are stated for correction.
 
 The request to improve the named target authorises product and benchmark changes inside that scope. It does not authorise tool installation, dependency upgrades, production instrumentation, production configuration changes, or a larger architectural redesign. Ask before any of those actions.
 

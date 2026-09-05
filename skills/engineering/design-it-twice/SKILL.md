@@ -25,7 +25,9 @@ Explain this problem space to the user. Include a small illustrative type or cod
 
 ## Produce independent designs
 
-Spawn at least three subagents in parallel. Give each subagent the same factual technical brief and a different design constraint. Do not show them another design or the expected recommendation.
+Read the engineering [delegation guidance](../engineering/references/execution.md#delegate-bounded-work). This workflow requests independent design work within the user's scope when delegation is available and permitted. Start with two distinct designs for a straightforward decision. Add another only when a meaningful trade-off remains unexplored or the user requests more alternatives.
+
+When delegating, give each subagent the same factual technical brief and a different design constraint. Use fresh contexts when supported. Do not show them another design or the expected recommendation. When delegation is unavailable or restricted, develop the alternatives sequentially and disclose that they were not independently generated. Do not stop merely because subagents are unavailable.
 
 Use these constraints unless the problem calls for a stronger distinction:
 
@@ -34,7 +36,7 @@ Use these constraints unless the problem calls for a stronger distinction:
 3. Optimise for the most common caller so the default case is trivial.
 4. When remote or external dependencies matter, design around necessary ports and adapters.
 
-Require each subagent to provide:
+Require each design to provide:
 
 1. The interface, including types, methods, parameters, invariants, ordering, and error modes.
 2. A usage example for a representative caller.
@@ -58,3 +60,5 @@ Present each design separately before comparing them. Use the same criteria for 
 - Total complexity across the affected system.
 
 Recommend the strongest design and explain why it wins. Propose a hybrid when it combines compatible strengths without widening the interface or preserving two competing paths. Do not stop at a menu of options.
+
+If implementation was already requested, continue with the recommended design when it fits the established constraints and authority. Ask only about unresolved decisions that would change the outcome or exceed that authority.

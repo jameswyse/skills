@@ -81,10 +81,13 @@ baseline finding is a labelled judgement call:
   or correctness cost and the smallest coherent alternative. Do not flag essential domain complexity
   or mere line count.
 
-## 2. Run independent reviews
+## 2. Choose review execution
 
-State which axes you are delegating. Spawn the applicable agents in parallel. If the tool supports
-disabling parent-history inheritance, disable it for each agent. Give the agents read-only tasks.
+Read the engineering [delegation guidance](../engineering/references/execution.md#delegate-bounded-work). This workflow requests bounded, read-only delegation when independent review adds useful confidence and the user and runtime permit it. Delegate the applicable axes for substantial, uncertain, or consequential changes. For a small diff whose scope and checks are clear, inspect the Standards and Spec axes sequentially in the primary agent. Also use the sequential path when delegation is unavailable or restricted. Preserve both axes and the same evidence threshold in either mode; state which mode was used.
+
+For the sequential path, use the captured scope from step 1 and the axis prompts below directly. Keep findings separate, then perform step 3. No review packet or subagent is required. References to agent reports in step 3 mean your candidate notes in this mode.
+
+For the delegated path, state which axes you are delegating and spawn the applicable agents in parallel. If the tool supports disabling parent-history inheritance, disable it for each agent. Give the agents read-only tasks.
 
 Before spawning, write one frozen review packet from the scope captured in step 1. Use a private
 temporary directory outside the repository with permissions limited to the current user. Give the
@@ -113,7 +116,7 @@ After a complete read succeeds, reopen only the cited lines needed to verify a c
 
 ### Standards agent
 
-For a scope that affects React code, add these instructions to the Standards agent:
+For a scope that affects React code, apply these instructions to the Standards review in either mode:
 
 - Check for a repository package script or project-local `react-doctor` executable.
 - If one is already runnable, use it with the repository's existing configuration. Leave installs

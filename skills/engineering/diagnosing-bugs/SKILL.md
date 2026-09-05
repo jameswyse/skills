@@ -5,7 +5,7 @@ description: Diagnosis loop for hard bugs and performance regressions. Use when 
 
 # Diagnosing bugs
 
-A discipline for hard bugs. Skip phases only when explicitly justified.
+A discipline for hard bugs. Choose the next investigation from the evidence. Use a reproduction when practical and the evidence fallback below when it is not.
 
 Read [Root-cause fixes](../engineering/references/root-causes.md) before choosing a fix. This skill owns the diagnostic loop. The reference owns fix placement, necessary consumer updates, and when a source fix needs approval.
 
@@ -33,9 +33,9 @@ If the redacted output is not enough to diagnose the bug, say so and ask the use
 
 ## Phase 1: Build a feedback loop
 
-**This is the skill.** Everything else supports it. If you have a **tight** binary signal that goes red on _this_ bug, you can find the cause. Bisection, hypothesis testing, and instrumentation all consume that signal. Code reading alone cannot replace it.
+Prefer a focused signal that goes red on the reported bug. Bisection, hypothesis testing, and instrumentation can use that signal to distinguish causes. Read relevant code, traces, configuration, and history when they help construct the reproduction or identify the next discriminating observation. Code inspection alone does not establish that a runtime fix works.
 
-Spend enough effort here to produce the tight, red-capable command required by the completion criterion below.
+Spend effort in proportion to the evidence value of a reproduction. Use the fallback below when further setup would add little useful evidence or needs unavailable access.
 
 ### Ways to construct one, in roughly this order
 
@@ -52,7 +52,7 @@ Choose a loop that fits the authorised scope. For diagnosis-only work, prefer an
 9. **Differential loop.** Run the same input through old and new versions, or through two configurations, and compare the outputs.
 10. **Human-in-the-loop script.** Use this as a last resort. If a human must click, guide _them_ with `scripts/hitl-loop.template.sh` so the loop remains structured. Use their captured output as the next input.
 
-Build the right feedback loop before investigating the cause.
+Use what the investigation reveals to improve the feedback loop. Keep provisional explanations distinct from a confirmed cause.
 
 ### Tighten the loop
 
@@ -62,41 +62,41 @@ Treat the loop as a product. Once you have _a_ loop, **tighten** it:
 - Can the loop assert the specific symptom instead of merely checking that it did not crash?
 - Can it pin time, seed random generation, isolate the filesystem, or freeze the network?
 
-A 30-second flaky loop is barely better than no loop. A 2-second deterministic loop is tight enough for rapid diagnosis.
+Prefer a fast, repeatable loop. Keep a slower check when the bug's actual path requires it; execution time alone does not disqualify useful evidence.
 
 ### Non-deterministic bugs
 
-The goal is not a clean reproduction but a **higher reproduction rate**. Loop the trigger 100 times, parallelise it, add stress, narrow timing windows, or inject delays. A bug that appears in 50% of runs is practical to diagnose. A 1% rate is not, so keep raising the rate until diagnosis is practical.
+For intermittent failures, record the conditions, attempt count, and observed failure rate. Use bounded repetitions or controlled timing changes when they improve diagnostic value within the authorised environment and load. A low reproduction rate can still be useful evidence. Stop expanding the run when additional attempts are unlikely to distinguish causes.
 
-### When you genuinely cannot build a loop
+### When a reproduction is unavailable or disproportionate
 
-Stop and say so explicitly. List what you tried. Ask the user for one of the following:
+State what you tried and the missing access, inputs, or disproportionate setup. Continue read-only investigation using source, captured traces, configuration, history, and relevant documentation. Rank provisional explanations and identify the observation that would distinguish each one. Request only missing evidence that would change the diagnosis, such as:
 
 - Access to an environment that reproduces the problem.
 - A redacted captured artefact, such as a HAR file, log dump, core dump, or screen recording with timestamps.
 - Permission to add temporary production instrumentation.
 
-Do **not** proceed to hypotheses without a loop.
+Continue independent investigation while waiting. Stop the affected branch when no available observation can reduce uncertainty. Report a probable cause or unresolved diagnosis when that is all the evidence supports. Never present an unexecuted reproduction or inferred fix as verified.
 
 ### Completion criterion: a tight loop that goes red
 
-Phase 1 is done when the loop is **tight** and **red-capable**. Name **one command**, such as a script path, test invocation, or curl command, that you have **already run at least once**. Show the invocation and its redacted output. The command must meet these conditions:
+When a loop is practical, name a command you have run and show the relevant redacted output. Use these criteria to judge its evidence:
 
 - [ ] **Red-capable.** It drives the actual bug path and asserts the **user's exact symptom**, so it can go red on this bug and green once fixed. "Runs without erroring" is insufficient. The command must catch this specific bug.
-- [ ] **Deterministic.** It returns the same verdict every run. For flaky bugs, pin a high reproduction rate as described above.
-- [ ] **Fast.** It takes seconds, not minutes.
-- [ ] **Agent-runnable.** You can run it unattended. A human participates only through `scripts/hitl-loop.template.sh`.
+- [ ] **Repeatable.** It returns a consistent verdict, or records the conditions and failure rate for an intermittent bug.
+- [ ] **Proportionate.** Its execution cost is justified by the symptom it observes.
+- [ ] **Runnable.** Prefer unattended execution. When human participation is necessary, use a structured procedure such as `scripts/hitl-loop.template.sh` and record the observed result.
 
-If you catch yourself reading code to build a theory before this command exists, stop. **Jumping straight to a hypothesis is the exact failure this skill prevents.** Do not start Phase 2 without a red-capable command.
+Proceed with the loop or the explicitly recorded evidence fallback. Keep the original symptom as the target in either mode.
 
 ## Phase 2: Reproduce and minimise
 
-Run the loop. Watch it go red as the bug appears.
+When a reproduction is available, run it and confirm the reported failure. In fallback mode, skip executable minimisation and narrow the affected path from the available evidence.
 
 Confirm:
 
 - [ ] The loop produces the failure mode the **user** described, not a different nearby failure. Reproducing the wrong bug leads to the wrong fix.
-- [ ] The failure is reproducible across multiple runs (or, for non-deterministic bugs, reproducible at a high enough rate to debug against).
+- [ ] Repeated runs support the failure, or the intermittent reproduction's limits are recorded.
 - [ ] You have captured the exact symptom (error message, wrong output, slow timing) so later phases can verify the fix actually addresses it.
 
 ### Minimise
@@ -105,13 +105,11 @@ Once it is red, shrink the reproduction to the **smallest scenario that still go
 
 A minimal reproduction reduces the hypotheses in Phase 3 because fewer moving parts remain. It also becomes the focused regression test in Phase 5.
 
-This phase is done when **every remaining element is necessary**. Removing any one of them makes the loop go green.
-
-Do not proceed until you have reproduced **and** minimised.
+Stop minimising when the scenario isolates the relevant behaviour and further reduction is unlikely to change the diagnosis or make the next check more useful. Preserve the original reproduction for final verification. Exhaustive minimality is not a completion requirement.
 
 ## Phase 3: Hypothesise
 
-Generate **3 to 5 ranked hypotheses** before testing any of them. Single-hypothesis generation anchors on the first plausible idea.
+While the cause remains uncertain, rank the plausible explanations supported by current evidence. Consider realistic alternatives to the leading explanation. Do not invent hypotheses to fill a quota or delay a decisive check when the evidence already identifies one.
 
 Each hypothesis must be **falsifiable**: state the prediction it makes.
 
@@ -144,7 +142,7 @@ Once the evidence identifies the root cause, state the cause, the evidence that 
 If the user requested diagnosis only:
 
 - Remove all `[DEBUG-...]` instrumentation and temporary artefacts.
-- Report the feedback-loop command and its redacted failing output.
+- Report the feedback-loop command and its redacted failing output, or the evidence fallback, confidence, and remaining verification gap.
 - State that the working tree was not changed and no fix was applied.
 - Stop without entering Phase 5.
 
@@ -154,7 +152,7 @@ Write the regression test **before the fix**, but only if there is a **correct s
 
 A correct seam lets the test exercise the **real bug pattern** as it occurs at the call site. The available seam may be too shallow. Examples include a single-caller test for a bug that needs several callers, or a unit test that cannot reproduce the chain that triggered the bug. A regression test at that seam gives false confidence.
 
-**If no correct seam exists, that itself is the finding.** Note it. The codebase architecture is preventing the bug from being locked down. Flag this for the next phase.
+If no practical test seam exists, record the limitation and use the closest useful check under the engineering testing reference. Distinguish architectural constraints from missing access, tooling, or an expensive test environment. Do not infer an architecture defect merely because no test was added.
 
 If a correct seam exists:
 
@@ -168,7 +166,7 @@ If a correct seam exists:
 
 Required before declaring the fix done:
 
-- [ ] The original reproduction no longer fails. Run the Phase 1 loop again.
+- [ ] The original reproduction no longer fails, or the closest available check and the unexercised original symptom are stated explicitly. An inaccessible runtime remains unverified even when source evidence supports the fix.
 - [ ] The regression test passes, or the absence of a suitable seam is documented.
 - [ ] All `[DEBUG-...]` instrumentation is removed. Search for the prefix.
 - [ ] Throwaway artefacts are removed from the temporary directory or kept only at a location the user requested.

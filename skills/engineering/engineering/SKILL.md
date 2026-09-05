@@ -38,6 +38,9 @@ Complexity inhibits understanding and robustness. Simplicity makes change easier
 
 ## Keep moving and fix at source
 
+- Carry forward authorisation already given for the current task. A narrower workflow cannot require renewed approval for an action the user already authorised. Review-only requests remain review-only; a request to review and implement includes both phases within its stated scope.
+- Resolve routine choices from repository evidence. Ask only for missing decisions that change the intended outcome or exceed the existing authority. Continue independent authorised work while waiting, and prepare a concrete, reviewable result before requesting approval for the remaining action.
+- When a skill causes a pause or leaves requested work unfinished, cite its exact file and instruction. Explain whether the pause follows an explicit requirement or your interpretation, and check the user's existing authorisation before asking again.
 - Continue safe, reversible work covered by the requested outcome. Infer ordinary implementation details from the request, repository conventions, and current evidence.
 - Scope follows the root cause, not the initially expected file list. Prefer a small source fix and the necessary consumer, test, or type updates over local exceptions, fallback paths, or compensating complexity.
 - Search for the same defect elsewhere. Fix minor, clearly equivalent instances when leaving them would preserve inconsistent behaviour.
@@ -86,6 +89,6 @@ Read each reference when its trigger first appears, including when the task chan
 - Before assessing module depth, compressing an interface, placing a seam, choosing adapters, or deciding where tests should observe behaviour, read [Deep modules](references/deep-modules.md).
 - Before adding, moving, renaming, splitting, merging, or reviewing files or directories, read [Codebase organisation and naming](references/organisation-and-naming.md).
 - Before designing, changing, or reviewing failure handling, error types, error translation, or diagnostic context, read [Failures and diagnostics](references/errors.md).
-- For a sweep, migration, internal interface transition, or other multi-step change, read [Execution and migration](references/execution.md).
+- For multi-step work, pending tools or questions, mid-task corrections, delegation, sweeps, or migrations, read [Execution and migration](references/execution.md).
 - For commands, lifecycle work, retries, restarts, scheduling, or concurrent writers, read [Reliable operations](references/operations.md).
 - Before declaring any engineering change complete, read [Verification, review, and learning](references/verification.md).

@@ -103,15 +103,15 @@ Do not replace the visual system with a dark theme, gradient page background, ov
 
 **Documentation conflicts.** If a candidate contradicts a documented rule or ADR, include it only when the observed problem justifies reconsideration. Mark the conflict in a warning callout, such as _"Contradicts XYZ. Reconsider it because..."_ Do not list theoretical refactors that documentation already rules out.
 
-Do not propose interfaces yet. After writing the file, ask the user, "Which of these would you like to explore?"
+Keep interface design out of the discovery report. After a review-only request, ask which candidate the user wants to explore. If the user already authorised design or implementation and the evidence identifies a candidate within that scope, continue to the next phase. Ask only when choosing the candidate changes the intended outcome or exceeds that authority.
 
 Before handoff, inspect the rendered report at a desktop width and at `320px`. Confirm that it matches the HTML report visual contract, the page has no horizontal overflow, the review boundary and evidence remain single-column, candidate columns stack in reading order, and diagrams remain legible. Fix the report before opening it for the user when any check fails.
 
 ### 4. Grilling loop
 
-Once the user picks a candidate, use the "grilling" skill to examine its constraints, dependencies, deepened module, seam contents, and surviving tests.
+For a selected candidate, resolve constraints, dependencies, module ownership, seam contents, and surviving tests from repository evidence. Use the "grilling" skill when the user requests an interview or consequential dependent decisions remain. Preserve its explicit interview pauses in that mode. When those decisions are already settled, proceed with the authorised design or implementation without requiring a new interview.
 
-After the user confirms a decision, offer to update the domain documentation during the same loop. The decision does not itself authorise file changes. Update documentation only when the user asks you to record it.
+After the user confirms a decision, record it only when the request covers documentation changes. A discussion-only decision does not itself authorise file changes. During authorised implementation, update affected documentation when needed to keep the change coherent; do not request the same authority again.
 
 - When a deepened module uses a concept missing from the repository's domain vocabulary, offer to add the term in the appropriate place.
 - When the conversation sharpens a vague term, offer to update the repository's domain vocabulary.

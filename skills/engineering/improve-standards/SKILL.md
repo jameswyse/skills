@@ -102,10 +102,10 @@ Use a visual only when it makes the evidence or proposed change easier to unders
 
 Make the top recommendation a compact horizontal section without a diagram. Use the available width for its reason, source fix, effort, risk, and link to the full candidate. Put architecture and organisation observations in a separate follow-up section. Route them to the user-invoked "improve-architecture" or "improve-organisation" skill without ranking them against standards candidates.
 
-After writing the report, ask the user, "Which of these would you like to improve?"
+After a review-only request, ask which candidates the user wants to improve. If the user already authorised implementation, continue with candidates covered by that request and resolve routine priorities from the evidence. Ask only when the selection changes the intended outcome or exceeds that authority.
 
 ### 5. Continue after selection
 
 Treat the report as a snapshot. Revalidate the selected candidate against the current working tree before designing or implementing a change.
 
-Selection does not authorise file changes. Make changes only when the user asks for implementation. Within that authority, apply the engineering skill, make the smallest coherent source fix, and verify the real behaviour before reporting completion.
+Selecting an item for further discussion does not authorise file changes. An instruction to implement selected candidates, including one given before the review, does. Apply the engineering skill's authority rules, make the smallest coherent source fix, and verify the real behaviour before reporting completion.

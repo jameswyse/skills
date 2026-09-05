@@ -7,9 +7,11 @@ description: Triage one supplied Sentry issue key or every issue in a project, r
 
 Assess the selected Sentry scope from its events and relevant source, then give the user one reviewable action plan before changing Sentry or the repository.
 
+Use the "engineering" skill and its [execution guidance](../engineering/references/execution.md) for authority, pending work, corrections, and delegated investigation. Retain the exact issue and project boundaries below when work is split or interrupted.
+
 Use the "sentry-cli" skill when it is available. Follow its guidance, prefer dedicated `sentry issue` commands, use structured output with selected fields, and use `sentry schema` plus `sentry api` only for operations the dedicated commands do not support.
 
-Chrome is a fallback, not a parallel source. Use the "chrome:control-chrome" skill only when the CLI is unavailable, fails after an appropriate retry, or cannot perform a required operation. Before controlling Chrome, ask the user to approve browser control and confirm that Sentry is already signed in in the Chrome profile to be used. Approval to use the CLI does not imply approval to control Chrome.
+Use an available browser capability as a fallback only when the CLI is unavailable, fails after an appropriate retry, or cannot perform a required operation. Follow that capability's instructions. Before controlling a browser, establish authorisation for browser control and the signed-in Sentry profile. Reuse approval already given for that browser and task; CLI-only approval does not imply browser approval.
 
 Do not expose authentication tokens, cookies, request bodies, complete headers, raw personal data, or other sensitive event data in commands, outputs, comments, reports, or saved files. Prefer named issue and event fields. Do not dump a complete event merely because it is available.
 
@@ -23,7 +25,7 @@ Use project-wide mode only when the user does not supply an issue key or ID.
 
 ## Establish the target
 
-In single-issue mode, treat the supplied short key as the exact read-only target. Use `sentry issue view <key>`, verify that the returned short key matches, and take the organisation and project from that issue. If the project was not already known, ask the user to confirm the resolved `org/project` and whether to save it in the project-level agent instructions. Do not ask them to restate a project the lookup already resolved.
+In single-issue mode, treat the supplied short key as the exact read-only target. Use `sentry issue view <key>`, verify that the returned short key matches, and take the organisation and project from that issue. Continue read-only triage when the exact key resolves unambiguously; ask only if the target is ambiguous or conflicts with the request. Saving a newly resolved `org/project` in project instructions remains optional and requires the user's approval without blocking triage.
 
 In project-wide mode, treat the target as known only when the user supplied it or the project-level `AGENTS.md` or `CLAUDE.md` records it. Resolve the Sentry target in this order:
 
@@ -109,7 +111,7 @@ For a large project, keep routine issue notes to one table row and reserve longe
 
 In single-issue mode, replace the category sections and project inventory table with one detailed issue section. Include the supplied and resolved short key, status, impact signals, evidence, likely cause with confidence, and recommended action. Keep the same numbered approval plan.
 
-Ask the user to approve specific action numbers or a clearly identified batch. A general request to triage authorises the read-only inventory and report, not comments, status changes, merges, filters, settings changes, source edits, deployments, or releases. Approval of Sentry changes does not authorise settings changes, repository fixes, or deployment unless the approved plan names them.
+Ask the user to approve specific action numbers or a clearly identified batch when those exact actions are not already authorised. A general request to triage authorises the read-only inventory and report, not comments, status changes, merges, filters, settings changes, source edits, deployments, or releases. Carry forward prior approval only when it covers the exact targets and actions in the plan. Approval of Sentry changes does not authorise settings changes, repository fixes, or deployment unless the approved plan names them.
 
 ## Process approved actions
 
@@ -122,7 +124,7 @@ Every terminal issue action requires a comment first. This includes resolve, arc
 - The approved next action and why.
 - For noise or duplicates, the unarchive, re-open, or canonical-issue condition.
 
-Use a dedicated CLI comment command if one becomes available. Otherwise inspect `sentry schema` for the supported issue-comment endpoint and use `sentry api`. If the CLI cannot create or verify the comment, request approval for the signed-in Chrome fallback. Do not perform the terminal action if the preceding comment cannot be created and verified.
+Use a dedicated CLI comment command if one becomes available. Otherwise inspect `sentry schema` for the supported issue-comment endpoint and use `sentry api`. If the CLI cannot create or verify the comment, use the browser fallback only under the browser authorisation established above. Do not perform the terminal action if the preceding comment cannot be created and verified.
 
 Before posting, search the issue's comments for the exact action marker. Reuse and verify an existing matching comment instead of posting a duplicate. Before each status change or merge, read the current state. Treat the desired state as this batch's success only when the matching action marker is also present. If another actor reached the desired state without that marker, pause and report the external or stale change. Apply only a still-pending transition with its verified marker. For a merge, verify both the canonical issue and each source issue before deciding whether the approved merge is pending or already complete.
 

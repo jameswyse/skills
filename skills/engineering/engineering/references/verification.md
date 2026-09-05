@@ -4,12 +4,14 @@ Prove the result against the real artefact, then turn repeated corrections into 
 
 ## Prove it works
 
+Before running checks, identify the changed behaviours, the required repository checks, and the narrowest reliable observations that cover them. Name any remaining uncertainty that would justify broader verification. Keep this decision brief for a small change. A formatting or instruction edit needs checks suited to that artefact, not unrelated application execution.
+
 After completing a change, ask: "How do I prove this actually works?" Check the real thing rather than a proxy, self-report, file timestamp, cached representation, or successful compilation alone.
 
 - Build when relevant, but treat a build as necessary evidence rather than sufficient proof.
 - Run the changed feature or operation and exercise its actual path.
-- Check the full input-to-output chain.
-- Test integrations through the full communication path when access permits.
+- Check the input-to-output path needed to observe the changed behaviour.
+- Exercise the full communication path when integration behaviour changed or a narrower check leaves a concrete uncertainty.
 - Check process liveness directly rather than inferring it from derived state.
 - Read the actual value rather than a derived or cached copy.
 - Inspect the final diff and working state.
@@ -25,9 +27,13 @@ When the change added, moved, renamed, split, merged, or deleted files or direct
 
 Completion requires direct evidence for every significant behaviour change. State any path that could not be exercised and why.
 
+Finish verification when required checks pass and the changed behaviours have adequate direct evidence. Repeat or broaden checks only after a relevant change, failure, stale result, or unresolved concern. Reuse an earlier result when its inputs and environment still apply. Do not rerun a successful check merely because another phase ended.
+
 ## Review the finished diff
 
-Repository-specific review instructions may replace or refine this step. Otherwise, when the "code-review" skill is available and the change warrants independent review, use the "code-review" skill on the finished diff. Treat changes to observable behaviour, tests, public interfaces, stored data or schemas, dependencies, security boundaries, developer tooling, or module structure as warranting review. Do this before declaring the implementation complete. A formatting-only or similarly mechanical change may rely on the repository's normal checks when those checks directly cover its risk.
+Follow repository-specific review requirements first. Otherwise use the "code-review" skill before completion for changes to security boundaries, public interfaces, stored data or schemas, dependency migrations, cross-module behaviour, or tooling and instructions that govern consequential actions. Also use it when correctness remains uncertain after focused checks. A small, local change with established behaviour and adequate checks may use direct diff inspection instead. Explain that choice only when it affects confidence or differs from the user's requested review.
+
+For explicit code-review requests, review both applicable axes even when the diff is small. The code-review skill chooses a proportionate delegated or sequential execution mode. Preserve comprehensive verification required for dependency migrations and sensitive changes.
 
 Resolve verified findings that fall within the authorised change. Report findings that require broader scope. Repeat the review after fixes that substantially change the diff. Also repeat it when repository instructions require a clean review loop.
 

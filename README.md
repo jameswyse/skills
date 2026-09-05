@@ -224,6 +224,11 @@ Pass skill names to validate a smaller set:
 scripts/validate-skills writing technical-writing
 ```
 
+For changes to agent decisions or workflow, use the [behavioural evaluation cases](evals/README.md).
+They cover authority, diagnosis, verification, steering, delegation, and security boundaries.
+Keep metadata validation separate from observed task outcomes and compare frozen skill revisions
+before claiming that a wording change improves a model's behaviour.
+
 The command supplies its pinned PyYAML dependency through an isolated `uv` environment. It does
 not require Codex, modify Homebrew Python, or require an activated virtual environment.
 

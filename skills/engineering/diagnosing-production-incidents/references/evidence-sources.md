@@ -1,6 +1,6 @@
 # Collect production evidence
 
-Use this reference after the user confirms the evidence plan. Choose the sources that can distinguish the current hypotheses. Do not query every available service by habit.
+Use this reference for the confirmed parts of the evidence plan, including exact source and query authority already supplied by the user. Apply the skill's evidence-plan rules to any unconfirmed source. Choose the sources that can distinguish the current hypotheses. Do not query every available service by habit.
 
 ## Choose the access route
 

@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Use this skill only when the user invokes it explicitly. The invocation means the user has classified the problem as an urgent production incident. Do not invent an organisation-specific severity.
 
-This skill owns the incident workflow. Do not run the "diagnosing-bugs" skill alongside it. Diagnose the incident, describe urgent mitigation options, and stop before any fix, rollback, deployment, configuration change, restart, scaling action, feature-flag change, or external communication unless the user separately authorises that action.
+This skill owns the incident workflow. Use the "engineering" skill and its [execution guidance](../engineering/references/execution.md) for authority, pending work, corrections, and delegation. Do not run the "diagnosing-bugs" skill alongside it. Diagnose the incident, describe urgent mitigation options, and stop before any fix, rollback, deployment, configuration change, restart, scaling action, feature-flag change, or external communication unless the user's authorisation covers that action. Carry forward exact action and environment approvals already given in the task.
 
 Keep the default investigation operationally read-only. Querying approved evidence sources, inspecting code and configuration, and creating authorised local temporary diagnostics are allowed. Production instrumentation is a separate change with a separate approval gate.
 
@@ -50,7 +50,7 @@ Ask one grouped clarification round for missing information that could change th
 
 ## Phase 2: Decide whether to reproduce
 
-Ask whether to attempt reproduction locally, in a named remote non-production environment, or in production. State the likely risk and evidence value of each available option. Approval for one environment does not authorise another.
+Use an already-authorised reproduction environment and action when supplied. Otherwise ask whether to attempt reproduction locally, in a named remote non-production environment, or in production, with the likely risk and evidence value of each available option. Continue passive evidence collection within confirmed sources while that decision is pending. Approval for one environment does not authorise another.
 
 ### Local reproduction
 
@@ -89,13 +89,13 @@ Inspect the incident context, repository, deployment configuration, available to
 - The connector, API, CLI, browser, or supplied export to use.
 - The sensitive-data risk, query cost, and production load.
 
-Ask the user to confirm the plan and provide additions or alternatives. Do not query an unconfirmed production evidence source.
+Treat sources, accounts, time windows, and read-only actions already approved by the user as confirmed. Present the plan as a non-blocking update for those sources. Ask only about unconfirmed production evidence sources or a change in query scope, cost, or load beyond the existing authority. Continue confirmed independent branches while waiting.
 
 After confirmation, verify access with a benign read. If access fails and an actionable login or permission step exists, give the exact step without asking for credentials. Wait only on the affected branch. Continue other confirmed independent work while the user completes the step, then verify that access again. If direct access cannot be provided, ask for a redacted export or record the evidence gap and continue.
 
 Run a broad first pass that establishes the timeline, scope, telemetry shape, healthy controls, recent changes, and observability coverage. Report a concise non-blocking status update after the first useful evidence pass.
 
-Create three to five ranked, falsifiable hypotheses. For each hypothesis, state the observation that would support it and the observation that would weaken it. Share the list as a non-blocking update, then run targeted queries that distinguish the hypotheses.
+Rank plausible, falsifiable hypotheses while the cause remains uncertain. Consider realistic alternatives without filling a quota. For each hypothesis, state the observation that would support it and the observation that would weaken it. Share the list as a non-blocking update, then run targeted queries that distinguish the hypotheses.
 
 Maintain an evidence ledger as [Reporting](references/reporting.md) defines it. Keep reporter claims, direct observations, inferences, and evidence gaps separate. Absence of a log or trace is not evidence of absence until retention, sampling, filtering, and instrumentation health have been checked.
 

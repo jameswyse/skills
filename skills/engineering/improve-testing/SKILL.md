@@ -10,7 +10,7 @@ Assess whether the test suite gives useful evidence that the code is correct. Tr
 
 Use the "engineering" skill. Read its [Testing](../engineering/references/testing.md) reference before judging a test. Read [Deep modules](../engineering/references/deep-modules.md) when a test seam or module interface is in question. Repository instructions, testing documentation, and established conventions take precedence.
 
-This workflow is a read-only review apart from temporary inventory files and the HTML report. Do not edit tests, dependencies, configuration, or product code unless the user later asks for implementation.
+The review phase is read-only apart from temporary inventory files and the HTML report. Edit tests, dependencies, configuration, or product code only within an implementation request, including authorisation given before the review.
 
 ## Establish the review boundary
 
@@ -72,4 +72,4 @@ Use charts to show exact inventory composition, not codebase health or invented 
 
 Inspect the rendered report at a desktop width and at `320px`. Confirm that the full inventory remains accessible, tables scroll without widening the page, charts include text values, filters have labels, colours are not the only status cue, and the page has no horizontal overflow. Fix the report before opening it with `open`, `xdg-open`, or `start`. Tell the user the absolute path.
 
-End by asking which removal candidates, test repairs, or guarantee gaps the user wants to tackle. Selection does not authorise changes. Revalidate the chosen item against the current tree before implementing an explicitly requested change.
+After a review-only request, ask which removal candidates, test repairs, or guarantee gaps the user wants to tackle. Selecting an item for discussion does not authorise changes. If implementation is already authorised, apply the engineering skill's authority rules and continue with covered changes. Revalidate the chosen items against the current tree before implementation.

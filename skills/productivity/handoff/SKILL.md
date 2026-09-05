@@ -12,6 +12,8 @@ Give a fresh agent enough context to continue the work without replaying the con
 - Start with the current objective and the completion criteria.
 - Record the current state, including completed work, verification evidence, work in progress, and work that remains.
 - Preserve settled decisions, user-approved wording, constraints, authority boundaries, and consequential assumptions.
+- Record accepted corrections and the current objective they produced. Mark superseded decisions or evidence so the next agent does not revive them.
+- For pending questions and running tools or delegated tasks, include the question or job ID, owner, dependencies, known status, and supported way to collect or cancel the work. Distinguish a requested cancellation from a confirmed one. State when a fresh session cannot access the job; do not imply that transferring the handoff transfers execution.
 - Name the working directory, branch, dirty working-tree state, relevant files and symbols, and useful commands when known.
 - Reference existing plans, specifications, ADRs, issues, commits, diffs, and other artefacts by path or URL. Summarise only the context needed to use them.
 - Put remaining steps in dependency order. Include blockers, risks, open questions, and failed approaches that the next agent must not repeat.
