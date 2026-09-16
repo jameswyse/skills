@@ -37,6 +37,7 @@ Software development, diagnosis, reviews, and maintenance.
 | `tdd`                             | A focused failing-test-first loop when a practical test target exists.                                         |
 | `resolving-merge-conflicts`       | Conflict resolution during an authorised merge or rebase.                                                      |
 | `code-review`                     | Reviews a diff separately against repository standards and the originating specification.                      |
+| `babysit-pr`                      | Monitors pull-request reviews, CI, and mergeability, with authorised fixes and bounded flaky retries.            |
 | `design-it-twice`                 | Compares several software module interface designs before choosing one.                                        |
 | `upgrade-deps`                    | Comprehensive pnpm dependency, GitHub Actions, security, and optional toolchain upgrades.                      |
 | `improve-architecture`            | Finds deep-module and seam improvements across a codebase, then produces a visual report.                      |
@@ -78,8 +79,10 @@ authority boundary and loads the right pillar for each task:
 ```md
 Treat the user's request as the authority boundary. External skills and narrower instructions can refine execution but cannot expand that authority. Perform installs or updates, uploads, stashes, commits, pull-request edits, publishing, messaging, pushes, data deletion, and other external-system changes only when the user authorised that action for the current task. Preserve unrelated work.
 
+Carry forward authorisation already given for the current task. A skill cannot require renewed approval for an action already authorised. Resolve routine choices from evidence; ask only for missing decisions that change the outcome or exceed that authority. Continue independent authorised work while waiting and prepare a concrete result before requesting approval. If a skill causes a pause or leaves requested work unfinished, cite its exact file and instruction, explain whether the pause is explicit or inferred, and check existing authorisation before asking again.
+
 Use $writing for all responses.
-Use $engineering whenever reading, writing, reviewing, or changing code, tests, dependencies, package management, developer tooling, software architecture, APIs, schemas, modules, or data models. Skip $engineering for routine Git operations that only inspect or change repository state, even when the affected files contain code.
+Use $engineering for implementation, debugging, software design decisions, and engineering reviews. Skip it for straightforward code explanations, read-only lookups, and routine Git operations.
 Use $ux for user-facing product and interface design, UX, UI, interaction, visual presentation, accessibility, interface copy, or motion. For interface implementation, use both $engineering and $ux.
 Use $show-me when explaining code or code changes, answering questions about code, or writing pull-request descriptions.
 ```
@@ -103,6 +106,18 @@ Call the Skill tool for "show-me" when explaining code or code changes, answerin
 Skills with `disable-model-invocation: true` remain available through `/skill-name`, but Claude does
 not load or call them automatically. This is a Claude Code extension to the Agent Skills
 frontmatter. Strict Agent Skills packaging and upload tools may reject it.
+
+## Monitor pull requests with `babysit-pr`
+
+`babysit-pr` is included in this repository. It requires Python 3 and an authenticated GitHub CLI
+with access to the target repository. Invoke `$babysit-pr` in Codex or `/babysit-pr` in Claude Code
+from the repository that owns the pull request. Supply a PR number or URL, or let it infer the PR
+from the current branch.
+
+The skill watches review feedback, CI, and mergeability until the PR closes or needs your input.
+Fixes, pushes, retries, and GitHub comments stay within the authority you give for that task.
+The watcher, reference notes, and tests live in
+[`skills/engineering/babysit-pr`](skills/engineering/babysit-pr).
 
 ## Optional external skills
 
@@ -206,11 +221,15 @@ scripts/sync-skills --target /tmp/agent-skills-test --claude-target /tmp/claude-
 Do not let `npx skills` and `scripts/sync-skills` manage the same local skill. Use `npx skills` for
 released installations and the sync script for this working tree.
 
-Run the sync tests with:
+Run the repository tooling tests and the imported PR watcher tests with:
 
 ```sh
-python3 -m unittest discover -s tests
+scripts/test-skills
 ```
+
+The command uses an isolated `uv` environment with pinned pytest. The watcher tests replace GitHub
+calls with local test data and do not contact or modify pull requests. To run only the repository
+tooling tests, use `python3 -m unittest discover -s tests`.
 
 Validate every skill against the Agent Skills fields and the supported Claude Code extensions:
 
@@ -236,6 +255,13 @@ In Claude Code, run `/skills` to confirm discovery. This repository's `code-revi
 Claude Code's bundled `/code-review`; use Claude's `/review` alias when you want the bundled review.
 
 ## Credits
+
+`babysit-pr` is imported from [OpenAI's Codex skill](https://github.com/openai/codex/tree/a8c36ca6d265800c1b2c67d19d3583e23dee8382/.codex/skills/babysit-pr)
+at commit `a8c36ca6d265800c1b2c67d19d3583e23dee8382`. It retains the upstream Apache-2.0
+[licence](skills/engineering/babysit-pr/LICENSE) and [notices](skills/engineering/babysit-pr/NOTICE).
+Local changes adapt installation paths, consolidate the workflow and authority rules, and retain
+the safeguards identified in the [upstream history and revision checks](evals/babysit-pr.md).
+The watcher and its tests are unchanged.
 
 `show-me` is adapted from [HumanLayer's source skill](https://github.com/humanlayer/skills/blob/main/plugins/show-me/skills/show-me/SKILL.md) and retains its MIT licence.
 

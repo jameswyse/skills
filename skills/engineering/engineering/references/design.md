@@ -122,3 +122,13 @@ Place validation, type narrowing, error handling, and framework adaptation at sy
 - Prefer pure transforms for parsing, prompt construction, scoring, and assessment.
 
 Ask whether data is crossing a system seam now. If not, another validation check is probably redundant. Ask whether framework wiring can call a pure function. If it can, extract the decision from the framework shell.
+
+## Design security boundaries
+
+Before changing a security boundary, identify the protected assets, attacker-controlled inputs, trust boundaries, and credible misuse paths. Treat authentication and authorisation as separate decisions. Enforce authorisation at the server-side operation or data boundary that owns the protected action.
+
+Keep secrets and sensitive data out of source code, client bundles, logs, errors, traces, metrics, snapshots, and fixtures. Give credentials and permissions only the scope they need. Verify representative allowed and denied paths, including object or tenant isolation when applicable.
+
+## Select dependencies deliberately
+
+Add a dependency only when its maintenance, security, licence, provenance, transitive dependency, install-time code, and runtime costs are justified by the required behaviour. Use established repository tools when they already solve the problem. Keep installation and upgrades within the user's authority.

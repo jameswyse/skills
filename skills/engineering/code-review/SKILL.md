@@ -12,8 +12,16 @@ merge or rerank their findings.
 Use the "engineering" skill as the baseline for code, tests, dependencies, package
 management, and developer tooling. When the scope contains tests, read its
 [Testing](../engineering/references/testing.md) reference and use its named test smells.
-When a finding depends on design, module depth, interface compression, seam placement, or
-simplicity, read the relevant engineering reference before reporting it.
+Load detailed standards from the reviewed behaviour, even when implementation did not need them:
+
+- For substantive type, state, schema, or architecture changes, use [Design and maintainability](../engineering/references/design.md). Read [Deep modules](../engineering/references/deep-modules.md) for ownership, interface compression, or seam placement.
+- For security boundaries or dependency choices, use the corresponding sections of the design reference.
+- For error representations, recovery, or boundary translation, use [Failures and diagnostics](../engineering/references/errors.md).
+- For lifecycle behaviour, retries, scheduling, or concurrent state, use [Reliable operations](../engineering/references/operations.md).
+- For coordinated migrations, use [Execution and migration](../engineering/references/execution.md).
+
+Check relevant standards before forming findings. Do not load every reference for a small diff or require the author to have read a document when the result already meets its standard.
+
 When the scope adds, moves, renames, splits, merges, or deletes files or directories, read
 [Codebase organisation and naming](../engineering/references/organisation-and-naming.md). Apply it
 to the affected subtree, authoritative imports, naming patterns, and companion-file ownership.

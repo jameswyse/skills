@@ -5,7 +5,7 @@ description: TypeScript best practices. Use when reading or editing any .ts or .
 
 # TypeScript
 
-Use the "engineering" skill first. This skill grounds its type and seam rules in TypeScript syntax.
+For implementation, design decisions, debugging, or engineering review, also use "engineering". A straightforward code explanation or read-only lookup can use this syntax guidance without loading engineering.
 
 | Rule                            | Summary                                                                                                                                                                                                                                                                              |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |

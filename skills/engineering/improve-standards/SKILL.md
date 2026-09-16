@@ -108,4 +108,4 @@ After a review-only request, ask which candidates the user wants to improve. If 
 
 Treat the report as a snapshot. Revalidate the selected candidate against the current working tree before designing or implementing a change.
 
-Selecting an item for further discussion does not authorise file changes. An instruction to implement selected candidates, including one given before the review, does. Apply the engineering skill's authority rules, make the smallest coherent source fix, and verify the real behaviour before reporting completion.
+Selecting an item for further discussion does not authorise file changes. An instruction to implement selected candidates, including one given before the review, does. Apply the governing authority rules, make the smallest coherent source fix, and verify the real behaviour before reporting completion.

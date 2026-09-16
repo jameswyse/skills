@@ -4,7 +4,7 @@ Break multi-step work into verifiable units and converge on the intended end sta
 
 ## Proceed with reversible work
 
-Apply the engineering skill's authority rules. Continue when the remaining decisions are minor, reversible, and covered by the requested outcome.
+Apply the governing authority rules. Continue when the remaining decisions are minor, reversible, and covered by the requested outcome.
 
 - Infer ordinary implementation details from the request, repository conventions, and current evidence.
 - Perform read-only checks and normal implementation steps inside the authorised scope.

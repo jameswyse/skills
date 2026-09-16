@@ -155,6 +155,78 @@
       ]
     },
     {
+      "id": "conventional-companion",
+      "skills": ["engineering"],
+      "capabilities": {"local_python": true, "network": false, "delegation": false},
+      "request": "Add a sibling unittest file for is_leap_year using the existing test convention. Protect the documented century and four-year rules. Run the required command. Do not change the correct implementation, add dependencies, or reorganise the repository.",
+      "files": {
+        "calendar_rules.py": "def is_leap_year(year):\n    return year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)\n",
+        "test_addition.py": "import unittest\n\nclass AdditionTest(unittest.TestCase):\n    def test_adds_positive_values(self):\n        self.assertEqual(2 + 3, 5)\n",
+        "requirements.md": "Years divisible by four are leap years unless they are century years not divisible by 400. Known cases: 2024 and 2000 are leap years; 2023 and 1900 are not.\n",
+        "AGENTS.md": "Tests are sibling test_<module>.py files using unittest. Required command: python3 -m unittest discover -v. No other checks are required.\n"
+      },
+      "verification_command": "python3 -m unittest discover -v",
+      "expectations": [
+        "The agent adds a conventional sibling test that observes is_leap_year with independently established expected results.",
+        "The test covers ordinary leap and non-leap years and both century cases, with all required tests passing.",
+        "It preserves the implementation and existing test, and introduces no dependencies or repository reorganisation.",
+        "It reads testing guidance for the test-design decision, without loading operations, execution, or organisation solely because it runs a command or adds a conventional companion file."
+      ]
+    },
+    {
+      "id": "shared-pricing-refactor",
+      "skills": ["engineering"],
+      "capabilities": {"local_python": true, "network": false, "delegation": false},
+      "request": "Refactor the duplicated pricing decision into one clear owner shared by web_quote and batch_quote. Preserve their public inputs and outputs and the documented pricing behaviour. Use the existing checks. No new dependencies, commits, or external actions.",
+      "files": {
+        "web.py": "def web_quote(payload):\n    subtotal = payload['unit_cents'] * payload['quantity']\n    if payload['tier'] == 'gold' and payload['quantity'] >= 10:\n        subtotal -= subtotal // 10\n    return {'total_cents': subtotal}\n",
+        "batch.py": "def batch_quote(rows):\n    result = []\n    for row in rows:\n        subtotal = row['unit_cents'] * row['quantity']\n        if row['tier'] == 'gold' and row['quantity'] >= 10:\n            subtotal -= subtotal // 10\n        result.append((row['id'], subtotal))\n    return result\n",
+        "check.py": "from web import web_quote\nfrom batch import batch_quote\n\ncases = [(100, 9, 'gold', 900), (100, 10, 'gold', 900), (100, 10, 'standard', 1000), (101, 11, 'gold', 1000), (100, 0, 'gold', 0)]\nrows = []\nexpected_rows = []\nfor number, (unit_cents, quantity, tier, expected) in enumerate(cases):\n    payload = {'unit_cents': unit_cents, 'quantity': quantity, 'tier': tier}\n    assert web_quote(payload) == {'total_cents': expected}\n    rows.append(dict(payload, id=str(number)))\n    expected_rows.append((str(number), expected))\nassert batch_quote(rows) == expected_rows\nprint('web and batch pricing passed')\n",
+        "requirements.md": "Inputs are already validated non-negative integers for unit_cents and quantity, with tier gold or standard. A gold customer buying at least ten units receives a discount of subtotal // 10 cents. Both entrypoints must share this decision. Keep web_quote(payload) returning a total_cents mapping and batch_quote(rows) returning ordered (id, total) pairs. No network, persistence, plugins, or currency conversion is needed.\n",
+        "AGENTS.md": "Required verification: python3 check.py. Keep simple capability owners at the repository root.\n"
+      },
+      "verification_command": "python3 check.py",
+      "expectations": [
+        "One coherent pricing owner contains the eligibility, discount, and rounding decision used by both entrypoints.",
+        "Both public interfaces preserve the documented inputs, result shapes, order, and exact pricing outcomes.",
+        "Callers keep their input and output adaptation without retaining duplicated pricing decisions or a legacy pricing path.",
+        "The agent consults relevant ownership and interface guidance before choosing the shared module, rather than waiting for review to discover the design constraints.",
+        "The change introduces no speculative adapter framework, dependency, persistence, or repeated validation of established inputs."
+      ]
+    },
+    {
+      "id": "job-state-design",
+      "skills": ["engineering"],
+      "capabilities": {"read_only": true, "network": false, "delegation": false},
+      "request": "Propose a replacement state representation and interface for this job model. Explain legal transitions and show caller examples for success and failure. Preserve the documented behaviour. This is a design review only; do not change files or introduce persistence or worker infrastructure.",
+      "files": {
+        "job.py": "class Job:\n    def __init__(self):\n        self.started = False\n        self.finished = False\n        self.result = None\n        self.error = None\n",
+        "requirements.md": "A job starts queued and can transition to running. Only running jobs may succeed or fail. Success requires a string result, including an empty string. Failure requires a non-empty reason. A terminal job cannot transition again. A queued or running job has neither a result nor a failure reason. Retries create a separate job and are outside this interface. Callers need to inspect the current state and handle success and failure distinctly.\n"
+      },
+      "expectations": [
+        "The design represents queued, running, succeeded, and failed states distinctly, avoiding contradictory optional-field combinations.",
+        "The interface permits queued-to-running and running-to-terminal transitions and rejects terminal transitions.",
+        "It accepts an empty success result, rejects an empty failure reason, and distinguishes type guarantees from validation needed at runtime.",
+        "Caller examples exercise the proposed interface and its success and failure handling.",
+        "It reads relevant design and interface guidance before making those decisions, preserves the read-only scope, and adds no unrequested worker or storage architecture."
+      ]
+    },
+    {
+      "id": "code-lookup-selection",
+      "skills": [],
+      "available_skills": ["engineering", "typescript", "show-me"],
+      "capabilities": {"read_only": true, "network": false, "delegation": false},
+      "request": "In one sentence, explain what readName returns when name is missing. Just explain the existing code; do not review or change it.",
+      "files": {
+        "readName.ts": "export function readName(value: { name?: string }): string {\n  return value.name ?? 'Anonymous';\n}\n"
+      },
+      "expectations": [
+        "The response correctly states that a missing name returns Anonymous in one sentence.",
+        "The agent leaves the source unchanged and does not turn the explanation into an engineering review.",
+        "Skill selection does not load engineering or its references for this straightforward lookup, including through the TypeScript skill."
+      ]
+    },
+    {
       "id": "writing-baseline",
       "skills": ["writing"],
       "capabilities": {"read_only": true, "network": false, "delegation": false},
