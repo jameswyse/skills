@@ -112,6 +112,5 @@ found within the reviewed coverage.
 Do not include secret values, complete exploit payloads, or instructions for attacking a live
 system. Use the minimum safe reproduction needed to support the finding.
 
-Selection for discussion does not authorise a fix. Make changes only within an implementation request, including one given before the review. Use
-the "engineering" skill, fix the source problem, and verify the protected behaviour when implementation is
-authorised.
+Selection for discussion does not authorise a fix. Make changes only within an implementation request, including one given before the review. Use the "engineering" skill, fix the source problem, and verify 
+the protected behaviour when implementation is authorised.

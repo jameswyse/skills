@@ -35,7 +35,6 @@ Software development, diagnosis, reviews, and maintenance.
 | `diagnosing-bugs`                 | Evidence-driven diagnosis for hard bugs and performance regressions.                                           |
 | `diagnosing-production-incidents` | Read-only evidence collection and diagnosis for urgent live production incidents.                              |
 | `tdd`                             | A focused failing-test-first loop when a practical test target exists.                                         |
-| `resolving-merge-conflicts`       | Conflict resolution during an authorised merge or rebase.                                                      |
 | `code-review`                     | Reviews a diff separately against repository standards and the originating specification.                      |
 | `babysit-pr`                      | Monitors pull-request reviews, CI, and mergeability, with authorised fixes and bounded flaky retries.            |
 | `design-it-twice`                 | Compares several software module interface designs before choosing one.                                        |
