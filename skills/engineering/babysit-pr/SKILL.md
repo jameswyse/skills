@@ -1,7 +1,7 @@
 ---
 name: babysit-pr
 license: Apache-2.0
-description: Monitor an open GitHub pull request for review feedback, CI failures, and merge conflicts. Use when asked to watch or babysit a PR, handle its review feedback, or keep monitoring CI. Continue until the PR closes, the user interrupts, or a blocker prevents further progress; apply fixes and retries within the user's authorised scope.
+description: Monitor a GitHub PR when asked to watch CI, review feedback, or merge conflicts; apply authorised fixes.
 ---
 
 # PR babysitter

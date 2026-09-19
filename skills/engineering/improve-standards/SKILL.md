@@ -1,6 +1,6 @@
 ---
 name: improve-standards
-description: Review an entire codebase against its repository rules and the engineering skill, then present evidence-backed improvements in a visual HTML report. Use recent changes or a specific repository area only when the user explicitly requests that scope.
+description: Audit a codebase or named area against repository and engineering standards when requested.
 disable-model-invocation: true
 ---
 
@@ -67,7 +67,9 @@ Prefer fresh verification when it is safe and proportionate. Use the repository'
 
 ### 4. Present the HTML report
 
-Write one HTML file to the operating system's temporary directory so nothing enters the repository. Resolve the directory from `$TMPDIR`, falling back to `/tmp` on Unix or `%TEMP%` on Windows. Write to `<tmpdir>/standards-review-<timestamp>.html` so each run gets a fresh file. Open it with `xdg-open <path>` on Linux, `open <path>` on macOS, or `start <path>` on Windows. Tell the user the absolute path.
+For the report itself, use "ux", including its HTML-report guidance and installed design specialists, even when no finding concerns an interface. Before writing HTML, read [HTML-REPORT.md](HTML-REPORT.md) in full. Preserve its scaffold and visual requirements.
+
+Write one HTML file to the operating system's temporary directory so nothing enters the repository. Resolve the directory from `$TMPDIR`, falling back to `/tmp` on Unix or `%TEMP%` on Windows. Write to `<tmpdir>/standards-review-<timestamp>.html` so each run gets a fresh file. Complete the report's render checks, or state why visual verification could not run. Open it with `xdg-open <path>` on Linux, `open <path>` on macOS, or `start <path>` on Windows. Tell the user the absolute path.
 
 The report is one static HTML file. When network access is available, load Tailwind and Mermaid from CDNs. Use Mermaid only when a graph, flow, or sequence clarifies a finding. Without network access, use inline CSS and SVG.
 
@@ -98,7 +100,7 @@ For a local code change, show a short current-versus-proposed comparison when it
 
 Prefer short lists when a section contains several facts, changes, benefits, or checks. Keep a sentence when it carries one idea. Do not join independent points into a dense paragraph.
 
-Use a visual only when it makes the evidence or proposed change easier to understand. See [HTML-REPORT.md](HTML-REPORT.md) for the report scaffold and visual patterns.
+Use a visual only when it makes the evidence or proposed change easier to understand. Choose from the report guide's visual patterns.
 
 Make the top recommendation a compact horizontal section without a diagram. Use the available width for its reason, source fix, effort, risk, and link to the full candidate. Put architecture and organisation observations in a separate follow-up section. Route them to the user-invoked "improve-architecture" or "improve-organisation" skill without ranking them against standards candidates.
 

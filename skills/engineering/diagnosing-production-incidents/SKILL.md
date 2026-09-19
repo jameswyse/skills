@@ -1,6 +1,6 @@
 ---
 name: diagnosing-production-incidents
-description: Diagnose urgent live production incidents through authorised reproduction and read-only evidence collection. Invoke explicitly after a production outage or major failure has been classified as an incident. Use diagnosing-bugs for ordinary bugs found in production.
+description: Diagnose an urgent live production incident when explicitly invoked. Ordinary production bugs use diagnosing-bugs.
 disable-model-invocation: true
 ---
 

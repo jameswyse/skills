@@ -1,6 +1,6 @@
 ---
 name: design-it-twice
-description: "Design several genuinely different interfaces for a chosen module in parallel, compare their depth, locality, seam placement, and trade-offs, then recommend one. Use when the user asks for alternative interface designs, several distinct designs, or Design It Twice, or when another skill routes a settled design problem here. Do not use for routine implementation, broad codebase scans, or before the constraints are understood."
+description: Compare alternative interfaces for a settled module design problem when several designs are requested.
 ---
 
 # Design it twice

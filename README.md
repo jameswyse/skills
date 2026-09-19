@@ -83,7 +83,7 @@ Carry forward authorisation already given for the current task. A skill cannot r
 Use $writing for all responses.
 Use $engineering for implementation, debugging, software design decisions, and engineering reviews. Skip it for straightforward code explanations, read-only lookups, and routine Git operations.
 Use $ux for user-facing product and interface design, UX, UI, interaction, visual presentation, accessibility, interface copy, or motion. For interface implementation, use both $engineering and $ux.
-Use $show-me when explaining code or code changes, answering questions about code, or writing pull-request descriptions.
+Use $show-me when a visual would clarify code structure, flow, or a change, or when the user requests a visual explanation.
 ```
 
 Claude Code reads `~/.claude/CLAUDE.md`. Import the Codex instructions and translate skill calls to
@@ -99,7 +99,7 @@ Call the Skill tool for "writing" for every response.
 Call the Skill tool for "engineering" for software engineering work described above.
 Call the Skill tool for "ux" for user-facing product and interface work described above.
 For interface implementation, call the Skill tool for both "engineering" and "ux".
-Call the Skill tool for "show-me" when explaining code or code changes, answering questions about code, or writing pull-request descriptions.
+Call the Skill tool for "show-me" when a visual would clarify code structure, flow, or a change, or when the user requests a visual explanation.
 ```
 
 Skills with `disable-model-invocation: true` remain available through `/skill-name`, but Claude does

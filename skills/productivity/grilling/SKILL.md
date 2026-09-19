@@ -1,6 +1,6 @@
 ---
 name: grilling
-description: Grill the user relentlessly about a plan, decision, or idea. Use when the user wants to stress-test their thinking, or uses any 'grill' trigger phrases.
+description: Interview the user when they ask to be grilled or to stress-test a plan, decision, or idea.
 ---
 
 Interview the user until you reach a shared understanding. Map the discussion as a **design tree**. Every decision branches into the decisions that depend on it.

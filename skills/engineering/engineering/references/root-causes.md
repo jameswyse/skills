@@ -12,7 +12,7 @@ Pause before a source fix that significantly changes the intended outcome, a pub
 
 ## Fix root causes
 
-- Reproduce first. If you cannot reproduce the problem, you cannot verify the fix.
+- Use a practical reproduction to verify the reported behaviour. When it is unavailable, distinguish source evidence and focused checks from the unverified original runtime symptom.
 - Ask "why" until you reach the root cause.
 - Resist guards that only silence a crash. A nil check around invalid state preserves the defect.
 - If a workaround needs a paragraph-long comment, fix the code instead of explaining the workaround.

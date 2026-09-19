@@ -1,16 +1,16 @@
 # Agent instructions
 
-This reference covers any document an agent consumes, including a skill, an `AGENTS.md` or `CLAUDE.md` file, and a document reached by a pointer. Packaging differs, but the writing does not. The same instructions make the agent follow the same _process_ each run without forcing the same output.
+This reference covers any document an agent consumes, including a skill, an `AGENTS.md` or `CLAUDE.md` file, and a document reached by a pointer. Packaging differs, but the writing does not. Describe the required outcome, authority, and completion evidence. Prescribe a fixed process only when the sequence prevents a concrete failure.
 
 When the document you're writing is a skill, read [`skill-mechanics.md`](skill-mechanics.md) for frontmatter, invocation choice, and router skills.
 
 ## Context pointers
 
-A **context pointer** is a reference held in the agent's context that names some out-of-context material and encodes the condition for reaching it. A skill's description is one. A line in `AGENTS.md` that names a document is another. The pointer's _wording_, not its target, decides when the agent reaches the material and how reliably. A must-have target behind a weakly worded pointer is a variance bug. Sharpen the wording first, and inline the material only if sharpening fails.
+A **context pointer** is a reference held in the agent's context that names some out-of-context material and encodes the condition for reaching it. A skill's description is one. A line in `AGENTS.md` that names a document is another. The pointer must make the relevant task recognisable before the target is read. Check ambiguous triggers against realistic requests before adding more instructions.
 
 A pointer does two jobs. It states what the material is and lists the **branches** that should trigger reaching it. A branch is a distinct case the document handles, so different runs take different paths through it. Every word of an always-loaded pointer costs on every turn, so it earns even harder pruning than the body:
 
-- **Front-load the leading word.** The pointer is where it does its triggering work.
+- **Front-load the task.** State the action and condition before implementation detail.
 - **One trigger per branch.** Synonyms that rename a single branch are one branch written twice. Collapse them and keep only genuinely distinct branches.
 - **Cut identity the body already carries.**
 
@@ -39,40 +39,29 @@ Push too little down and the top becomes too long. Push too much and you hide ma
 
 **Sprawl** means a document is too long even when every line is current and unique. Excess length weakens attention and adds more text to maintain. Use the information hierarchy to put reference behind pointers and split by branch or sequence. Each path should carry only what it needs.
 
-## Steps and completion criteria
+## Completion criteria
 
-Every step ends on a **completion criterion**, the condition that tells the agent the work is done. Two properties make it a lever:
+Define observable completion for the requested outcome. Distinguish a verified result, a provisional conclusion, and work blocked by missing access or a consequential decision. Keep criteria proportional to the task. Require exhaustive coverage only when the user's request or the risk warrants it.
 
-- **Clarity.** Can the agent tell done from not done? A vague bound such as "understanding reached" invites **premature completion**, where the step ends before it is genuinely done. The visible **post-completion steps** create pressure to move on. Defend against that pressure by sharpening the bound first. If the bound remains irreducibly fuzzy and you observe the rush, split the sequence to hide later steps. Hiding works only across a separate context, such as a hand-off or subagent dispatch. An inline call leaves the later steps in context.
-- **Demand.** This is how much the criterion requires. "Every modified model accounted for" forces more thorough work than "produce a change list". Demand drives **legwork**, the investigation performed within the work. Demand is not limited to steps. "Every rule applied" can bind flat reference just as "every step done" binds a sequence, so an all-reference document can still require exhaustive work.
-
-The strongest criteria are both checkable and exhaustive.
+Carry existing authorisation through later phases. A review-only request ends with findings. A request that includes implementation continues through the authorised changes and verification. Ask only for missing decisions or actions outside that authority, and continue independent work while waiting.
 
 ## When to split
 
-Splitting one document into two spends one of the two loads, so split only when the cut earns it:
+Split by a real branch, such as diagnosis versus an authorised fix, or sequential versus delegated review. Keep shared constraints in the entrypoint and branch-specific mechanics in the reference. Give each link a clear trigger. A short, self-contained workflow may need no split.
 
-- **By sequence.** Split a run of steps where the post-completion steps tempt the agent to rush the current one. Keeping them out of view drives more legwork on the current task. The reverse also applies. Merging sequences exposes later steps and can invite premature completion.
-- **By invocation**, skill-specific: see [`skill-mechanics.md`](skill-mechanics.md).
+For invocation choices, see [Skill mechanics](skill-mechanics.md).
 
-## Leading words
+## Prompting hypotheses
 
-A **leading word** is a compact concept already present in the model's pretraining that the agent thinks with while running the document. Examples include _lesson_, _fog of war_, and _tracer bullets_. Repeating the token, not its definition, anchors a region of behaviour in few tokens by using knowledge the model already holds. A new term can work when clearly defined, but it brings no prior knowledge. Prefer an existing term.
+Claims that leading words improve retrieval, negation encourages forbidden behaviour, or hiding later phases improves persistence depend on the model and task. Treat them as hypotheses, not universal requirements.
 
-It anchors twice. In the body, it anchors _execution_. The agent reaches for the same behaviour every time the word appears. In a pointer, it anchors _invocation_. When the same word appears in prompts, documentation, and the codebase, the agent links that language to the material and reaches it more reliably.
+Use familiar terminology when it conveys the intended meaning, and prefer a direct positive instruction when it is clearer. Preserve explicit prohibitions, personal preferences, and authority boundaries. Do not replace a precise condition with a metaphor merely to shorten it.
 
-Hunt for opportunities to refactor with leading words. A triad spelled out at three sites, a pointer spending a sentence to gesture at one idea. Each is a passage begging to collapse into a single token:
-
-- "fast, deterministic, low-overhead" → _tight_, as in "a tight loop".
-- "a loop you believe in" → _red_. This turns a fuzzy gate into a binary observable state. The loop goes _red_ on the bug, or it does not.
-
-You win twice: fewer tokens, and a sharper hook for the agent to hang its thinking on. Assume every document is carrying restatements that leading words retire. Go find them.
-
-**Negation** is the failure mode beside this lever. Steering by prohibition puts the forbidden behaviour in context and can make it more available. In "Don't think of an elephant", the negation is weaker than the activated concept, so the ban can partly read as an instruction. Prompt the **positive**. State the target behaviour, such as "write one-line comments", so the banned one is never spoken. Keep a prohibition only when a hard guardrail cannot be phrased positively. Pair it with the positive target so attention lands on what to do.
+Evaluate changes against realistic tasks with the model, tools, fixtures, and other instructions held fixed. Inspect actual tool traces and outcomes, including unnecessary pauses, unsupported claims, correctness, and cost. A shorter prompt or one successful run does not establish better behaviour.
 
 ## Pruning
 
-- Keep each meaning in a **single source of truth**, one authoritative place where changing the behaviour takes one edit. **Duplication** repeats the same meaning in several places. It costs maintenance and tokens, and gives the meaning more prominence than its real rank. A leading word does the inverse by repeating a token on purpose without repeating its definition.
+- Keep each meaning in a **single source of truth**, one authoritative place where changing the behaviour takes one edit. **Duplication** repeats the same meaning in several places. It costs maintenance and tokens, and gives the meaning more prominence than its real rank. Repeat a short term only when it helps identify the same concept.
 - Treat the **environment** as a source of truth too. Examples include `package.json` scripts, configuration files, the directory layout, and `--help` output. A document that restates this information is a **cache** and earns its load only when the lookup is expensive. Cache what the agent cannot find by looking, such as an unwritten convention, the reason behind a choice, or a hidden problem. Leave one-file and one-command lookups to the environment, where they cannot go stale.
 - Check every line for **relevance**. Does it still affect what the document does? A line loses relevance when it does not affect the task or when the behaviour it describes changes. Move a conditional branch behind a pointer when only some paths need it. Shorter documents are easier to keep relevant. Without pruning, stale instructions accumulate because adding feels safe and removing feels risky.
 - Hunt **no-ops** sentence by sentence. An instruction the model already obeys by default spends context without changing behaviour. The test asks whether the instruction changes behaviour from the default. This is model-relative, not reader-relative, so settle disagreements by running the document. Delete a sentence that fails the test instead of trimming it. Apply the same test to leading words. Replace a generic virtue such as _be thorough_ with the observable work or completion criterion it stands for.

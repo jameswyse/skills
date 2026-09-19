@@ -2,6 +2,17 @@
 
 Render the standards review as one static HTML file in the operating system's temporary directory. Load Tailwind and Mermaid from CDNs when the environment has network access. Otherwise use inline CSS and SVG.
 
+## Visual requirements
+
+Copy the scaffold and component classes below. Replace content and repeat candidate articles while preserving the page design. Use the same light editorial system as the other review reports:
+
+- A light `bg-stone-50` page with `text-slate-900` text, white major surfaces, restrained slate borders, and small shadows.
+- One centred `max-w-6xl` document with `space-y-10` section spacing and a `text-4xl` title.
+- Indigo for proposed improvements, emerald for `Strong` badges or verified passes, amber for uncertainty, and red for demonstrated risk.
+- Dark surfaces only for code and diagram elements. No gradient page, glass panels, decorative glow, oversized title, or dashboard metric cards.
+
+Keep custom CSS local to content that needs it. For offline output, reproduce these visual requirements with inline CSS rather than redesigning the page. Apply the "ux" HTML-report guidance and its installed specialists within this design.
+
 ## Scaffold
 
 Use this scaffold when the report can load CDN resources. For an offline report, remove the script tags and use inline CSS and SVG.
@@ -19,6 +30,8 @@ Use this scaffold when the report can load CDN resources. For an offline report,
       mermaid.initialize({ startOnLoad: true, theme: "neutral", securityLevel: "loose" });
     </script>
     <style>
+      .grid > * { min-width: 0; }
+      a { overflow-wrap: anywhere; }
       code {
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
         overflow-wrap: anywhere;
@@ -51,13 +64,18 @@ Use this scaffold when the report can load CDN resources. For an offline report,
       .risk { border-inline-start: 3px solid #dc2626; }
     </style>
   </head>
-  <body class="bg-stone-50 text-slate-900 font-sans">
+  <body class="bg-stone-50 font-sans text-slate-900 antialiased">
     <main class="mx-auto max-w-6xl space-y-10 px-4 py-10 sm:px-6 lg:px-8">
-      <header>...</header>
-      <section id="review-boundary" class="w-full">...</section>
-      <section id="verification-evidence" class="w-full">...</section>
-      <section id="findings-summary">...</section>
-      <section id="top-recommendation">...</section>
+      <header class="border-b border-slate-300 pb-7">
+        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-700">Engineering standards review</p>
+        <h1 class="mt-3 text-4xl font-semibold tracking-tight">{{repo name}}</h1>
+        <div class="mt-5 flex flex-wrap gap-x-7 gap-y-2 text-sm text-slate-600">...</div>
+        <p class="mt-4 max-w-4xl text-sm leading-6 text-slate-600">{{working-tree state and review purpose}}</p>
+      </header>
+      <section id="review-boundary" class="w-full rounded-lg border border-slate-200 bg-white p-6 shadow-sm">...</section>
+      <section id="verification-evidence" class="w-full rounded-lg border border-slate-200 bg-white p-6 shadow-sm">...</section>
+      <section id="findings-summary" class="border-y border-slate-300 py-4">...</section>
+      <section id="top-recommendation" class="grid gap-6 border-s-4 border-indigo-600 bg-white p-6 shadow-sm lg:grid-cols-[minmax(0,2fr)_minmax(16rem,1fr)]">...</section>
       <section id="candidates" class="space-y-8">...</section>
       <section id="specialist-follow-ups">...</section>
       <section id="coverage-gaps">...</section>
@@ -208,6 +226,19 @@ Put module-depth, seam, adapter, and substantial interface observations in a sep
 - Keep diagrams near the text they support.
 - Use exact repository paths, symbols, commands, frameworks, protocols, and domain terms.
 - Limit network dependencies to the Tailwind CDN script and Mermaid ESM import. Keep the rest of the report static.
+
+## Render check
+
+Apply the "ux" HTML-report verification to the final file, including screenshot inspection at a desktop width and at `320px`. Check these report-specific requirements:
+
+- Scope and verification remain full-width sections before counts and recommendations.
+- The top recommendation is compact, horizontal on wide screens, and stacked on narrow screens.
+- Candidate columns form vertical stacks; comparisons span the full article width below them.
+- The proposed source fix is easy to find, headings descend clearly, and badges have text labels.
+- Long file paths wrap, code and tables scroll within their containers, and the page has no horizontal overflow.
+- Diagrams render with legible labels, and source links and internal anchors have valid targets.
+
+Fix observed defects before handoff. If visual inspection is unavailable, deliver the structurally checked report with `Visual verification not run` and the reason.
 
 ## Tone
 

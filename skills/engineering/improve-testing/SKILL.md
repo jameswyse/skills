@@ -1,6 +1,6 @@
 ---
 name: improve-testing
-description: Audit a whole repository or user-selected area by inventorying every test, ranking each test by the guarantee it protects, finding weak and removable tests, mapping important unprotected behaviour, assessing test tooling, and producing a visual HTML report. Use only when the user explicitly requests a testing audit or test-suite improvement review.
+description: Audit test value, behavioural guarantees, and test tooling when a testing review is explicitly requested.
 disable-model-invocation: true
 ---
 
@@ -53,7 +53,7 @@ Run proportionate existing test commands when they are safe and useful. Capture 
 
 ## Produce the HTML report
 
-Before writing the report, read [HTML-REPORT.md](HTML-REPORT.md) in full. Use its scaffold and visual rules.
+For the report itself, use "ux", including its HTML-report guidance and installed design specialists. Before writing the report, read [HTML-REPORT.md](HTML-REPORT.md) in full. Preserve its scaffold and visual requirements.
 
 Write one static file to `<tmpdir>/testing-review-<timestamp>.html`. Resolve the temporary directory from `$TMPDIR`, then `/tmp` on Unix or `%TEMP%` on Windows. Keep generated inventories and working ledgers out of the repository.
 
@@ -70,6 +70,6 @@ The report must include:
 
 Use charts to show exact inventory composition, not codebase health or invented coverage percentages. Keep the complete table searchable and readable without JavaScript. Use exact paths, symbols, test IDs, framework names, commands, and domain terms.
 
-Inspect the rendered report at a desktop width and at `320px`. Confirm that the full inventory remains accessible, tables scroll without widening the page, charts include text values, filters have labels, colours are not the only status cue, and the page has no horizontal overflow. Fix the report before opening it with `open`, `xdg-open`, or `start`. Tell the user the absolute path.
+Complete the report's render checks, or state why visual verification could not run. Open it with `open`, `xdg-open`, or `start`. Tell the user the absolute path.
 
 After a review-only request, ask which removal candidates, test repairs, or guarantee gaps the user wants to tackle. Selecting an item for discussion does not authorise changes. If implementation is already authorised, apply the governing authority rules and continue with covered changes. Revalidate the chosen items against the current tree before implementation.

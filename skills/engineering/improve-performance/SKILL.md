@@ -1,6 +1,6 @@
 ---
 name: improve-performance
-description: Measure and improve performance in a user-selected codebase, application, feature, function, or critical path through reproducible benchmarks, profiling, controlled experiments, and a before-and-after HTML report. Use only when the user explicitly requests a measured performance optimisation workflow.
+description: Measure and improve a selected critical path when performance optimisation is explicitly requested.
 disable-model-invocation: true
 ---
 
@@ -101,7 +101,7 @@ Stop when one of these conditions holds:
 
 ## Phase 4: Report the measured result
 
-Before writing the report, read [HTML-REPORT.md](HTML-REPORT.md) in full. Write one static HTML file to the operating system's temporary directory. Resolve the directory from `$TMPDIR`, falling back to `/tmp` on Unix or `%TEMP%` on Windows. Use `<tmpdir>/performance-improvement-<timestamp>.html` so each run gets a fresh file.
+For the report itself, use "ux", including its HTML-report guidance and installed design specialists. Before writing the report, read [HTML-REPORT.md](HTML-REPORT.md) in full. Preserve its scaffold and visual requirements. Write one static HTML file to the operating system's temporary directory. Resolve the directory from `$TMPDIR`, falling back to `/tmp` on Unix or `%TEMP%` on Windows. Use `<tmpdir>/performance-improvement-<timestamp>.html` so each run gets a fresh file.
 
 The report must include:
 
@@ -115,7 +115,7 @@ The report must include:
 
 Report an inconclusive or negative result honestly. Do not select the fastest run, hide rejected experiments, combine unlike scenarios, or imply causation that the controlled experiment did not establish.
 
-Inspect the rendered report at a desktop width and at `320px`. Confirm that the charts, labels, tables, and experiment order remain legible and that the page has no horizontal overflow. Open the report with `xdg-open <path>` on Linux, `open <path>` on macOS, or `start <path>` on Windows. Tell the user the absolute path and summarise the measured outcome.
+Complete the report's render checks, or state why visual verification could not run. Open the report with `xdg-open <path>` on Linux, `open <path>` on macOS, or `start <path>` on Windows. Tell the user the absolute path and summarise the measured outcome.
 
 ## Finish the code change
 

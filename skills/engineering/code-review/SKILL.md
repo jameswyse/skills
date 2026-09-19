@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: Review working-tree changes or a diff from a fixed point on separate Standards and Spec axes. Use for branch, PR or work-in-progress reviews and "review since X".
+description: Review a branch, PR, working-tree diff, or changes since a fixed point against standards and the request.
 ---
 
 # Two-axis code review
@@ -53,86 +53,21 @@ references in commit messages, a user-supplied path, then a matching Markdown fi
 `specs/`. If none exists, skip the Spec agent and report "no spec available".
 
 Standards sources are repository files that define how code is written, the engineering skill
-and its triggered references, plus this smell baseline. Repository rules override the baseline.
+and its triggered references, plus the applicable review-smell baseline. Repository rules override the baseline.
 
-Smells are evidence to investigate, not automatic refactoring instructions. Confirm the concrete
-maintenance or correctness cost in the diff, then report the smallest coherent response. Every
-baseline finding is a labelled judgement call:
-
-- **Mysterious Name.** A name hides what it does or holds. Rename it. If no honest name exists,
-  clarify the design.
-- **Duplicated Code.** The same logic shape recurs. Share one owner when the copies express the same
-  stable rule and must change together. Keep repetition when an abstraction would encode guesses.
-- **Feature Envy.** A method reaches into another object's data more than its own. Move the behaviour
-  only when the other module owns the knowledge it needs.
-- **Data Clumps.** The same fields or parameters travel together. Introduce one type when they form
-  a domain concept or share an invariant.
-- **Primitive Obsession.** Interchangeable primitives represent distinct domain concepts. Add a
-  semantic type when it prevents invalid mixing or centralises validation.
-- **Repeated Switches.** The same decision over one domain type recurs. Put the rule in one owner,
-  such as a domain model, map, registry, or polymorphic implementation.
-- **Ternaryception.** A ternary is nested inside a ternary that is already nested. One level of
-  nesting is fine. Beyond that, replace the expression with named branches, a lookup, or a switch.
-- **Shotgun Surgery.** One logical change requires scattered edits. Gather what changes together.
-- **Divergent Change.** One module changes for unrelated bodies of knowledge. Split it only when the
-  result has stronger cohesion and less total reader load.
-- **Speculative Generality.** Unused abstraction, parameters, or hooks anticipate unasked needs.
-  Delete or inline them.
-- **Message Chains.** Callers must understand a long `a.b().c().d()` chain. Move the required
-  knowledge to its owner or expose a direct operation when that reduces coupling.
-- **Middle Man.** A module mainly delegates. Apply the deletion test. Remove it when its complexity
-  disappears, but keep an interface that hides real decisions or coordination.
-- **Refused Bequest.** A subtype ignores inherited behaviour or violates the base type's
-  expectations. Prefer composition when inheritance does not describe a valid substitution.
-- **Unnecessary Complexity.** The change adds concepts, state, branches, layers, dependencies, or
-  execution paths that its behaviour and constraints do not require. Name the concrete maintenance
-  or correctness cost and the smallest coherent alternative. Do not flag essential domain complexity
-  or mere line count.
+For Standards findings about code, read [Review smells](references/review-smells.md). Treat smells as leads and report only a concrete cost in the scoped diff.
 
 ## 2. Choose review execution
 
-Read the engineering [delegation guidance](../engineering/references/execution.md#delegate-bounded-work). This workflow requests bounded, read-only delegation when independent review adds useful confidence and the user and runtime permit it. Delegate the applicable axes for substantial, uncertain, or consequential changes. For a small diff whose scope and checks are clear, inspect the Standards and Spec axes sequentially in the primary agent. Also use the sequential path when delegation is unavailable or restricted. Preserve both axes and the same evidence threshold in either mode; state which mode was used.
+This workflow requests bounded, read-only delegation when independent review adds useful confidence and the user and runtime permit it. Delegate the applicable axes for substantial, uncertain, or consequential changes. For a small diff whose scope and checks are clear, inspect the Standards and Spec axes sequentially in the primary agent. Also use the sequential path when delegation is unavailable or restricted. Preserve both axes and the same evidence threshold in either mode; state which mode was used.
 
 For the sequential path, use the captured scope from step 1 and the axis prompts below directly. Keep findings separate, then perform step 3. No review packet or subagent is required. References to agent reports in step 3 mean your candidate notes in this mode.
 
-For the delegated path, state which axes you are delegating and spawn the applicable agents in parallel. If the tool supports disabling parent-history inheritance, disable it for each agent. Give the agents read-only tasks.
-
-Before spawning, write one frozen review packet from the scope captured in step 1. Use a private
-temporary directory outside the repository with permissions limited to the current user. Give the
-packet these manifests:
-
-- The shared manifest contains status, the changed-file list, the diff, and complete untracked-file
-  contents. If the review covers commits, include the commit list.
-- The Standards manifest contains every standards source, each triggered engineering reference,
-  and the full baseline above.
-- If a spec exists, the Spec manifest contains the spec text.
-
-Keep secrets, credentials, and raw sensitive data out of the packet. If the scope contains such
-data, redact it in the packet and record its path and digest. Review the raw item in the parent agent,
-then confirm its digest before reporting. If a source could exceed the tool output limit, store it as
-a separate packet file.
-
-Give the Standards agent the shared and Standards manifests. If a Spec agent applies, give it the
-shared and Spec manifests. Pass only the applicable packet paths and the agent's axis prompt. Remove
-the temporary packet after every applicable report has been verified.
-
-Each agent reviews only its assigned axis. It does not recapture Git state, run the full two-axis
-workflow, or spawn more reviewers.
-
-Keep every packet read below the tool output limit. If one result could truncate, split the read.
-After a complete read succeeds, reopen only the cited lines needed to verify a candidate.
+For a delegated review, read [Delegated review](references/delegated-review.md) before preparing the packet. Use the axis prompts below in either mode.
 
 ### Standards agent
 
-For a scope that affects React code, apply these instructions to the Standards review in either mode:
-
-- Check for a repository package script or project-local `react-doctor` executable.
-- If one is already runnable, use it with the repository's existing configuration. Leave installs
-  and upgrades outside the review.
-- Return a concise execution summary with the command, version when available, scope or coverage,
-  and counts.
-- Return only diagnostics relevant to scoped findings or configuration candidates.
-- If no runnable command exists, state that.
+When the scope affects React code, read [React review](references/react-review.md) for tool use, diagnostic evidence, and configuration candidates.
 
 Ask:
 
@@ -140,12 +75,6 @@ Ask:
 > 1. Every documented-standard violation, citing the rule and its source.
 > 2. Every baseline smell, naming it and quoting the hunk.
 > 3. Every named test smell from the Testing reference when the scope contains tests.
-> 4. Every React Doctor diagnostic that supports an issue in the scoped diff, naming the diagnostic
-> and its location.
-> 5. Separately return a React Doctor configuration candidate for each confirmed, likely recurring
-> false positive or repository-accepted pattern. Name the diagnostic, show why it is non-actionable,
-> and propose the narrowest suppression scope that keeps actionable instances visible. Do not count
-> configuration candidates as findings.
 > Separate hard documented breaches from baseline judgement calls. Repository rules override the
 > baseline. Skip other tooling-enforced issues.
 > Prioritise by severity. Return all supported findings concisely. If the tool output limit would
@@ -170,18 +99,8 @@ finding yourself:
 3. Confirm the concrete correctness, maintenance, or requirement impact.
 4. Reject findings that are unsupported, duplicated, outside the fixed scope, or already handled.
 
-Verify each React Doctor configuration candidate against the cited diagnostic, relevant code, and
-current configuration. If the evidence is insufficient, run the narrowest targeted React Doctor
-check that can resolve the uncertainty. Reject unsupported candidates and suppressions that could
-hide actionable instances.
-
 Make one final pass over the complete scope for high-risk correctness or security issues the agents
 missed. Present only verified findings, in your own words, under `## Standards` and `## Spec`. Merge
 duplicates within an axis, but do not merge or rerank findings across the two axes.
-
-After both axes, list supported candidates under `## React Doctor configuration`. Explain which
-repeated review noise each candidate would remove and ask whether to update the repository
-configuration. Omit the section when there are no candidates. Do not edit the configuration without
-the user's authorisation.
 
 End with one line giving each axis's verified finding count and worst issue, if any.

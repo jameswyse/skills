@@ -1,6 +1,6 @@
 ---
 name: improve-security
-description: Review a codebase, subsystem, or diff for evidence-backed security risks in trust boundaries, authentication, authorisation, secret handling, sensitive data, and dependencies. Use only when the user explicitly requests a focused security review or hardening assessment.
+description: Review trust boundaries and credible security risks when a focused security assessment is explicitly requested.
 disable-model-invocation: true
 ---
 

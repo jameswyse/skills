@@ -32,6 +32,8 @@ Use this scaffold when the report can load CDN resources. For an offline report,
       mermaid.initialize({ startOnLoad: true, theme: "neutral", securityLevel: "strict" });
     </script>
     <style>
+      .grid > * { min-width: 0; }
+      a { overflow-wrap: anywhere; }
       code {
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
         overflow-wrap: anywhere;
@@ -153,14 +155,16 @@ If the workflow produced no reliable gain, keep the full method, experiment ledg
 
 ## Render check
 
-Inspect the actual HTML at a desktop width and at `320px` before handoff.
+Apply the "ux" HTML-report verification to the final file, including screenshot inspection at a desktop width and at `320px`. Check these report-specific requirements:
 
 - The page keeps the shared light editorial system and centred `max-w-6xl` document.
 - The performance target and benchmark method remain full-width and single-column.
 - Charts use one honest scale, exact labels, and a readable text alternative.
 - Wide data tables scroll inside their own containers instead of widening the page.
 - Experiment articles remain in test order and their badges are understandable without colour.
-- Code, trace excerpts, labels, and charts have no horizontal overflow.
+- Code and trace excerpts scroll inside their own containers; labels wrap and charts fit without widening the page.
+
+Fix observed defects before handoff. If visual inspection is unavailable, deliver the structurally checked report with `Visual verification not run` and the reason.
 
 ## Tone
 

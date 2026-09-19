@@ -1,6 +1,6 @@
 ---
 name: ux
-description: "Route user-facing product and interface design, implementation, and review across UX, UI, accessibility, interface copy, visual presentation, and motion. Pair implementation with the engineering skill. Do not use for software architecture, APIs, schemas, modules, or data models."
+description: Design, implement, or review interfaces, HTML reports, and motion. Excludes software architecture and data models.
 ---
 
 # UX
@@ -16,6 +16,10 @@ For product, UX, or feature-scope tradeoffs, read [Experience first](references/
 ## Route the task
 
 Let project-specific design rules govern when they differ from an external skill.
+
+### HTML reports
+
+Treat a generated HTML report as interface work even when its subject is engineering. Before generating or restyling one, read [HTML reports](references/html-reports.md) and load the installed "better-layout", "better-typography", and "better-ui" skills. Loading this router alone does not apply their guidance. Add other specialists only for decisions in their domains. Keep the report workflow's scaffold, visual requirements, and content priorities authoritative.
 
 ### Interface skills
 

@@ -1,6 +1,6 @@
 ---
 name: improve-organisation
-description: Review an entire codebase's tree, module placement, filenames, companion-file ownership, and shallow filesystem structure. Use when the user explicitly requests a codebase organisation, naming, locality, or repository-structure audit rather than a general architecture or standards review.
+description: Audit repository structure, file naming, and ownership when explicitly requested.
 disable-model-invocation: true
 ---
 

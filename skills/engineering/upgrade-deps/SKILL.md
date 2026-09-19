@@ -1,6 +1,6 @@
 ---
 name: upgrade-deps
-description: "Upgrade every dependency in a pnpm project or workspace, including GitHub Actions, audit remediation, dependency-policy cleanup, and optional Node.js or pnpm toolchain updates. Use for a comprehensive dependency refresh, not a single-package update."
+description: Refresh all dependencies and GitHub Actions in a pnpm project when a comprehensive upgrade is requested.
 disable-model-invocation: true
 ---
 
@@ -206,7 +206,9 @@ the repository's documented finish order. If the repository defines no order, us
 3. Run the repository's canonical full verification command, including production builds and full
    tests when that command provides them.
 4. Use the "code-review" skill against the complete working-tree change. Fix every verified finding.
-5. Repeat affected checks and the full verification command after review fixes.
+5. After review fixes, repeat checks whose inputs changed or whose results are stale. Repeat the full
+   verification command when repository policy requires it, the dependency graph changed, or the
+   remaining uncertainty spans the project. Reuse successful results for unchanged inputs.
 6. Run `git diff --check`, the recursive outdated scan with GitHub Actions, the full audit, and the
    production audit.
 

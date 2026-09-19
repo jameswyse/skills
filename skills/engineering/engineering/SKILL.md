@@ -1,6 +1,6 @@
 ---
 name: engineering
-description: "Implement, debug, design, or assess software and developer tooling. Load for code changes and engineering reviews. Skip straightforward code explanations, read-only lookups, and routine Git operations."
+description: Implement, debug, design, or review software and tooling. Skip simple code explanations, lookups, and routine Git operations.
 ---
 
 # Engineering
@@ -21,6 +21,7 @@ Use this baseline for implementation and engineering judgement. Repository conve
 
 Read the matching reference before making the relevant decision. Use the needed sections and retain already-read guidance. A routine command, conventional companion file, or small local edit does not require the full reference set.
 
+- TypeScript implementation or review: use "typescript". Routine source lookups do not trigger it.
 - Unclear fix placement or repeated workarounds: [Root-cause fixes](references/root-causes.md). Use "diagnosing-bugs" for hard bugs and performance regressions.
 - Substantial architecture, state, schema, or type decisions: [Design and maintainability](references/design.md). Also read its security or dependency section before changing a security boundary or selecting a dependency.
 - Module ownership, interface compression, or a new test seam: [Deep modules](references/deep-modules.md).
@@ -29,6 +30,12 @@ Read the matching reference before making the relevant decision. Use the needed 
 - Designing test cases, choosing an oracle or test double, or assessing a suite: [Testing](references/testing.md). Running existing checks alone does not trigger it.
 - Coordinated migrations, delegation, pending jobs, or corrections affecting ongoing work: [Execution and migration](references/execution.md).
 - Lifecycle behaviour, retries, scheduling, or concurrent state: [Reliable operations](references/operations.md). For a toolchain mismatch, read only its toolchain section first.
+
+### Keep reads bounded
+
+Treat skill content already injected into the conversation as read. Read required guidance separately from large source dumps, inventories, or command output. Budget the combined output of a tool batch, not just each command. For a long reference, locate headings first and read the relevant sections; when the workflow requires the whole file, read it in bounded sections.
+
+If output is truncated, recover the missing relevant sections before relying on that read. Do not repeat the same oversized batch. Reuse guidance already received, and tell the user when repeated truncation is consuming context.
 
 ## Finish with evidence
 

@@ -1,6 +1,6 @@
 ---
 name: improve-architecture
-description: Review an entire codebase for deep-module and seam improvements, present them in a visual HTML report, then grill through the selected candidate. Use recent changes or a specific repository area only when the user explicitly requests that scope.
+description: Audit module depth and architectural seams when requested, across the codebase or a named area.
 disable-model-invocation: true
 ---
 
@@ -66,46 +66,11 @@ Rank the remaining candidates by observed maintenance pain, caller knowledge rem
 
 ### 3. Present candidates as an HTML report
 
-Before writing HTML, read [HTML-REPORT.md](HTML-REPORT.md) in full. Start from its scaffold and preserve its page shell, colour system, type scale, section surfaces, and spacing. Treat that file as a visual contract, not design inspiration. Add custom CSS only inside an architecture diagram when the scaffold cannot express the relationship.
+For the report itself, use "ux", including its HTML-report guidance and installed design specialists. Before writing HTML, read [HTML-REPORT.md](HTML-REPORT.md) in full. It owns the scaffold, report contents, visual rules, output location, and render checks. Preserve the scope and coverage verdicts, evidence, ranked candidates, and remaining gaps. Verify the rendered report before presenting its absolute path, or state why visual verification could not run.
 
-Write one HTML file to the operating system's temporary directory so nothing enters the repository. Resolve the directory from `$TMPDIR`, falling back to `/tmp` on Unix or `%TEMP%` on Windows. Write to `<tmpdir>/architecture-review-<timestamp>.html` so each run gets a fresh file. Open it with `xdg-open <path>` on Linux, `open <path>` on macOS, or `start <path>` on Windows. Tell the user the absolute path.
+If a candidate contradicts a documented rule or ADR, include it only when observed evidence justifies reconsideration. Explain the conflict and reason in the report. Keep exact repository and domain names.
 
-The report is one static HTML file. When network access is available, load Tailwind and Mermaid from CDNs. Use Mermaid when a graph, flow, or sequence communicates the structure clearly. Without network access, use inline CSS and SVG. Mix Mermaid with hand-crafted CSS and SVG visuals when each suits a different relationship. Mermaid suits call graphs, dependencies, and sequences. Hand-built elements suit mass diagrams, cross-sections, and call-graph collapse. Keep custom diagram styling local to the diagram. Give each candidate a **before-and-after visualisation**.
-
-Order the report for an engineer choosing what to explore:
-
-1. Header and repository state.
-2. Full-width review boundary and evidence or verification.
-3. Compact candidate counts and the top recommendation.
-4. Ranked candidates.
-5. Remaining coverage gaps.
-
-The review boundary states the requested scope and the coverage-map verdict for each major area. Evidence or verification names the inspected callers, tests, documentation, current-structure test result, and any commands or runtime paths that affect confidence. Include change or defect signals and a prior-candidate comparison when available. Keep both sections full width, separate, and single-column inside. Use one description list or table instead of a grid of mini-cards.
-
-For each candidate, render a card with:
-
-- **Files.** Name the files and modules involved.
-- **Current evidence.** Use short bullets to name the caller coordination, leaked knowledge, change pain, defects, or test gap that passed the qualification gate.
-- **Problem.** Explain why the current architecture is difficult to change or understand.
-- **Proposed deepening.** Highlight the proposed change in plain English.
-- **Benefits.** Explain the locality, leverage, and testing gains.
-- **Why it ranks here.** State why this candidate outranks or follows the others.
-- **Before-and-after diagram.** Draw a full-width side-by-side comparison of the shallowness and proposed deepening.
-- **Recommendation strength.** Render `Strong`, `Worth exploring`, or `Speculative` as a badge.
-
-Place a compact horizontal **Top recommendation** before the candidate cards. Name the first candidate to explore, explain which ranking evidence puts it first, and link to the full candidate. Keep diagrams in the candidate card.
-
-Use the same light editorial system as the standards report: a stone page, a centred `max-w-6xl` document, slate text, white section surfaces, an indigo accent, restrained borders, and small shadows. Keep the header title at `text-4xl`. Use a compact text line for candidate counts. Repository inventory may support the review, but do not turn file counts or test counts into dashboard metrics.
-
-Do not replace the visual system with a dark theme, gradient page background, oversized display title, full-viewport dashboard, glass panels, or metric-card row. Dark surfaces belong only to code blocks and individual diagram elements.
-
-**Use the repository's documented domain vocabulary for the domain and the deep-module vocabulary for the architecture.** Preserve exact framework, protocol, domain, and symbol names. When `module` names the architectural concept, write "the Order intake module". When the report names an existing `OrderService` symbol, keep `OrderService`.
-
-**Documentation conflicts.** If a candidate contradicts a documented rule or ADR, include it only when the observed problem justifies reconsideration. Mark the conflict in a warning callout, such as _"Contradicts XYZ. Reconsider it because..."_ Do not list theoretical refactors that documentation already rules out.
-
-Keep interface design out of the discovery report. After a review-only request, ask which candidate the user wants to explore. If the user already authorised design or implementation and the evidence identifies a candidate within that scope, continue to the next phase. Ask only when choosing the candidate changes the intended outcome or exceeds that authority.
-
-Before handoff, inspect the rendered report at a desktop width and at `320px`. Confirm that it matches the HTML report visual contract, the page has no horizontal overflow, the review boundary and evidence remain single-column, candidate columns stack in reading order, and diagrams remain legible. Fix the report before opening it for the user when any check fails.
+Keep proposed module interface design out of the discovery report. After a review-only request, ask which candidate the user wants to explore. If design or implementation is already authorised and the evidence identifies a candidate within that scope, continue. Ask only when the choice changes the intended outcome or exceeds that authority.
 
 ### 4. Grilling loop
 

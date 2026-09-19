@@ -1,6 +1,6 @@
 ---
 name: handoff
-description: "Compact the current conversation into a copy-ready handoff for another agent. Use when the user asks to transfer work to a new session or agent. Return the handoff in chat unless the user explicitly requests a file."
+description: Prepare a copy-ready handoff when the user transfers work to another session or agent.
 ---
 
 # Handoff

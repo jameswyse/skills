@@ -2,6 +2,8 @@
 
 Render the architecture review as one static HTML file in the operating system's temporary directory. Load Tailwind and Mermaid from CDNs when the environment has network access. Otherwise use inline CSS and SVG. Use Mermaid for graph-shaped diagrams. Use hand-built elements and inline SVG for mass diagrams, cross-sections, and other custom visuals.
 
+Resolve the temporary directory from `$TMPDIR`, falling back to `/tmp` on Unix or `%TEMP%` on Windows. Write `<tmpdir>/architecture-review-<timestamp>.html` so each run has a fresh file. Complete the render checks or report why visual inspection is unavailable, then open it with `open` on macOS, `xdg-open` on Linux, or `start` on Windows, and give the user its absolute path.
+
 ## Visual contract
 
 The architecture and standards reports share one visual system. Copy the scaffold and component classes in this file. Replace content and repeat candidate articles, but preserve the shell. Architecture diagrams may add local styles without restyling the document around them.
@@ -35,6 +37,8 @@ Use this scaffold when the report can load CDN resources. For an offline report,
       mermaid.initialize({ startOnLoad: true, theme: "neutral", securityLevel: "loose" });
     </script>
     <style>
+      .grid > * { min-width: 0; }
+      a { overflow-wrap: anywhere; }
       code {
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
         overflow-wrap: anywhere;
@@ -243,7 +247,7 @@ In the current view, render a tree of function calls as nested boxes. In the pro
 
 ## Render check
 
-Inspect the actual HTML after generation at a desktop width and at `320px` before handoff.
+Apply the "ux" HTML-report verification to the final file, including screenshot inspection at a desktop width and at `320px`. Check these report-specific requirements:
 
 - The page background is light stone and has no background image.
 - The document stays centred and no wider than `max-w-6xl`.
@@ -252,6 +256,8 @@ Inspect the actual HTML after generation at a desktop width and at `320px` befor
 - The before-and-after comparison spans the candidate width and stacks at the narrow viewport.
 - The page has no horizontal overflow. Code scrolls inside its own block.
 - Headings keep a clear descending hierarchy and diagrams retain visible `Current` and `Proposed` labels.
+
+Fix observed defects before handoff. If visual inspection is unavailable, deliver the structurally checked report with `Visual verification not run` and the reason.
 
 ## Tone
 

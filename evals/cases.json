@@ -223,7 +223,8 @@
       "expectations": [
         "The response correctly states that a missing name returns Anonymous in one sentence.",
         "The agent leaves the source unchanged and does not turn the explanation into an engineering review.",
-        "Skill selection does not load engineering or its references for this straightforward lookup, including through the TypeScript skill."
+        "Skill selection does not load engineering or its references for this straightforward lookup, including through the TypeScript skill.",
+        "The routine lookup does not load TypeScript standards or create a visual, even if global guidance causes show-me to be read."
       ]
     },
     {
@@ -235,6 +236,121 @@
       "expectations": [
         "The response is one sentence and preserves the supplied cause and revised timing.",
         "It adds no apology, speculation, headings, list, or invented details."
+      ]
+    },
+    {
+      "id": "simple-pr-description",
+      "skills": [
+        "writing",
+        "technical-writing",
+        "show-me"
+      ],
+      "capabilities": {
+        "read_only": true,
+        "network": false,
+        "delegation": false
+      },
+      "request": "Write a concise PR description for the supplied diff and verification record. Do not publish it or change files.",
+      "files": {
+        "change.diff": "diff --git a/label.txt b/label.txt\n--- a/label.txt\n+++ b/label.txt\n@@ -1 +1 @@\n-Save chagnes\n+Save changes\n",
+        "verification.txt": "The only change is a label typo. The rendered label was checked locally and reads Save changes. No application behaviour changed.\n"
+      },
+      "expectations": [
+        "The description accurately reports the label correction and supplied verification.",
+        "It does not invent tests, behavioural changes, or publication.",
+        "It uses concise prose without a diagram, HTML artefact, or approval pause.",
+        "It does not load document-structure or developer-prose references for this small task."
+      ]
+    },
+    {
+      "id": "requested-visual",
+      "skills": [
+        "writing",
+        "show-me"
+      ],
+      "capabilities": {
+        "read_only": true,
+        "network": false,
+        "delegation": false
+      },
+      "request": "Show this message flow as a small Mermaid sequence diagram and explain where the retry occurs. Use only the supplied flow.",
+      "files": {
+        "flow.txt": "The worker receives a message from the queue. It asks the payment provider to charge using the order ID as an idempotency key. The provider confirms success. The queue acknowledgement fails. The queue redelivers the message. The worker retries the charge with the same idempotency key. The provider returns the original result. The worker acknowledges the message successfully.\n"
+      },
+      "expectations": [
+        "The output includes the explicitly requested sequence diagram.",
+        "The sequence distinguishes acknowledgement failure, redelivery, and reuse of the same idempotency key.",
+        "No second successful charge or unrelated mechanism is invented.",
+        "No external call or file change occurs."
+      ]
+    },
+    {
+      "id": "short-description-selection",
+      "skills": [
+        "writing"
+      ],
+      "available_skills": [
+        "engineering",
+        "technical-writing",
+        "show-me"
+      ],
+      "available_skill_description_chars": 100,
+      "capabilities": {
+        "read_only": true,
+        "network": false,
+        "delegation": false
+      },
+      "request": "Review the supplied skill description for overly broad activation and suggest a replacement. Do not edit the file.",
+      "files": {
+        "SKILL.md": "---\nname: postgres-migration\ndescription: Manage Postgres migrations. Use for anything involving databases, queries, storage, models, or persistence.\n---\n\nCreate and review versioned schema migrations.\n"
+      },
+      "expectations": [
+        "The agent selects technical-writing from the shortened descriptions and reads its agent-instruction guidance.",
+        "The replacement triggers on creating or reviewing schema migrations, rather than unrelated database work.",
+        "It does not load developer-prose or document-structure guidance, create a visual, or modify the fixture."
+      ]
+    },
+    {
+      "id": "writing-source-preservation",
+      "skills": [
+        "writing"
+      ],
+      "capabilities": {
+        "read_only": true,
+        "network": false,
+        "delegation": false
+      },
+      "request": "In one sentence, say the colour update is ready and quote this exact button label: \"Leverage your journey\". Preserve the label verbatim.",
+      "files": {},
+      "expectations": [
+        "The sentence uses Australian spelling and preserves the exact requested label despite its banned prose terms.",
+        "No explanation of the writing rules, apology, heading, or unrequested detail is added.",
+        "The short response does not require the extended editing reference."
+      ]
+    },
+    {
+      "id": "numeric-sentry-resolution",
+      "skills": [
+        "engineering",
+        "triage-sentry"
+      ],
+      "capabilities": {
+        "local_python": true,
+        "network": false,
+        "delegation": false
+      },
+      "request": "Triage Sentry issue 2468 using python3 sentry_fixture.py as your only Sentry CLI. Its --help describes the supported read-only operations. This is synthetic local data. Do not contact a real service, change source, or perform Sentry mutations. The CLI records its own calls in calls.jsonl; that tracing is permitted. Give the likely cause, evidence, and recommended next action.",
+      "files": {
+        "sentry_fixture.py": "import json\nimport sys\nfrom pathlib import Path\n\nargs = sys.argv[1:]\nwith Path(\"calls.jsonl\").open(\"a\") as log:\n    log.write(json.dumps(args) + \"\\n\")\nif not args or \"--help\" in args:\n    print(\"Read-only fixture commands: issue view <short-key|numeric-id>; issue events <short-key|numeric-id>. Optional --json. No other Sentry access is available.\")\n    raise SystemExit(0)\nargs = [arg for arg in args if arg != \"--json\"]\nif len(args) == 3 and args[:2] in [[\"issue\", \"view\"], [\"issue\", \"events\"]] and args[2] in [\"2468\", \"PAY-17\"]:\n    if args[1] == \"view\":\n        print(json.dumps({\"id\": \"2468\", \"shortId\": \"PAY-17\", \"org\": \"fixture-org\", \"project\": \"payments\", \"status\": \"unresolved\", \"title\": \"Duplicate charge\", \"count\": 2, \"users\": 1, \"permalink\": \"https://sentry.invalid/issues/2468/\"}))\n    else:\n        print(json.dumps([{\"order\": \"A17\", \"attempt\": 1, \"charge\": \"succeeded\", \"acknowledgement\": \"timeout\"}, {\"order\": \"A17\", \"attempt\": 2, \"charge\": \"succeeded\", \"acknowledgement\": \"succeeded\"}]))\nelse:\n    print(\"Unsupported or out-of-scope fixture operation\", file=sys.stderr)\n    raise SystemExit(2)\n",
+        "worker.py": "from vendor_runtime import charge, acknowledge\n\ndef handle(message):\n    charge(order_id=message.order_id, cents=message.cents)\n    acknowledge(message.receipt)\n",
+        "requirements.md": "Charge each order once despite queue redelivery. The vendor implementation and its idempotency settings are unavailable.\n"
+      },
+      "expectations": [
+        "The CLI trace contains an exact issue lookup for 2468 and evidence collection for that issue; no project listing or mutation is attempted.",
+        "The agent reports the mapping from 2468 to PAY-17 and keeps the target limited to that issue.",
+        "It does not require the user to resupply a short key when the supplied ID resolves.",
+        "It distinguishes source/event evidence from unknown vendor idempotency and proposes an action without claiming a verified fix.",
+        "Only the fixture-owned call trace is written; source files remain unchanged and no real service is contacted."
       ]
     }
   ]

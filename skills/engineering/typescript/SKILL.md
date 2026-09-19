@@ -1,11 +1,11 @@
 ---
 name: typescript
-description: TypeScript best practices. Use when reading or editing any .ts or .tsx file.
+description: Apply TypeScript guidance when changing or reviewing types and implementation. Skip routine code lookups.
 ---
 
 # TypeScript
 
-For implementation, design decisions, debugging, or engineering review, also use "engineering". A straightforward code explanation or read-only lookup can use this syntax guidance without loading engineering.
+For implementation, design decisions, debugging, or engineering review, also use "engineering". For a routine lookup or straightforward explanation, answer from the source without loading this standards table or engineering.
 
 | Rule                            | Summary                                                                                                                                                                                                                                                                              |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |

@@ -17,6 +17,8 @@ Use the following shell. Preserve the stone page, centred `max-w-6xl` document, 
     <title>Testing review for {{repository name}}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+      .grid > * { min-width: 0; }
+      a { overflow-wrap: anywhere; }
       code {
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
         overflow-wrap: anywhere;
@@ -207,7 +209,7 @@ Do not turn ordinary source inspection into a generic method essay. The reader n
 
 ## Check the rendered result
 
-Inspect the report at a desktop width and at `320px` before opening it for the user. Confirm all of the following:
+Apply the "ux" HTML-report verification to the final file, including screenshot inspection at a desktop width and at `320px`. Check these report-specific requirements:
 
 - the document matches the light editorial shell;
 - the browser console has no report-script or Mermaid errors;
@@ -219,7 +221,7 @@ Inspect the report at a desktop width and at `320px` before opening it for the u
 - focus indicators, labels, headings, and status text remain clear; and
 - print preview retains the complete inventory.
 
-Fix the report when any check fails. Then open it with `open <path>` on macOS, `xdg-open <path>` on Linux, or `start <path>` on Windows.
+Fix observed defects before handoff. If visual inspection is unavailable, deliver the structurally checked report with `Visual verification not run` and the reason. Open it with `open <path>` on macOS, `xdg-open <path>` on Linux, or `start <path>` on Windows.
 
 ## Keep the language concrete
 

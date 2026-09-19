@@ -1,10 +1,12 @@
 ---
 name: show-me
-description: Explain code, code changes, and technical topics visually with concise diagrams, code-shape sketches, and focused HTML artifacts. Use when answering questions about code, explaining changes, or writing PR descriptions.
+description: Explain code visually when requested or when a diagram clarifies structure, flow, or a change.
 license: MIT
 ---
 
-Help the user understand the current topic of conversation visually. Skip the preamble and keep prose brief. Pick the smallest view that makes the key point clear.
+Use a visual when the user requests one or it clarifies code structure, flow, or a change. For a simple fact, lookup, or change best explained in a sentence, answer in prose and stop. Loading this skill does not require a diagram or HTML file.
+
+When a visual helps, skip the preamble and pick the smallest view that makes the key point clear.
 
 - Show logic or an algorithm as pseudocode:
 
