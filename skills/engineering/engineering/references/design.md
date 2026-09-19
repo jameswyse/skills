@@ -89,25 +89,16 @@ Keep a simple operation together when splitting it would add pass-through calls 
 
 Use types to eliminate impossible states, mismatched primitives, and unhandled variants at compile time. Prefer defining errors and special cases out of existence over proliferating handlers.
 
-- **Make illegal states unrepresentable.** Model variants as sum types such as discriminated unions, enums with payloads, sealed classes, or algebraic data types. Do not use a bag of optional fields when contradictory combinations can compile. `{ completed: boolean; completedAt?: Date }` permits a completed item without a completion time. Derive completion from one value or model open and completed variants explicitly.
+- **Make illegal states unrepresentable.** Model variants as sum types such as discriminated unions, enums with payloads, sealed classes, or algebraic data types. Do not use a bag of optional fields when contradictory combinations can compile. `{ completed: boolean; completedAt?: Date }` permits a completed item without a completion time. Derive completion from one value or model open and completed variants explicitly. If a comment must explain which field combinations are valid, encode those combinations in the type.
 - **Construct types from legal values.** A non-empty list is a head plus a rest. A valid time range is a start plus a duration. Choose a representation that cannot construct the illegal value.
 - **Brand semantic primitives.** Identifiers with different meanings should not be interchangeable merely because both use the same primitive representation. Validate once at creation and trust the type downstream.
 - **Treat external data as untyped until parsed.** Parse network payloads, files, configuration, environment variables, database rows, and messages into the typed model at their input seam.
-- **Do not lie to the type system.** Validate or narrow facts the compiler cannot prove. Treat unsafe casts and coercions as hazards.
+- **Do not lie to the type system.** Validate or narrow facts the compiler cannot prove. Trace each `any`, unsafe cast, assertion, or impossible-case throw to the input seam or weak type that caused it, and correct that source.
 - **Match variants exhaustively.** Adding a variant should make every incomplete match fail compilation.
 - **Derive from authoritative schemas.** Generate or derive types from protocol, OpenAPI, GraphQL, database, and token definitions instead of maintaining parallel shapes.
 - **Strengthen a type only where partiality appears.** A runtime assertion, null check, or impossible-case throw marks a weak type. Do not add precision that buys no safety and reduces reuse.
 
 For TypeScript syntax and examples, use the "typescript" skill.
-
-Use these checks:
-
-- If a comment must explain which field combinations are valid, split the shape into explicit variants.
-- If arguments share a primitive representation but have different meanings, brand them.
-- Trace each `any`, cast, assertion, or impossible-case throw back to the input seam or weak type that caused it.
-- Adding a variant should make the compiler identify every incomplete match.
-- Derive a type when another schema or generated definition already owns its shape.
-- Strengthen a type to keep an operation total, not merely to make the type more precise.
 
 ## Keep discipline at seams
 

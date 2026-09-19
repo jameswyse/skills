@@ -8,7 +8,7 @@ A requested outcome, not an anticipated file list, defines the working scope. Wh
 
 Search for the pattern, not only the reported instance. Fix minor, clearly equivalent instances when leaving them would preserve inconsistent behaviour. Continue ordinary implementation work when a nearby defect blocks the requested validation or would otherwise force compensating code.
 
-Pause before a source fix that significantly changes the intended outcome, a public or external interface, data, dependencies, infrastructure, product risk, or the size of the work. State the root cause, the required expansion, and why a narrow workaround would make the system worse.
+Continue source fixes covered by the user's existing authorisation. Pause when the required fix exceeds that authority or introduces an unresolved decision about the intended outcome, public interfaces, data, dependencies, infrastructure, product risk, or scope. Explain the root cause, the required expansion, and why a narrower workaround would leave the problem unresolved.
 
 ## Fix root causes
 

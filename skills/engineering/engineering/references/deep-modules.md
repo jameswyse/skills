@@ -72,7 +72,7 @@ For a third-party service, inject a port at the existing external seam. Keep ven
 
 ## Judge whether a seam is real
 
-Use the following pair as a design test. **One adapter means a hypothetical seam. Two adapters means a real one.** Treat it as guidance, not an adapter count.
+Justify a seam through required variation or an external system that changes independently. Adapter count alone does not establish that need.
 
 - Two necessary implementations are evidence that the seam is real.
 - An existing network, storage, or third-party seam is real because the external system varies independently.

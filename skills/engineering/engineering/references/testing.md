@@ -19,16 +19,10 @@ substitute for observable behaviour.
 
 ## Define what the test protects
 
-Before writing a test, identify:
-
-- The observable behaviour or invariant.
-- The seam where a caller or user observes it.
-- The authoritative source for the expected behaviour.
-- The valid alternatives that must continue to work.
-
-Proceed without asking when these facts are clear from requirements and established behaviour. Ask
-the user before encoding an ambiguous choice that would set product policy, narrow supported
-behaviour, or establish a disputed seam.
+Identify the valid alternatives the test must preserve. Proceed when the test gate and those
+alternatives are clear from requirements and established behaviour. Ask before encoding an
+unresolved choice that would set product policy, narrow supported behaviour, or establish a
+disputed seam.
 
 Choose the narrowest reliable test level that can observe the behaviour and produce a useful
 failure. Use a unit, component, integration, or end-to-end test according to the behaviour, not the
