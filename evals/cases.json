@@ -235,7 +235,51 @@
       "files": {},
       "expectations": [
         "The response is one sentence and preserves the supplied cause and revised timing.",
+        "Newly written prose contains no em dashes, dash substitutes, or prohibited wording.",
         "It adds no apology, speculation, headings, list, or invented details."
+      ]
+    },
+    {
+      "id": "writing-explanation",
+      "skills": ["writing"],
+      "capabilities": {"read_only": true, "network": false, "delegation": false},
+      "request": "Explain to a teammate why we should delay the deployment until tomorrow. The migration failed in staging, production is unchanged, and we have not yet confirmed the cause. Give your recommendation and explain what we need to establish before retrying. Keep it conversational, in two short paragraphs.",
+      "files": {},
+      "expectations": [
+        "The response recommends delaying deployment and connects that recommendation to the failed staging migration and unknown cause.",
+        "It preserves the fact that production is unchanged and distinguishes proposed checks from completed work.",
+        "It uses two connected paragraphs with a reasoned judgement and enough explanation to support the next step, without forced personality or repetitive sentence openings.",
+        "Newly written prose contains no em dashes, dash substitutes, prohibited wording, stock greeting, or generic conclusion."
+      ]
+    },
+    {
+      "id": "writing-progress-update",
+      "skills": ["writing"],
+      "capabilities": {"read_only": true, "network": false, "delegation": false},
+      "request": "Give me a brief progress update before reading findings.txt, then read it and explain the current state and next step. Do not run tests or change files.",
+      "files": {
+        "findings.txt": "The retry change is implemented. The unit tests passed. The integration check has not run because the staging database is unavailable. Deployment has not started.\n"
+      },
+      "expectations": [
+        "The trace includes a progress update before the file read, without claiming knowledge of the unread findings.",
+        "The final answer accurately distinguishes the implemented change, passed unit tests, unavailable integration check, and unstarted deployment.",
+        "It identifies restoring staging database access and running the integration check as remaining work, without claiming to have done either.",
+        "Both the progress update and final answer contain no em dashes, dash substitutes, or prohibited wording; neither narrates the writing checks.",
+        "The agent does not run tests or modify files."
+      ]
+    },
+    {
+      "id": "writing-specialist-precedence",
+      "skills": ["writing", "technical-writing"],
+      "capabilities": {"read_only": true, "network": false, "delegation": false},
+      "request": "Write a short replacement paragraph for guide.md. Explain that passing an idempotency key makes a retry return the original result instead of creating another payment. Preserve the option name exactly. Do not edit files.",
+      "files": {
+        "guide.md": "Leverage safe retries\u2014a game-changer for your payment journey. Set `idempotency_key` when creating a payment.\n"
+      },
+      "expectations": [
+        "The replacement explains the supplied retry behaviour and preserves the exact identifier idempotency_key.",
+        "The specialist skill and source style do not override the baseline: the replacement contains no em dash, dash substitute, or prohibited wording.",
+        "It adds no unsupported guarantees, configuration, or implementation details and leaves files unchanged."
       ]
     },
     {
@@ -320,10 +364,11 @@
         "network": false,
         "delegation": false
       },
-      "request": "In one sentence, say the colour update is ready and quote this exact button label: \"Leverage your journey\". Preserve the label verbatim.",
+      "request": "In one sentence, say the colour update is ready and quote this exact button label: \"Leverage your journey\u2014start here\". Preserve the label verbatim.",
       "files": {},
       "expectations": [
-        "The sentence uses Australian spelling and preserves the exact requested label despite its banned prose terms.",
+        "The sentence uses Australian spelling and preserves the exact requested label, including its em dash and banned prose terms.",
+        "The surrounding newly written prose contains no em dash, dash substitute, or prohibited wording.",
         "No explanation of the writing rules, apology, heading, or unrequested detail is added.",
         "The short response does not require the extended editing reference."
       ]
