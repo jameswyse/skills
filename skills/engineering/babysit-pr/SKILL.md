@@ -9,8 +9,6 @@ description: Monitor a GitHub PR when asked to watch CI, review feedback, or mer
 Monitor the PR persistently. A green, mergeable PR is a progress milestone, not completion:
 new review feedback can arrive while it remains open.
 
-Local adaptation of OpenAI's Codex skill. The watcher and its tests retain the upstream implementation.
-
 ## Authority and GitHub actions
 
 A monitoring request authorises reading and reporting PR state. Fixes, commits, pushes, CI reruns,
@@ -23,10 +21,11 @@ Carry existing authorisation forward without asking again. Apply these rules to 
   has already authorised that response or explicitly delegated drafting and posting replies.
   Permission to monitor or fix code does not itself authorise a reply.
 - Unless the user explicitly directs otherwise, resolve only threads from the requesting user
-  or the Codex review bot, and only if no other human has participated. After the fix is pushed,
-  post an authorised comment explaining the change and identifying its commit, then resolve.
+  or the Codex, Copilot, Claude, or Coderabbit review bot, and only if no other human has participated.
+  After the fix is pushed, post an authorised comment explaining the change and identifying its
+  commit, then resolve.
   If the comment still needs approval, leave the thread open and continue independent monitoring.
-- Prefix every authorised automated comment with `[codex]`. Treat your own replies as handled
+- Prefix every authorised automated comment with `[clanker]`. Treat your own replies as handled
   if the watcher later reports them again.
 - Leave draft status, readiness for review, and closing or reopening the PR to the user unless
   explicitly asked to change them. Report disagreements and requests for decisions in chat.
@@ -102,8 +101,8 @@ Avoid overlapping a retry with a watcher poll: pause the watcher, run the retry,
 
 Use the repository's commit conventions. If none apply, the upstream defaults are:
 
-- `codex: fix CI failure on PR #<n>`
-- `codex: address PR review feedback (#<n>)`
+- `fix: fix CI failure on PR #<n>`
+- `fix: address PR review feedback (#<n>)`
 
 ## Published review feedback
 
@@ -113,9 +112,10 @@ The watcher can surface existing unaddressed feedback on its first run.
 
 Review items include PR issue comments, inline comments, and submitted reviews. The watcher selects
 trusted human authors, including repository owners, members, collaborators, and the authenticated
-operator, plus approved review bots such as Codex. Assess actionable Codex feedback as well as human
-feedback. Ignore unrelated bot noise and already-resolved threads unless new unresolved feedback
-appears. The author's status does not replace checking the comment's correctness or scope.
+operator, plus approved review bots such as Codex, Copilot, Claude, or Coderabbit. Assess actionable
+bot feedback as well as human feedback. Ignore unrelated bot noise and already-resolved threads
+unless new unresolved feedback appears. The author's status does not replace checking the comment's
+correctness or scope.
 
 ## Stop or continue
 
