@@ -318,7 +318,7 @@ Use `Partial<T>` only when any subset of `T` is valid. Define an operation-speci
 
 ## Expected failures
 
-Use the engineering skill's [Failures and diagnostics](../../engineering/references/errors.md) guidance. Keep the representation local when the repository has no shared result type:
+Use the code-review [failure standards](../../code-review/references/code-standards.md#failures-and-diagnostics). Keep the representation local when the repository has no shared result type:
 
 ```ts
 type FindUserResult =

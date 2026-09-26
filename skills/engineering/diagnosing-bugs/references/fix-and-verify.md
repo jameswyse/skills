@@ -1,6 +1,6 @@
 # Fix and verify an authorised change
 
-Read only when the user requested a fix. Keep work within that authority, including approval already given before diagnosis. Use the engineering [testing reference](../../engineering/references/testing.md) when designing a test or choosing its seam.
+Read only when the user requested a fix. Keep work within that authority, including approval already given before diagnosis. Use the code-review [testing reference](../../code-review/references/testing.md) when designing a test or choosing its seam.
 
 ## Fix with a practical regression test
 
@@ -8,7 +8,7 @@ Write the regression test **before the fix**, but only if there is a **correct s
 
 A correct seam lets the test exercise the **real bug pattern** as it occurs at the call site. The available seam may be too shallow. Examples include a single-caller test for a bug that needs several callers, or a unit test that cannot reproduce the chain that triggered the bug. A regression test at that seam gives false confidence.
 
-If no practical test seam exists, record the limitation and use the closest useful check under the engineering [testing reference](../../engineering/references/testing.md). Distinguish architectural constraints from missing access, tooling, or an expensive test environment. Do not infer an architecture defect merely because no test was added.
+If no practical test seam exists, record the limitation and use the closest useful check under the code-review [testing reference](../../code-review/references/testing.md). Distinguish architectural constraints from missing access, tooling, or an expensive test environment. Do not infer an architecture defect merely because no test was added.
 
 If a correct seam exists:
 

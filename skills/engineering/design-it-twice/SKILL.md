@@ -7,7 +7,7 @@ description: Compare alternative interfaces for a settled module design problem 
 
 Ousterhout calls this "Design It Twice" because the first interface is unlikely to be the best. Compare genuinely different designs before committing to one.
 
-Use the "engineering" skill. Read [Deep modules](../engineering/references/deep-modules.md) before framing the alternatives. Use the repository's documented domain vocabulary when it exists.
+Use the "engineering" skill. Read its [Design](../engineering/references/design.md) reference before framing the alternatives. Use the repository's documented domain vocabulary when it exists.
 
 Do not change production code while comparing designs. If the user also requested implementation, finish the comparison and recommendation first.
 
@@ -25,7 +25,7 @@ Explain this problem space to the user. Include a small illustrative type or cod
 
 ## Produce independent designs
 
-Read the engineering [delegation guidance](../engineering/references/execution.md#delegate-bounded-work). This workflow requests independent design work within the user's scope when delegation is available and permitted. Start with two distinct designs for a straightforward decision. Add another only when a meaningful trade-off remains unexplored or the user requests more alternatives.
+Follow the engineering skill's delegation rules. This workflow requests independent design work within the user's scope when delegation is available and permitted. Start with two distinct designs for a straightforward decision. Add another only when a meaningful trade-off remains unexplored or the user requests more alternatives.
 
 When delegating, give each subagent the same factual technical brief and a different design constraint. Use fresh contexts when supported. Do not show them another design or the expected recommendation. When delegation is unavailable or restricted, develop the alternatives sequentially and disclose that they were not independently generated. Do not stop merely because subagents are unavailable.
 

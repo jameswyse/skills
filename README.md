@@ -30,12 +30,12 @@ Software development, diagnosis, reviews, and maintenance.
 
 | Skill                             | Purpose                                                                                                        |
 | --------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `engineering`                     | Software engineering, simplicity, organisation, naming, types, tests, dependencies, and verification.          |
+| `engineering`                     | Implementation baseline for source fixes, toolchain checks, design decisions, delegation, and verification.    |
 | `typescript`                      | TypeScript-specific type, validation, and code guidance.                                                       |
 | `diagnosing-bugs`                 | Evidence-driven diagnosis for hard bugs and performance regressions.                                           |
 | `diagnosing-production-incidents` | Read-only evidence collection and diagnosis for urgent live production incidents.                              |
 | `tdd`                             | A focused failing-test-first loop when a practical test target exists.                                         |
-| `code-review`                     | Reviews a diff separately against repository standards and the originating specification.                      |
+| `code-review`                     | Reviews a diff separately against the detailed code and test standards and the originating specification.      |
 | `babysit-pr`                      | Monitors pull-request reviews, CI, and mergeability, with authorised fixes and bounded flaky retries.            |
 | `design-it-twice`                 | Compares several software module interface designs before choosing one.                                        |
 | `upgrade-deps`                    | Comprehensive pnpm dependency, GitHub Actions, security, and optional toolchain upgrades.                      |
@@ -242,11 +242,6 @@ Pass skill names to validate a smaller set:
 scripts/validate-skills writing technical-writing
 ```
 
-For changes to agent decisions or workflow, use the [behavioural evaluation cases](evals/README.md).
-They cover authority, diagnosis, verification, steering, delegation, and security boundaries.
-Keep metadata validation separate from observed task outcomes and compare frozen skill revisions
-before claiming that a wording change improves a model's behaviour.
-
 The command supplies its pinned PyYAML dependency through an isolated `uv` environment. It does
 not require Codex, modify Homebrew Python, or require an activated virtual environment.
 
@@ -258,9 +253,12 @@ Claude Code's bundled `/code-review`; use Claude's `/review` alias when you want
 `babysit-pr` is imported from [OpenAI's Codex skill](https://github.com/openai/codex/tree/a8c36ca6d265800c1b2c67d19d3583e23dee8382/.codex/skills/babysit-pr)
 at commit `a8c36ca6d265800c1b2c67d19d3583e23dee8382`. It retains the upstream Apache-2.0
 [licence](skills/engineering/babysit-pr/LICENSE) and [notices](skills/engineering/babysit-pr/NOTICE).
-Local changes adapt installation paths, consolidate the workflow and authority rules, and retain
-the safeguards identified in the [upstream history and revision checks](evals/babysit-pr.md).
-The watcher and its tests are unchanged.
+Local changes adapt installation paths and consolidate the workflow and authority rules. They retain
+the safeguards from the upstream [review monitoring](https://github.com/openai/codex/commit/0fe873ad5f4d),
+[CI diagnostics](https://github.com/openai/codex/commit/c39824c2fd47),
+[GitHub mutation policy](https://github.com/openai/codex/commit/f3a807497590), and
+[pending review](https://github.com/openai/codex/commit/a770e5b8470d) fixes. The watcher and its
+tests are unchanged.
 
 `show-me` is adapted from [HumanLayer's source skill](https://github.com/humanlayer/skills/blob/main/plugins/show-me/skills/show-me/SKILL.md) and retains its MIT licence.
 

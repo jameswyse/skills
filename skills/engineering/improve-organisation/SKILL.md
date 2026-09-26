@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Review the repository tree as an interface for maintainers. Find structures that make a capability difficult to locate or follow, then present evidence before changing files.
 
-Use the "engineering" skill and follow its reference routing. Read its organisation and naming guidance before inspecting the tree. Read its deep-module guidance before judging whether a file, directory, or interface is shallow.
+Use the "engineering" skill. Read [Codebase organisation and naming](../code-review/references/organisation-and-naming.md) before inspecting the tree. Read the engineering [Design](../engineering/references/design.md) reference before judging whether a file, directory, or interface is shallow.
 
 Keep this workflow distinct from broader reviews:
 

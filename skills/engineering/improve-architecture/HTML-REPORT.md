@@ -142,7 +142,7 @@ Keep diagrams and detailed evidence in the candidate card. Do not turn the recom
 
 ## Candidate card
 
-Make the before-and-after diagram the centrepiece. Keep prose sparse and use the terms from [Deep modules](../engineering/references/deep-modules.md) directly.
+Make the before-and-after diagram the centrepiece. Keep prose sparse and use the terms from the engineering [Design](../engineering/references/design.md) reference directly.
 
 Each candidate is one `<article>`. On wide screens, use one top-level grid with a two-thirds main column and a one-third supporting column. Each column is one full-width vertical stack. Do not place another grid or multi-column list inside either column. Stack the columns in reading order on narrow screens.
 
@@ -261,7 +261,7 @@ Fix observed defects before handoff. If visual inspection is unavailable, delive
 
 ## Tone
 
-Use plain, concise English. Take the architectural nouns and verbs from [Deep modules](../engineering/references/deep-modules.md). Concision is not an excuse to drift.
+Use plain, concise English. Take the architectural nouns and verbs from the engineering [Design](../engineering/references/design.md) reference. Concision is not an excuse to drift.
 
 Use these terms exactly when they name the deep-module concepts:
 

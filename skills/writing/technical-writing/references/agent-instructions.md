@@ -59,6 +59,10 @@ Use familiar terminology when it conveys the intended meaning, and prefer a dire
 
 Evaluate changes against realistic tasks with the model, tools, fixtures, and other instructions held fixed. Inspect actual tool traces and outcomes, including unnecessary pauses, unsupported claims, correctness, and cost. A shorter prompt or one successful run does not establish better behaviour.
 
+## Prefer mechanisms to instructions
+
+When a correction or failure repeats, look for a mechanism that prevents it before adding an instruction. Text works only when every future reader notices and complies. In order of strength, prefer an unrepresentable state, then a compile-time or CI check, then a canonical helper, then a runtime check. Implement the mechanism within the authorised scope and remove the instruction it replaces. Report the follow-up when it needs a broader change. Keep an instruction only when the rule needs judgement, and state the failure it prevents.
+
 ## Pruning
 
 - Keep each meaning in a **single source of truth**, one authoritative place where changing the behaviour takes one edit. **Duplication** repeats the same meaning in several places. It costs maintenance and tokens, and gives the meaning more prominence than its real rank. Repeat a short term only when it helps identify the same concept.

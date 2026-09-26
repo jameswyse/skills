@@ -1,12 +1,6 @@
-# Design and maintainability
+# Design
 
-Choose structures, seams, and types that make the requested behaviour straightforward. Aim for the best result with the least code and reader effort.
-
-## Design for the people who use the work
-
-The user is whoever consumes the work. For a library or internal interface, that is the colleague who imports it. The engineer who maintains the code next is a user too. Weigh their experience alongside implementation cost, and explain impact from their seat.
-
-Foundations should serve the experience. Foundational thinking governs the sequence of work. The intended experience governs the target.
+Use this reference before a substantial architecture, state, schema, or module-boundary decision, and when assessing module depth, compressing an interface, placing a seam, choosing adapters, or deciding where tests should observe behaviour. The "code-review" skill's [Code standards](../../code-review/references/code-standards.md) judge the finished result.
 
 ## Redesign from the requirement
 
@@ -17,109 +11,112 @@ When a new requirement challenges the current design, treat it as if it had exis
 3. Compare that target with the current design and identify the smallest coherent migration.
 4. Confirm that the target expresses the requirement directly through its types, structures, state ownership, and interfaces, rather than through caller coordination or a special-case layer.
 
-When producing a design, state the chosen foundation, rejected alternatives, and implementation sequence. When implementing, build from that foundation.
+When producing a design, state the chosen foundation, rejected alternatives, and implementation sequence. When implementing, build from that foundation and migrate callers off any path it replaces.
 
-## Use the least machinery
+Deepening a module is one design option, not the default. The rest of this reference covers it.
 
-Fight for simplicity throughout design and implementation. Writing code is cheap for an agent, which makes over-engineering easy. Account for the maintenance effort a human developer must bear.
+## Use the vocabulary precisely
 
-The simplest design is the one with the least total complexity that still expresses the required behaviour and constraints. Do not confuse simplicity with fewer lines, fewer files, or less explicit domain modelling. A locally concise change that creates caller coordination, hidden state, or parallel paths makes the system more complex.
+Use these terms when they name the concepts below. Preserve established framework, protocol, and domain terms when those names are exact. A React component remains a component, and an HTTP API remains an API.
 
-- Prefer deletion. When refactoring or improving, look for removals before additions.
-- Maintain a flat call hierarchy. A rich interface that hides substantial work is useful. A chain of pass-through calls is not. Flatten pass-through files or layers that add no decision or abstraction.
-- Consolidate decisions. Put one choice behind one source of truth instead of repeating it across callers.
-- Make the smallest change that solves the problem. Fewer lines beat elegant boilerplate.
-- When a change threads a signal through types, schemas, pipelines, or similar layers, look for a more direct path.
-- Remove small pass-throughs, representation leaks, and duplicated choices before they spread.
-- Remove in-scope dead weight before adding supporting code. Put foundations that benefit every later phase, such as shared types or necessary test infrastructure, before feature work.
+**Module.** Anything with an interface and an implementation. The term works at any scale, including a function, class, package, or tier-spanning slice.
 
-If a human developer would find the code exhausting to maintain, simplify it.
+**Interface.** Everything a caller must know to use the module correctly. This includes the type signature, invariants, ordering constraints, error modes, required configuration, and performance characteristics. The TypeScript `interface` keyword or a list of public methods names only part of it.
 
-## Minimise reader load
+**Implementation.** The code inside a module. This differs from an adapter. Use "adapter" when the seam and the role of a concrete implementation are the subject. Use "implementation" for what is inside the module.
 
-Maintainability is the work a reader must do to understand code. Track two independent costs:
+**Depth.** Leverage at the interface. It measures how much useful behaviour a caller or test can exercise for each part of the interface it must learn. A module is **deep** when substantial behaviour sits behind a small interface. It is **shallow** when the interface is nearly as complex as the implementation.
 
-1. **Layers to trace.** Count the indirections between the question and the answer.
-2. **State to hold.** Count the hidden or mutable facts the reader must keep in mind.
+**Seam** _(Michael Feathers)_. A place where behaviour can vary without editing the code at that place. It is where a module's interface lives. Seam placement is a separate decision from what belongs behind it. Use "bounded context" for the DDD concept rather than using "boundary" for both.
 
-Collapse layers that do not earn their keep: wrappers with one caller and indirection added for a hypothetical future. Adjacent layers should change the abstraction. A layer that repeats the same methods and arguments adds reader load without compression.
+**Adapter.** A concrete thing that satisfies an interface at a seam. The term describes the role it fills, not the amount of code inside it.
 
-For module depth, interface compression, seam placement, adapters, and interface-focused testing, read [Deep modules](deep-modules.md).
+**Port.** An interface at a remote or external seam. Production and test adapters can satisfy the same port.
 
-Shrink state scope. Prefer pure functions over mutation, locals over fields, fields over module state, and module state over globals. Derive values instead of synchronising copies. Name an invariant at the interface so each consumer learns it once.
+**Leverage.** What callers get from depth. One implementation provides more capability for each part of the interface callers learn.
 
-Identify who owns each state transition. When concurrent actors can change the same state, isolate their writes or define explicit serialisation.
+**Locality.** What maintainers get from depth. Changes, bugs, knowledge, and verification concentrate in one module rather than spreading across callers.
 
-Before adding a layer or mutable state, ask whether it reduces reader load elsewhere by at least as much. A new reader should be able to find where state comes from and what can change it without tracing unrelated indirection. If not, cut layers or state.
+## Decide whether the module should be deeper
 
-## Model the domain
+Apply the **deletion test** before proposing a deepening. Imagine deleting the module:
 
-Encode the real domain in a data structure instead of scattering it across conditionals. Scattered booleans, repeated shape assumptions, and branching across files are accidental complexity. Choosing the structure while writing a feature is cheaper than recovering it in a later refactor.
+- If its complexity disappears, the module was probably a pass-through.
+- If its decisions and coordination reappear across callers, the module was earning its place.
 
-Match structures to their dominant access paths. Trace how callers read and change the data so the model supports real operations rather than an imagined general case.
+Look for evidence that a deeper module would remove total complexity:
 
-Reach for structures such as:
+- Callers repeat the same decisions, ordering, validation, or recovery.
+- Understanding one concept requires tracing many shallow modules.
+- The interface exposes nearly every implementation choice.
+- Bugs arise in coordination between callers and helpers.
+- Tests must reproduce caller coordination or reach through the interface.
+- The same area changes often and knowledge remains scattered.
 
-- A state machine instead of scattered booleans, phases, or lifecycle checks.
-- A typed model instead of loose parameters or repeated shape assumptions.
-- A map, registry, lookup table, or discriminated union instead of branching spread across files.
-- A reducer or command and event model instead of ad hoc state mutations.
-- A module organised around one body of domain knowledge instead of execution phases such as load, validate, transform, and save.
-- A small module whose interface gathers repeated behaviour, ownership, or invariants.
-- A queue, cache, index, graph, tree, or normalised collection when the access pattern calls for it.
+Do not deepen a cluster merely because it is in-process, has a test replacement, contains several files, or could support a new abstraction. Prefer clear local code when the current shape is easy to understand and change.
 
-When none of those structures fits, identify what the code must never allow and how the data is read, then choose a structure that encodes those facts.
+## Design the interface
 
-Do not force an abstraction. Prefer boring code when the current shape is clear, local, and unlikely to grow. An abstraction must remove branches, duplicated rules, invalid states, or lifecycle risk. A new branch in a growing conditional or a second boolean that must stay in sync signals a missing domain structure. Modules named after execution phases are another signal because they often repeat the same domain rules across steps.
+Aim for a small interface that hides substantial decisions. Reduce the number of methods, parameters, states, ordering rules, and implementation facts that callers must learn. Move repeated coordination behind the interface without hiding complexity that callers still need to control.
 
-Converge types and data models when the domain is established, but keep repeated code when an abstraction would encode guesses. Prefer explicit coordination inside one coherent abstraction over special cases spread across callers.
+A deep module can contain internal seams used by its implementation and tests. Keep those seams private. Expose only the external seam that callers need.
 
-## Classify responsibilities by what changes them
+The interface includes every fact callers depend on. A short type signature can still describe a shallow module when callers must also learn hidden ordering, configuration, failure, or lifecycle rules.
 
-Use these responsibilities to place a decision. They do not require separate folders, classes, or layers.
+## Classify dependencies after the candidate earns deepening
 
-- Domain code owns meaning, invariants, calculations, and legal state transitions.
-- Application code owns authorisation, policy, coordination, and effect ordering for one operation or capability.
-- Adapter code owns framework, protocol, storage, runtime, and third-party translation.
-- Entrypoint code owns construction, configuration, and resource wiring.
+The dependency category determines how to implement and test a chosen deepening. It does not justify the deepening by itself.
 
-Keep a simple operation together when splitting it would add pass-through calls or hypothetical seams. Split mixed code only when the responsibilities change for different reasons or the separation removes repeated coordination. Apply the repository's established vocabulary when it names these responsibilities clearly.
+### In-process
 
-## Use the type system as a proof assistant
+Pure computation and in-memory state need no adapter. Merge the cluster when the deletion test and caller evidence support it. Test directly through the new interface.
 
-Use types to eliminate impossible states, mismatched primitives, and unhandled variants at compile time. Prefer defining errors and special cases out of existence over proliferating handlers.
+### Local-substitutable
 
-- **Make illegal states unrepresentable.** Model variants as sum types such as discriminated unions, enums with payloads, sealed classes, or algebraic data types. Do not use a bag of optional fields when contradictory combinations can compile. `{ completed: boolean; completedAt?: Date }` permits a completed item without a completion time. Derive completion from one value or model open and completed variants explicitly. If a comment must explain which field combinations are valid, encode those combinations in the type.
-- **Construct types from legal values.** A non-empty list is a head plus a rest. A valid time range is a start plus a duration. Choose a representation that cannot construct the illegal value.
-- **Brand semantic primitives.** Identifiers with different meanings should not be interchangeable merely because both use the same primitive representation. Validate once at creation and trust the type downstream.
-- **Treat external data as untyped until parsed.** Parse network payloads, files, configuration, environment variables, database rows, and messages into the typed model at their input seam.
-- **Do not lie to the type system.** Validate or narrow facts the compiler cannot prove. Trace each `any`, unsafe cast, assertion, or impossible-case throw to the input seam or weak type that caused it, and correct that source.
-- **Match variants exhaustively.** Adding a variant should make every incomplete match fail compilation.
-- **Derive from authoritative schemas.** Generate or derive types from protocol, OpenAPI, GraphQL, database, and token definitions instead of maintaining parallel shapes.
-- **Strengthen a type only where partiality appears.** A runtime assertion, null check, or impossible-case throw marks a weak type. Do not add precision that buys no safety and reduces reuse.
+Use a local replacement such as PGLite or an in-memory filesystem inside the module's tests. Keep the replacement seam internal unless callers genuinely need to choose the dependency. The existence of a replacement does not justify an external port.
 
-For TypeScript syntax and examples, use the "typescript" skill.
+### Remote and owned
 
-## Keep discipline at seams
+For a service you control across a network seam, define a port when the transport genuinely varies or must be replaced in tests. Keep domain behaviour in the deep module. Use an HTTP, gRPC, or queue adapter in production and an in-memory adapter in tests.
 
-Place validation, type narrowing, error handling, and framework adaptation at system seams. Trust established typed invariants inside the system. Keep business logic in pure functions and make the shell thin and mechanical.
+### External and unowned
 
-- At CLI, configuration, network, storage, and external API seams, validate and return useful errors.
-- Parse raw input into domain types at the input seam.
-- Inside the system, propagate typed data without repeated validation.
-- Expose domain concepts across a seam instead of transport, storage, framework, or wire representations.
-- Keep raw records, SDK values, and provider-specific failures inside the owning adapter or entrypoint.
-- Keep general mechanism inside and special policy at the edge.
-- Prefer pure transforms for parsing, prompt construction, scoring, and assessment.
+For a third-party service, inject a port at the existing external seam. Keep vendor representations inside the production adapter. Use a focused fake or mock adapter in tests.
 
-Ask whether data is crossing a system seam now. If not, another validation check is probably redundant. Ask whether framework wiring can call a pure function. If it can, extract the decision from the framework shell.
+## Judge whether a seam is real
 
-## Design security boundaries
+Justify a seam through required variation or an external system that changes independently. Adapter count alone does not establish that need.
 
-Before changing a security boundary, identify the protected assets, attacker-controlled inputs, trust boundaries, and credible misuse paths. Treat authentication and authorisation as separate decisions. Enforce authorisation at the server-side operation or data boundary that owns the protected action.
+- Two necessary implementations are evidence that the seam is real.
+- An existing network, storage, or third-party seam is real because the external system varies independently.
+- A fake created only to make a new port look justified is not a second requirement.
+- A single production adapter behind an interface that no caller needs to vary is usually indirection.
 
-Keep secrets and sensitive data out of source code, client bundles, logs, errors, traces, metrics, snapshots, and fixtures. Give credentials and permissions only the scope they need. Verify representative allowed and denied paths, including object or tenant isolation when applicable.
+## Reuse adapters before adding another seam
 
-## Select dependencies deliberately
+Inspect existing adapters and services before creating one. Prefer these choices in order:
 
-Add a dependency only when its maintenance, security, licence, provenance, transitive dependency, install-time code, and runtime costs are justified by the required behaviour. Use established repository tools when they already solve the problem. Keep installation and upgrades within the user's authority.
+1. Reuse a cohesive adapter through the narrow type that the consumer needs.
+2. Extend the adapter when the new operation belongs to the same capability and changes for the same reason.
+3. Create another adapter when reuse would mix unrelated capabilities, expose provider details, or add caller coordination.
+
+At a real external seam, define the port in the consumer's language. Keep its inputs, outputs, and failures in application or domain terms. A wider concrete adapter can satisfy a narrow consumer-owned type. Do not split one cohesive adapter into one-method wrappers.
+
+## Test through the interface
+
+The **interface is the test surface**. Protect observable outcomes through the same seam callers use. Tests should survive an internal refactor that preserves behaviour.
+
+When deepening replaces shallow modules:
+
+1. Write tests for the preserved behaviour through the new interface.
+2. Confirm that the replacement tests cover the old observable cases.
+3. Delete old tests that assert superseded helpers, coordination, or internal state.
+4. Retain an internal test only when it protects an independently useful algorithm or diagnostic that the interface tests cannot identify clearly.
+
+If ordinary behaviour can be tested only by reaching past the interface, reconsider the module shape or what the interface exposes.
+
+## Reject misleading measures
+
+- Do not measure depth by implementation lines divided by interface lines. That rewards padding the implementation. Measure the behaviour and decisions hidden for callers.
+- Do not equate depth with size. A small function can be deep, and a large package can be shallow.
+- Do not add a seam for hypothetical replacement. Variation must already exist or follow from a required external system.

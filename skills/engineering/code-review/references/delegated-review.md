@@ -1,6 +1,6 @@
 # Delegated review
 
-Use after fixing the review scope and choosing independent reviewers. Read the engineering [delegation guidance](../../engineering/references/execution.md#delegate-bounded-work).
+Use after fixing the review scope and choosing independent reviewers. Follow the engineering skill's delegation rules.
 
 For the delegated path, state which axes you are delegating and spawn the applicable agents in parallel. If the tool supports disabling parent-history inheritance, disable it for each agent. Give the agents read-only tasks.
 
@@ -10,8 +10,8 @@ packet these manifests:
 
 - The shared manifest contains status, the changed-file list, the diff, and complete untracked-file
   contents. If the review covers commits, include the commit list.
-- The Standards manifest contains every standards source, each triggered engineering reference,
-  and the applicable review-smell baseline.
+- The Standards manifest contains every standards source and the triggered sections of this
+  skill's standards references.
 - If a spec exists, the Spec manifest contains the spec text.
 
 Keep secrets, credentials, and raw sensitive data out of the packet. If the scope contains such

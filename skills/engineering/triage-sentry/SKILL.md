@@ -5,7 +5,7 @@ description: Triage a supplied Sentry issue or a project, then carry out only au
 
 # Triage Sentry issues
 
-Assess the requested issues from events and relevant source, then present one reviewable action plan. Use "engineering" and its [execution guidance](../engineering/references/execution.md) for pending work, corrections, or delegated investigation.
+Assess the requested issues from events and relevant source, then present one reviewable action plan. Use "engineering".
 
 ## Tools and authority
 

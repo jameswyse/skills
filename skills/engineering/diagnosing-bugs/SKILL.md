@@ -5,7 +5,7 @@ description: Diagnose hard bugs and performance regressions from symptoms, repro
 
 # Diagnosing bugs
 
-Choose the next investigation from the evidence. Use "engineering" and read [Root-cause fixes](../engineering/references/root-causes.md) before choosing a fix. Read relevant repository guidance and ADRs when they can explain the affected path.
+Choose the next investigation from the evidence. Use "engineering" and apply its source-fix rules when choosing a fix. Read relevant repository guidance and ADRs when they can explain the affected path.
 
 ## Authority and sensitive data
 
@@ -30,6 +30,8 @@ While uncertainty remains, rank plausible explanations and realistic alternative
 Share a useful hypothesis ranking as a non-blocking update so the user can correct assumptions. Choose the next probe for its ability to distinguish causes. Change one variable at a time when testing a causal prediction.
 
 Prefer debugger or REPL inspection, then targeted logs where needed. For diagnosis-only work, add logs only through existing runtime controls or authorised instrumentation. Give agent-added diagnostic logs a unique prefix such as `[DEBUG-a4f2]` and remove them before completion. Avoid indiscriminate captures.
+
+When something fails after a restart, inspect persistent state first, such as configuration files, caches, lock files, and serialised state. If clearing state restores behaviour, fix state validation or reconciliation.
 
 For performance regressions, measure the relevant workload with timing, profiling, or a query plan before choosing an optimisation. Record variance and limits of intermittent evidence.
 

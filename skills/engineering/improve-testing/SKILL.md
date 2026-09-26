@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Assess whether the test suite gives useful evidence that the code is correct. Treat line and branch coverage as supporting data only. The main unit of coverage is an important behavioural guarantee.
 
-Use the "engineering" skill. Read its [Testing](../engineering/references/testing.md) reference before judging a test. Read [Deep modules](../engineering/references/deep-modules.md) when a test seam or module interface is in question. Repository instructions, testing documentation, and established conventions take precedence.
+Use the "engineering" skill. Read the code-review [Testing](../code-review/references/testing.md) reference before judging a test. Read the engineering [Design](../engineering/references/design.md) reference when a test seam or module interface is in question. Repository instructions, testing documentation, and established conventions take precedence.
 
 The review phase is read-only apart from temporary inventory files and the HTML report. Edit tests, dependencies, configuration, or product code only within an implementation request, including authorisation given before the review.
 

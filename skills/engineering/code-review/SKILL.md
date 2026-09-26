@@ -10,21 +10,20 @@ the originating request, issue, or PRD. A change can pass either axis and fail t
 merge or rerank their findings.
 
 Use the "engineering" skill as the baseline for code, tests, dependencies, package
-management, and developer tooling. When the scope contains tests, read its
-[Testing](../engineering/references/testing.md) reference and use its named test smells.
-Load detailed standards from the reviewed behaviour, even when implementation did not need them:
+management, and developer tooling. This skill owns the detailed standards. Choose them from the
+reviewed behaviour. The author does not need to have read them for the result to meet them:
 
-- For substantive type, state, schema, or architecture changes, use [Design and maintainability](../engineering/references/design.md). Read [Deep modules](../engineering/references/deep-modules.md) for ownership, interface compression, or seam placement.
-- For security boundaries or dependency choices, use the corresponding sections of the design reference.
-- For error representations, recovery, or boundary translation, use [Failures and diagnostics](../engineering/references/errors.md).
-- For lifecycle behaviour, retries, scheduling, or concurrent state, use [Reliable operations](../engineering/references/operations.md).
-- For coordinated migrations, use [Execution and migration](../engineering/references/execution.md).
+- For code, read the sections of [Code standards](references/code-standards.md) that the diff
+  touches: simplicity and reader load, domain modelling, types, seams, failures, reliable
+  operations, migrations, security and dependencies, and named smells. For ownership, interface
+  compression, or seam placement, also read the engineering [Design](../engineering/references/design.md)
+  reference.
+- When the scope contains tests, read [Testing](references/testing.md) and use its named test smells.
+- When the scope adds, moves, renames, splits, merges, or deletes files or directories, read
+  [Codebase organisation and naming](references/organisation-and-naming.md). Apply it to the
+  affected subtree, authoritative imports, naming patterns, and companion-file ownership.
 
-Check relevant standards before forming findings. Do not load every reference for a small diff or require the author to have read a document when the result already meets its standard.
-
-When the scope adds, moves, renames, splits, merges, or deletes files or directories, read
-[Codebase organisation and naming](../engineering/references/organisation-and-naming.md). Apply it
-to the affected subtree, authoritative imports, naming patterns, and companion-file ownership.
+Do not load every section for a small diff.
 
 Treat security as part of Standards when the diff changes a trust boundary, authentication,
 authorisation, sensitive data, secret handling, permissions, security configuration, or the
@@ -52,10 +51,9 @@ For working-tree reviews, the user request is the spec. Otherwise find it in ord
 references in commit messages, a user-supplied path, then a matching Markdown file under `docs/` or
 `specs/`. If none exists, skip the Spec agent and report "no spec available".
 
-Standards sources are repository files that define how code is written, the engineering skill
-and its triggered references, plus the applicable review-smell baseline. Repository rules override the baseline.
-
-For Standards findings about code, read [Review smells](references/review-smells.md). Treat smells as leads and report only a concrete cost in the scoped diff.
+Standards sources are repository files that define how code is written, the engineering skill,
+and the triggered standards references above. Repository rules override the baseline. Treat named
+smells as leads and report only a concrete cost in the scoped diff.
 
 ## 2. Choose review execution
 
@@ -67,13 +65,13 @@ For a delegated review, read [Delegated review](references/delegated-review.md) 
 
 ### Standards agent
 
-When the scope affects React code, read [React review](references/react-review.md) for tool use, diagnostic evidence, and configuration candidates.
+When the scope affects React code, read the React Doctor section of [Code standards](references/code-standards.md) for tool use, diagnostic evidence, and configuration candidates.
 
 Ask:
 
 > Report by file and hunk:
 > 1. Every documented-standard violation, citing the rule and its source.
-> 2. Every baseline smell, naming it and quoting the hunk.
+> 2. Every named smell from the Code standards reference, naming it and quoting the hunk.
 > 3. Every named test smell from the Testing reference when the scope contains tests.
 > Separate hard documented breaches from baseline judgement calls. Repository rules override the
 > baseline. Skip other tooling-enforced issues.

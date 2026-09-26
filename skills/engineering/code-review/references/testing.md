@@ -32,8 +32,8 @@ when they describe one outcome.
 Exercise the same interface that callers use and assert the result through that interface. Test an
 internal algorithm separately only when it has useful behaviour or diagnostics that interface
 tests cannot identify clearly. If ordinary behaviour can be tested only by reaching through the
-interface, reconsider the module shape. Read [Deep modules](deep-modules.md) when the interface or
-seam is in question.
+interface, reconsider the module shape. Read the engineering
+[Design](../../engineering/references/design.md) reference when the interface or seam is in question.
 
 ## Keep execution cost proportionate
 

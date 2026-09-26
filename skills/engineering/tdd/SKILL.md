@@ -7,7 +7,7 @@ description: Use for explicit TDD requests or an authorised bug fix with a clear
 
 When fixing a bug with a clear, cheap test path, make the broken behaviour executable before changing production code. The goal is a focused regression test that fails before the fix and passes after it.
 
-Use the "engineering" skill and read its [Testing](../engineering/references/testing.md) reference before writing the test. That reference owns test placement, expected values, test doubles, determinism, and supported alternatives. This skill owns the failing-first bug-fix loop.
+Use the "engineering" skill and read the code-review [Testing](../code-review/references/testing.md) reference before writing the test. That reference owns test placement, expected values, test doubles, determinism, and supported alternatives. This skill owns the failing-first bug-fix loop.
 
 Do not force a test when it would be impractical. If the available test would require broad harness setup, brittle mocks, slow end-to-end infrastructure, production-only state, vague reproduction steps, or large unrelated fixture churn, skip adding a new test and use the closest useful verification instead.
 

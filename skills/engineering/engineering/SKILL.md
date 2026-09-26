@@ -5,40 +5,41 @@ description: Implement, debug, design, or review software and tooling. Skip simp
 
 # Engineering
 
-Use this baseline for implementation and engineering judgement. Repository conventions and the user's task govern the work. For interface implementation, also use "ux".
+Use this baseline for implementation and engineering judgement. Repository conventions and the user's task govern the work. For interface implementation, also use "ux". The "code-review" skill holds the detailed code and test standards used to judge a finished change.
 
 ## Keep these rules in scope
 
 - Follow the governing authority rules and preserve unrelated work. Resolve routine choices from evidence and continue within the user's request.
-- Fix the source problem and update necessary consumers. Prefer the simplest complete design across the affected system. Avoid speculative guards, fallbacks, layers, and compatibility paths.
+- Prefer the simplest complete design across the affected system. Avoid speculative guards, fallbacks, layers, and compatibility paths.
 - Use strict types that express valid states. Validate untrusted inputs at their entry point, then trust established invariants. Never use `any`.
 - Enforce authorisation at the protected operation. Keep secrets and sensitive data out of source, client output, logs, and fixtures.
+- Add a dependency only when the required behaviour justifies its maintenance, security, licence, and runtime costs and no established repository tool already covers it.
 - Add a test only for observable behaviour, through a caller's interface, with an independent expected result and a plausible defect it catches. Existing coverage may be sufficient.
-- Match repository runtime and package-manager declarations before commands. Prefer pnpm when unspecified, named exports, and direct imports from the owning module.
+- Before creating a file, directory, type, adapter, or helper, search for an existing owner. Choose a path that predicts the new responsibility.
+- Prefer pnpm when unspecified, named exports, and direct imports from the owning module.
 - Use reversible deletion such as `trash` only within explicit authority. Never recursively delete without explicit consent.
 
-## Load guidance at the decision
+For TypeScript implementation or review, use "typescript". For substantial architecture, state, schema, module-boundary, or test-seam decisions, read [Design](references/design.md) before choosing. A small local edit does not need it.
 
-Read the matching reference before making the relevant decision. Use the needed sections and retain already-read guidance. A routine command, conventional companion file, or small local edit does not require the full reference set.
+## Run the repository's toolchain
 
-- TypeScript implementation or review: use "typescript". Routine source lookups do not trigger it.
-- Unclear fix placement or repeated workarounds: [Root-cause fixes](references/root-causes.md). Use "diagnosing-bugs" for hard bugs and performance regressions.
-- Substantial architecture, state, schema, or type decisions: [Design and maintainability](references/design.md). Also read its security or dependency section before changing a security boundary or selecting a dependency.
-- Module ownership, interface compression, or a new test seam: [Deep modules](references/deep-modules.md).
-- Substantial moves, splits, renames, or uncertain file ownership: [Organisation and naming](references/organisation-and-naming.md).
-- New error representations, recovery, or translation across boundaries: [Failures and diagnostics](references/errors.md).
-- Designing test cases, choosing an oracle or test double, or assessing a suite: [Testing](references/testing.md). Running existing checks alone does not trigger it.
-- Coordinated migrations, delegation, pending jobs, or corrections affecting ongoing work: [Execution and migration](references/execution.md).
-- Lifecycle behaviour, retries, scheduling, or concurrent state: [Reliable operations](references/operations.md). For a toolchain mismatch, read only its toolchain section first.
+Before the first JavaScript or TypeScript command in a task, compare the active runtime and package manager with the repository's declarations. Treat exact pins as exact and ranges as constraints. On a mismatch, select a compatible toolchain once through repository setup or a version manager, before starting parallel checks. If the declared toolchain is unavailable, report the affected checks as not verified. Output from a different runtime is diagnostic evidence, not verification.
 
-### Keep reads bounded
+## Fix at the source
 
-Treat skill content already injected into the conversation as read. Read required guidance separately from large source dumps, inventories, or command output. Budget the combined output of a tool batch, not just each command. For a long reference, locate headings first and read the relevant sections; when the workflow requires the whole file, read it in bounded sections.
+Let the requested outcome define the scope. When a source fix needs adjacent consumer, test, type, configuration, or fixture changes, make them instead of a local workaround that keeps the diff narrow. Pause only when the fix exceeds your authority or opens a decision about public interfaces, data, dependencies, infrastructure, or product behaviour. Then explain the root cause and why a narrower workaround would leave it unresolved.
 
-If output is truncated, recover the missing relevant sections before relying on that read. Do not repeat the same oversized batch. Reuse guidance already received, and tell the user when repeated truncation is consuming context.
+- Do not add a guard that only silences a crash. Validate and repair where invalid state enters, and correct the authoritative type, structure, or configuration instead of adding downstream exceptions.
+- Search for the same pattern. Fix equivalent minor instances now and report those that need a larger change.
+- If a workaround needs a paragraph of explanation, fix the code instead.
+- When stuck, instrument and read the actual error and state. Use "diagnosing-bugs" for hard bugs and performance regressions.
+
+## Delegate bounded work
+
+Delegate only work inside the user's task, when an independent investigation, distinct design, or substantial review area benefits from separate judgement and the runtime permits it. Keep small, coherent changes local. Give each worker the objective, bounded scope, completion evidence, relevant paths, authority limits, and an isolated write target. Use a fresh context when independent judgement matters, and omit your expected verdict. A worker's summary reports intent, not proof, so inspect its artefacts before accepting its findings.
 
 ## Finish with evidence
 
-Run required repository checks and observe the changed behaviour. Inspect the diff. Stop when that evidence is sufficient; repeat checks only after relevant changes, failures, stale results, or unresolved uncertainty. State unverified paths honestly.
+Prove the changed behaviour on the real artefact. Run the changed path and read its actual output or value. A build, cached copy, or self-report is not proof. Before final checks, remove concepts, state, branches, and parallel paths the finished design no longer needs. Run required repository checks and inspect the diff. Repeat checks only after a relevant change, failure, or stale result. State any path you could not exercise and why.
 
-For substantial changes, security boundaries, public interfaces, stored data, dependency migrations, consequential tooling, or unresolved verification, read [Verification, review, and learning](references/verification.md) and use "code-review" when its review criteria apply. Small, well-covered local changes may finish with direct diff inspection. Detailed standards remain available during review even when implementation did not need them.
+Follow repository review requirements first. Otherwise use "code-review" before completion for changes to security boundaries, public interfaces, stored data or schemas, dependency migrations, cross-module behaviour, or tooling that governs consequential actions. Also use it when correctness remains uncertain after focused checks. A small local change with adequate checks can finish with direct diff inspection. Resolve verified findings within the authorised change and report the rest.
