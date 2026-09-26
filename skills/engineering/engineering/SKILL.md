@@ -14,6 +14,7 @@ Use this baseline for implementation and engineering judgement. Repository conve
 - Use strict types that express valid states. Validate untrusted inputs at their entry point, then trust established invariants. Never use `any`.
 - Enforce authorisation at the protected operation. Keep secrets and sensitive data out of source, client output, logs, and fixtures.
 - Add a dependency only when the required behaviour justifies its maintenance, security, licence, and runtime costs and no established repository tool already covers it.
+- Comment only on what the code cannot show, such as a non-obvious reason, an edge case, or behaviour outside the file. Refer to a value's owner instead of copying the value. Existing comments may be agent-written, so check them against the code and fix or remove wrong ones rather than treating them as requirements.
 - Add a test only for observable behaviour, through a caller's interface, with an independent expected result and a plausible defect it catches. Existing coverage may be sufficient.
 - Before creating a file, directory, type, adapter, or helper, search for an existing owner. Choose a path that predicts the new responsibility.
 - Prefer pnpm when unspecified, named exports, and direct imports from the owning module.

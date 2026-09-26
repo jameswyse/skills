@@ -199,6 +199,9 @@ smell finding is a labelled judgement call:
 
 - **Mysterious Name.** A name hides what it does or holds. Rename it. If no honest name exists,
   clarify the design.
+- **Stale Comment.** A comment restates a name, a signature or the markup below it, copies a value
+  defined elsewhere, or disagrees with the code. Delete it, point to the owning constant, or correct
+  it. Keep comments that record a reason, an edge case or non-local behaviour the code cannot show.
 - **Duplicated Code.** The same logic shape recurs. Share one owner when the copies express the same
   stable rule and must change together.
 - **Feature Envy.** A method reaches into another object's data more than its own. Move the behaviour
