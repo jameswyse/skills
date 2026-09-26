@@ -1,0 +1,3 @@
+interface:
+  display_name: "Homelab"
+  short_description: "Find access instructions for fleet computers and homelab services"

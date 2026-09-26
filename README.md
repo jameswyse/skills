@@ -48,13 +48,14 @@ Software development, diagnosis, reviews, and maintenance.
 
 ### Productivity
 
-Structured workflows for sharpening plans and decisions.
+Structured workflows for sharpening plans and decisions, handing off work, and reaching the homelab.
 
-| Skill      | Purpose                                                                        |
-| ---------- | ------------------------------------------------------------------------------ |
-| `grilling` | Matt Pococks's grilling skill, vendored for completeness.                      |
-| `grill-me` | Explicit shortcut for invoking `grilling`.                                     |
-| `handoff`  | Compacts the current conversation into a copy-ready handoff for another agent. |
+| Skill      | Purpose                                                                                   |
+| ---------- | ----------------------------------------------------------------------------------------- |
+| `grilling` | Matt Pococks's grilling skill, vendored for completeness.                                 |
+| `grill-me` | Explicit shortcut for invoking `grilling`.                                                |
+| `handoff`  | Compacts the current conversation into a copy-ready handoff for another agent.            |
+| `homelab`  | Routes access to fleet computers and self-hosted services through the homelab repository. |
 
 ## Install with `npx skills`
 
