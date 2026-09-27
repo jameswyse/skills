@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import os
+import re
 import socket
 import subprocess
 import sys
@@ -16,6 +17,10 @@ HOMELAB = Path(
     os.environ.get("HOMELAB_DIR", str(Path.home() / "Projects" / "homelab"))
 )
 SKILLS_UPDATE = ("npx", "--yes", "skills@latest", "update", "--global")
+ANSI_ESCAPE = re.compile(r"\x1b\[[0-9;]*[A-Za-z]")
+# Per-skill validation results, unchanged links and npx progress. Successful
+# steps omit these so the report shows changes, conflicts and summaries only.
+ROUTINE_OUTPUT = re.compile(r"^(skills/.*:|  valid|current .*|absent .*|Checking .*|\s*)$")
 
 # Fleet login shells are fish, so the remote steps run under an explicit sh.
 # The script arrives on stdin, so npx reads /dev/null instead of the script.
@@ -103,16 +108,26 @@ def check_published() -> tuple[str, str]:
 
 
 def run_step(host: str, description: str, command: list[str], script: str | None = None) -> bool:
-    """Run one step with its output streamed, reading stdin only from the script."""
+    """Run one step, reporting its full output only when it fails."""
 
     print(f"==> {host}: {description}", flush=True)
-    if script is None:
-        result = subprocess.run(command, stdin=subprocess.DEVNULL)
-    else:
-        result = subprocess.run(command, input=script, text=True)
+    result = subprocess.run(
+        command,
+        input=script,
+        stdin=subprocess.DEVNULL if script is None else None,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+    )
+    lines = ANSI_ESCAPE.sub("", result.stdout).splitlines()
     if result.returncode:
+        print(*lines, sep="\n")
         print(f"==> {host}: {description} failed (exit {result.returncode})", flush=True)
-    return result.returncode == 0
+        return False
+    shown = [line for line in lines if not ROUTINE_OUTPUT.match(line)]
+    if shown:
+        print("\n".join(shown), flush=True)
+    return True
 
 
 def main() -> int:

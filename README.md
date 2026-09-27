@@ -263,7 +263,8 @@ runs `scripts/sync-skills` and `npx skills@latest update --global` locally, then
 other machine in its fleet list through the homelab repository's `scripts/fleet`. On each machine
 it fast-forwards `~/Projects/skills` to the validated commit, runs the sync script and updates the
 global skills. A machine with local changes, commits, or a different branch is reported as failed
-and left unchanged. The script reads the homelab checkout from `~/Projects/homelab` unless
+and left unchanged. Successful steps print only changes, conflicts and summaries; a failed step
+prints its full output. The script reads the homelab checkout from `~/Projects/homelab` unless
 `HOMELAB_DIR` is set.
 
 ## Credits
