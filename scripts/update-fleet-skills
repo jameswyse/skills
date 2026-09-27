@@ -1,0 +1,172 @@
+#!/usr/bin/env python3
+"""Roll the pushed skills commit out to every development machine in the fleet."""
+
+from __future__ import annotations
+
+import os
+import socket
+import subprocess
+import sys
+from pathlib import Path
+
+
+REPOSITORY = Path(__file__).resolve().parents[1]
+FLEET = ("epicdev", "studio", "mini", "macbookpro")
+HOMELAB = Path(
+    os.environ.get("HOMELAB_DIR", str(Path.home() / "Projects" / "homelab"))
+)
+SKILLS_UPDATE = ("npx", "--yes", "skills@latest", "update", "--global")
+
+# Fleet login shells are fish, so the remote steps run under an explicit sh.
+# The script arrives on stdin, so npx reads /dev/null instead of the script.
+REMOTE_SCRIPT = f"""
+set -eu
+expected=$1
+branch=$2
+cd "$HOME/Projects/skills"
+current=$(git symbolic-ref --short -q HEAD || true)
+if [ "$current" != "$branch" ]; then
+    echo "error: checkout is on '${{current:-detached HEAD}}', expected '$branch'" >&2
+    exit 1
+fi
+if [ -n "$(git status --porcelain)" ]; then
+    echo "error: checkout has uncommitted changes:" >&2
+    git status --short >&2
+    exit 1
+fi
+git fetch --quiet origin
+git merge --ff-only --quiet "$expected"
+if [ "$(git rev-parse HEAD)" != "$expected" ]; then
+    echo "error: checkout has commits that are not on origin" >&2
+    exit 1
+fi
+scripts/sync-skills
+{" ".join(SKILLS_UPDATE)} < /dev/null
+"""
+
+
+class PreflightError(Exception):
+    """Raised when the local checkout does not match its pushed upstream."""
+
+
+def git(*args: str) -> str:
+    return subprocess.run(
+        ("git", *args), cwd=REPOSITORY, check=True, capture_output=True, text=True
+    ).stdout.strip()
+
+
+def check_published() -> tuple[str, str]:
+    """Return the commit and branch to roll out once they match the upstream."""
+
+    status = git("status", "--porcelain")
+    if status:
+        raise PreflightError(
+            f"{REPOSITORY} has uncommitted changes:\n{status}\n"
+            "Commit and push them, then run this again."
+        )
+
+    try:
+        branch = git("symbolic-ref", "--short", "-q", "HEAD")
+    except subprocess.CalledProcessError:
+        raise PreflightError(f"{REPOSITORY} is on a detached HEAD.") from None
+    try:
+        upstream = git("rev-parse", "--abbrev-ref", "@{upstream}")
+    except subprocess.CalledProcessError:
+        raise PreflightError(
+            f"{branch} has no upstream branch. Push it, then run this again."
+        ) from None
+
+    try:
+        git("fetch", "--quiet")
+    except subprocess.CalledProcessError as error:
+        raise PreflightError(
+            f"Cannot fetch {upstream}:\n{error.stderr.strip()}"
+        ) from None
+
+    ahead, behind = map(
+        int, git("rev-list", "--left-right", "--count", "HEAD...@{upstream}").split()
+    )
+    if ahead:
+        commits = git("log", "--oneline", "@{upstream}..HEAD")
+        raise PreflightError(
+            f"{branch} has {ahead} unpushed commit(s):\n{commits}\n"
+            f"Push them to {upstream}, then run this again."
+        )
+    if behind:
+        raise PreflightError(
+            f"{branch} is {behind} commit(s) behind {upstream}. The fleet would "
+            "receive commits this machine has not validated. Pull them, then "
+            "run this again."
+        )
+
+    return git("rev-parse", "HEAD"), branch
+
+
+def run_step(host: str, description: str, command: list[str], script: str | None = None) -> bool:
+    """Run one step with its output streamed, reading stdin only from the script."""
+
+    print(f"==> {host}: {description}", flush=True)
+    if script is None:
+        result = subprocess.run(command, stdin=subprocess.DEVNULL)
+    else:
+        result = subprocess.run(command, input=script, text=True)
+    if result.returncode:
+        print(f"==> {host}: {description} failed (exit {result.returncode})", flush=True)
+    return result.returncode == 0
+
+
+def main() -> int:
+    try:
+        commit, branch = check_published()
+    except PreflightError as error:
+        print(f"error: {error}", file=sys.stderr)
+        return 2
+
+    fleet_command = HOMELAB / "scripts" / "fleet"
+    if not fleet_command.is_file():
+        print(
+            f"error: {fleet_command} not found. Set HOMELAB_DIR to the homelab checkout.",
+            file=sys.stderr,
+        )
+        return 2
+
+    local_host = socket.gethostname().split(".")[0].lower()
+    print(f"Rolling out {branch} at {commit[:12]} from {local_host}", flush=True)
+
+    if not run_step(local_host, "validate skills", [str(REPOSITORY / "scripts" / "validate-skills")]):
+        print("error: validation failed, so no machine was updated.", file=sys.stderr)
+        return 1
+
+    results: dict[str, bool] = {}
+    results[local_host] = all(
+        [
+            run_step(local_host, "sync skills", [str(REPOSITORY / "scripts" / "sync-skills")]),
+            run_step(local_host, "update global skills", list(SKILLS_UPDATE)),
+        ]
+    )
+
+    for host in FLEET:
+        if host == local_host:
+            continue
+        results[host] = run_step(
+            host,
+            "pull, sync and update global skills",
+            [
+                str(fleet_command),
+                "ssh",
+                "-o", "BatchMode=yes",
+                "-o", "ConnectTimeout=10",
+                host,
+                "sh", "-s", "--", commit, branch,
+            ],
+            REMOTE_SCRIPT,
+        )
+
+    print()
+    for host, succeeded in results.items():
+        print(f"{host:<12} {'updated' if succeeded else 'FAILED'}")
+    return 0 if all(results.values()) else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

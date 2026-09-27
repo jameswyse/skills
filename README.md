@@ -249,6 +249,23 @@ not require Codex, modify Homebrew Python, or require an activated virtual envir
 In Claude Code, run `/skills` to confirm discovery. This repository's `code-review` skill overrides
 Claude Code's bundled `/code-review`; use Claude's `/review` alias when you want the bundled review.
 
+## Update the fleet
+
+After committing and pushing skill changes, roll them out to every development machine:
+
+```sh
+scripts/update-fleet-skills
+```
+
+The script exits with status 2 before contacting the fleet when this checkout has uncommitted
+changes, unpushed commits, or upstream commits it has not pulled. Otherwise it validates the skills,
+runs `scripts/sync-skills` and `npx skills@latest update --global` locally, then connects to each
+other machine in its fleet list through the homelab repository's `scripts/fleet`. On each machine
+it fast-forwards `~/Projects/skills` to the validated commit, runs the sync script and updates the
+global skills. A machine with local changes, commits, or a different branch is reported as failed
+and left unchanged. The script reads the homelab checkout from `~/Projects/homelab` unless
+`HOMELAB_DIR` is set.
+
 ## Credits
 
 `babysit-pr` is imported from [OpenAI's Codex skill](https://github.com/openai/codex/tree/a8c36ca6d265800c1b2c67d19d3583e23dee8382/.codex/skills/babysit-pr)
