@@ -27,7 +27,11 @@ Explain this problem space to the user. Include a small illustrative type or cod
 
 Follow the engineering skill's delegation rules. This workflow requests independent design work within the user's scope when delegation is available and permitted. Start with two distinct designs for a straightforward decision. Add another only when a meaningful trade-off remains unexplored or the user requests more alternatives.
 
-When delegating, give each subagent the same factual technical brief and a different design constraint. Use fresh contexts when supported. Do not show them another design or the expected recommendation. When delegation is unavailable or restricted, develop the alternatives sequentially and disclose that they were not independently generated. Do not stop merely because subagents are unavailable.
+When delegating, give each subagent the same factual technical brief and a different design constraint. Use fresh contexts when supported. Do not show them another design or the expected recommendation. Each subagent reads the code but changes nothing.
+
+Alternate designs between providers when T3's orchestration tools allow it, so the designs differ by model as well as by constraint. Give the first design to a native subagent on the session's model. Send the second through the engineering [Cross-provider delegation](../engineering/references/cross-provider-delegation.md) reference with `role: "design"`, and alternate any further designs. When a cross-provider design falls back, produce that design on the session's provider. Name each design's provider when presenting them.
+
+When delegation is unavailable or restricted, develop the alternatives sequentially and disclose that they were not independently generated. Do not stop merely because subagents are unavailable.
 
 Use these constraints unless the problem calls for a stronger distinction:
 

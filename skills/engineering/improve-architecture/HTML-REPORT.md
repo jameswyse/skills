@@ -2,7 +2,7 @@
 
 Render the architecture review as one static HTML file in the operating system's temporary directory. Load Tailwind and Mermaid from CDNs when the environment has network access. Otherwise use inline CSS and SVG. Use Mermaid for graph-shaped diagrams. Use hand-built elements and inline SVG for mass diagrams, cross-sections, and other custom visuals.
 
-Resolve the temporary directory from `$TMPDIR`, falling back to `/tmp` on Unix or `%TEMP%` on Windows. Write `<tmpdir>/architecture-review-<timestamp>.html` so each run has a fresh file. Complete the render checks or report why visual inspection is unavailable, then open it with `open` on macOS, `xdg-open` on Linux, or `start` on Windows, and give the user its absolute path.
+Resolve the temporary directory from `$TMPDIR`, falling back to `/tmp` on Unix or `%TEMP%` on Windows. Write `<tmpdir>/architecture-review-<timestamp>.html` so each run has a fresh file. Complete the render checks or report why visual inspection is unavailable, then deliver it as the ux HTML-report guidance describes.
 
 ## Visual contract
 

@@ -69,7 +69,7 @@ Prefer fresh verification when it is safe and proportionate. Use the repository'
 
 For the report itself, use "ux", including its HTML-report guidance and installed design specialists, even when no finding concerns an interface. Before writing HTML, read [HTML-REPORT.md](HTML-REPORT.md) in full. Preserve its scaffold and visual requirements.
 
-Write one HTML file to the operating system's temporary directory so nothing enters the repository. Resolve the directory from `$TMPDIR`, falling back to `/tmp` on Unix or `%TEMP%` on Windows. Write to `<tmpdir>/standards-review-<timestamp>.html` so each run gets a fresh file. Complete the report's render checks, or state why visual verification could not run. Open it with `xdg-open <path>` on Linux, `open <path>` on macOS, or `start <path>` on Windows. Tell the user the absolute path.
+Write one HTML file to the operating system's temporary directory so nothing enters the repository. Resolve the directory from `$TMPDIR`, falling back to `/tmp` on Unix or `%TEMP%` on Windows. Write to `<tmpdir>/standards-review-<timestamp>.html` so each run gets a fresh file. Complete the report's render checks, or state why visual verification could not run. Deliver it as the ux HTML-report guidance describes.
 
 The report is one static HTML file. When network access is available, load Tailwind and Mermaid from CDNs. Use Mermaid only when a graph, flow, or sequence clarifies a finding. Without network access, use inline CSS and SVG.
 

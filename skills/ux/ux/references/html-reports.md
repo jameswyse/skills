@@ -16,4 +16,18 @@ Render the final file in an available, permitted browser at a desktop width and 
 
 Confirm readable hierarchy and spacing, bounded code and table scrolling, visible labels and focus, and working internal links and any filters. Use the report's longest real paths and labels, not short placeholders. Apply its domain-specific checks too. Fix observed defects and recheck the affected views before handoff.
 
+In T3 Code, the `preview_*` tools provide a browser that can resize the viewport and save screenshots. It runs on the user's client and accepts only `http(s)` URLs. Serve the report's directory from a loopback HTTP server on the host, open it with `preview_open` and `open: false`, and stop the server and close the tab afterwards. When the T3 environment runs on another machine, the client cannot reach that server and `preview_snapshot` reports a `chrome-error://` URL. Use another permitted browser on the host instead.
+
 If browser inspection is unavailable or blocked, perform source and structural checks, deliver the report, and explicitly state `Visual verification not run` with the reason. Preserve browser restrictions; do not claim a rendered pass from source inspection or stop the rest of the authorised work solely because this check is unavailable.
+
+## Deliver the report
+
+Give the user the report's absolute path. Outside T3 Code, also open it with `open` on macOS, `xdg-open` on Linux, or `start` on Windows.
+
+In a T3 Code thread the user may be on another machine, where opening the file shows them nothing. Attach it to the current thread instead. The report request authorises this delivery to the user's own thread.
+
+1. Call `t3_attachment_prepare_upload` with type `file`, MIME type `text/html`, the file name, and its exact size in bytes.
+2. POST the file's bytes to the returned `relativeUrl` on the T3 server's origin, `http://127.0.0.1:$T3CODE_PORT`. A successful upload returns HTTP 204.
+3. Call `t3_thread_send_attachments` with the returned attachment ID and the same metadata, omitting `threadId`.
+
+The attachment arrives back in your turn as a message with its saved path. Treat it as confirmation of delivery, not a new request. If the attachment tools are unavailable, `T3CODE_PORT` is unset, or the upload fails, give the path alone and state that the report was not attached.

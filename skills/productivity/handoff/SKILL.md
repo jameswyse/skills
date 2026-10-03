@@ -44,3 +44,13 @@ Do not create or edit a file in the default mode.
 ## Write a file only when requested
 
 When the user explicitly asks for a handoff document or file, write Markdown to the requested path. If the user does not give a path, write `handoff-<timestamp>.md` in the operating system's temporary directory. Reply with the absolute path and a concise summary. Include the full handoff in chat only when the user also requests it.
+
+## Start a T3 thread only when requested
+
+When the user explicitly asks to start the next session as a new thread and T3 Code's `t3_thread_launch` tool is available, launch it with the handoff as `message`. Before launching, ask one question covering each choice the user has not already made, with the default marked:
+
+- Provider and model, defaulting to the current session's. Offer the models `orchestrator_capabilities` lists.
+- Workspace: the project root by default, a new worktree from a named base branch, or an existing worktree from `t3_worktree_list`. When the working tree is dirty, say that a new worktree will not contain the uncommitted changes.
+- Machine: `t3_thread_launch` starts threads only in the current T3 environment. For another machine, return the copy-ready block for the user to start there.
+
+Reply with the new thread's title and ID. Include the full handoff in chat only when the user also requests it.

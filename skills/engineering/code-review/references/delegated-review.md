@@ -4,6 +4,17 @@ Use after fixing the review scope and choosing independent reviewers. Follow the
 
 For the delegated path, state which axes you are delegating and spawn the applicable agents in parallel. If the tool supports disabling parent-history inheritance, disable it for each agent. Give the agents read-only tasks.
 
+## Choose the reviewers
+
+The reviewers depend on who requested the review.
+
+- A user-requested review is one where the review itself is the user's task: they invoked this skill or asked for a review of a branch, PR, or diff. Spawn the agents with the native subagent tool on the session's model.
+- A self-check is a review of your own change before completion, as the engineering skill requires. A request to implement something and check the result is a self-check.
+
+For a self-check, follow the engineering [Cross-provider delegation](../../engineering/references/cross-provider-delegation.md) reference and send one `delegate_task` per axis with `role: "review"`. Its fallback returns you to native subagents on the session's model. Name the reviewing provider and model, or the fallback reason, when stating the execution mode.
+
+## Prepare the packet
+
 Before spawning, write one frozen review packet from the scope captured in step 1. Use a private
 temporary directory outside the repository with permissions limited to the current user. Give the
 packet these manifests:
@@ -25,7 +36,7 @@ only the exact packet files after every applicable report has been verified, the
 directories individually. Never recursively delete without explicit consent.
 
 Each agent reviews only its assigned axis. It does not recapture Git state, run the full two-axis
-workflow, or spawn more reviewers.
+workflow, or spawn more reviewers. State these limits in every agent's task prompt.
 
 Keep every packet read below the tool output limit. If one result could truncate, split the read.
 After a complete read succeeds, reopen only the cited lines needed to verify a candidate.

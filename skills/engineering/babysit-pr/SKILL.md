@@ -44,8 +44,9 @@ BABYSIT_PR_SKILL_DIR="$HOME/.agents/skills/babysit-pr"
 python3 "$BABYSIT_PR_SKILL_DIR/scripts/gh_pr_watch.py" --pr auto --watch
 ```
 
-Use the actual skill directory if installed elsewhere. Prefer `--watch` for monitoring requests.
-Use `--once` for an explicitly requested snapshot, diagnosis, or local testing:
+Use the actual skill directory if installed elsewhere. Prefer `--watch` for monitoring requests,
+or T3 watching when it is available. Use `--once` for an explicitly requested snapshot, diagnosis,
+local testing, or each T3 wake:
 
 ```bash
 python3 "$BABYSIT_PR_SKILL_DIR/scripts/gh_pr_watch.py" --pr <number-or-url> --once
@@ -58,6 +59,25 @@ leave a detached watcher running and end the turn as though monitoring were comp
 The watcher defaults to a 30-second interval, configurable with `--poll-seconds`. Keep the base
 interval while the PR is open, including after checks pass. Do not introduce a longer green-state
 backoff that delays new review feedback.
+
+### Watch through T3
+
+When T3 Code's `watch_pull_request` tool is available, use it for wake-ups instead of `--watch`.
+T3 checks the PR every minute and wakes this thread when a check fails, the required checks pass,
+someone else comments or reviews, or the branch starts to conflict with its base.
+
+1. Run `--once` and process the snapshot, because T3 wakes only for comments posted after the
+   watch starts.
+2. Call `watch_pull_request` for the PR, then end the turn. Ending the turn is correct here: T3
+   owns the monitoring, and the `--watch` rules about consuming output in the same task do not apply.
+3. On each wake, run `--once` with the same PR selector and state file, then process the snapshot.
+   The snapshot and a direct `gh` check decide what to do.
+4. After a push or rerun, run `--once` to confirm the new state, then end the turn while the watch
+   continues.
+
+T3 stops watching when the PR merges or closes, when it cannot read the PR for 15 minutes, or when
+you call `unwatch_pull_request`. Call `unwatch_pull_request` when a stopping condition ends
+monitoring while the PR is still open.
 
 ## Process each snapshot
 
@@ -86,8 +106,9 @@ backoff that delays new review feedback.
    configured budget, which defaults to three cycles per head SHA; never reset state to evade it.
 6. Check mergeability and conflicts alongside CI. Report `ready_to_merge` as progress and keep
    watching. After a rerun, consume fresh snapshots; do not end the task after reporting the action.
-7. Apply the stopping conditions below. Otherwise keep consuming watcher output, including when
-   `actions` contains only `idle`, CI is pending, or required review approval is outstanding.
+7. Apply the stopping conditions below. Otherwise keep consuming watcher output, or keep the T3
+   watch active, including when `actions` contains only `idle`, CI is pending, or required review
+   approval is outstanding.
 
 Run an authorised retry when step 5 applies:
 
@@ -96,8 +117,8 @@ python3 "$BABYSIT_PR_SKILL_DIR/scripts/gh_pr_watch.py" --pr auto --retry-failed-
 ```
 
 Use the same PR selector and any custom `--state-file` or `--max-flaky-retries` values as the watcher.
-Avoid overlapping a retry with a watcher poll: pause the watcher, run the retry, then restart
-`--watch` immediately with those same settings.
+Under `--watch`, avoid overlapping a retry with a watcher poll: pause the watcher, run the retry,
+then restart `--watch` immediately with those same settings.
 
 Use the repository's commit conventions. If none apply, the upstream defaults are:
 
@@ -129,12 +150,14 @@ Stop monitoring when:
 
 An unresolved approval or product decision blocks the dependent action. Continue independent
 monitoring while it remains useful and possible. Report the decision needed rather than guessing.
-If a blocker ends monitoring, stop the owned watcher session before handing control back.
+If a blocker ends monitoring, stop the owned watcher session or T3 watch before handing control
+back.
 
 Green checks, `ready_to_merge`, quiet reviews, unknown mergeability, and `REVIEW_REQUIRED` are not
 stopping conditions for an open PR. Neither a successful push nor a rerun completes the task.
-While the watcher is running and no stopping condition applies, keep consuming output in the
-same task instead of sending a final response or asking whether to continue.
+While the `--watch` watcher is running and no stopping condition applies, keep consuming output in
+the same task instead of sending a final response or asking whether to continue. Under T3
+watching, end each turn with a progress update that states monitoring continues.
 
 ## Report progress and completion
 

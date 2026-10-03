@@ -115,7 +115,7 @@ The report must include:
 
 Report an inconclusive or negative result honestly. Do not select the fastest run, hide rejected experiments, combine unlike scenarios, or imply causation that the controlled experiment did not establish.
 
-Complete the report's render checks, or state why visual verification could not run. Open the report with `xdg-open <path>` on Linux, `open <path>` on macOS, or `start <path>` on Windows. Tell the user the absolute path and summarise the measured outcome.
+Complete the report's render checks, or state why visual verification could not run. Deliver it as the ux HTML-report guidance describes, and summarise the measured outcome.
 
 ## Finish the code change
 

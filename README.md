@@ -115,7 +115,7 @@ from the repository that owns the pull request. Supply a PR number or URL, or le
 from the current branch.
 
 The skill watches review feedback, CI, and mergeability until the PR closes or needs your input.
-Fixes, pushes, retries, and GitHub comments stay within the authority you give for that task.
+In T3 Code it hands wake-ups to T3's PR watching instead of running a long-lived watcher. Fixes, pushes, retries, and GitHub comments stay within the authority you give for that task.
 The watcher, reference notes, and tests live in
 [`skills/engineering/babysit-pr`](skills/engineering/babysit-pr).
 

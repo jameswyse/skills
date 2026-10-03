@@ -221,7 +221,7 @@ Apply the "ux" HTML-report verification to the final file, including screenshot 
 - focus indicators, labels, headings, and status text remain clear; and
 - print preview retains the complete inventory.
 
-Fix observed defects before handoff. If visual inspection is unavailable, deliver the structurally checked report with `Visual verification not run` and the reason. Open it with `open <path>` on macOS, `xdg-open <path>` on Linux, or `start <path>` on Windows.
+Fix observed defects before handoff. If visual inspection is unavailable, deliver the structurally checked report with `Visual verification not run` and the reason.
 
 ## Keep the language concrete
 
