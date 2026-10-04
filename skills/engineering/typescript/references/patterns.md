@@ -164,7 +164,7 @@ When refactoring an `as` out of existing code, identify why TypeScript can't inf
 - Untyped input seam: add a parse function or schema.
 - Genuinely inexpressible: use a branded type or `satisfies`.
 
-Explain an assertion when its proof depends on a non-local invariant or cannot be reconstructed from the adjacent code. Do not add a comment when the preceding branch or parser makes the proof obvious.
+When an assertion's proof depends on a non-local invariant or cannot be reconstructed from the adjacent code, move the check into a named guard, parser, or assertion function so the proof is code. Do not explain it in a comment.
 
 ## Narrowing hierarchy
 

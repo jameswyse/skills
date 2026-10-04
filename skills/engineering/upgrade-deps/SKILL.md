@@ -108,8 +108,8 @@ documented compatibility requirement.
 - Pin the narrowest working version.
 - Scope `update.ignoreDeps`, `peerDependencyRules`, `overrides`, and dependency-bot ignores to the
   actual incompatible package or parent-child edge.
-- Keep the reason and removal condition recoverable in the configuration or final report. Follow
-  the repository's comment style.
+- Record the reason and removal condition in the commit message and final report, not in a code
+  comment.
 - Retest every existing hold during each run. Remove the hold as soon as a compatible release
   passes verification.
 - Update parent-version selectors when their parent package moves.
