@@ -101,21 +101,13 @@ Stop when one of these conditions holds:
 
 ## Phase 4: Report the measured result
 
-For the report itself, use "ux", including its HTML-report guidance and installed design specialists. Before writing the report, read [HTML-REPORT.md](HTML-REPORT.md) in full. Preserve its scaffold and visual requirements. Write one static HTML file to the operating system's temporary directory. Resolve the directory from `$TMPDIR`, falling back to `/tmp` on Unix or `%TEMP%` on Windows. Use `<tmpdir>/performance-improvement-<timestamp>.html` so each run gets a fresh file.
+Use "ux" and its HTML-report guidance for the design, build, verification, and delivery. Before writing the report, read [HTML-REPORT.md](HTML-REPORT.md) in full. It owns the report's sections, charts, experiment content, and output location in the temporary directory.
 
-The report must include:
-
-- the target, workload, environment, revision, working-tree state, and benchmark method;
-- the original baseline and final result with sample counts and spread;
-- accessible before-and-after charts and a table of exact values;
-- a breakdown that shows where the measured time, bytes, allocations, or other resource went;
-- every experiment and its `Kept`, `Rejected`, or `Inconclusive` result;
-- correctness checks and secondary-metric guardrails;
-- remaining bottlenecks, measurement gaps, and larger architectural follow-ups.
+Lead with the measured result and whether the target was met. Then show the before-and-after values, where the resource went, every experiment with its `Kept`, `Rejected`, or `Inconclusive` result, and the remaining bottlenecks and follow-ups. End with the benchmark method, correctness checks, guardrails, and measurement gaps.
 
 Report an inconclusive or negative result honestly. Do not select the fastest run, hide rejected experiments, combine unlike scenarios, or imply causation that the controlled experiment did not establish.
 
-Complete the report's render checks, or state why visual verification could not run. Deliver it as the ux HTML-report guidance describes, and summarise the measured outcome.
+Verify the rendered report and deliver it as the ux guidance describes, or state why visual verification could not run. Summarise the measured outcome in your reply.
 
 ## Finish the code change
 

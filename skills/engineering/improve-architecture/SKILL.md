@@ -66,7 +66,7 @@ Rank the remaining candidates by observed maintenance pain, caller knowledge rem
 
 ### 3. Present candidates as an HTML report
 
-For the report itself, use "ux", including its HTML-report guidance and installed design specialists. Before writing HTML, read [HTML-REPORT.md](HTML-REPORT.md) in full. It owns the scaffold, report contents, visual rules, output location, and render checks. Preserve the scope and coverage verdicts, evidence, ranked candidates, and remaining gaps. Verify the rendered report before presenting its absolute path, or state why visual verification could not run.
+Use "ux" and its HTML-report guidance for the design, build, verification, and delivery. Before writing HTML, read [HTML-REPORT.md](HTML-REPORT.md) in full. It owns the report's sections, candidate content, and output location. Lead with the recommended candidate and keep coverage verdicts and gaps compact at the end. Verify the rendered report and deliver it as the ux guidance describes, or state why visual verification could not run.
 
 If a candidate contradicts a documented rule or ADR, include it only when observed evidence justifies reconsideration. Explain the conflict and reason in the report. Keep exact repository and domain names.
 

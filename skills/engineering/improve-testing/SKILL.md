@@ -53,23 +53,20 @@ Run proportionate existing test commands when they are safe and useful. Capture 
 
 ## Produce the HTML report
 
-For the report itself, use "ux", including its HTML-report guidance and installed design specialists. Before writing the report, read [HTML-REPORT.md](HTML-REPORT.md) in full. Preserve its scaffold and visual requirements.
+Use "ux" and its HTML-report guidance for the design, build, verification, and delivery. Before writing the report, read [HTML-REPORT.md](HTML-REPORT.md) in full. It owns the report's sections, tables, and output location in the temporary directory. Keep generated inventories and working ledgers out of the repository.
 
-Write one static file to `<tmpdir>/testing-review-<timestamp>.html`. Resolve the temporary directory from `$TMPDIR`, then `/tmp` on Unix or `%TEMP%` on Windows. Keep generated inventories and working ledgers out of the repository.
+The report must include, in this order:
 
-The report must include:
-
-1. The repository state, review boundary, inventory completeness, and verification evidence.
-2. The testing-library and dependency assessment, including a direct `Keep` or evidence-backed improvement verdict.
-3. Exact counts and accessible charts for the test-value tiers and verdicts.
-4. The behavioural guarantee map, with the evidence and consequence for each weak or missing guarantee.
-5. A prominent table of removal candidates. Include the guarantee, overlap or absence of value, concrete cost, removal reasoning, and the test that retains the useful protection. State directly when there are no supported candidates.
-6. Tests that fall short and the smallest repair that would strengthen each one.
-7. The complete stack-ranked test inventory. Give every test a stable ID, source location, guarantee, justification, shortcomings, value tier, ordinal rank, and `Keep`, `Improve`, or `Removal candidate` verdict.
-8. Collection limitations and remaining review gaps.
+1. A direct summary of the most consequential gap or removal and what to do first.
+2. Removal candidates, with the guarantee, missing value, concrete cost, removal reasoning, and the test that retains the useful protection. State directly when there are no supported candidates.
+3. Weak and missing behavioural guarantees, with the evidence and consequence for each.
+4. Tests that fall short and the smallest repair that would strengthen each one.
+5. Testing tools and dependencies that need a change, with the `Keep` tools listed in one line.
+6. Exact counts by value tier and verdict, and the complete stack-ranked inventory in a closed disclosure. Give every test a stable ID, source location, guarantee, justification, shortcomings, value tier, ordinal rank, and `Keep`, `Improve`, or `Removal candidate` verdict.
+7. Inventory completeness, verification evidence, and remaining review gaps.
 
 Use charts to show exact inventory composition, not codebase health or invented coverage percentages. Keep the complete table searchable and readable without JavaScript. Use exact paths, symbols, test IDs, framework names, commands, and domain terms.
 
-Complete the report's render checks, or state why visual verification could not run. Deliver it as the ux HTML-report guidance describes.
+Verify the rendered report and deliver it as the ux guidance describes, or state why visual verification could not run.
 
 After a review-only request, ask which removal candidates, test repairs, or guarantee gaps the user wants to tackle. Selecting an item for discussion does not authorise changes. If implementation is already authorised, apply the governing authority rules and continue with covered changes. Revalidate the chosen items against the current tree before implementation.

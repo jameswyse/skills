@@ -67,42 +67,9 @@ Prefer fresh verification when it is safe and proportionate. Use the repository'
 
 ### 4. Present the HTML report
 
-For the report itself, use "ux", including its HTML-report guidance and installed design specialists, even when no finding concerns an interface. Before writing HTML, read [HTML-REPORT.md](HTML-REPORT.md) in full. Preserve its scaffold and visual requirements.
+Use "ux" and its HTML-report guidance for the design, build, verification, and delivery, even when no finding concerns an interface. Before writing HTML, read [HTML-REPORT.md](HTML-REPORT.md) in full. It owns the report's sections, finding content, and output location in the temporary directory, so nothing enters the repository.
 
-Write one HTML file to the operating system's temporary directory so nothing enters the repository. Resolve the directory from `$TMPDIR`, falling back to `/tmp` on Unix or `%TEMP%` on Windows. Write to `<tmpdir>/standards-review-<timestamp>.html` so each run gets a fresh file. Complete the report's render checks, or state why visual verification could not run. Deliver it as the ux HTML-report guidance describes.
-
-The report is one static HTML file. When network access is available, load Tailwind and Mermaid from CDNs. Use Mermaid only when a graph, flow, or sequence clarifies a finding. Without network access, use inline CSS and SVG.
-
-Order the report for an engineer deciding what to do next:
-
-1. Header and repository state.
-2. Review boundary and verification evidence.
-3. Compact finding counts and the top recommendation.
-4. Ranked candidates.
-5. Architecture and organisation follow-ups, then remaining coverage gaps.
-
-Keep the review boundary. It defines what the findings can claim. Include the requested scope, major areas inspected, sampled or excluded areas, and coverage gaps. Omit generic method narration such as searches performed or files opened. Include a method detail only when it changes confidence in the result.
-
-Report verification as evidence, not as a health score. Show the exact toolchain and whether it matched repository pins, the command or interaction, cache state, result, and what each check established. Distinguish fresh results from cache hits. Name builds, runtime paths, browser flows, or external integrations that were not exercised. Do not use Turbo task counts alone as verification statistics, and do not label the codebase `Clean` when the checks covered only part of it.
-
-For each candidate, include:
-
-- **Files and symbols.** Name the inspected code.
-- **Standard.** Cite the exact repository rule, engineering skill section, or engineering reference that applies.
-- **Evidence.** Show the current cost or risk.
-- **Improvement.** Highlight the smallest coherent source fix so it is easy to find while scanning.
-- **Benefit.** Name the concrete reduction in complexity, risk, or verification effort.
-- **Effort and risk.** Use relative labels without invented precision.
-- **Verification.** Name the checks and observable behaviour.
-- **Recommendation strength.** Render `Strong`, `Worth exploring`, or `Speculative` as a badge.
-
-For a local code change, show a short current-versus-proposed comparison when it explains the improvement faster than prose. Use exact current code and a concrete proposed shape, keep each excerpt to the lines needed to show the decision, and omit the comparison when it would only repeat the text.
-
-Prefer short lists when a section contains several facts, changes, benefits, or checks. Keep a sentence when it carries one idea. Do not join independent points into a dense paragraph.
-
-Use a visual only when it makes the evidence or proposed change easier to understand. Choose from the report guide's visual patterns.
-
-Make the top recommendation a compact horizontal section without a diagram. Use the available width for its reason, source fix, effort, risk, and link to the full candidate. Put architecture and organisation observations in a separate follow-up section. Route them to the user-invoked "improve-architecture" or "improve-organisation" skill without ranking them against standards candidates.
+Lead with the recommended improvement and the ranked findings. Keep follow-ups for "improve-architecture" and "improve-organisation" separate and unranked. End with the toolchain, the checks with their cache state, and the paths not exercised. Omit method narration such as searches performed or files opened.
 
 After a review-only request, ask which candidates the user wants to improve. If the user already authorised implementation, continue with candidates covered by that request and resolve routine priorities from the evidence. Ask only when the selection changes the intended outcome or exceeds that authority.
 

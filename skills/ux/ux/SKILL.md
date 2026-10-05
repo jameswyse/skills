@@ -19,7 +19,7 @@ Let project-specific design rules govern when they differ from an external skill
 
 ### HTML reports
 
-Treat a generated HTML report as interface work even when its subject is engineering. Before generating or restyling one, read [HTML reports](references/html-reports.md) and load the installed "better-layout", "better-typography", and "better-ui" skills. Loading this router alone does not apply their guidance. Add other specialists only for decisions in their domains. Keep the report workflow's scaffold, visual requirements, and content priorities authoritative.
+Treat a generated HTML report as interface work even when its subject is engineering. Before generating one, read [HTML reports](references/html-reports.md). It owns the shared design, the build script, verification, and delivery. The report workflow's format reference owns the sections and item content. Load the installed "better-layout", "better-typography", and "better-ui" skills only when changing the shared report design itself.
 
 ### Interface skills
 
