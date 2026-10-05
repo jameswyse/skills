@@ -16,22 +16,26 @@ FLEET = ("epicdev", "studio", "mini", "macbookpro")
 HOMELAB = Path(
     os.environ.get("HOMELAB_DIR", str(Path.home() / "Projects" / "homelab"))
 )
-SKILLS_UPDATE = ("npx", "--yes", "skills@latest", "update", "--global")
 ANSI_ESCAPE = re.compile(r"\x1b\[[0-9;]*[A-Za-z]")
-# Per-skill validation results, unchanged links and npx progress. Successful
+# Per-skill validation results, unchanged links and routine update progress. Successful
 # steps omit these so the report shows changes, conflicts and summaries only.
-ROUTINE_OUTPUT = re.compile(r"^(skills/.*:|  valid|current .*|absent .*|Checking .*|\s*)$")
+ROUTINE_OUTPUT = re.compile(
+    r"^(skills/.*:|  valid|current .*|absent .*|Checking .*|Updating .*"
+    r"|\$ npx skills@latest update .*|\$ aws agent-toolkit update-skill .*"
+    r"|.* is already up to date.*|✓ All global skills are up to date|\s*)$"
+)
 
 # Fleet login shells are fish, so the remote steps run under an explicit sh.
 # The script arrives on stdin, so npx reads /dev/null instead of the script.
-REMOTE_SCRIPT = f"""
+REMOTE_SCRIPT = """
 set -eu
+PATH="$PATH:/usr/local/bin"
 expected=$1
 branch=$2
 cd "$HOME/Projects/skills"
 current=$(git symbolic-ref --short -q HEAD || true)
 if [ "$current" != "$branch" ]; then
-    echo "error: checkout is on '${{current:-detached HEAD}}', expected '$branch'" >&2
+    echo "error: checkout is on '${current:-detached HEAD}', expected '$branch'" >&2
     exit 1
 fi
 if [ -n "$(git status --porcelain)" ]; then
@@ -46,7 +50,7 @@ if [ "$(git rev-parse HEAD)" != "$expected" ]; then
     exit 1
 fi
 scripts/sync-skills
-{" ".join(SKILLS_UPDATE)} < /dev/null
+scripts/setup-external-skills < /dev/null
 """
 
 
@@ -156,7 +160,11 @@ def main() -> int:
     results[local_host] = all(
         [
             run_step(local_host, "sync skills", [str(REPOSITORY / "scripts" / "sync-skills")]),
-            run_step(local_host, "update global skills", list(SKILLS_UPDATE)),
+            run_step(
+                local_host,
+                "set up external skills",
+                [str(REPOSITORY / "scripts" / "setup-external-skills")],
+            ),
         ]
     )
 
@@ -165,7 +173,7 @@ def main() -> int:
             continue
         results[host] = run_step(
             host,
-            "pull, sync and update global skills",
+            "pull, sync and set up external skills",
             [
                 str(fleet_command),
                 "ssh",

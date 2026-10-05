@@ -9,77 +9,17 @@ import shlex
 import subprocess
 import sys
 from collections.abc import Sequence
+from pathlib import Path
 from typing import TypedDict
 
 
 SKILLS_COMMAND = ("npx", "skills@latest")
-AWS_AGENT_TOOLKIT_COMMAND = (
-    "aws",
-    "configure",
-    "agent-toolkit",
-    "--region",
-    "us-east-1",
-)
-SKILL_INSTALL_SOURCES = {"cli.sentry.dev": "https://cli.sentry.dev"}
+AWS_TOOLKIT_COMMAND = ("aws", "agent-toolkit")
+AWS_REGION = ("--region", "us-east-1")
+AWS_SOURCE = "aws agent-toolkit"
+MANIFEST = Path(__file__).resolve().parents[1] / "external-skills.json"
 TARGET_AGENTS = ("codex", "claude-code")
 TARGET_AGENT_DISPLAY_NAMES = frozenset({"Codex", "Claude Code"})
-RECOMMENDED_SKILLS: dict[str, tuple[str, ...]] = {
-    "apollographql/skills": (
-        "apollo-client",
-        "apollo-server",
-        "graphql-operations",
-        "graphql-schema",
-    ),
-    "cli.sentry.dev": ("sentry-cli",),
-    "emilkowalski/skills": (
-        "animate",
-        "animation-vocabulary",
-        "find-animation-opportunities",
-        "improve-animations",
-        "review-animations",
-    ),
-    "github/gh-stack": ("gh-stack",),
-    "jakubkrehel/skills": (
-        "better-accessibility",
-        "better-colors",
-        "better-interface",
-        "better-layout",
-        "better-typography",
-        "better-ui",
-        "better-writing",
-        "explain-interface",
-        "interface-review",
-        "variant",
-    ),
-    "openai/skills": ("playwright",),
-    "sanity-io/agent-toolkit": (
-        "content-experimentation-best-practices",
-        "content-modeling-best-practices",
-        "portable-text-conversion",
-        "portable-text-serialization",
-        "sanity-best-practices",
-        "sanity-migration",
-        "seo-aeo-best-practices",
-    ),
-    "sanity-io/next-sanity": ("sanity-live-cache-components",),
-    "vercel-labs/agent-skills": (
-        "vercel-composition-patterns",
-        "vercel-react-best-practices",
-        "vercel-react-view-transitions",
-    ),
-    "vercel-labs/before-and-after": ("before-and-after",),
-    "vercel-labs/openreview": (
-        "next-best-practices",
-        "next-cache-components",
-    ),
-    "vercel/components.build": ("building-components",),
-    "vercel/next.js": (
-        "next-cache-components-adoption",
-        "next-cache-components-optimizer",
-        "next-dev-loop",
-    ),
-    "vercel/turborepo": ("turborepo",),
-}
 
 
 class SetupError(Exception):
@@ -93,7 +33,10 @@ class InstalledSkill(TypedDict):
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Install missing recommended skills and update installed ones globally."
+        description=(
+            f"Install the skills listed in {MANIFEST.name} that are missing and "
+            "update the installed ones globally."
+        )
     )
     parser.add_argument(
         "--dry-run",
@@ -147,9 +90,45 @@ def list_global_skills() -> dict[str, InstalledSkill]:
     return installed
 
 
-def expected_sources() -> dict[str, str]:
+def list_aws_skills() -> frozenset[str]:
+    output = run(
+        (*AWS_TOOLKIT_COMMAND, "list-installed-skills", "--output", "json", *AWS_REGION),
+        capture=True,
+    )
+    try:
+        records = json.loads(output)["skills"]
+    except (json.JSONDecodeError, KeyError, TypeError) as error:
+        raise SetupError(f"aws agent-toolkit returned an invalid inventory: {error}") from error
+    if not isinstance(records, list) or not all(
+        isinstance(record, dict) and isinstance(record.get("name"), str) for record in records
+    ):
+        raise SetupError("aws agent-toolkit returned an invalid skill record")
+    return frozenset(record["name"] for record in records)
+
+
+def load_manifest() -> dict[str, tuple[str, ...]]:
+    try:
+        raw_manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise SetupError(f"Cannot read {MANIFEST}: {error}") from error
+    if not isinstance(raw_manifest, dict) or not all(
+        isinstance(source, str)
+        and isinstance(skills, list)
+        and all(isinstance(skill, str) for skill in skills)
+        for source, skills in raw_manifest.items()
+    ):
+        raise SetupError(f"{MANIFEST} must map each install source to a list of skill names")
+    return {source: tuple(skills) for source, skills in raw_manifest.items()}
+
+
+def inventory_source(install_source: str) -> str:
+    return install_source.removeprefix("https://")
+
+
+def expected_sources(manifest: dict[str, tuple[str, ...]]) -> dict[str, str]:
     expected: dict[str, str] = {}
-    for source, skills in RECOMMENDED_SKILLS.items():
+    for install_source, skills in manifest.items():
+        source = inventory_source(install_source)
         for skill in skills:
             if skill in expected:
                 raise SetupError(
@@ -160,11 +139,11 @@ def expected_sources() -> dict[str, str]:
     return expected
 
 
-def ensure_no_conflicts(installed: dict[str, InstalledSkill]) -> None:
+def ensure_no_conflicts(installed: dict[str, InstalledSkill], expected: dict[str, str]) -> None:
     conflicts = [
         f"{name} is owned by "
         f"{installed[name]['source'] or 'an unmanaged local source'}, not {source}"
-        for name, source in expected_sources().items()
+        for name, source in expected.items()
         if name in installed and installed[name]["source"] != source
     ]
     if conflicts:
@@ -175,12 +154,15 @@ def ensure_no_conflicts(installed: dict[str, InstalledSkill]) -> None:
 def main() -> int:
     args = parse_args()
     try:
+        manifest = load_manifest()
+        aws_skills = manifest.pop(AWS_SOURCE, ())
+        expected = expected_sources(manifest)
         installed = list_global_skills()
-        ensure_no_conflicts(installed)
+        ensure_no_conflicts(installed, expected)
 
         installed_recommendations = sorted(
             name
-            for name, source in expected_sources().items()
+            for name, source in expected.items()
             if name in installed and installed[name]["source"] == source
         )
         missing_by_source = {
@@ -190,13 +172,17 @@ def main() -> int:
                 if name not in installed
                 or not TARGET_AGENT_DISPLAY_NAMES.issubset(installed[name]["agents"])
             )
-            for source, skills in RECOMMENDED_SKILLS.items()
+            for source, skills in manifest.items()
         }
 
-        if args.dry_run:
-            print(f"$ {shlex.join(AWS_AGENT_TOOLKIT_COMMAND)}")
-        else:
-            run(AWS_AGENT_TOOLKIT_COMMAND)
+        installed_aws = list_aws_skills() if aws_skills else frozenset()
+        for name in aws_skills:
+            action = "update-skill" if name in installed_aws else "add-skill"
+            command = (*AWS_TOOLKIT_COMMAND, action, "--skill-name", name, *AWS_REGION)
+            if args.dry_run:
+                print(f"$ {shlex.join(command)}")
+            else:
+                run(command)
 
         for source, missing in missing_by_source.items():
             if not missing:
@@ -204,7 +190,7 @@ def main() -> int:
             command = (
                 *SKILLS_COMMAND,
                 "add",
-                SKILL_INSTALL_SOURCES.get(source, source),
+                source,
                 "--global",
                 "--yes",
                 *(argument for agent in TARGET_AGENTS for argument in ("--agent", agent)),
@@ -234,23 +220,33 @@ def main() -> int:
             return 0
 
         final_inventory = list_global_skills()
-        ensure_no_conflicts(final_inventory)
+        ensure_no_conflicts(final_inventory, expected)
         missing = sorted(
             name
-            for name in expected_sources()
+            for name in expected
             if name not in final_inventory
             or not TARGET_AGENT_DISPLAY_NAMES.issubset(
                 final_inventory[name]["agents"]
             )
         )
+        if aws_skills:
+            missing += sorted(set(aws_skills) - list_aws_skills())
         if missing:
             raise SetupError(
                 "Recommended skills are still missing: " + ", ".join(missing)
             )
 
+        unlisted = sorted(
+            f"{name} ({record['source']})"
+            for name, record in final_inventory.items()
+            if record["source"] is not None and name not in expected
+        )
+        if unlisted:
+            print(f"not in {MANIFEST.name}: " + ", ".join(unlisted))
+
         print(
-            "setup complete: AWS Agent Toolkit configured; "
-            f"{len(expected_sources())} npx skills present"
+            f"setup complete: {len(expected)} npx skills and "
+            f"{len(aws_skills)} AWS Agent Toolkit skills present"
         )
         return 0
     except (OSError, SetupError) as error:

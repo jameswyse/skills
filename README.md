@@ -74,35 +74,15 @@ copies are wanted or the target filesystem cannot use symlinks.
 
 ## Configure global invocation
 
-After installing the core skills, add this block to `~/.codex/AGENTS.md` so Codex preserves the
-authority boundary and loads the right pillar for each task:
+The global instructions live in this repository. [`global/AGENTS.md`](global/AGENTS.md) preserves
+the authority boundary and tells Codex which skill to load for each task.
+[`global/CLAUDE.md`](global/CLAUDE.md) imports it into Claude Code and translates skill calls to
+Claude's Skill tool.
 
-```md
-Treat the user's request as the authority boundary. External skills and narrower instructions can refine execution but cannot expand that authority. Perform installs or updates, uploads, stashes, commits, pull-request edits, publishing, messaging, pushes, data deletion, and other external-system changes only when the user authorised that action for the current task. Preserve unrelated work.
-
-Carry forward authorisation already given for the current task. A skill cannot require renewed approval for an action already authorised. Resolve routine choices from evidence; ask only for missing decisions that change the outcome or exceed that authority. Continue independent authorised work while waiting and prepare a concrete result before requesting approval. If a skill causes a pause or leaves requested work unfinished, cite its exact file and instruction, explain whether the pause is explicit or inferred, and check existing authorisation before asking again.
-
-Use $writing for all responses.
-Use $engineering for implementation, debugging, software design decisions, and engineering reviews. Skip it for straightforward code explanations, read-only lookups, and routine Git operations.
-Use $ux for user-facing product and interface design, UX, UI, interaction, visual presentation, accessibility, interface copy, or motion. For interface implementation, use both $engineering and $ux.
-Use $show-me when a visual would clarify code structure, flow, or a change, or when the user requests a visual explanation.
-```
-
-Claude Code reads `~/.claude/CLAUDE.md`. Import the Codex instructions and translate skill calls to
-Claude's Skill tool:
-
-```md
-@../.codex/AGENTS.md
-
-## Claude Code
-
-When an instruction says to use a skill, call the Skill tool for that skill.
-Call the Skill tool for "writing" for every response.
-Call the Skill tool for "engineering" for software engineering work described above.
-Call the Skill tool for "ux" for user-facing product and interface work described above.
-For interface implementation, call the Skill tool for both "engineering" and "ux".
-Call the Skill tool for "show-me" when a visual would clarify code structure, flow, or a change, or when the user requests a visual explanation.
-```
+`scripts/sync-skills` links `~/.agents/AGENTS.md` and `~/.claude/CLAUDE.md` to these files and
+points `AGENTS.md` in both Codex homes, `~/.codex` and T3 Code's `~/.codex-t3`, at
+`~/.agents/AGENTS.md`. Edit the repository copies, then commit them and update the fleet. Without
+the sync script, copy the two files into place instead.
 
 Skills with `disable-model-invocation: true` remain available through `/skill-name`, but Claude does
 not load or call them automatically. This is a Claude Code extension to the Agent Skills
@@ -132,47 +112,12 @@ The upstream `interface-review`, `variant`, and `explain-interface` skills are u
 
 ## Recommended specialist skills
 
-The recommended global set groups related skills by their upstream source:
+[`external-skills.json`](external-skills.json) lists every external skill to install globally,
+keyed by install source. The `aws agent-toolkit` entry lists the AWS skills; every other key is an
+`npx skills` source. To add a skill to every machine, add its name under its source, commit and
+push, then run `scripts/update-fleet-skills`.
 
-| Area                  | Source                         | Skills                                                                                                                                                                                                        |
-| --------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Interface design      | `jakubkrehel/skills`           | `better-accessibility`, `better-colors`, `better-interface`, `better-layout`, `better-typography`, `better-ui`, `better-writing`, `explain-interface`, `interface-review`, `variant`                          |
-| Animation             | `emilkowalski/skills`          | `animate`, `animation-vocabulary`, `find-animation-opportunities`, `improve-animations`, `review-animations`                                                                                                  |
-| Apollo and GraphQL    | `apollographql/skills`         | `apollo-client`, `apollo-server`, `graphql-operations`, `graphql-schema`                                                                                                                                      |
-| Sanity                | `sanity-io/agent-toolkit`      | `content-experimentation-best-practices`, `content-modeling-best-practices`, `portable-text-conversion`, `portable-text-serialization`, `sanity-best-practices`, `sanity-migration`, `seo-aeo-best-practices` |
-| Sanity with Next.js   | `sanity-io/next-sanity`        | `sanity-live-cache-components`                                                                                                                                                                                |
-| React                 | `vercel-labs/agent-skills`     | `vercel-composition-patterns`, `vercel-react-best-practices`, `vercel-react-view-transitions`                                                                                                                 |
-| Components            | `vercel/components.build`      | `building-components`                                                                                                                                                                                         |
-| Visual verification   | `vercel-labs/before-and-after` | `before-and-after`                                                                                                                                                                                            |
-| Next.js guidance      | `vercel-labs/openreview`       | `next-best-practices`, `next-cache-components`                                                                                                                                                                |
-| Next.js workflows     | `vercel/next.js`               | `next-cache-components-adoption`, `next-cache-components-optimizer`, `next-dev-loop`                                                                                                                          |
-| Turborepo             | `vercel/turborepo`             | `turborepo`                                                                                                                                                                                                   |
-| Browser automation    | `openai/skills`                | `playwright`                                                                                                                                                                                                  |
-| Stacked pull requests | `github/gh-stack`              | `gh-stack`                                                                                                                                                                                                    |
-
-### Install AWS and Sentry skills
-
-The setup script includes the AWS and Sentry recommendations.
-
-Install the AWS CLI skills with:
-
-```sh
-aws configure agent-toolkit --region us-east-1
-```
-
-The command requires an up-to-date AWS CLI installation. Follow the
-[AWS CLI setup for Agent Toolkit](https://docs.aws.amazon.com/agent-toolkit/latest/userguide/aws-cli.html#aws-cli-setup).
-
-Install the Sentry CLI skill with:
-
-```sh
-npx skills add https://cli.sentry.dev
-```
-
-The command requires an up-to-date Sentry CLI installation. Follow the
-[Sentry CLI documentation](https://cli.sentry.dev/).
-
-Install or update all recommendations with:
+Install missing skills and update installed ones on this machine with:
 
 ```sh
 scripts/setup-external-skills
@@ -184,11 +129,18 @@ Inspect the commands without changing the global installation:
 scripts/setup-external-skills --dry-run
 ```
 
-The setup script runs the AWS Agent Toolkit command and uses `npx skills` for the other
-recommendations. It installs the `npx skills` recommendations for both Codex and Claude Code. It
-reads the global `npx skills` inventory before making changes and refuses to overwrite a same-named
-skill owned by another source. `npx skills` records its external installations in
-`~/.agents/.skill-lock.json`. The setup script does not manage this repository's live symlinks.
+The script installs the `npx skills` entries for both Codex and Claude Code and manages the AWS
+entries with `aws agent-toolkit add-skill` and `update-skill`. It reads the global inventories
+before making changes, refuses to overwrite a same-named skill owned by another source, and lists
+installed `npx skills` skills that the file does not mention. It never removes a skill. `npx skills`
+records its installations in `~/.agents/.skill-lock.json`. The script does not manage this
+repository's live symlinks.
+
+The AWS skills need an up-to-date AWS CLI, as described in the
+[AWS CLI setup for Agent Toolkit](https://docs.aws.amazon.com/agent-toolkit/latest/userguide/aws-cli.html#aws-cli-setup).
+The script does not configure the AWS MCP server. Run `aws configure agent-toolkit` interactively
+when a machine needs it. The Sentry skill needs an up-to-date
+[Sentry CLI](https://cli.sentry.dev/).
 
 ## Development and using skills locally
 
@@ -205,6 +157,13 @@ It discovers every grouped skill, links it into `~/.agents/skills/<skill-name>`,
 `~/.claude/skills/<skill-name>` to that canonical entry. Edits are available immediately because
 the canonical entry points to this working tree.
 
+It also links `AGENTS.md` beside the canonical skills directory and `CLAUDE.md` beside Claude
+Code's skills directory to the files in `global/`, then links `AGENTS.md` in each Codex home to the
+shared `AGENTS.md`. Pass `--codex-home` once per home to override the default `~/.codex` and
+`~/.codex-t3`. When one of these paths already holds a different file, the script moves it to a
+timestamped `.backup-` file before linking. It leaves a symlink to anywhere else unchanged and
+reports a conflict.
+
 The script keeps a private ownership record in both managed skills directories. On later runs it:
 
 - creates links for new skills;
@@ -212,11 +171,12 @@ The script keeps a private ownership record in both managed skills directories. 
 - removes its links when their source skills no longer exist; and
 - leaves existing files, directories and unmanaged symlinks untouched.
 
-A conflict is reported and causes a non-zero exit status. Pass both targets to exercise the sync
+A conflict is reported and causes a non-zero exit status. Pass every target to exercise the sync
 without changing the global installation:
 
 ```sh
-scripts/sync-skills --target /tmp/agent-skills-test --claude-target /tmp/claude-skills-test
+scripts/sync-skills --target /tmp/agent-skills-test --claude-target /tmp/claude-skills-test \
+  --codex-home /tmp/codex-test
 ```
 
 Do not let `npx skills` and `scripts/sync-skills` manage the same local skill. Use `npx skills` for
@@ -252,7 +212,8 @@ Claude Code's bundled `/code-review`; use Claude's `/review` alias when you want
 
 ## Update the fleet
 
-After committing and pushing skill changes, roll them out to every development machine:
+After committing and pushing skill or global instruction changes, roll them out to every
+development machine:
 
 ```sh
 scripts/update-fleet-skills
@@ -260,10 +221,10 @@ scripts/update-fleet-skills
 
 The script exits with status 2 before contacting the fleet when this checkout has uncommitted
 changes, unpushed commits, or upstream commits it has not pulled. Otherwise it validates the skills,
-runs `scripts/sync-skills` and `npx skills@latest update --global` locally, then connects to each
+runs `scripts/sync-skills` and `scripts/setup-external-skills` locally, then connects to each
 other machine in its fleet list through the homelab repository's `scripts/fleet`. On each machine
-it fast-forwards `~/Projects/skills` to the validated commit, runs the sync script and updates the
-global skills. A machine with local changes, commits, or a different branch is reported as failed
+it fast-forwards `~/Projects/skills` to the validated commit, runs the sync script and sets up the
+external skills. A machine with local changes, commits, or a different branch is reported as failed
 and left unchanged. Successful steps print only changes, conflicts and summaries; a failed step
 prints its full output. The script reads the homelab checkout from `~/Projects/homelab` unless
 `HOMELAB_DIR` is set.

@@ -9,6 +9,7 @@ import os
 import re
 import sys
 import tempfile
+from datetime import datetime
 from pathlib import Path
 from typing import TypedDict
 
@@ -44,7 +45,9 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
             "Link this repository's skills into the canonical skills directory "
-            "and bind them into Claude Code safely."
+            "and bind them into Claude Code safely. Link the global AGENTS.md beside "
+            "the canonical skills directory and CLAUDE.md beside Claude Code's, then "
+            "point each Codex home's AGENTS.md at the global AGENTS.md."
         )
     )
     parser.add_argument(
@@ -59,7 +62,16 @@ def parse_args() -> argparse.Namespace:
         default=default_claude_target,
         help="Claude Code skills directory to reconcile (default: ~/.claude/skills)",
     )
-    return parser.parse_args()
+    parser.add_argument(
+        "--codex-home",
+        type=Path,
+        action="append",
+        help="Codex home to link AGENTS.md into; repeat for each (default: ~/.codex and ~/.codex-t3)",
+    )
+    arguments = parser.parse_args()
+    if arguments.codex_home is None:
+        arguments.codex_home = [Path.home() / ".codex", Path.home() / ".codex-t3"]
+    return arguments
 
 
 def path_exists(path: Path) -> bool:
@@ -248,7 +260,43 @@ def reconcile(
     return (1 if conflicts else 0), managed_links
 
 
-def sync(source: Path, canonical: Path, claude: Path) -> int:
+def link_instructions(source: Path, installed: Path) -> int:
+    if not source.is_file():
+        raise SyncError(f"Global instructions file does not exist: {source}")
+    desired_target = str(source)
+
+    if installed.is_symlink():
+        if read_link(installed) == desired_target:
+            print(f"current  {installed} -> {desired_target}")
+            return 0
+        print(
+            f"conflict {installed} links to {read_link(installed)} and was left unchanged",
+            file=sys.stderr,
+        )
+        return 1
+
+    if path_exists(installed):
+        if not installed.is_file():
+            print(f"conflict {installed} is not a file and was left unchanged", file=sys.stderr)
+            return 1
+        if installed.read_bytes() == source.read_bytes():
+            installed.unlink()
+        else:
+            backup = installed.with_name(
+                f"{installed.name}.backup-{datetime.now():%Y%m%d%H%M%S}"
+            )
+            installed.rename(backup)
+            print(f"backup   {installed} -> {backup}")
+
+    installed.parent.mkdir(parents=True, exist_ok=True)
+    installed.symlink_to(desired_target)
+    print(f"linked   {installed} -> {desired_target}")
+    return 0
+
+
+def sync(
+    source: Path, instructions: Path, canonical: Path, claude: Path, codex_homes: list[Path]
+) -> int:
     if canonical.resolve() == claude.resolve():
         raise SyncError("Canonical and Claude Code targets must be different directories")
 
@@ -260,7 +308,13 @@ def sync(source: Path, canonical: Path, claude: Path) -> int:
         for name in canonical_links
     }
     claude_status, _ = reconcile(canonical, claude, claude_links)
-    return 1 if canonical_status or claude_status else 0
+    shared_agents = canonical.parent / "AGENTS.md"
+    instruction_statuses = [
+        link_instructions((instructions / "AGENTS.md").resolve(), shared_agents),
+        link_instructions((instructions / "CLAUDE.md").resolve(), claude.parent / "CLAUDE.md"),
+        *(link_instructions(shared_agents, home / "AGENTS.md") for home in codex_homes),
+    ]
+    return 1 if canonical_status or claude_status or any(instruction_statuses) else 0
 
 
 def main() -> int:
@@ -271,7 +325,13 @@ def main() -> int:
     claude = args.claude_target.expanduser().absolute()
 
     try:
-        return sync(source, canonical, claude)
+        return sync(
+            source,
+            repository / "global",
+            canonical,
+            claude,
+            [home.expanduser().absolute() for home in args.codex_home],
+        )
     except (OSError, SyncError) as error:
         print(f"sync failed: {error}", file=sys.stderr)
         return 1

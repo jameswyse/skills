@@ -16,6 +16,7 @@ class SetupExternalSkillsTest(unittest.TestCase):
     bin_dir: Path
     state: Path
     log: Path
+    aws_state: Path
     environment: dict[str, str]
 
     def setUp(self) -> None:
@@ -24,6 +25,8 @@ class SetupExternalSkillsTest(unittest.TestCase):
         self.bin_dir.mkdir()
         self.state = self.root / "state.json"
         self.log = self.root / "commands.jsonl"
+        self.aws_state = self.root / "aws-state.json"
+        self.aws_state.write_text("[]\n", encoding="utf-8")
         self.state.write_text("[]\n", encoding="utf-8")
 
         fake_npx = self.bin_dir / "npx"
@@ -91,8 +94,19 @@ import sys
 from pathlib import Path
 
 log_path = Path(os.environ["FAKE_SKILLS_LOG"])
+state_path = Path(os.environ["FAKE_AWS_STATE"])
+args = sys.argv[1:]
 with log_path.open("a", encoding="utf-8") as log:
-    log.write(json.dumps(sys.argv[1:]) + "\\n")
+    log.write(json.dumps(args) + "\\n")
+
+installed = json.loads(state_path.read_text(encoding="utf-8"))
+if args[1] == "list-installed-skills":
+    print(json.dumps({"skills": [{"name": name, "agent": "Codex"} for name in installed]}))
+elif args[1] == "add-skill":
+    name = args[args.index("--skill-name") + 1]
+    state_path.write_text(json.dumps([*installed, name]), encoding="utf-8")
+elif args[1] != "update-skill":
+    raise SystemExit(2)
 """,
             encoding="utf-8",
         )
@@ -102,10 +116,11 @@ with log_path.open("a", encoding="utf-8") as log:
             "PATH": f"{self.bin_dir}{os.pathsep}{os.environ['PATH']}",
             "FAKE_SKILLS_STATE": str(self.state),
             "FAKE_SKILLS_LOG": str(self.log),
+            "FAKE_AWS_STATE": str(self.aws_state),
         }
 
     def tearDown(self) -> None:
-        for path in (self.log, self.state, self.bin_dir / "npx", self.bin_dir / "aws"):
+        for path in (self.log, self.state, self.aws_state, self.bin_dir / "npx", self.bin_dir / "aws"):
             if path.exists():
                 path.unlink()
         self.bin_dir.rmdir()
@@ -134,9 +149,10 @@ with log_path.open("a", encoding="utf-8") as log:
         self.assertIn("sentry-cli", names)
         self.assertNotIn("emil-design-eng", names)
         self.assertIn(
-            ["configure", "agent-toolkit", "--region", "us-east-1"],
+            ["agent-toolkit", "add-skill", "--skill-name", "aws-cdk", "--region", "us-east-1"],
             self.commands(),
         )
+        self.assertIn("aws-cdk", json.loads(self.aws_state.read_text(encoding="utf-8")))
 
         self.log.write_text("", encoding="utf-8")
         second = self.run_setup()
@@ -148,7 +164,11 @@ with log_path.open("a", encoding="utf-8") as log:
         self.assertIn("vercel-react-best-practices", update)
         self.assertNotIn("emil-design-eng", update)
         self.assertFalse(any(command[1] == "add" for command in commands))
-        self.assertIn(["configure", "agent-toolkit", "--region", "us-east-1"], commands)
+        self.assertIn(
+            ["agent-toolkit", "update-skill", "--skill-name", "aws-cdk", "--region", "us-east-1"],
+            commands,
+        )
+        self.assertFalse(any(command[1] == "add-skill" for command in commands))
 
     def test_refuses_to_overwrite_a_skill_from_another_source(self) -> None:
         self.state.write_text(
@@ -171,9 +191,8 @@ with log_path.open("a", encoding="utf-8") as log:
         self.assertFalse(
             any(command[1] in {"add", "update"} for command in self.commands())
         )
-        self.assertNotIn(
-            ["configure", "agent-toolkit", "--region", "us-east-1"],
-            self.commands(),
+        self.assertFalse(
+            any(command[1] in {"add-skill", "update-skill"} for command in self.commands())
         )
 
     def test_adds_missing_claude_binding_for_an_installed_skill(self) -> None:
@@ -209,7 +228,7 @@ with log_path.open("a", encoding="utf-8") as log:
         result = self.run_setup("--dry-run")
 
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("aws configure agent-toolkit --region us-east-1", result.stdout)
+        self.assertIn("aws agent-toolkit add-skill --skill-name aws-cdk --region us-east-1", result.stdout)
         self.assertIn("npx skills@latest add https://cli.sentry.dev", result.stdout)
         self.assertIn("npx skills@latest add", result.stdout)
         self.assertIn("--agent codex --agent claude-code", result.stdout)
@@ -217,6 +236,25 @@ with log_path.open("a", encoding="utf-8") as log:
         self.assertFalse(
             any(command[1] in {"add", "update"} for command in self.commands())
         )
+
+    def test_reports_installed_skills_missing_from_the_manifest(self) -> None:
+        self.state.write_text(
+            json.dumps(
+                [
+                    {"name": "ad-hoc", "source": "someone/skills", "agents": ["Codex"]},
+                    {"name": "writing", "source": None, "agents": ["Codex"]},
+                ]
+            ),
+            encoding="utf-8",
+        )
+
+        result = self.run_setup()
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report = [line for line in result.stdout.splitlines() if line.startswith("not in ")]
+        self.assertEqual(report, ["not in external-skills.json: ad-hoc (someone/skills)"])
+        installed = {record["name"] for record in json.loads(self.state.read_text(encoding="utf-8"))}
+        self.assertIn("ad-hoc", installed)
 
 
 if __name__ == "__main__":

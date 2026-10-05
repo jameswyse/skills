@@ -1,0 +1,100 @@
+{
+  "apollographql/skills": [
+    "apollo-client",
+    "apollo-server",
+    "graphql-operations",
+    "graphql-schema"
+  ],
+  "aws agent-toolkit": [
+    "amazon-bedrock",
+    "aws-ai-ml",
+    "aws-auth",
+    "aws-billing-and-cost-management",
+    "aws-blocks",
+    "aws-cdk",
+    "aws-cloudformation",
+    "aws-compute",
+    "aws-containers",
+    "aws-database",
+    "aws-deployment",
+    "aws-iam",
+    "aws-messaging-and-streaming",
+    "aws-networking",
+    "aws-observability",
+    "aws-sdk-js-v3-usage",
+    "aws-sdk-python-usage",
+    "aws-sdk-swift-usage",
+    "aws-security",
+    "aws-serverless",
+    "aws-storage",
+    "launch-with-aws",
+    "setting-up-cloudwatch-observability",
+    "signing-in-to-aws"
+  ],
+  "https://cli.sentry.dev": [
+    "sentry-cli"
+  ],
+  "Effect-TS/skills": [
+    "effect-ts"
+  ],
+  "emilkowalski/skills": [
+    "animate",
+    "animation-vocabulary",
+    "find-animation-opportunities",
+    "improve-animations",
+    "review-animations"
+  ],
+  "github/gh-stack": [
+    "gh-stack"
+  ],
+  "jakubkrehel/skills": [
+    "better-accessibility",
+    "better-colors",
+    "better-interface",
+    "better-layout",
+    "better-typography",
+    "better-ui",
+    "better-writing",
+    "explain-interface",
+    "interface-review",
+    "variant"
+  ],
+  "openai/skills": [
+    "playwright"
+  ],
+  "sanity-io/agent-toolkit": [
+    "content-experimentation-best-practices",
+    "content-modeling-best-practices",
+    "portable-text-conversion",
+    "portable-text-serialization",
+    "sanity-best-practices",
+    "sanity-migration",
+    "seo-aeo-best-practices"
+  ],
+  "sanity-io/next-sanity": [
+    "sanity-live-cache-components"
+  ],
+  "vercel-labs/agent-skills": [
+    "vercel-composition-patterns",
+    "vercel-react-best-practices",
+    "vercel-react-view-transitions"
+  ],
+  "vercel-labs/before-and-after": [
+    "before-and-after"
+  ],
+  "vercel-labs/openreview": [
+    "next-best-practices",
+    "next-cache-components"
+  ],
+  "vercel/components.build": [
+    "building-components"
+  ],
+  "vercel/next.js": [
+    "next-cache-components-adoption",
+    "next-cache-components-optimizer",
+    "next-dev-loop"
+  ],
+  "vercel/turborepo": [
+    "turborepo"
+  ]
+}
