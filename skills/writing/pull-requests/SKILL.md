@@ -1,0 +1,55 @@
+---
+name: pull-requests
+description: Create a pull request, or write or update a pull request's title and description.
+---
+
+# Pull requests
+
+Write a pull request that lets a reviewer understand why the change exists and the shape of the implementation before they open the diff. Use "writing" as the prose baseline and "show-me" for the change outline.
+
+## Authority
+
+Committing, pushing, creating a pull request, and editing one change shared systems. Perform each only when the user authorised it for the current task.
+
+- A request to create or open a pull request authorises committing the task's changes, pushing the branch with an upstream, and creating the pull request.
+- A request to update or rewrite a description authorises editing that pull request's title and body.
+- A request to draft or review a description authorises only the draft. Return it in the reply without publishing.
+
+Commit only the task's changes. When the current branch is the default branch, create a branch first. Follow the repository's Git safety rules and any commit or pull-request attribution lines the harness requires.
+
+## Workflow
+
+1. **Find the pull request.** Run `gh pr view --json url,number,title,body,state,baseRefName,headRefName` on the current branch. When none exists, inspect `git status --short --branch` and the branch's commits against its base. Ask the user to choose only when the current branch has no relevant work and the target is unclear. For a stack of dependent branches, use "gh-stack".
+2. **Gather only the context the description needs.**
+   - The complete diff against the base branch, and enough surrounding code to understand behaviour and ownership.
+   - The linked ticket, issue, or plan when one exists.
+   - The repository's pull-request template, such as `.github/pull_request_template.md`, and the style of recent pull-request titles and commit messages.
+   - The verification actually run for this change.
+3. **Write the title.** Follow the repository's convention, such as Conventional Commits. Name the change, not the activity: "Lock prices before saving orders", not "Order fixes". Keep it under 72 characters.
+4. **Write the body** with [the description template](references/description-template.md). When the repository has its own template, keep its headings, checklists, and required fields, and fill them with this skill's content where each fits.
+5. **Add visual evidence for interface changes.** Use "before-and-after" when it is available and screenshots or recordings exist. Otherwise state in the description that no visual evidence is attached.
+6. **Publish when authorised.** Write the body to a file in the temporary directory, then run `gh pr create --base <base> --title <title> --body-file <file>` or `gh pr edit <number> --title <title> --body-file <file>`. When editing, keep content the description does not own, such as author notes, media, checklists, linked issues, and bot sections. Confirm the result with `gh pr view --json url,title,body`.
+7. **Report.** Give the pull request link and title, two or three sentences on the change and anything special to note, and any authorised step that did not happen, such as an unpushed branch. Paste the full body only for a draft.
+
+## Write the description
+
+Write as one person explaining the change to another. Use plain, specific language without jargon or slang.
+
+- **Why the change.** Exactly one sentence: the problem this solves and what becomes possible after it ships.
+- **Special things to note.** One to three bullets for reviewer warnings, migrations, compatibility constraints, deliberate omissions, or surprising decisions. Write `- None.` when there are none.
+- **Change outline.** A compact structural view of the implementation, not prose and not a file-by-file changelog. Build it from the "show-me" views as GitHub Markdown: fenced code blocks, `diff` blocks, and `mermaid` diagrams. A pull request body cannot hold an HTML file, so skip show-me's HTML option.
+- **Verification.** The commands and checks actually run, with their results. Name important paths that were not exercised. Never claim a check that did not run.
+
+Include only the outline views that explain this change, ordered so the story is easiest to follow:
+
+- SQL table and endpoint contract changes, with pseudocode for the business logic.
+- Key data structure and type changes.
+- A shallow file tree showing changed responsibilities.
+- React component tree changes, including important hooks, state, and package boundaries.
+- Call-tree, call-stack, control-flow, or data-flow changes.
+
+Prefer `diff` blocks for changes to an existing shape. Show the complete target shape when most of it is new or diff notation would obscure ownership or order. Keep each view to what a reviewer needs and omit categories that did not change. A small change can skip the outline and explain itself in a sentence.
+
+When a ticket, issue, plan, or related document is known, link it in a header line. Otherwise omit the header.
+
+Do not expand the body beyond the template.

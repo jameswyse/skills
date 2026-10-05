@@ -13,7 +13,8 @@ Rules for responses, written artefacts, and developer documentation.
 | Skill               | Purpose                                                                                           |
 | ------------------- | ------------------------------------------------------------------------------------------------- |
 | `writing`           | Baseline writing rules for every response and written artefact.                                   |
-| `technical-writing` | Developer documentation, comments, commits, pull requests, release notes, and agent instructions. |
+| `technical-writing` | Developer documentation, comments, commits, release notes, and agent instructions.                |
+| `pull-requests`     | Pull-request creation, titles, and descriptions with visual change outlines.                      |
 | `show-me`           | Visual explanations for code questions, code changes, and pull-request descriptions.              |
 
 ### UX and design

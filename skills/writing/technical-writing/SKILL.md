@@ -1,6 +1,6 @@
 ---
 name: technical-writing
-description: Write or review developer documentation, PR prose, skills, and agent instructions.
+description: Write or review developer documentation, commit messages, skills, and agent instructions.
 ---
 
 # Technical writing
@@ -12,8 +12,8 @@ Use "writing" as the prose baseline. This skill owns developer-document structur
 - For skills, `AGENTS.md`, `CLAUDE.md`, and linked agent instructions, read [Agent instructions](references/agent-instructions.md). For a skill, also read [Skill mechanics](references/skill-mechanics.md). Skip the developer-prose references for these artefacts.
 - For documentation, READMEs, RFCs, ADRs, or runbooks whose structure needs work, read [Document structure](references/document-structure.md).
 - For substantial developer prose or a detailed clarity review, read [Developer prose editing](references/developer-prose.md).
-- For a short comment, commit message, release note, or PR description, use the baseline and the rules below. Load a reference only when the task needs it.
-- For a PR description, use "show-me" when a visual clarifies structure, flow, or the change, or when the user requests one. A simple change can be described in prose alone.
+- For a short comment, commit message, or release note, use the baseline and the rules below. Load a reference only when the task needs it.
+- For a pull request's title or description, use "pull-requests".
 
 Product UI copy belongs to "better-writing" when available. Ordinary chat does not require this skill.
 
