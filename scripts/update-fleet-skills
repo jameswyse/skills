@@ -25,11 +25,9 @@ ROUTINE_OUTPUT = re.compile(
     r"|.* is already up to date.*|✓ All global skills are up to date|\s*)$"
 )
 
-# Fleet login shells are fish, so the remote steps run under an explicit sh.
 # The script arrives on stdin, so npx reads /dev/null instead of the script.
 REMOTE_SCRIPT = """
 set -eu
-PATH="$PATH:/usr/local/bin"
 expected=$1
 branch=$2
 cd "$HOME/Projects/skills"
