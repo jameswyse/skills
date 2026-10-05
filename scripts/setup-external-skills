@@ -15,7 +15,7 @@ from typing import TypedDict
 
 SKILLS_COMMAND = ("npx", "skills@latest")
 AWS_TOOLKIT_COMMAND = ("aws", "agent-toolkit")
-AWS_REGION = ("--region", "us-east-1")
+AWS_OPTIONS = ("--region", "us-east-1", "--no-sign-request")
 AWS_SOURCE = "aws agent-toolkit"
 MANIFEST = Path(__file__).resolve().parents[1] / "external-skills.json"
 TARGET_AGENTS = ("codex", "claude-code")
@@ -92,7 +92,7 @@ def list_global_skills() -> dict[str, InstalledSkill]:
 
 def list_aws_skills() -> frozenset[str]:
     output = run(
-        (*AWS_TOOLKIT_COMMAND, "list-installed-skills", "--output", "json", *AWS_REGION),
+        (*AWS_TOOLKIT_COMMAND, "list-installed-skills", "--output", "json", *AWS_OPTIONS),
         capture=True,
     )
     try:
@@ -178,7 +178,7 @@ def main() -> int:
         installed_aws = list_aws_skills() if aws_skills else frozenset()
         for name in aws_skills:
             action = "update-skill" if name in installed_aws else "add-skill"
-            command = (*AWS_TOOLKIT_COMMAND, action, "--skill-name", name, *AWS_REGION)
+            command = (*AWS_TOOLKIT_COMMAND, action, "--skill-name", name, *AWS_OPTIONS)
             if args.dry_run:
                 print(f"$ {shlex.join(command)}")
             else:

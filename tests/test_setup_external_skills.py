@@ -149,7 +149,7 @@ elif args[1] != "update-skill":
         self.assertIn("sentry-cli", names)
         self.assertNotIn("emil-design-eng", names)
         self.assertIn(
-            ["agent-toolkit", "add-skill", "--skill-name", "aws-cdk", "--region", "us-east-1"],
+            ["agent-toolkit", "add-skill", "--skill-name", "aws-cdk", "--region", "us-east-1", "--no-sign-request"],
             self.commands(),
         )
         self.assertIn("aws-cdk", json.loads(self.aws_state.read_text(encoding="utf-8")))
@@ -165,7 +165,7 @@ elif args[1] != "update-skill":
         self.assertNotIn("emil-design-eng", update)
         self.assertFalse(any(command[1] == "add" for command in commands))
         self.assertIn(
-            ["agent-toolkit", "update-skill", "--skill-name", "aws-cdk", "--region", "us-east-1"],
+            ["agent-toolkit", "update-skill", "--skill-name", "aws-cdk", "--region", "us-east-1", "--no-sign-request"],
             commands,
         )
         self.assertFalse(any(command[1] == "add-skill" for command in commands))
@@ -228,7 +228,7 @@ elif args[1] != "update-skill":
         result = self.run_setup("--dry-run")
 
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("aws agent-toolkit add-skill --skill-name aws-cdk --region us-east-1", result.stdout)
+        self.assertIn("aws agent-toolkit add-skill --skill-name aws-cdk --region us-east-1 --no-sign-request", result.stdout)
         self.assertIn("npx skills@latest add https://cli.sentry.dev", result.stdout)
         self.assertIn("npx skills@latest add", result.stdout)
         self.assertIn("--agent codex --agent claude-code", result.stdout)
