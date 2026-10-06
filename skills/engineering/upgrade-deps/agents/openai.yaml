@@ -3,4 +3,4 @@ interface:
   short_description: "Upgrade pnpm workspaces and dependency policy"
   default_prompt: "Use $upgrade-deps to upgrade every dependency in this pnpm project."
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

@@ -1,15 +1,17 @@
 # Node.js and pnpm toolchain
 
-Read this reference only after a Node.js or pnpm upgrade has been authorised.
+Read this reference before changing a Node.js or pnpm pin.
 
 ## Select compatible targets
 
 - Use a user-specified version when one was provided.
-- For Node.js, update to the latest patch of the current supported line by default. If a newer LTS
-  major exists, ask before adopting that major unless the user already requested it.
-- For pnpm, select the latest stable release that supports the target Node.js version and the
-  repository's required features.
-- Read the official migration guidance before adopting a new Node.js or pnpm major.
+- Otherwise select the latest stable Node.js release in the pinned major line, and the latest stable
+  pnpm release in its pinned major line that supports that Node.js version.
+- Confirm that each exact version is published for every consumer, such as the Docker image tag,
+  setup action, and deployment runtime. If one consumer lacks it, select the newest version that
+  all consumers provide and report the gap.
+- Adopt a new major only when the main skill allows it, and read its official migration guidance
+  first.
 - Check whether the chosen Node.js distribution still provides the Corepack behaviour that the
   repository expects.
 
@@ -28,6 +30,10 @@ Search the full selected workspace and deployment configuration. Inspect at leas
 Use repository searches to find copied literals after locating the known sources. Inspect each
 match semantically. Do not replace unrelated numbers that happen to equal the old version.
 
+Deployment configuration can live in another repository, such as infrastructure or deployment
+templates that this repository's documentation, CI, or scripts name. Report the versions it pins
+and any mismatch. Change it only when the user authorises work in that repository.
+
 ## Preserve each declaration's meaning
 
 - Update exact local, CI, container, and deployment pins to the selected version.
@@ -35,8 +41,6 @@ match semantically. Do not replace unrelated numbers that happen to equal the ol
   when the package supports a range.
 - For a published package, keep the minimum supported Node.js version represented in its engine
   range and test matrix.
-- Align `@types/node` with the minimum runtime for a library and the deployed runtime for an
-  application.
 - Keep `packageManager` reproducible. Update its exact pnpm version and integrity metadata when the
   repository uses them.
 - Update setup-action inputs, Docker image tags, buildspec runtimes, and documentation together.
@@ -51,9 +55,14 @@ match semantically. Do not replace unrelated numbers that happen to equal the ol
    change and preserve repository policy.
 3. Replace deprecated workspace fields only when the new version documents the replacement.
 4. Regenerate the lockfile with the selected pnpm version. Do not hand-edit the lockfile version.
-5. Repeat the complete dependency inventory because the new resolver may expose different peers,
-   build scripts, release-age exclusions, or transitive versions.
+5. If the dependency inventory already ran under the old version, repeat it because the new
+   resolver may expose different peers, build scripts, release-age exclusions, or transitive
+   versions.
 
-Finish by confirming that every runtime source names a compatible version and by running the main
-skill's full verification sequence.
+## Confirm consistency
+
+Search the repository again for each old version literal. Every remaining match must be
+intentional, such as a changelog entry or a published library's minimum supported version. Then run
+the main skill's full verification sequence under the new versions. When a container image changed,
+build it if the environment can; otherwise report the image build as not verified.
 

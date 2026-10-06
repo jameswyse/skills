@@ -39,7 +39,7 @@ Software development, diagnosis, reviews, and maintenance.
 | `code-review`                     | Reviews a diff separately against the detailed code and test standards and the originating specification.      |
 | `babysit-pr`                      | Monitors pull-request reviews, CI, and mergeability, with authorised fixes and bounded flaky retries.            |
 | `design-it-twice`                 | Compares several software module interface designs before choosing one.                                        |
-| `upgrade-deps`                    | Comprehensive pnpm dependency, GitHub Actions, security, and optional toolchain upgrades.                      |
+| `upgrade-deps`                    | Comprehensive pnpm dependency, GitHub Actions, security, and Node.js and pnpm toolchain upgrades.              |
 | `improve-architecture`            | Finds deep-module and seam improvements across a codebase, then produces a visual report.                      |
 | `improve-organisation`            | Reviews codebase structure, ownership, filenames, shallow paths, and companion-file ownership.                 |
 | `improve-performance`             | Benchmarks and improves a selected critical path, then produces a measured before-and-after report.            |
