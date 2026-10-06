@@ -15,7 +15,7 @@ MERMAID_BLOCK = re.compile(r"class=\"[^\"]*\bmermaid\b", re.IGNORECASE)
 FILTER_CONTROLS = re.compile(r"\bdata-filter-for=", re.IGNORECASE)
 
 
-def build(title: str, body: str) -> str:
+def build(title: str, body: str, inline: bool = False) -> str:
     misplaced = DOCUMENT_TAG.search(body)
     if misplaced:
         raise ValueError(
@@ -30,7 +30,7 @@ def build(title: str, body: str) -> str:
     return "\n".join(
         [
             "<!doctype html>",
-            '<html lang="en-AU">',
+            '<html lang="en-AU" class="report-inline">' if inline else '<html lang="en-AU">',
             "<head>",
             '<meta charset="utf-8">',
             '<meta name="viewport" content="width=device-width, initial-scale=1">',
@@ -56,11 +56,16 @@ def main() -> int:
     parser.add_argument("--title", required=True, help="Document title shown in the browser tab")
     parser.add_argument("--input", required=True, type=Path, help="Body fragment file, or - for stdin")
     parser.add_argument("--output", required=True, type=Path, help="HTML file to write")
+    parser.add_argument(
+        "--inline",
+        action="store_true",
+        help="Follow the host's theme and drop page margins for T3 Code's html_render",
+    )
     arguments = parser.parse_args()
 
     body = sys.stdin.read() if str(arguments.input) == "-" else arguments.input.read_text()
     try:
-        document = build(arguments.title, body)
+        document = build(arguments.title, body, arguments.inline)
     except ValueError as error:
         print(error, file=sys.stderr)
         return 1

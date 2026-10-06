@@ -1,48 +1,48 @@
 :root {
   color-scheme: light dark;
-  --bg: oklch(0.982 0.004 85);
-  --surface: oklch(1 0 0);
-  --sunken: oklch(0.962 0.005 85);
-  --ink: oklch(0.23 0.012 265);
-  --muted: oklch(0.47 0.014 265);
-  --faint: oklch(0.58 0.012 265);
-  --line: oklch(0.912 0.006 265);
-  --line-strong: oklch(0.85 0.008 265);
-  --accent: oklch(0.52 0.17 272);
-  --accent-ink: oklch(0.42 0.16 272);
-  --accent-soft: oklch(0.962 0.022 272);
-  --good: oklch(0.47 0.11 155);
-  --good-soft: oklch(0.958 0.034 155);
-  --warn: oklch(0.49 0.1 62);
-  --warn-soft: oklch(0.965 0.04 85);
-  --risk: oklch(0.5 0.18 27);
-  --risk-soft: oklch(0.962 0.024 27);
-  --shadow: 0 1px 2px oklch(0.2 0.01 265 / 0.04), 0 6px 20px -12px oklch(0.2 0.01 265 / 0.16);
-  --radius: 14px;
-  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --report-bg: oklch(0.982 0.004 85);
+  --report-surface: oklch(1 0 0);
+  --report-sunken: oklch(0.962 0.005 85);
+  --report-ink: oklch(0.23 0.012 265);
+  --report-muted: oklch(0.47 0.014 265);
+  --report-faint: oklch(0.58 0.012 265);
+  --report-line: oklch(0.912 0.006 265);
+  --report-line-strong: oklch(0.85 0.008 265);
+  --report-accent: oklch(0.52 0.17 272);
+  --report-accent-ink: oklch(0.42 0.16 272);
+  --report-accent-soft: oklch(0.962 0.022 272);
+  --report-good: oklch(0.47 0.11 155);
+  --report-good-soft: oklch(0.958 0.034 155);
+  --report-warn: oklch(0.49 0.1 62);
+  --report-warn-soft: oklch(0.965 0.04 85);
+  --report-risk: oklch(0.5 0.18 27);
+  --report-risk-soft: oklch(0.962 0.024 27);
+  --report-shadow: 0 1px 2px oklch(0.2 0.01 265 / 0.04), 0 6px 20px -12px oklch(0.2 0.01 265 / 0.16);
+  --report-radius: 14px;
+  --report-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --report-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: oklch(0.17 0.006 265);
-    --surface: oklch(0.205 0.007 265);
-    --sunken: oklch(0.235 0.008 265);
-    --ink: oklch(0.94 0.005 265);
-    --muted: oklch(0.74 0.012 265);
-    --faint: oklch(0.63 0.012 265);
-    --line: oklch(0.29 0.009 265);
-    --line-strong: oklch(0.37 0.011 265);
-    --accent: oklch(0.7 0.14 272);
-    --accent-ink: oklch(0.82 0.1 272);
-    --accent-soft: oklch(0.27 0.05 272);
-    --good: oklch(0.8 0.13 155);
-    --good-soft: oklch(0.27 0.045 155);
-    --warn: oklch(0.84 0.12 80);
-    --warn-soft: oklch(0.28 0.045 75);
-    --risk: oklch(0.76 0.14 27);
-    --risk-soft: oklch(0.28 0.06 27);
-    --shadow: 0 1px 2px oklch(0 0 0 / 0.3);
+    --report-bg: oklch(0.17 0.006 265);
+    --report-surface: oklch(0.205 0.007 265);
+    --report-sunken: oklch(0.235 0.008 265);
+    --report-ink: oklch(0.94 0.005 265);
+    --report-muted: oklch(0.74 0.012 265);
+    --report-faint: oklch(0.63 0.012 265);
+    --report-line: oklch(0.29 0.009 265);
+    --report-line-strong: oklch(0.37 0.011 265);
+    --report-accent: oklch(0.7 0.14 272);
+    --report-accent-ink: oklch(0.82 0.1 272);
+    --report-accent-soft: oklch(0.27 0.05 272);
+    --report-good: oklch(0.8 0.13 155);
+    --report-good-soft: oklch(0.27 0.045 155);
+    --report-warn: oklch(0.84 0.12 80);
+    --report-warn-soft: oklch(0.28 0.045 75);
+    --report-risk: oklch(0.76 0.14 27);
+    --report-risk-soft: oklch(0.28 0.06 27);
+    --report-shadow: 0 1px 2px oklch(0 0 0 / 0.3);
   }
 }
 
@@ -59,9 +59,9 @@ html {
 
 body {
   margin: 0;
-  background: var(--bg);
-  color: var(--ink);
-  font: 400 1rem/1.6 var(--font);
+  background: var(--report-bg);
+  color: var(--report-ink);
+  font: 400 1rem/1.6 var(--report-font);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -144,18 +144,18 @@ li + li {
 }
 
 li::marker {
-  color: var(--faint);
+  color: var(--report-faint);
 }
 
 a {
-  color: var(--accent-ink);
+  color: var(--report-accent-ink);
   text-decoration-thickness: from-font;
   text-underline-offset: 0.2em;
   overflow-wrap: anywhere;
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--report-accent);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -165,7 +165,7 @@ strong {
 }
 
 .muted {
-  color: var(--muted);
+  color: var(--report-muted);
 }
 
 .small {
@@ -191,11 +191,11 @@ strong {
   font-weight: 620;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--faint);
+  color: var(--report-faint);
 }
 
 .report-header .eyebrow {
-  color: var(--accent-ink);
+  color: var(--report-accent-ink);
 }
 
 .meta {
@@ -205,7 +205,7 @@ strong {
   padding: 0;
   list-style: none;
   font-size: 0.875rem;
-  color: var(--muted);
+  color: var(--report-muted);
 }
 
 .meta li + li {
@@ -225,7 +225,7 @@ strong {
 
 .lead + p {
   max-width: 68ch;
-  color: var(--muted);
+  color: var(--report-muted);
 }
 
 .stats {
@@ -233,7 +233,7 @@ strong {
   flex-wrap: wrap;
   gap: 1rem 2.75rem;
   padding-top: 1.25rem;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--report-line);
 }
 
 .stats > div {
@@ -244,7 +244,7 @@ strong {
 .stats dt {
   order: 2;
   font-size: 0.8125rem;
-  color: var(--muted);
+  color: var(--report-muted);
 }
 
 .stats dd {
@@ -256,19 +256,19 @@ strong {
 }
 
 .stats dd.good {
-  color: var(--good);
+  color: var(--report-good);
 }
 
 .stats dd.warn {
-  color: var(--warn);
+  color: var(--report-warn);
 }
 
 .stats dd.risk {
-  color: var(--risk);
+  color: var(--report-risk);
 }
 
 .stats dd.accent {
-  color: var(--accent-ink);
+  color: var(--report-accent-ink);
 }
 
 .section {
@@ -284,7 +284,7 @@ strong {
 .section-head p {
   max-width: 68ch;
   font-size: 0.9375rem;
-  color: var(--muted);
+  color: var(--report-muted);
 }
 
 .items {
@@ -303,15 +303,15 @@ strong {
   display: grid;
   gap: 1.25rem;
   padding: 1.5rem;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--surface);
-  box-shadow: var(--shadow);
+  border: 1px solid var(--report-line);
+  border-radius: var(--report-radius);
+  background: var(--report-surface);
+  box-shadow: var(--report-shadow);
 }
 
 .item.lead-item {
-  border-color: color-mix(in oklch, var(--accent) 55%, var(--line));
-  box-shadow: var(--shadow), 0 0 0 3px color-mix(in oklch, var(--accent) 12%, transparent);
+  border-color: color-mix(in oklch, var(--report-accent) 55%, var(--report-line));
+  box-shadow: var(--report-shadow), 0 0 0 3px color-mix(in oklch, var(--report-accent) 12%, transparent);
 }
 
 .item-head {
@@ -330,13 +330,13 @@ strong {
   min-width: 1.5rem;
   font-size: 0.9375rem;
   font-weight: 620;
-  color: var(--faint);
+  color: var(--report-faint);
   font-variant-numeric: tabular-nums;
 }
 
 .item-head > p {
   max-width: 68ch;
-  color: var(--muted);
+  color: var(--report-muted);
 }
 
 .tags {
@@ -350,9 +350,9 @@ strong {
   align-items: center;
   padding: 0.0625rem 0.5625rem;
   border-radius: 999px;
-  background: var(--sunken);
-  box-shadow: inset 0 0 0 1px var(--line);
-  color: var(--muted);
+  background: var(--report-sunken);
+  box-shadow: inset 0 0 0 1px var(--report-line);
+  color: var(--report-muted);
   font-size: 0.75rem;
   font-weight: 620;
   line-height: 1.6;
@@ -360,27 +360,27 @@ strong {
 }
 
 .badge.accent {
-  background: var(--accent-soft);
-  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 28%, transparent);
-  color: var(--accent-ink);
+  background: var(--report-accent-soft);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--report-accent) 28%, transparent);
+  color: var(--report-accent-ink);
 }
 
 .badge.good {
-  background: var(--good-soft);
-  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--good) 28%, transparent);
-  color: var(--good);
+  background: var(--report-good-soft);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--report-good) 28%, transparent);
+  color: var(--report-good);
 }
 
 .badge.warn {
-  background: var(--warn-soft);
-  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--warn) 28%, transparent);
-  color: var(--warn);
+  background: var(--report-warn-soft);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--report-warn) 28%, transparent);
+  color: var(--report-warn);
 }
 
 .badge.risk {
-  background: var(--risk-soft);
-  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--risk) 28%, transparent);
-  color: var(--risk);
+  background: var(--report-risk-soft);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--report-risk) 28%, transparent);
+  color: var(--report-risk);
 }
 
 .callout {
@@ -388,27 +388,27 @@ strong {
   gap: 0.5rem;
   padding: 1rem 1.125rem;
   border-radius: 8px;
-  background: var(--accent-soft);
+  background: var(--report-accent-soft);
 }
 
 .callout .callout-title {
-  color: var(--accent-ink);
+  color: var(--report-accent-ink);
 }
 
 .callout.warn {
-  background: var(--warn-soft);
+  background: var(--report-warn-soft);
 }
 
 .callout.warn .callout-title {
-  color: var(--warn);
+  color: var(--report-warn);
 }
 
 .callout.risk {
-  background: var(--risk-soft);
+  background: var(--report-risk-soft);
 }
 
 .callout.risk .callout-title {
-  color: var(--risk);
+  color: var(--report-risk);
 }
 
 .fields {
@@ -426,7 +426,7 @@ strong {
   gap: 0.25rem;
   padding: 0;
   list-style: none;
-  font-family: var(--mono);
+  font-family: var(--report-mono);
   font-size: 0.8125rem;
 }
 
@@ -438,14 +438,14 @@ strong {
 code,
 kbd,
 pre {
-  font-family: var(--mono);
+  font-family: var(--report-mono);
 }
 
 :not(pre) > code {
   padding: 0.0625rem 0.3125rem;
   border-radius: 4px;
-  background: var(--sunken);
-  box-shadow: inset 0 0 0 1px var(--line);
+  background: var(--report-sunken);
+  box-shadow: inset 0 0 0 1px var(--report-line);
   font-size: 0.85em;
   overflow-wrap: anywhere;
 }
@@ -453,9 +453,9 @@ pre {
 pre {
   overflow-x: auto;
   padding: 0.875rem 1rem;
-  border: 1px solid var(--line);
+  border: 1px solid var(--report-line);
   border-radius: 8px;
-  background: var(--sunken);
+  background: var(--report-sunken);
   font-size: 0.8125rem;
   line-height: 1.6;
   tab-size: 2;
@@ -478,7 +478,7 @@ figcaption {
 
 figure > p {
   font-size: 0.875rem;
-  color: var(--muted);
+  color: var(--report-muted);
 }
 
 .compare {
@@ -492,12 +492,12 @@ figure > p {
 }
 
 .compare .proposed figcaption {
-  color: var(--accent-ink);
+  color: var(--report-accent-ink);
 }
 
 .compare .proposed pre,
 .compare .proposed .diagram {
-  border-color: color-mix(in oklch, var(--accent) 45%, var(--line));
+  border-color: color-mix(in oklch, var(--report-accent) 45%, var(--report-line));
 }
 
 .diagram {
@@ -507,9 +507,9 @@ figure > p {
   min-height: 100%;
   padding: 1rem;
   overflow-x: auto;
-  border: 1px solid var(--line);
+  border: 1px solid var(--report-line);
   border-radius: 8px;
-  background: var(--surface);
+  background: var(--report-surface);
 }
 
 .diagram svg {
@@ -544,43 +544,43 @@ figure > p {
 
 .flow > li + li::before {
   content: "→";
-  color: var(--faint);
+  color: var(--report-faint);
 }
 
 .node {
   display: inline-block;
   padding: 0.3125rem 0.625rem;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--report-line-strong);
   border-radius: 6px;
-  background: var(--surface);
-  font-family: var(--mono);
+  background: var(--report-surface);
+  font-family: var(--report-mono);
   font-size: 0.8125rem;
   overflow-wrap: anywhere;
 }
 
 .node.faded {
   border-style: dashed;
-  color: var(--faint);
+  color: var(--report-faint);
 }
 
 .node.leak {
-  border-color: var(--risk);
-  background: var(--risk-soft);
-  color: var(--risk);
+  border-color: var(--report-risk);
+  background: var(--report-risk-soft);
+  color: var(--report-risk);
 }
 
 .module {
   display: grid;
   gap: 0.625rem;
   padding: 0.75rem;
-  border: 2px solid var(--accent);
+  border: 2px solid var(--report-accent);
   border-radius: 10px;
-  background: var(--accent-soft);
+  background: var(--report-accent-soft);
 }
 
 .module > .label {
-  color: var(--accent-ink);
-  font-family: var(--mono);
+  color: var(--report-accent-ink);
+  font-family: var(--report-mono);
   font-size: 0.8125rem;
   letter-spacing: 0;
   text-transform: none;
@@ -593,26 +593,26 @@ figure > p {
 
 .layers > * {
   padding: 0.5rem 0.75rem;
-  border: 1px solid var(--line);
+  border: 1px solid var(--report-line);
   border-radius: 6px;
-  background: var(--sunken);
-  font-family: var(--mono);
+  background: var(--report-sunken);
+  font-family: var(--report-mono);
   font-size: 0.8125rem;
 }
 
 .layers > .deep {
   padding-block: 1.25rem;
-  border: 2px solid var(--accent);
-  background: var(--accent-soft);
-  color: var(--accent-ink);
+  border: 2px solid var(--report-accent);
+  background: var(--report-accent-soft);
+  color: var(--report-accent-ink);
   font-weight: 620;
 }
 
 .table-wrap {
   overflow-x: auto;
-  border: 1px solid var(--line);
+  border: 1px solid var(--report-line);
   border-radius: 10px;
-  background: var(--surface);
+  background: var(--report-surface);
 }
 
 table {
@@ -628,14 +628,14 @@ table.wide {
 th,
 td {
   padding: 0.625rem 0.875rem;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--report-line);
   text-align: start;
   vertical-align: top;
 }
 
 th {
-  background: var(--sunken);
-  color: var(--muted);
+  background: var(--report-sunken);
+  color: var(--report-muted);
   font-size: 0.75rem;
   font-weight: 620;
   white-space: nowrap;
@@ -648,6 +648,10 @@ tbody tr:last-child > * {
 .num {
   text-align: end;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.nowrap {
   white-space: nowrap;
 }
 
@@ -672,8 +676,8 @@ tbody tr:last-child > * {
   height: 0.625rem;
   overflow: hidden;
   border-radius: 999px;
-  background: var(--sunken);
-  box-shadow: inset 0 0 0 1px var(--line);
+  background: var(--report-sunken);
+  box-shadow: inset 0 0 0 1px var(--report-line);
 }
 
 .bar {
@@ -682,23 +686,23 @@ tbody tr:last-child > * {
   min-width: 2px;
   height: 100%;
   border-radius: inherit;
-  background: var(--faint);
+  background: var(--report-faint);
 }
 
 .bar-row.accent .bar {
-  background: var(--accent);
+  background: var(--report-accent);
 }
 
 .bar-row.good .bar {
-  background: var(--good);
+  background: var(--report-good);
 }
 
 .bar-row.warn .bar {
-  background: var(--warn);
+  background: var(--report-warn);
 }
 
 .bar-row.risk .bar {
-  background: var(--risk);
+  background: var(--report-risk);
 }
 
 .bar-value {
@@ -709,9 +713,9 @@ tbody tr:last-child > * {
 }
 
 details.more {
-  border: 1px solid var(--line);
+  border: 1px solid var(--report-line);
   border-radius: 10px;
-  background: var(--surface);
+  background: var(--report-surface);
 }
 
 details.more > summary {
@@ -735,8 +739,8 @@ details.more > summary::after {
   width: 0.5rem;
   height: 0.5rem;
   margin-top: -0.25rem;
-  border-right: 2px solid var(--faint);
-  border-bottom: 2px solid var(--faint);
+  border-right: 2px solid var(--report-faint);
+  border-bottom: 2px solid var(--report-faint);
   transform: rotate(45deg);
   transition: transform 150ms ease-out;
 }
@@ -773,7 +777,7 @@ details.more > * + :not(summary) {
 .filter label {
   display: grid;
   gap: 0.25rem;
-  color: var(--muted);
+  color: var(--report-muted);
   font-size: 0.8125rem;
   font-weight: 620;
 }
@@ -783,10 +787,10 @@ details.more > * + :not(summary) {
   min-width: 13rem;
   height: 2.625rem;
   padding: 0 0.75rem;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--report-line-strong);
   border-radius: 8px;
-  background: var(--surface);
-  color: var(--ink);
+  background: var(--report-surface);
+  color: var(--report-ink);
   font: inherit;
   font-size: 1rem;
   font-weight: 400;
@@ -794,8 +798,46 @@ details.more > * + :not(summary) {
 
 .filter [data-filter-count] {
   margin-inline-start: auto;
-  color: var(--muted);
+  color: var(--report-muted);
   font-size: 0.875rem;
+}
+
+:root.report-inline {
+  --report-bg: var(--background);
+  --report-surface: var(--card);
+  --report-sunken: var(--muted);
+  --report-ink: var(--foreground);
+  --report-muted: var(--muted-foreground);
+  --report-faint: var(--muted-foreground);
+  --report-line: var(--border);
+  --report-line-strong: var(--input);
+  --report-accent: var(--accent);
+  --report-accent-ink: color-mix(in oklch, var(--accent) 70%, var(--foreground));
+  --report-accent-soft: color-mix(in oklch, var(--accent) 12%, var(--background));
+  --report-good: var(--success-foreground);
+  --report-good-soft: color-mix(in oklch, var(--success) 14%, var(--background));
+  --report-warn: var(--warning-foreground);
+  --report-warn-soft: var(--warning-surface);
+  --report-risk: var(--destructive-foreground);
+  --report-risk-soft: var(--destructive-surface);
+  --report-shadow: none;
+  --report-radius: var(--radius);
+  --report-font: var(--font-sans);
+  --report-mono: var(--font-mono);
+}
+
+.report-inline body {
+  background: transparent;
+}
+
+.report-inline .report {
+  gap: 2.5rem;
+  max-width: none;
+  padding: 0 0 1rem;
+}
+
+.report-inline h1 {
+  font-size: 1.5rem;
 }
 
 @media (max-width: 46rem) {

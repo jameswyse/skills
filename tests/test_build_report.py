@@ -13,7 +13,9 @@ BUILD_SCRIPT = UX_SKILL / "scripts" / "build_report.py"
 
 
 class BuildReportTest(unittest.TestCase):
-    def build(self, title: str, body: str) -> tuple[subprocess.CompletedProcess[str], Path]:
+    def build(
+        self, title: str, body: str, *options: str
+    ) -> tuple[subprocess.CompletedProcess[str], Path]:
         directory = Path(tempfile.mkdtemp())
         source = directory / "body.html"
         source.write_text(body)
@@ -28,6 +30,7 @@ class BuildReportTest(unittest.TestCase):
                 str(source),
                 "--output",
                 str(output),
+                *options,
             ],
             check=False,
             capture_output=True,
@@ -44,6 +47,13 @@ class BuildReportTest(unittest.TestCase):
         self.assertIn((UX_SKILL / "assets" / "report.css").read_text(), document)
         self.assertIn('<main class="report">\n<p class="lead">Ship it.</p>\n</main>', document)
         self.assertNotIn("<script", document)
+        self.assertIn('<html lang="en-AU">', document)
+
+    def test_marks_an_inline_document_so_it_follows_the_host_theme(self) -> None:
+        result, output = self.build("Review", "<p>Ship it.</p>", "--inline")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('<html lang="en-AU" class="report-inline">', output.read_text())
 
     def test_reports_the_attachment_metadata_of_the_written_file(self) -> None:
         result, output = self.build("Review", "<p>Résumé</p>")

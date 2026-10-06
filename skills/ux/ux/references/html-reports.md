@@ -1,6 +1,6 @@
 # HTML reports
 
-A report serves an engineer deciding what to do next. They often read it in T3 Code's attachment preview on another machine, sometimes in a narrow panel. Lead with the answer, keep only what changes a decision, and let one shared design carry every report.
+A report serves an engineer deciding what to do next. They often read it in a T3 Code thread on another machine, sometimes in a narrow panel or on a phone. Lead with the answer, keep only what changes a decision, and let one shared design carry every report.
 
 The report workflow's format reference owns the sections and item content. This reference owns the design, the build, verification, and delivery.
 
@@ -38,7 +38,7 @@ python3 <ux-skill-dir>/scripts/build_report.py \
   --output <tmpdir>/architecture-review-<timestamp>.html
 ```
 
-Resolve `<tmpdir>` from `$TMPDIR`, then `/tmp` on Unix or `%TEMP%` on Windows. The script inlines the CSS, adds the Mermaid loader only when the body contains a `mermaid` block, adds the table filter only when the body contains `data-filter-for`, and prints the file's `path`, `name`, `mimeType`, and `sizeBytes` as JSON for delivery. It rejects a fragment containing `<html>`, `<head>`, `<body>`, `<style>`, or `<link>`.
+Resolve `<tmpdir>` from `$TMPDIR`, then `/tmp` on Unix or `%TEMP%` on Windows. Add `--inline` when the report will be shown with T3 Code's `html_render` tool. The page then follows the thread's theme and drops its outer margins. The script inlines the CSS, adds the Mermaid loader only when the body contains a `mermaid` block, adds the table filter only when the body contains `data-filter-for`, and prints the file's `path`, `name`, `mimeType`, and `sizeBytes` as JSON for delivery. It rejects a fragment containing `<html>`, `<head>`, `<body>`, `<style>`, or `<link>`.
 
 Use only the components below. Do not add stylesheets, Tailwind, utility classes, or inline styles. The one exception is `style="--value: 62%"` on a `.bar`. If something seems to need a new component, use a table, list, or `.callout` instead.
 
@@ -103,7 +103,7 @@ Treat repository names, paths, command output, traces, source excerpts, and diag
 | `.diagram` | A bordered diagram surface holding a Mermaid block, inline SVG, or the diagram classes below, with an optional `<p class="small muted">` caption. |
 | `.flow`, `.node`, `.module`, `.layers` | Diagram classes. `.flow` is a list of steps joined by arrows. `.node` is a labelled box, with `faded` for internals and `leak` for demonstrated leakage. `.module` wraps nodes in a deep module with a `.label`. `.layers` stacks bands, with `deep` for a consolidated layer. |
 | `pre.mermaid` | A graph or sequence the diagram classes cannot express. It needs network access; offline, use the diagram classes. |
-| `.table-wrap` with `<table>` | Tables. Add `class="wide"` to the table when it needs horizontal scrolling. Use `.num` on numeric cells. |
+| `.table-wrap` with `<table>` | Tables. Add `class="wide"` to the table when it needs horizontal scrolling. Use `.num` on numeric cells and `.nowrap` on cells such as versions that must not break. |
 | `figure.chart`, `.bars`, `.bar-row` | Horizontal bars. See the example below. |
 | `details.more` | Closed disclosure for audit material at the end. |
 | `.filter` | Search and select controls for a long table. See the example below. |
@@ -145,7 +145,9 @@ Every badge and status carries its meaning in text. The stylesheet supports ligh
 
 ## Verify the report
 
-Render the final file at a desktop width and at `320px`. Inspect the header and summary, a representative item, and the densest table, comparison, or diagram. Check for horizontal page overflow, unreadable wrapping, broken diagrams, and console errors. Use the report's longest real paths and labels. A successful build or HTML parse does not establish visual quality.
+For an inline report, check the built file once with `html_preview` at `390` pixels wide. Each preview call sends the whole document again, so fix every problem it shows before previewing again. Check the same things as below.
+
+For a file report, render the final file at a desktop width and at `320px`. Inspect the header and summary, a representative item, and the densest table, comparison, or diagram. Check for horizontal page overflow, unreadable wrapping, broken diagrams, and console errors. Use the report's longest real paths and labels. A successful build or HTML parse does not establish visual quality.
 
 In T3 Code, the `preview_*` tools run a browser on the user's client that accepts only `http(s)` URLs. Serve the report's directory from a loopback HTTP server, open it with `preview_open` and `open: false`, and stop the server and close the tab afterwards. When the T3 environment runs on another machine, `preview_snapshot` reports a `chrome-error://` URL. Use another permitted headless browser on the host instead, such as Playwright's Chromium with `--headless --screenshot`.
 
@@ -157,7 +159,9 @@ If browser inspection is unavailable, perform structural checks, deliver the rep
 
 Never open the report in a browser, and never run `open`, `xdg-open`, `start`, or a similar launcher. The user may be on another machine.
 
-In a T3 Code thread, attach the report to the current thread so it can be opened from any client. The report request authorises this delivery to the user's own thread.
+When T3 Code's `html_render` tool is available, show the report inline. Pass the document as `html`, built with `--inline` when it is a report, with the preview's `contentHeight` capped at `2000` as `height`, before writing the final reply. A longer report scrolls inside its frame. Do not also attach it. The reader sees the page above the reply, so the reply adds only what the page does not say and does not announce it.
+
+Otherwise, in a T3 Code thread, attach the report to the current thread so it can be opened from any client. The report request authorises this delivery to the user's own thread.
 
 1. Call `t3_attachment_prepare_upload` with type `file` and the `name`, `mimeType`, and `sizeBytes` printed by the build script.
 2. POST the file's bytes to the returned `relativeUrl` on `http://127.0.0.1:$T3CODE_PORT`, for example with `curl --fail --data-binary @<path> -H 'Content-Type: text/html' <url>`. A successful upload returns HTTP 204.
