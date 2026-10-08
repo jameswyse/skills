@@ -17,7 +17,8 @@ Always request High reasoning effort. T3's default effort setting is unreliable,
 
 ## Delegate
 
-- Call `delegate_task` once per independent piece of work, issuing all calls in the same step with `mode: "wait"` and a `timeoutMs` of `1800000`. If a call returns `waitTimedOut: true`, keep its `taskId` and read the result later with `task_status`.
+- Call `delegate_task` once per independent piece of work with `mode: "async"`, issuing all calls in the same step, and keep each returned `taskId`. Avoid `mode: "wait"`, which blocks each call until its child finishes. A harness that runs tool calls one at a time then runs the tasks in series.
+- Each child's completion arrives as a notification. Finish any independent work, then end the turn instead of polling `task_status` or starting a watcher. Continue the calling skill once every task has completed or failed.
 - Give each call a distinct `clientRequestId`, stable across retries of that call, and set `role` to match the work.
 - Set `interactionMode` to `default`, because `plan` mode is deprecated. Leave `runtimeMode` unset so it inherits.
 - The child receives only the task prompt, not the conversation or your loaded skills. Write a self-contained prompt with the objective, the relevant paths, and the expected report. The child runs in the same checkout as the parent and can read a private packet directory under the temporary directory.
