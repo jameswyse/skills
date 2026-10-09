@@ -1,4 +1,7 @@
 {
+  "anthropics/skills": [
+    "frontend-design"
+  ],
   "apollographql/skills": [
     "apollo-client",
     "apollo-server",
