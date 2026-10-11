@@ -33,7 +33,7 @@ a separate packet file.
 Give the Standards agent the shared and Standards manifests. If a Spec agent applies, give it the
 shared and Spec manifests. Pass only the applicable packet paths and the agent's axis prompt. Remove
 only the exact packet files after every applicable report has been verified, then remove empty
-directories individually. Never recursively delete without explicit consent.
+directories individually.
 
 Each agent reviews only its assigned axis. It does not recapture Git state, run the full two-axis
 workflow, or spawn more reviewers. State these limits in every agent's task prompt.

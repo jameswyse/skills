@@ -39,6 +39,6 @@ For performance regressions, measure the relevant workload with timing, profilin
 
 Stop investigating when evidence distinguishes the cause from realistic alternatives or no available observation can reduce uncertainty. Report the cause or ranked probable causes, confidence, distinguishing evidence, affected scope, and smallest coherent fix. Include the command and relevant redacted output, or the evidence fallback and remaining verification gap.
 
-For diagnosis-only work, remove agent-created diagnostics and temporary artefacts with targeted operations, preserve the original working tree, state what changed, and stop before fixing. Never recursively delete without explicit consent.
+For diagnosis-only work, remove agent-created diagnostics and temporary artefacts with targeted operations, preserve the original working tree, state what changed, and stop before fixing.
 
 When a fix is already authorised, read [Fix and verify](references/fix-and-verify.md) and continue through the practical regression check, source fix, verification, and cleanup. Do not require renewed approval solely because diagnosis ended.

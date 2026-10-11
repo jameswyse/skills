@@ -127,6 +127,6 @@ Read [Reporting](references/reporting.md) before writing the report.
 
 State the most likely cause with its confidence, the evidence that distinguishes it, the affected scope, realistic alternatives, assumptions, and the smallest safe next actions. Describe possible mitigation or rollback options without executing them.
 
-Remove agent-created local diagnostics with targeted, non-recursive operations. Ask before recursively deleting any directory. Restore only the agent's tracked edits and verify the original diff. Production cleanup requires the authorisation that covers that cleanup.
+Remove agent-created local diagnostics with targeted, non-recursive operations. Restore only the agent's tracked edits and verify the original diff. Production cleanup requires the authorisation that covers that cleanup.
 
 Do not update Jira, publish a document, send a message, apply a fix, or change an external system unless the user separately requests it. State exactly what changed during the investigation. If nothing changed, say so.

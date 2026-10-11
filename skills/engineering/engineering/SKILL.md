@@ -18,7 +18,7 @@ Use this baseline for implementation and engineering judgement. Repository conve
 - Add a test only for observable behaviour, through a caller's interface, with an independent expected result and a plausible defect it catches. Existing coverage may be sufficient.
 - Before creating a file, directory, type, adapter, or helper, search for an existing owner. Choose a path that predicts the new responsibility.
 - Prefer pnpm when unspecified, named exports, and direct imports from the owning module.
-- Use reversible deletion such as `trash` only within explicit authority. Never recursively delete without explicit consent.
+- Use reversible deletion such as `trash` when available. Double check the path is correct (especially when variable expansion occurs) before running any `rm` command.
 
 For TypeScript implementation or review, use "typescript". For substantial architecture, state, schema, module-boundary, or test-seam decisions, read [Design](references/design.md) before choosing. A small local edit does not need it.
 
