@@ -74,10 +74,7 @@ copies are wanted or the target filesystem cannot use symlinks.
 
 ## Configure global invocation
 
-The global instructions live in this repository. [`global/AGENTS.md`](global/AGENTS.md) preserves
-the authority boundary and tells Codex which skill to load for each task.
-[`global/CLAUDE.md`](global/CLAUDE.md) imports it into Claude Code and translates skill calls to
-Claude's Skill tool.
+The global instructions live in this repository.
 
 `scripts/sync-skills` links `~/.agents/AGENTS.md` and `~/.claude/CLAUDE.md` to these files and
 points `AGENTS.md` in both Codex homes, `~/.codex` and T3 Code's `~/.codex-t3`, at
