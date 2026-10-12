@@ -14,4 +14,4 @@ These rules apply in a thread I started on Opus 5.5. If you're a subagent or del
 
 - Taste work, such as writing code, designing architecture and building UI, stays on Opus. Subagents for it run on Opus at high effort.
 - Delegate code review, non-trivial debugging, deep dives through unfamiliar code, computer use and visual checks to Codex on GPT-6.1-Sol. Set its reasoning effort to high explicitly, and use the same permissions as the parent thread. It's cheap and I have plenty of usage, so don't skip delegation to save cost.
-- Its nitpickiness is the point. Brief it with the goal, relevant context and a done condition. Ask it to report what it actually observed, without fixing anything or delegating further. You evaluate the findings and write the fix.
+- Its nitpickiness is the point. Brief it with the goal, relevant context and a done condition. Ask it to report what it actually observed, without fixing anything or delegating further. Ask for the report as plain text in its final message, not an HTML page or a link, so you can read it without opening the child thread. You evaluate the findings and write the fix.

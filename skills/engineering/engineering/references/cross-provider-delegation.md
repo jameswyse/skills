@@ -22,7 +22,7 @@ Always request High reasoning effort. T3's default effort setting is unreliable,
 - Give each call a distinct `clientRequestId`, stable across retries of that call, and set `role` to match the work.
 - Set `interactionMode` to `default`, because `plan` mode is deprecated.
 - Set `runtimeMode` to `inherit` so the child runs under the parent thread's permission mode. Never request a different runtime mode, even when a broader one would let the child finish without approval prompts.
-- The child receives only the task prompt, not the conversation or your loaded skills. Write a self-contained prompt with the objective, the relevant paths, and the expected report. The child runs in the same checkout as the parent and can read a private packet directory under the temporary directory.
+- The child receives only the task prompt, not the conversation or your loaded skills. Write a self-contained prompt with the objective, the relevant paths, and the expected report. Ask for the report as plain text in the child's final message, not an HTML page or a link. Only the final message returns to you, and reading the child thread instead fills your context. The child runs in the same checkout as the parent and can read a private packet directory under the temporary directory.
 - When the work is read-only, state in the prompt that the child must not modify files, run formatters, create commits, or change Git state.
 - State in every prompt that the child must not start agents or subagents, delegate work, or apply cross-provider routing itself. The child loads the same skills, so without this it can delegate back to the parent's provider.
 
