@@ -27,7 +27,7 @@ Resolve questions through inspection or running checks wherever possible. Ask me
 
 Once I authorise a one-way door, that authorisation carries through the work, including any authorised delegation. Quote my authorisation to subagents. Ask again only if the scope or stakes change, or a failed check or new information changes the basis of my approval.
 
-Assume I wasn't watching while you worked. Finish with a concise account of the original task, what you did, how you verified it, any decisions I might want to undo, and your recommended next step, if any.
+Assume I wasn't watching while you worked. Finish with an account of the original task, what you did, how you verified it, any decisions I need to know about or might want to undo (use a simple "Decisions" heading), and your recommended next step, if any. Keep this as concise as possible.
 
 ## T3 Code
 
