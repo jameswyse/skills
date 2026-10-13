@@ -2,11 +2,7 @@
 
 ## Why the change
 
-{Exactly one sentence explaining the problem this pull request solves and what becomes possible after it ships.}
-
-## Special things to note
-
-- {List 1-3 reviewer-relevant warnings, migrations, constraints, deliberate omissions, or surprising decisions. Use "None." when there are no special considerations.}
+{One or two concise sentences, preferably one, explaining the problem this pull request solves and what becomes possible after it ships.}
 
 ## Change outline
 
@@ -50,6 +46,10 @@
 
 {Tell the story in the order that makes it easiest to understand. It may make sense to show files first, or to establish a data structure, SQL table, or API contract first. All views and subheadings are optional. Use only the views that help explain the pull request, and name or order them based on the change rather than a fixed template. Write as one person would write to another. Use `diff` for a focused change to an existing shape. Show the complete target shape in a language-specific or `text` block when it is new, high level, or clearer without diff notation.}
 
+## Notes
+
+- {List 1-3 reviewer-relevant warnings, migrations, constraints, deliberate omissions, or surprising decisions. Use "None." when there are none.}
+
 ## Verification
 
-- {List the commands and checks actually run and their results. Name important paths that were not exercised.}
+- {List the checks that confirmed the change and their results. Omit checks that did not run and external or private references.}

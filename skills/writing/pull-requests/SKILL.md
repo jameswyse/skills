@@ -5,7 +5,9 @@ description: Create a pull request, or write or update a pull request's title an
 
 # Pull requests
 
-Write a pull request that lets a reviewer understand why the change exists and the shape of the implementation before they open the diff. Use "writing" as the prose baseline and "show-me" for the change outline.
+Write a pull request that lets the project's other contributors understand why the change exists and the shape of the implementation before they open the diff. Use "writing" as the prose baseline and "show-me" for the change outline.
+
+Those contributors did not see the conversation that produced the change. Use the terms the codebase, tickets, and team already use. Leave out anything that only makes sense with that conversation, such as labels or shorthand coined during the work, options or attempts that were discussed, and the user's instructions.
 
 ## Authority
 
@@ -25,20 +27,20 @@ Commit only the task's changes. When the current branch is the default branch, c
    - The linked ticket, issue, or plan when one exists.
    - The repository's pull-request template, such as `.github/pull_request_template.md`, and the style of recent pull-request titles and commit messages.
    - The verification actually run for this change.
-3. **Write the title.** Follow the repository's convention, such as Conventional Commits. Name the change, not the activity: "Lock prices before saving orders", not "Order fixes". Keep it under 72 characters.
+3. **Write the title.** Follow the repository's convention, such as Conventional Commits. Name the change in the common terms a contributor scanning the pull request list would recognise, not the activity or a label from the conversation: "Lock prices before saving orders", not "Order fixes" or "Apply option B to the checkout flow". Keep it clear, concise, and under 72 characters.
 4. **Write the body** with [the description template](references/description-template.md). When the repository has its own template, keep its headings, checklists, and required fields, and fill them with this skill's content where each fits.
 5. **Add visual evidence for interface changes.** Use "before-and-after" when it is available and screenshots or recordings exist. Otherwise state in the description that no visual evidence is attached.
 6. **Publish when authorised.** Write the body to a file in the temporary directory, then run `gh pr create --base <base> --title <title> --body-file <file>` or `gh pr edit <number> --title <title> --body-file <file>`. When editing, keep content the description does not own, such as author notes, media, checklists, linked issues, and bot sections. Confirm the result with `gh pr view --json url,title,body`.
-7. **Report.** Give the pull request link and title, two or three sentences on the change and anything special to note, and any authorised step that did not happen, such as an unpushed branch. Paste the full body only for a draft.
+7. **Report.** Give the pull request link and title, two or three sentences on the change and its notes, and any authorised step that did not happen, such as an unpushed branch. Paste the full body only for a draft.
 
 ## Write the description
 
 Write as one person explaining the change to another. Use plain, specific language without jargon or slang.
 
-- **Why the change.** Exactly one sentence: the problem this solves and what becomes possible after it ships.
-- **Special things to note.** One to three bullets for reviewer warnings, migrations, compatibility constraints, deliberate omissions, or surprising decisions. Write `- None.` when there are none.
+- **Why the change.** One or two concise sentences: the problem this solves and what becomes possible after it ships. Prefer one.
 - **Change outline.** A compact structural view of the implementation, not prose and not a file-by-file changelog. Build it from the "show-me" views as GitHub Markdown: fenced code blocks, `diff` blocks, and `mermaid` diagrams. A pull request body cannot hold an HTML file, so skip show-me's HTML option.
-- **Verification.** The commands and checks actually run, with their results. Name important paths that were not exercised. Never claim a check that did not run.
+- **Notes.** One to three bullets for reviewer warnings, migrations, compatibility constraints, deliberate omissions, or surprising decisions. Each bullet must make sense to a contributor reading only the pull request. Write `- None.` when there are none.
+- **Verification.** The checks that confirmed the change, with their results. Leave out checks that did not run. Leave out external or private references, such as links only the author can open, local paths, and the names of models or agents that helped.
 
 Include only the outline views that explain this change, ordered so the story is easiest to follow:
 
