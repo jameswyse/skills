@@ -52,6 +52,8 @@ Include only the outline views that explain this change, ordered so the story is
 
 Prefer `diff` blocks for changes to an existing shape. Show the complete target shape when most of it is new or diff notation would obscure ownership or order. Keep each view to what a reviewer needs and omit categories that did not change. A small change can skip the outline and explain itself in a sentence.
 
+When the pull request makes more than one distinct change, give each change a `###` subheading under the change outline, named in the codebase's terms, and keep its explanation and views beneath it. Use a subheading instead of an inline label such as "Checkout:". Test changes that span several changes can take their own subheading. Skip subheadings when the parts are steps of one change that reads better as a single story.
+
 When a ticket, issue, plan, or related document is known, link it in a header line. Otherwise omit the header.
 
 Do not expand the body beyond the template.
