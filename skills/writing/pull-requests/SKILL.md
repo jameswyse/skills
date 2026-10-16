@@ -41,6 +41,7 @@ Write as one person explaining the change to another. Use plain, specific langua
 - **Change outline.** A compact structural view of the implementation, not prose and not a file-by-file changelog. Build it from the "show-me" views as GitHub Markdown: fenced code blocks, `diff` blocks, and `mermaid` diagrams. A pull request body cannot hold an HTML file, so skip show-me's HTML option.
 - **Notes.** One to three bullets for reviewer warnings, migrations, compatibility constraints, deliberate omissions, or surprising decisions. Each bullet must make sense to a contributor reading only the pull request. Write `- None.` when there are none.
 - **Verification.** The checks that confirmed the change, with their results. Leave out checks that did not run. Leave out external or private references, such as links only the author can open, local paths, and the names of models or agents that helped.
+- **Models.** End the body with a GitHub note listing every model that worked on the change and its role, including reviewers. When updating a description, keep the models already listed.
 
 Include only the outline views that explain this change, ordered so the story is easiest to follow:
 

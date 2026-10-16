@@ -53,3 +53,6 @@
 ## Verification
 
 - {List the checks that confirmed the change and their results. Omit checks that did not run and external or private references.}
+
+> [!NOTE]
+> 🤖 {Each model that worked on the change and its role, including reviewers, such as "Claude Opus 5.5 (implementation), GPT-6.1-Sol (code review)".}
