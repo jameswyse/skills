@@ -25,8 +25,7 @@ Carry existing authorisation forward without asking again. Apply these rules to 
   After the fix is pushed, post an authorised comment explaining the change and identifying its
   commit, then resolve.
   If the comment still needs approval, leave the thread open and continue independent monitoring.
-- Prefix every authorised automated comment with `[clanker]`. Treat your own replies as handled
-  if the watcher later reports them again.
+- Treat your own replies as handled if the watcher later reports them again.
 - Leave draft status, readiness for review, and closing or reopening the PR to the user unless
   explicitly asked to change them. Report disagreements and requests for decisions in chat.
 

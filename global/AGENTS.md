@@ -29,6 +29,10 @@ Once I authorise a one-way door, that authorisation carries through the work, in
 
 Assume I wasn't watching while you worked. Finish with an account of the original task, what you did, how you verified it, any decisions I need to know about or might want to undo (use a simple "Decisions" heading), and your recommended next step, if any. Keep this as concise as possible.
 
+## Posting on my behalf
+
+When you post a comment, reply, or message for me on GitHub, Jira, Slack, Sentry, or another shared platform, start it with a note naming your model, such as "🤖 Claude Opus 5.5 responding on behalf of James". Format the note with the platform's callout where one exists, such as a GitHub `> [!NOTE]` alert or a Jira info panel, and a quote block elsewhere. This applies only to posts you write as me, not to documents, copy, or other writing I ask for.
+
 ## T3 Code
 
 I usually use T3 Code from another machine on my LAN, so links you send me must open from there. Use the host's LAN hostname or IP instead of `localhost`, and bind dev servers to an interface other machines can reach.
