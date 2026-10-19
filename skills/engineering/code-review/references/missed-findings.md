@@ -18,35 +18,41 @@ each one against the scope. [Calibration](calibration.md) maintains this list.
 - **Canonical values.** Validation, comparison, storage keys, and output must use the same
   normalised value, such as trimmed text, lower-cased UUIDs, decoded paths, or normalised domains.
   Padded input such as `" J "` must not pass a minimum-length check.
-- **Static analysis by meaning.** Resolve bindings, aliases, callback ownership, and transparent
-  wrappers before matching. Text matches, familiar identifier names, and blanket exemptions suppress
-  real violations or flag unrelated code.
+- **Static analysis by meaning.** Resolve bindings, renamed imports, reassignment after
+  initialisation, aliases, callback ownership, computed properties, and transparent wrappers before
+  matching, and tell reads from writes. Text matches, familiar identifier names, and blanket
+  exemptions suppress real violations or flag unrelated code.
 - **Absence and shape.** Treat sparse arrays, omitted fields, nulls, and empty collections as
   distinct. A transformation must keep metadata and must not turn "absent" or "matches nobody" into
   a value with a different meaning.
 - **The consuming parser's rules.** Validate against how the browser, HTML parser, URL normaliser,
-  or query language will interpret the value, not against suspicious source strings.
+  or query language will interpret the value, not against suspicious source strings. Follow HTML
+  form ownership through the `form` attribute and submitter overrides such as `formmethod`.
 - **Lifecycle transitions.** Exercise repeated attempts, failed optimistic saves, external updates,
-  reconnects, and calendar rollover. Counters keep their intended expiry, and date calculations use
-  one timezone.
+  reconnects, and calendar rollover. State set by an earlier attempt must update on the next one,
+  a rejected save must restore the persisted value, counters keep their intended expiry, and date
+  calculations use one timezone.
 - **Parallel producers and consumers.** A changed format, tool, or dependency must agree with every
   other producer and reader, including Dockerfiles, CI workflows, scripts, fixtures, alternate entry
   points, editor settings, and consumers of the previous release.
 - **Whole inputs and batches.** Check both bounds, every occurrence, allowed enum or status values,
   and collisions between records that are each valid alone. A dry run must enforce the constraints
   the real write does.
-- **Retained content in migrations.** Keep supported legacy field names, validate references before a
-  transformation erases them, and skip resolving data the migration discards.
+- **Retained content in migrations.** Keep supported legacy field names, validate references before
+  a transformation erases them, and skip resolving data the migration discards. Exercise a migration
+  from the previous schema through read, save, and reload.
 - **Cache validity.** Check out-of-order completion, old response shapes, real cache bypasses, and
   validators for changed metadata. Identical bytes don't mean an unchanged filename.
 - **The assembled application.** Check behaviour through the real middleware and environment,
   including preflight requests, conditional responses, and inherited settings that isolated handlers
-  and fixtures omit.
+  and fixtures omit. Skipping or quarantining a test must not remove the only coverage of a user
+  flow.
 - **Failure outcomes through every layer.** Follow an error through catches, callbacks, shell
   commands, and background work to the final response, log, and cleanup. A failure must not become
   success or remove an existing fallback.
-- **Explicit pipeline order.** Enrich before filtering, exclude before counting, and sort explicitly
-  wherever later steps depend on order. Database and filesystem enumeration order guarantees nothing.
+- **Explicit pipeline order.** Enrich before filtering, exclude before counting, install
+  dependencies before steps that inspect them, and sort explicitly wherever later steps depend on
+  order. Database and filesystem enumeration order guarantees nothing.
 - **Declared ranges the graph can't meet.** A runtime or engine range, such as `engines.node`, must
   satisfy every dependency's own range and every runtime feature the code uses, including commands
   that run TypeScript directly.
