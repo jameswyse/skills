@@ -54,3 +54,7 @@ Use one authority for each design decision.
 - The relevant interface skills still own accessibility, layout, typography, colour, and interface copy. `better-accessibility` owns reduced-motion requirements.
 - For a holistic interface review without an explicit motion focus, let `better-interface` and its `better-ui` handoff own motion within that review.
 - For user-facing interface copy, let `better-writing` govern UX-copy decisions when it is available.
+
+## Verify native mobile controls on a device
+
+Emulated touch and responsive modes don't show native mobile controls, such as date, time, and select pickers. When a change depends on how one behaves, ask me to check it on a real device before reporting the change done.
