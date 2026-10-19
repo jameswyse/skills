@@ -24,7 +24,7 @@ For a specific improvement request, resolve consequential unknowns before buildi
 - required behaviour and unacceptable trade-offs;
 - constraints on dependencies, architecture, compatibility, memory, cost, or delivery time.
 
-Ask a compact set of direct questions when the consequential unknowns are independent and few. When consequential decisions depend on each other, use the "grilling" skill for those decisions and preserve its interview pauses. Proceed without a new confirmation when the request and evidence already establish the workload, success criterion, and acceptable trade-offs. Continue independent authorised measurement or investigation while waiting; do not begin work that depends on an unanswered decision.
+Ask a compact set of direct questions when the consequential unknowns are independent and few. When consequential decisions depend on each other, ask about them one at a time with your recommendation, and wait for each answer. Proceed without a new confirmation when the request and evidence already establish the workload, success criterion, and acceptable trade-offs. Continue independent authorised measurement or investigation while waiting; do not begin work that depends on an unanswered decision.
 
 Write a short performance brief before changing product code:
 

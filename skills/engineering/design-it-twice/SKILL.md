@@ -1,6 +1,7 @@
 ---
 name: design-it-twice
 description: Compare alternative interfaces for a settled module design problem when several designs are requested.
+disable-model-invocation: true
 ---
 
 # Design it twice

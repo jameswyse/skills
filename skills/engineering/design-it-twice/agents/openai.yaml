@@ -2,4 +2,4 @@ interface:
   display_name: "Design It Twice"
   short_description: "Compare alternative module interfaces"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

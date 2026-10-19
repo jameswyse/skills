@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Find architectural friction and propose **deepening opportunities**, which are refactors that turn shallow modules into deep ones. The aim is testability and AI navigability.
 
-Use the "engineering" skill. Read its [Design](../engineering/references/design.md) reference before assessing candidates. This workflow uses the project's domain model and the deep-module vocabulary:
+Use the "engineering" skill. Read its [Design](../engineering/references/design.md) reference before assessing candidates. Apply its deletion test before calling a module shallow, and classify dependencies before recommending a seam or adapter. The repository's domain language, if present, gives names to good seams.
 
 Use this vocabulary exactly. Keep established framework, protocol, and domain terms when they're exact: a React component stays a component.
 
@@ -78,13 +78,13 @@ If a candidate contradicts a documented rule or ADR, include it only when observ
 
 Keep proposed module interface design out of the discovery report. After a review-only request, ask which candidate the user wants to explore. If design or implementation is already authorised and the evidence identifies a candidate within that scope, continue. Ask only when the choice changes the intended outcome or exceeds that authority.
 
-### 4. Grilling loop
+### 4. Resolve decisions
 
-For a selected candidate, resolve constraints, dependencies, module ownership, seam contents, and surviving tests from repository evidence. Use the "grilling" skill when the user requests an interview or consequential dependent decisions remain. Preserve its explicit interview pauses in that mode. When those decisions are already settled, proceed with the authorised design or implementation without requiring a new interview.
+For a selected candidate, resolve constraints, dependencies, module ownership, seam contents, and surviving tests from repository evidence. When the user requests an interview or consequential dependent decisions remain, ask about them one at a time with your recommendation, and wait for each answer. When those decisions are already settled, proceed with the authorised design or implementation without requiring a new interview.
 
 After the user confirms a decision, record it only when the request covers documentation changes. A discussion-only decision does not itself authorise file changes. During authorised implementation, update affected documentation when needed to keep the change coherent; do not request the same authority again.
 
 - When a deepened module uses a concept missing from the repository's domain vocabulary, offer to add the term in the appropriate place.
 - When the conversation sharpens a vague term, offer to update the repository's domain vocabulary.
 - When the user rejects a candidate for a reason future reviews need, offer to record that reason in the documentation. Ask, _"Should I record this in the documentation so future architecture reviews do not suggest it again?"_ Skip temporary reasons such as "not worth it right now" and self-evident reasons.
-- When the candidate needs a new interface with several credible shapes, offer Design It Twice before converging. If the user accepts or directly requests alternatives, use the "design-it-twice" skill.
+- When the candidate needs a new interface with several credible shapes, suggest that the user invoke "design-it-twice" to compare alternatives before converging.
