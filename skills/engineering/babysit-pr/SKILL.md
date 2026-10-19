@@ -21,7 +21,7 @@ Carry existing authorisation forward without asking again. Apply these rules to 
   has already authorised that response or explicitly delegated drafting and posting replies.
   Permission to monitor or fix code does not itself authorise a reply.
 - Unless the user explicitly directs otherwise, resolve only threads from the requesting user
-  or the Codex, Copilot, Claude, or Coderabbit review bot, and only if no other human has participated.
+  or the Codex, Copilot, Claude, Coderabbit, or Macroscope review bot, and only if no other human has participated.
   After the fix is pushed, post an authorised comment explaining the change and identifying its
   commit, then resolve. For feedback left unfixed after weighing, post the authorised reply
   explaining why, then resolve.
@@ -134,7 +134,7 @@ The watcher can surface existing unaddressed feedback on its first run.
 
 Review items include PR issue comments, inline comments, and submitted reviews. The watcher selects
 trusted human authors, including repository owners, members, collaborators, and the authenticated
-operator, plus approved review bots such as Codex, Copilot, Claude, or Coderabbit. Assess actionable
+operator, plus approved review bots such as Codex, Copilot, Claude, Coderabbit, or Macroscope. Assess actionable
 bot feedback as well as human feedback. Ignore unrelated bot noise and already-resolved threads
 unless new unresolved feedback appears. The author's status does not replace checking the comment's
 correctness or scope.

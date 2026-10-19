@@ -13,7 +13,7 @@ Those contributors did not see the conversation that produced the change. Use th
 
 Committing, pushing, creating a pull request, and editing one change shared systems. Perform each only when the user authorised it for the current task.
 
-- A request to create or open a pull request authorises committing the task's changes, pushing the branch with an upstream, and creating the pull request. It also authorises fixing actionable "code-review" findings in step 6, and the Copilot draft review in step 7, including requesting Copilot's review, fixing the code it flags, replying to and resolving bot threads on that pull request, and marking it ready.
+- A request to create or open a pull request authorises committing the task's changes, pushing the branch with an upstream, and creating the pull request. It also authorises fixing actionable "code-review" findings in step 6, and the bot draft review in step 7, including starting bot reviews, fixing the code they flag, replying to and resolving bot threads on that pull request, and marking it ready.
 - A request to update or rewrite a description authorises editing that pull request's title and body.
 - A request to draft or review a description authorises only the draft. Return it in the reply without publishing.
 
@@ -32,11 +32,11 @@ Commit only the task's changes. When the current branch is the default branch, c
 5. **Add visual evidence for interface changes.** Use "before-and-after" when it is available and screenshots or recordings exist. Otherwise state in the description that no visual evidence is attached.
 6. **Review before creating.** Before creating a pull request, when the global instructions' rule requires "code-review", review the draft and the diff together. If no review has covered the final diff, run "code-review" against the base branch with the drafted title and body in its spec, through its repeat rounds. If one has, run only its Spec axis on the drafted title and body against the diff, and update the draft to match its findings.
 7. **Publish when authorised.** Write the body to a file in the temporary directory, then publish it:
-   - For a new pull request, run `gh pr create --base <base> --title <title> --body-file <file>`. Add `--draft` when Copilot draft review applies or the user asked for a draft.
-   - For a stack, open its pull requests with `gh stack submit --auto` from "gh-stack" instead of `gh pr create`. It creates new pull requests as drafts. Set each title and body with `gh pr edit`, then mark each new pull request ready with `gh pr ready <number>` unless Copilot draft review applies or the user asked for drafts.
+   - For a new pull request, run `gh pr create --base <base> --title <title> --body-file <file>`. Add `--draft` when bot draft review applies or the user asked for a draft.
+   - For a stack, open its pull requests with `gh stack submit --auto` from "gh-stack" instead of `gh pr create`. It creates new pull requests as drafts. Set each title and body with `gh pr edit`, then mark each new pull request ready with `gh pr ready <number>` unless bot draft review applies or the user asked for drafts.
    - For an existing pull request, run `gh pr edit <number> --title <title> --body-file <file>`. Keep content the description does not own, such as author notes, media, checklists, linked issues, and bot sections.
 
-   Confirm the result with `gh pr view --json url,title,body`. Copilot draft review applies to a new pull request on github.com that needed "code-review". Follow [Copilot draft review](references/copilot-draft-review.md) before it's marked ready.
+   Confirm the result with `gh pr view --json url,title,body`. Bot draft review applies to a new pull request on github.com that needed "code-review". Follow [Bot draft review](references/bot-draft-review.md) before it's marked ready.
 8. **Report.** Give the pull request link and title, two or three sentences on the change and its notes, and any authorised step that did not happen, such as an unpushed branch. Paste the full body only when the request was to draft a description without publishing it.
 
 ## Write the description

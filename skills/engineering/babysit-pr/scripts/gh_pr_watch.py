@@ -28,7 +28,11 @@ PENDING_CHECK_STATES = {
     "REQUESTED",
 }
 REVIEW_BOT_LOGIN_KEYWORDS = {
+    "claude",
     "codex",
+    "coderabbit",
+    "copilot",
+    "macroscope",
 }
 TRUSTED_AUTHOR_ASSOCIATIONS = {
     "OWNER",
@@ -472,6 +476,7 @@ def normalize_issue_comments(items):
                 "kind": "issue_comment",
                 "id": str(item.get("id") or ""),
                 "author": extract_login(item.get("user")),
+                "author_is_bot": is_bot_user(item.get("user")),
                 "author_association": str(item.get("author_association") or ""),
                 "created_at": str(item.get("created_at") or ""),
                 "body": str(item.get("body") or ""),
@@ -499,6 +504,7 @@ def normalize_review_comments(items, review_states):
                 "kind": "review_comment",
                 "id": str(item.get("id") or ""),
                 "author": extract_login(item.get("user")),
+                "author_is_bot": is_bot_user(item.get("user")),
                 "author_association": str(item.get("author_association") or ""),
                 "created_at": str(item.get("created_at") or ""),
                 "body": str(item.get("body") or ""),
@@ -522,6 +528,7 @@ def normalize_reviews(items):
                 "kind": "review",
                 "id": str(item.get("id") or ""),
                 "author": extract_login(item.get("user")),
+                "author_is_bot": is_bot_user(item.get("user")),
                 "author_association": str(item.get("author_association") or ""),
                 "created_at": str(
                     item.get("submitted_at") or item.get("created_at") or ""
@@ -541,13 +548,13 @@ def extract_login(user_obj):
     return ""
 
 
-def is_bot_login(login):
-    return bool(login) and login.endswith("[bot]")
+def is_bot_user(user_obj):
+    if not isinstance(user_obj, dict):
+        return False
+    return user_obj.get("type") == "Bot" or extract_login(user_obj).endswith("[bot]")
 
 
 def is_actionable_review_bot_login(login):
-    if not is_bot_login(login):
-        return False
     lower_login = login.lower()
     return any(keyword in lower_login for keyword in REVIEW_BOT_LOGIN_KEYWORDS)
 
@@ -615,7 +622,7 @@ def fetch_new_review_items(pr, state, fresh_state, authenticated_login=None):
         author = item.get("author") or ""
         if not author:
             continue
-        if is_bot_login(author):
+        if item.get("author_is_bot"):
             if not is_actionable_review_bot_login(author):
                 continue
         elif not is_trusted_human_review_author(item, authenticated_login):

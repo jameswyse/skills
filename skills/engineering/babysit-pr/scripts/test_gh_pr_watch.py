@@ -283,3 +283,40 @@ def test_failed_jobs_include_direct_logs_endpoint(monkeypatch):
             "logs_endpoint": "repos/openai/codex/actions/jobs/555/logs",
         }
     ]
+
+
+def test_review_bot_feedback_surfaces_and_other_bots_stay_ignored(monkeypatch):
+    def comment(comment_id, login, user_type):
+        return {
+            "id": comment_id,
+            "pull_request_review_id": None,
+            "user": {"login": login, "type": user_type},
+            "author_association": "NONE",
+            "body": "Finding",
+            "created_at": "2026-06-08T10:00:00Z",
+            "path": "src/example.rs",
+            "line": 7,
+            "html_url": f"https://github.com/openai/codex/pull/123#discussion_r{comment_id}",
+        }
+
+    review_comments = [
+        comment(30, "Copilot", "Bot"),
+        comment(31, "macroscopeapp[bot]", "Bot"),
+        comment(32, "socket-security[bot]", "Bot"),
+        comment(33, "drive-by", "User"),
+    ]
+
+    def fake_list(endpoint, **kwargs):
+        if endpoint.endswith("/pulls/123/comments"):
+            return review_comments
+        if endpoint.endswith("/issues/123/comments") or endpoint.endswith("/pulls/123/reviews"):
+            return []
+        raise AssertionError(f"unexpected endpoint: {endpoint}")
+
+    monkeypatch.setattr(gh_pr_watch, "gh_api_list_paginated", fake_list)
+
+    items = gh_pr_watch.fetch_new_review_items(
+        sample_pr(), {}, fresh_state=True, authenticated_login="octocat"
+    )
+
+    assert sorted(item["author"] for item in items) == ["Copilot", "macroscopeapp[bot]"]
