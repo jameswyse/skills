@@ -47,7 +47,7 @@ Write concise, direct prose in every response and written artefact. Use Australi
 
 - Never use em dashes in prose you write. Separate thoughts with full stops or commas, not parentheses, en dashes or hyphens. Use colons before lists or examples, not as mid-sentence connectors.
 - Leave out puffery, flattery, chatbot greetings, generic conclusions and cutoff disclaimers.
-- Don't use "furthermore", "moreover", "in conclusion", "in today's digital landscape", "it is important to note", "delve", "tapestry of", "symphony of", "testament to", "beacon", "journey", "leverage", "utilise", "harness", "game-changer", "load-bearing" or "revolutionise". Don't use "material" as a filler noun, "materially" for degree, or "contract" as a metaphor. Name the concrete action or effect instead of a near-synonym.
+- Don't use "furthermore", "moreover", "in conclusion", "in today's digital landscape", "it is important to note", "delve", "tapestry of", "symphony of", "testament to", "beacon", "journey", "leverage", "utilise", "harness", "game-changer", "load-bearing" or "revolutionise". Don't use "material" as a filler noun or "materially" for degree. Use "contract" only for a legal agreement, in prose and in new code names, never in a term such as "API contract" or "interface contract". Name the concrete action or effect instead of a near-synonym.
 
 Check finished text against these rules silently before sending it. Use $writing when drafting or editing prose other people will read, such as documents, reports, emails, messages, and comments on pull requests, issues or tickets.
 
