@@ -1,13 +1,14 @@
 ---
 name: code-review
-description: Review a branch, PR, working-tree diff, or changes since a fixed point against standards and the request.
+description: Review a branch, PR, working-tree diff, or changes since a fixed point against standards, the request, and correctness, or calibrate reviews against bot comments on past PRs.
 ---
 
-# Two-axis code review
+# Three-axis code review
 
-Review two axes separately. **Standards** covers repository rules and code smells. **Spec** covers
-the originating request, issue, or PRD. A change can pass either axis and fail the other. Do not
-merge or rerank their findings.
+Review three axes separately. **Standards** covers repository rules and code smells. **Spec** covers
+the originating request, issue, or PRD. **Correctness** covers defects in the changed behaviour,
+including places outside the diff that it reaches. A change can pass any axis and fail another. Do
+not merge or rerank findings across axes.
 
 Use the "engineering" skill as the baseline for code, tests, dependencies, package
 management, and developer tooling. This skill owns the detailed standards. Choose them from the
@@ -49,19 +50,21 @@ the user-invoked "improve-security" skill only when the user requests a dedicate
 
 For working-tree reviews, the user request is the spec. Otherwise find it in order from issue
 references in commit messages, a user-supplied path, then a matching Markdown file under `docs/` or
-`specs/`. If none exists, skip the Spec agent and report "no spec available".
+`specs/`. When the review runs before creating a pull request, add the drafted title and description
+to the spec, so every claim they make is a requirement. If no spec exists, skip the Spec agent and
+report "no spec available".
 
 Standards sources are repository files that define how code is written, the engineering skill,
 and the triggered standards references above. Repository rules override the baseline. Treat named
 smells as leads and report only a concrete cost in the scoped diff.
 
-## 2. Choose review execution
+## 2. Run the reviewers
 
-This workflow requests bounded, read-only delegation when independent review adds useful confidence and the user and runtime permit it. Delegate the applicable axes for substantial, uncertain, or consequential changes. For a small diff whose scope and checks are clear, inspect the Standards and Spec axes sequentially in the primary agent. Also use the sequential path when delegation is unavailable or restricted. Preserve both axes and the same evidence threshold in either mode; state which mode was used.
-
-For the sequential path, use the captured scope from step 1 and the axis prompts below directly. Keep findings separate, then perform step 3. No review packet or subagent is required. References to agent reports in step 3 mean your candidate notes in this mode.
-
-For a delegated review, read [Delegated review](references/delegated-review.md) before preparing the packet. Use the axis prompts below in either mode.
+Delegate every review, whatever its size. Run each applicable axis on both Sol and Opus in parallel,
+as [Delegated review](references/delegated-review.md) describes. Read it before preparing the packet.
+Only when delegation is unavailable or restricted, inspect the axes sequentially in the primary
+agent with the captured scope and the axis prompts below, keeping each axis's notes separate, and
+still run the Codex CLI reviewer that Delegated review describes. State which mode was used and why.
 
 ### Standards agent
 
@@ -87,18 +90,85 @@ Ask:
 > line for every finding. Return all supported findings concisely. If the tool output limit would
 > truncate the report, return the first batch and state how many supported findings remain.
 
+### Correctness agent
+
+Ask:
+
+> Find defects in the changed behaviour. Trace each changed path from its inputs to its outputs and
+> side effects, including empty, whitespace-padded, boundary, malformed, duplicate, and concurrent
+> inputs, failure and retry paths, and differences between supported runtime or dependency versions.
+> Search the checkout beyond the diff for every caller, configuration, build, deployment, and CI
+> file the changed behaviour reaches, and report places that now disagree with it. Check every
+> pattern in the [Missed findings](references/missed-findings.md) reference. For each defect, give
+> the file and line, a concrete input or state that triggers it, how likely that is in real use, and
+> the wrong result. Skip standards and style issues. Return all supported findings concisely. If
+> the tool output limit would truncate the report, return the first batch and state how many
+> supported findings remain.
+
 ## 3. Verify and report
 
-Treat both reports as leads, not proof. Request any remaining batches, then verify every candidate
-finding yourself:
+Treat every report as a lead, not proof. Request any remaining batches and read the Sol verifier's
+evidence from [Delegated review](references/delegated-review.md) when it ran. Then verify every
+candidate finding yourself:
 
 1. Re-open the cited hunk and its surrounding context.
 2. Read the cited rule or spec line from its source.
-3. Confirm the concrete correctness, maintenance, or requirement impact.
+3. Confirm the concrete correctness, maintenance, or requirement impact. For a Correctness finding,
+   confirm that the triggering input or state can occur.
 4. Reject findings that are unsupported, duplicated, outside the fixed scope, or already handled.
 
-Make one final pass over the complete scope for high-risk correctness or security issues the agents
-missed. Present only verified findings, in your own words, under `## Standards` and `## Spec`. Merge
-duplicates within an axis, but do not merge or rerank findings across the two axes.
+Then weigh each verified finding before recommending a fix. For a Correctness finding, judge how
+likely its trigger is in real use, how much harm it causes when it happens, and how much complexity
+the fix adds. For a Standards finding, judge its maintenance cost against the fix's complexity. A
+Correctness or Standards finding whose expected harm doesn't justify the fix's complexity is an
+accepted risk, such as a rare edge case or race that would need locking, retries, or defensive
+branches. Report it with that reasoning instead of fixing it. Security issues, data loss, and data
+corruption weigh heavily even when unlikely. A Spec finding is never an accepted risk. When its fix
+looks disproportionate, report it as a decision for the user.
 
-End with one line giving each axis's verified finding count and worst issue, if any.
+Every other verified finding is actionable, apart from a Spec finding left for the user to decide.
+Rate each actionable finding high, medium, or low
+severity. Low severity covers wording, naming, formatting, and other changes with no behavioural or
+requirement effect.
+
+Make one final pass over the complete scope for high-risk correctness or security issues the agents
+missed. Present actionable findings in your own words, with their severity, under `## Standards`,
+`## Spec`, and `## Correctness`, and accepted risks under `## Accepted risks`. Merge duplicates
+within an axis, including the same finding from both model families, but do not merge or rerank
+findings across axes.
+
+End with one line giving each axis's actionable finding count and worst issue, if any, and the
+number of accepted risks.
+
+## 4. Repeat after fixes
+
+When the task authorises fixing findings, first snapshot the working tree from the repository root,
+so a later round can review only the fixes:
+
+```bash
+cp "$(git rev-parse --git-path index)" <packet>/before.index
+GIT_INDEX_FILE=<packet>/before.index git add -A
+GIT_INDEX_FILE=<packet>/before.index git write-tree
+```
+
+Keep the printed tree ID. Then fix every actionable finding, rerun the checks the fixes affect, and
+continue with the rest while a Spec decision waits for the user. When the spec includes a drafted
+pull request description, update it to match the fixes. Stop when the round had no actionable
+finding above low severity. Low-severity fixes don't need another round.
+
+Otherwise run a narrower round on the fixes. Take the same snapshot into `after.index`, and capture
+`git diff <before-tree> <after-tree>` as the fix diff. Send one Sol reviewer per applicable axis the
+fix diff, the full current diff for context, and the earlier findings with their outcomes: fixed,
+accepted as a risk, or rejected with a reason. Ask reviewers to raise an accepted risk or rejected
+finding again only with new evidence. Later rounds skip the Opus reviewers, the second Correctness
+reviewer, the Codex CLI, and the verifier. When Sol can't run, use Delegated review's replacement
+rule. Verify and weigh the findings as in step 3.
+
+Run at most three rounds per task, counting every round even when the scope grows. If the third
+round still has actionable findings above low severity, fix them and report that those fixes had no
+independent review.
+
+## Calibrate against bot comments
+
+When asked to calibrate reviews, or to check what bot reviewers caught that this review missed, read
+[Calibration](references/calibration.md).

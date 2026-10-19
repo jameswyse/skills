@@ -253,4 +253,4 @@ Include every React Doctor diagnostic that supports an issue in the scoped diff,
 
 Verify each candidate against the diagnostic, code, and current configuration. If necessary, run the narrowest check that resolves uncertainty. Reject unsupported candidates and suppressions that could hide real issues.
 
-After Standards and Spec, list supported candidates under `## React Doctor configuration`. Explain the repeated noise each would remove. Omit the section when there are none. Change configuration only when the user has authorised it; carry forward existing authority and otherwise ask about the concrete proposal.
+After the three axes, list supported candidates under `## React Doctor configuration`. Explain the repeated noise each would remove. Omit the section when there are none. Change configuration only when the user has authorised it; carry forward existing authority and otherwise ask about the concrete proposal.

@@ -37,10 +37,10 @@ Let the requested outcome define the scope. When a source fix needs adjacent con
 
 ## Delegate bounded work
 
-Delegate only work inside the user's task, when an independent investigation, distinct design, or substantial review area benefits from separate judgement and the runtime permits it. Keep small, coherent changes local. Give each worker the objective, bounded scope, completion evidence, relevant paths, authority limits, and an isolated write target. Use a fresh context when independent judgement matters, and omit your expected verdict. A worker's summary reports intent, not proof, so inspect its artefacts before accepting its findings.
+Delegate only work inside the user's task, when an independent investigation, distinct design, or substantial review area benefits from separate judgement and the runtime permits it. Keep small, coherent changes local. The "code-review" skill decides when its own review delegates. Give each worker the objective, bounded scope, completion evidence, relevant paths, authority limits, and an isolated write target. Use a fresh context when independent judgement matters, and omit your expected verdict. A worker's summary reports intent, not proof, so inspect its artefacts before accepting its findings.
 
 ## Finish with evidence
 
 Prove the changed behaviour on the real artefact. Run the changed path and read its actual output or value. A build, cached copy, or self-report is not proof. Before final checks, remove concepts, state, branches, and parallel paths the finished design no longer needs. Run required repository checks and inspect the diff. Repeat checks only after a relevant change, failure, or stale result. State any path you could not exercise and why.
 
-Follow repository review requirements and the global instructions' rule for "code-review" before reporting completion. Resolve verified findings within the authorised change, rerun the checks they affect, and report the rest.
+Follow repository review requirements and the global instructions' rule for "code-review" before reporting completion. Fix actionable findings, as "code-review" defines them, within the authorised change, rerun the checks they affect, and report the rest.

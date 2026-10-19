@@ -26,7 +26,7 @@ Finish only when all of these conditions hold:
   remain.
 - Every repository-provided full verification command passes. If none exists, all available format,
   lint, typecheck, build, and test checks pass.
-- The "code-review" skill has reviewed the complete change, every verified finding has been fixed,
+- The "code-review" skill has reviewed the complete change, every actionable finding has been fixed,
   and the affected checks have been repeated.
 - The final outdated scan, available peer check, frozen-lockfile install, and audit pass. If the
   environment prevents a required check, report the run as blocked instead of complete.
@@ -238,7 +238,7 @@ the repository's documented finish order. If the repository defines no order, us
 2. Run a frozen-lockfile install and the available peer check.
 3. Run the repository's canonical full verification command, including production builds and full
    tests when that command provides them.
-4. Use the "code-review" skill against the complete working-tree change. Fix every verified finding.
+4. Use the "code-review" skill against the complete working-tree change. Fix every actionable finding.
 5. After review fixes, repeat checks whose inputs changed or whose results are stale. Repeat the full
    verification command when repository policy requires it, the dependency graph changed, or the
    remaining uncertainty spans the project. Reuse successful results for unchanged inputs.

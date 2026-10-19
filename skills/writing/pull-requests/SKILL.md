@@ -13,7 +13,7 @@ Those contributors did not see the conversation that produced the change. Use th
 
 Committing, pushing, creating a pull request, and editing one change shared systems. Perform each only when the user authorised it for the current task.
 
-- A request to create or open a pull request authorises committing the task's changes, pushing the branch with an upstream, and creating the pull request.
+- A request to create or open a pull request authorises committing the task's changes, pushing the branch with an upstream, and creating the pull request. It also authorises fixing actionable "code-review" findings in step 6, and the Copilot draft review in step 7, including requesting Copilot's review, fixing the code it flags, replying to and resolving bot threads on that pull request, and marking it ready.
 - A request to update or rewrite a description authorises editing that pull request's title and body.
 - A request to draft or review a description authorises only the draft. Return it in the reply without publishing.
 
@@ -22,17 +22,22 @@ Commit only the task's changes. When the current branch is the default branch, c
 ## Workflow
 
 1. **Find the pull request.** Run `gh pr view --json url,number,title,body,state,baseRefName,headRefName` on the current branch. When none exists, inspect `git status --short --branch` and the branch's commits against its base. Ask the user to choose only when the current branch has no relevant work and the target is unclear. For a stack of dependent branches, use "gh-stack".
-2. **Review before creating.** Before creating a pull request, when the global instructions' rule requires "code-review" and no review has covered the final diff, run it against the base branch, fix verified findings, and rerun the affected checks.
-3. **Gather only the context the description needs.**
+2. **Gather only the context the description needs.**
    - The complete diff against the base branch, and enough surrounding code to understand behaviour and ownership.
    - The linked ticket, issue, or plan when one exists.
    - The repository's pull-request template, such as `.github/pull_request_template.md`, and the style of recent pull-request titles and commit messages.
    - The verification actually run for this change.
-4. **Write the title.** Follow the repository's convention, such as Conventional Commits. Name the change in the common terms a contributor scanning the pull request list would recognise, not the activity or a label from the conversation: "Lock prices before saving orders", not "Order fixes" or "Apply option B to the checkout flow". Keep it clear, concise, and under 72 characters.
-5. **Write the body** with [the description template](references/description-template.md). When the repository has its own template, keep its headings, checklists, and required fields, and fill them with this skill's content where each fits.
-6. **Add visual evidence for interface changes.** Use "before-and-after" when it is available and screenshots or recordings exist. Otherwise state in the description that no visual evidence is attached.
-7. **Publish when authorised.** Write the body to a file in the temporary directory, then run `gh pr create --base <base> --title <title> --body-file <file>` or `gh pr edit <number> --title <title> --body-file <file>`. For a stack, open its pull requests with `gh stack submit` from "gh-stack" instead of `gh pr create`, then set each title and body with `gh pr edit`. When editing, keep content the description does not own, such as author notes, media, checklists, linked issues, and bot sections. Confirm the result with `gh pr view --json url,title,body`.
-8. **Report.** Give the pull request link and title, two or three sentences on the change and its notes, and any authorised step that did not happen, such as an unpushed branch. Paste the full body only for a draft.
+3. **Write the title.** Follow the repository's convention, such as Conventional Commits. Name the change in the common terms a contributor scanning the pull request list would recognise, not the activity or a label from the conversation: "Lock prices before saving orders", not "Order fixes" or "Apply option B to the checkout flow". Keep it clear, concise, and under 72 characters.
+4. **Write the body** with [the description template](references/description-template.md). When the repository has its own template, keep its headings, checklists, and required fields, and fill them with this skill's content where each fits.
+5. **Add visual evidence for interface changes.** Use "before-and-after" when it is available and screenshots or recordings exist. Otherwise state in the description that no visual evidence is attached.
+6. **Review before creating.** Before creating a pull request, when the global instructions' rule requires "code-review", review the draft and the diff together. If no review has covered the final diff, run "code-review" against the base branch with the drafted title and body in its spec, through its repeat rounds. If one has, run only its Spec axis on the drafted title and body against the diff, and update the draft to match its findings.
+7. **Publish when authorised.** Write the body to a file in the temporary directory, then publish it:
+   - For a new pull request, run `gh pr create --base <base> --title <title> --body-file <file>`. Add `--draft` when Copilot draft review applies or the user asked for a draft.
+   - For a stack, open its pull requests with `gh stack submit --auto` from "gh-stack" instead of `gh pr create`. It creates new pull requests as drafts. Set each title and body with `gh pr edit`, then mark each new pull request ready with `gh pr ready <number>` unless Copilot draft review applies or the user asked for drafts.
+   - For an existing pull request, run `gh pr edit <number> --title <title> --body-file <file>`. Keep content the description does not own, such as author notes, media, checklists, linked issues, and bot sections.
+
+   Confirm the result with `gh pr view --json url,title,body`. Copilot draft review applies to a new pull request on github.com that needed "code-review". Follow [Copilot draft review](references/copilot-draft-review.md) before it's marked ready.
+8. **Report.** Give the pull request link and title, two or three sentences on the change and its notes, and any authorised step that did not happen, such as an unpushed branch. Paste the full body only when the request was to draft a description without publishing it.
 
 ## Write the description
 

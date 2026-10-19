@@ -36,7 +36,9 @@ be retried safely, report the blocker under the main skill's stopping conditions
 ## Review feedback
 
 Address feedback when it is technically correct, actionable on the PR branch, consistent with
-the user's intent, and possible to fix without unrelated refactoring.
+the user's intent, and possible to fix without unrelated refactoring. Before fixing correct
+feedback, weigh it as the "code-review" skill's verification step describes, and leave an accepted
+risk unfixed. The suggested reply for an accepted risk explains that weighing.
 
 Report ambiguous requests, disagreements, and unresolved product decisions in chat. Provide a
 suggested response when a comment needs an answer rather than a code change. Apply the main

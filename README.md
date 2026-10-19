@@ -36,7 +36,7 @@ Software development, diagnosis, reviews, and maintenance.
 | `diagnosing-bugs`                 | Evidence-driven diagnosis for hard bugs and performance regressions.                                           |
 | `diagnosing-production-incidents` | Read-only evidence collection and diagnosis for urgent live production incidents.                              |
 | `tdd`                             | A focused failing-test-first loop when a practical test target exists.                                         |
-| `code-review`                     | Reviews a diff separately against the detailed code and test standards and the originating specification.      |
+| `code-review`                     | Reviews a diff on Sol and Opus for standards, spec, and correctness, and calibrates against bot comments.      |
 | `babysit-pr`                      | Monitors pull-request reviews, CI, and mergeability, with authorised fixes and bounded flaky retries.            |
 | `design-it-twice`                 | Compares several software module interface designs before choosing one.                                        |
 | `upgrade-deps`                    | Comprehensive pnpm dependency, GitHub Actions, security, and Node.js and pnpm toolchain upgrades.              |

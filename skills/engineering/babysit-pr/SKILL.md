@@ -23,7 +23,8 @@ Carry existing authorisation forward without asking again. Apply these rules to 
 - Unless the user explicitly directs otherwise, resolve only threads from the requesting user
   or the Codex, Copilot, Claude, or Coderabbit review bot, and only if no other human has participated.
   After the fix is pushed, post an authorised comment explaining the change and identifying its
-  commit, then resolve.
+  commit, then resolve. For feedback left unfixed after weighing, post the authorised reply
+  explaining why, then resolve.
   If the comment still needs approval, leave the thread open and continue independent monitoring.
 - Treat your own replies as handled if the watcher later reports them again.
 - Leave draft status, readiness for review, and closing or reopening the PR to the user unless
@@ -85,8 +86,9 @@ monitoring while the PR is still open.
    feedback before acting on CI failures or mergeability.
 2. For `process_review_comment`, read the review criteria in
    [heuristics.md](references/heuristics.md#review-feedback). Fix valid, actionable feedback within
-   the user's scope. Report disagreements, unclear requests, and suggested replies in chat.
-   If a decision or reply approval is pending, pause that action and continue independent work.
+   the user's scope, except accepted risks. Report disagreements, unclear requests, and suggested
+   replies in chat. If a decision or reply approval is pending, pause that action and continue
+   independent work.
 3. For `diagnose_ci_failure`, read the CI classification guidance in
    [heuristics.md](references/heuristics.md#ci-failures). Inspect logs before choosing a fix or rerun.
    If `failed_jobs` identifies a failed job while the workflow is still running, fetch that job's

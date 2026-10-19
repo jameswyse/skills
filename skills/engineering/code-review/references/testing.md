@@ -150,5 +150,7 @@ automatic reason to rewrite a test.
 Prefer no new test over one whose signal is weak or whose maintenance cost exceeds the behaviour it
 protects. Code changes do not require a matching test change when existing tests already protect
 the behaviour or the change has no meaningful runtime behaviour to exercise. Remove tests for
-superseded internals when replacement tests protect the same observable behaviour. Do not weaken
+superseded internals when replacement tests protect the same observable behaviour. When a change
+removes, quarantines, or splits a test, confirm that the other behaviour it covered is still
+covered. Keep any check the repository requires, such as a migration read-back test. Do not weaken
 an existing assertion merely to match an incorrect implementation.
