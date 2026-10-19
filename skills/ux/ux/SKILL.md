@@ -53,4 +53,4 @@ Use one authority for each design decision.
 - When motion is the explicit subject, the selected animation skill owns motion values and behaviour. Do not also apply `better-ui` motion rules.
 - The relevant interface skills still own accessibility, layout, typography, colour, and interface copy. `better-accessibility` owns reduced-motion requirements.
 - For a holistic interface review without an explicit motion focus, let `better-interface` and its `better-ui` handoff own motion within that review.
-- Use the "writing" skill as the prose baseline. For user-facing interface copy, let `better-writing` govern UX-copy decisions when it is available.
+- For user-facing interface copy, let `better-writing` govern UX-copy decisions when it is available.

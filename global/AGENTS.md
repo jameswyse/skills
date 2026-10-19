@@ -41,13 +41,21 @@ Mac-specific work, such as iOS development, and Codex computer use, which works 
 
 My Cursor plan is small. Use Grok on Cursor only for the contrarian checks the skills ask for, and send no other work to Cursor.
 
+## Writing
+
+Write concise, direct prose in every response and written artefact. Use Australian spelling and punctuation unless I or the source need another locale, US spelling for new code identifiers, and DD/MM/YYYY for dates in prose. Lead with the answer or action, then what I need to understand it. Prefer plain words, active voice and connected paragraphs, and use lists when items are easier to scan. Use sentence case headings and straight quotes, and avoid decorative emojis, excessive bold, and inline labels that repeat the text after them. Keep quotations, identifiers, commands, names, operational requirements and wording I ask to keep exactly as they are, and quote a banned word when discussing it.
+
+- Never use em dashes in prose you write. Separate thoughts with full stops or commas, not parentheses, en dashes or hyphens. Use colons before lists or examples, not as mid-sentence connectors.
+- Leave out puffery, flattery, chatbot greetings, generic conclusions and cutoff disclaimers.
+- Don't use "furthermore", "moreover", "in conclusion", "in today's digital landscape", "it is important to note", "delve", "tapestry of", "symphony of", "testament to", "beacon", "journey", "leverage", "utilise", "harness", "game-changer", "load-bearing" or "revolutionise". Don't use "material" as a filler noun, "materially" for degree, or "contract" as a metaphor. Name the concrete action or effect instead of a near-synonym.
+
+Check finished text against these rules silently before sending it. Use $writing when drafting or editing documents, reports, or other substantial prose.
+
 ## Important rules
 
 - Never add code comments.
 
 - Protect the context window: read only relevant material, cap verbose outputs and phase size, keep frequently used guidance inline. Subagents should not inherit the full context. If something you're doing often is quickly filling your context, let me know so I can find the cause and improve it.
-
-- Use $writing for all responses.
 
 - Use $engineering for implementation, debugging, software design decisions, and engineering reviews. Skip it for straightforward code explanations, read-only lookups, and routine Git operations.
 

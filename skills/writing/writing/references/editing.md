@@ -1,6 +1,6 @@
 # Editing examples
 
-Use these examples for substantial drafting, editing, or a recurring prose problem. The [writing baseline](../SKILL.md) owns the rules for every response.
+Use these examples for substantial drafting, editing, or a recurring prose problem. The global writing rules in `~/.agents/AGENTS.md` and the [writing skill](../SKILL.md) own the rules these examples apply.
 
 ## Patterns to detect and fix
 
@@ -24,7 +24,7 @@ Use these examples for substantial drafting, editing, or a recurring prose probl
 
 ### Style
 
-13. **Sentence separation.** Apply the baseline's punctuation requirements. A sentence such as "The migration failed; deployment is delayed until tomorrow" can read more naturally as "The deployment is delayed until tomorrow because the migration failed." Recast the relationship between ideas instead of merely replacing punctuation.
+13. **Sentence separation.** Apply the global punctuation rules. A sentence such as "The migration failed; deployment is delayed until tomorrow" can read more naturally as "The deployment is delayed until tomorrow because the migration failed." Recast the relationship between ideas instead of merely replacing punctuation.
 14. **Colon overuse.** Colons are fine before a list or example. Not as mid-sentence connectors. "If you're coming from traditional automation: instead of registering event handlers, you describe conditions" adds nothing with the colon. Rewrite to let the point stand on its own without comparison framing. "Describing when the scheduler should fire works best as plain English." Same meaning, no crutch punctuation.
 15. **Boldface overuse.** Don't bold every proper noun or acronym.
 16. **Inline-header lists.** The tell is a bold label and colon that restates the line: "**Performance:** Performance improved...". Convert those to prose. A bold lead-in that ends in a full stop, names the item, and is followed by genuinely new detail ("**Schema in TypeScript.** Tables live in one file.") is fine, not a tell.

@@ -8,11 +8,11 @@ Follows the [Agent Skills specification](https://agentskills.io/specification).
 
 ### Writing
 
-Rules for responses, written artefacts, and developer documentation.
+Drafting, editing, and developer documentation. The hard writing rules for every response live in `global/AGENTS.md`.
 
 | Skill               | Purpose                                                                                           |
 | ------------------- | ------------------------------------------------------------------------------------------------- |
-| `writing`           | Baseline writing rules for every response and written artefact.                                   |
+| `writing`           | Drafting and editing guidance for documents, reports, and substantial prose.                      |
 | `technical-writing` | Developer documentation, comments, commits, release notes, and agent instructions.                |
 | `pull-requests`     | Pull-request creation, titles, and descriptions with visual change outlines.                      |
 | `show-me`           | Visual explanations for code questions, code changes, and pull-request descriptions.              |

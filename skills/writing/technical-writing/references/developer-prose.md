@@ -51,7 +51,7 @@ Source: Kohl, The Global English Style Guide (SAS Press). Guideline text fetched
 
 ## Voice and repo specifics
 
-- The writing skill owns the catalogue of slop patterns: AI vocabulary, filler, hedging, and formatting tells.
+- The global writing rules and the writing skill own the catalogue of slop patterns: AI vocabulary, filler, hedging, and formatting tells.
 - PR descriptions and commit messages are writing too. Every layer except Diátaxis applies to them.
 - Product UI strings are not documentation. Use your product's copy guidelines for those.
 - For Markdown files committed to the repository, put one space inside each table pipe. Pad every cell and separator so the column boundaries align in plain text.

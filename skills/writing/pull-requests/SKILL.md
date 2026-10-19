@@ -5,7 +5,7 @@ description: Create a pull request, or write or update a pull request's title an
 
 # Pull requests
 
-Write a pull request that lets the project's other contributors understand why the change exists and the shape of the implementation before they open the diff. Use "writing" as the prose baseline and "show-me" for the change outline.
+Write a pull request that lets the project's other contributors understand why the change exists and the shape of the implementation before they open the diff. Use "writing" for the prose and "show-me" for the change outline.
 
 Those contributors did not see the conversation that produced the change. Use the terms the codebase, tickets, and team already use. Leave out anything that only makes sense with that conversation, such as labels or shorthand coined during the work, options or attempts that were discussed, and the user's instructions.
 

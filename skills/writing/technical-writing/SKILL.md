@@ -5,14 +5,14 @@ description: Write or review developer documentation, commit messages, skills, a
 
 # Technical writing
 
-Use "writing" as the prose baseline. This skill owns developer-document structure and technical clarity. Keep the real symbol, path, flag, command, and domain name. Preserve operational wording when a general style rule would weaken a trigger, authority boundary, or completion condition.
+The global writing rules and "writing" govern the prose. This skill owns developer-document structure and technical clarity. Keep the real symbol, path, flag, command, and domain name. Preserve operational wording when a general style rule would weaken a trigger, authority boundary, or completion condition.
 
 ## Choose the relevant guidance
 
 - For skills, `AGENTS.md`, `CLAUDE.md`, and linked agent instructions, read [Agent instructions](references/agent-instructions.md). For a skill, also read [Skill mechanics](references/skill-mechanics.md). Skip the developer-prose references for these artefacts.
 - For documentation, READMEs, RFCs, ADRs, or runbooks whose structure needs work, read [Document structure](references/document-structure.md).
 - For substantial developer prose or a detailed clarity review, read [Developer prose editing](references/developer-prose.md).
-- For a short comment, commit message, or release note, use the baseline and the rules below. Load a reference only when the task needs it.
+- For a short comment, commit message, or release note, use the global writing rules and the rules below. Load a reference only when the task needs it.
 - For a pull request's title or description, use "pull-requests".
 
 Product UI copy belongs to "better-writing" when available. Ordinary chat does not require this skill.
