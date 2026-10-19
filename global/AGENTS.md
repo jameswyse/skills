@@ -39,6 +39,8 @@ I usually use T3 Code from another machine on my LAN, so links you send me must 
 
 Mac-specific work, such as iOS development, and Codex computer use, which works poorly on Linux, should run on a Mac. If this thread runs on a Linux machine on my LAN, such as EpicDev, ask me to start that work on Studio. Computer use drives my real desktop, so keep it within the scope of my request.
 
+My Cursor plan is small. Use Grok on Cursor only for the contrarian checks the skills ask for, and send no other work to Cursor.
+
 ## Important rules
 
 - Never add code comments.

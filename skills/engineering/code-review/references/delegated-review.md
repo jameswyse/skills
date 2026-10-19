@@ -60,8 +60,8 @@ a separate packet file.
 
 Give each reviewer the shared manifest and its axis manifest. Pass only the applicable packet paths
 and the axis prompt. Give each round's `delegate_task` calls new `clientRequestId` values. Remove
-only the exact packet files after every applicable report has been verified, then remove empty
-directories individually.
+only the exact packet files after every applicable report, including the contrarian's, has been
+verified, then remove empty directories individually.
 
 Each reviewer reviews only its assigned axis. It may read the checkout beyond the packet to trace
 callers, configuration, and other code the change reaches, but must not modify files or Git state. It

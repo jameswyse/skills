@@ -1,6 +1,6 @@
 # Cross-provider delegation
 
-Use when a skill sends work to a model from the other provider through T3 Code's orchestration tools. The calling skill decides whether the work goes cross-provider. This reference covers choosing the target, calling it, and falling back.
+Use when a skill sends work to a model from another provider through T3 Code's orchestration tools. The calling skill decides whether the work goes cross-provider. This reference covers choosing the target, calling it, and falling back. Its last section covers a contrarian check from a third provider.
 
 ## Choose the target
 
@@ -31,3 +31,11 @@ Always request High reasoning effort. T3's default effort setting is unreliable,
 Use the calling skill's same-provider path when the T3 tools are absent, the target provider reports `canRunCrossProviderChildTask: false`, its catalogue lacks the target family, or the delegation fails. Report the provider and model that did the work, or the reason for the fallback.
 
 Treat the child's report as leads under the calling skill's verification rules.
+
+## Contrarian
+
+Use when a calling skill asks a contrarian to argue against a judgement you've made. The calling skill decides when to ask and what the judgement covers.
+
+- Target the `cursor` provider and its newest listed Grok model. Instead of requesting High, set every option the catalogue lists for that model to its default value. Cursor's plan fixes each model's settings and rejects a call that leaves them unset.
+- Follow the Delegate rules above with `role: "review"`. Give it the judgement, your reasoning and evidence, and the relevant paths. Ask it to make the strongest evidence-based case against each part of the judgement, and to answer "no real objection" for a part where it finds none instead of inventing one.
+- Skip the check instead of falling back when you're a delegated task or subagent, delegation is restricted, the session already runs on Cursor, or a Fall back condition above applies. Cursor usage is limited, so don't retry a failed call. Don't substitute another model either, because the check needs a model family that took no part in the judgement. Report that the check was skipped and why.

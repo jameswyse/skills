@@ -2,6 +2,10 @@
 
 Read only when the user requested a fix. Keep work within that authority, including approval already given before diagnosis. Use the code-review [testing reference](../../code-review/references/testing.md) when designing a test or choosing its seam.
 
+## Challenge the cause
+
+Before fixing, ask a contrarian to argue that the cause you settled on is wrong, as the engineering [Cross-provider delegation](../../engineering/references/cross-provider-delegation.md#contrarian) reference describes. Ask it to name the observation that would tell each alternative apart from your cause, and give it the symptom, the evidence, the alternatives you ruled out, and the affected paths. When the existing evidence can't rule out an alternative, make that observation if it's available and proportionate, or report the alternative as a verification gap. Then fix the cause the evidence supports.
+
 ## Fix with a practical regression test
 
 Write the regression test **before the fix**, but only if there is a **correct seam** for it.

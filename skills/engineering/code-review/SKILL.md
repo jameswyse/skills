@@ -131,6 +131,11 @@ Rate each actionable finding high, medium, or low
 severity. Low severity covers wording, naming, formatting, and other changes with no behavioural or
 requirement effect.
 
+When you rejected any candidate finding or accepted a risk, ask a contrarian to argue each of those
+items back, as the engineering
+[Cross-provider delegation](../engineering/references/cross-provider-delegation.md#contrarian)
+reference describes. Give it the packet paths and each item with its evidence and your reason.
+
 Make one final pass over the complete scope for high-risk correctness or security issues the agents
 missed. Present actionable findings in your own words, with their severity, under `## Standards`,
 `## Spec`, and `## Correctness`, and accepted risks under `## Accepted risks`. Merge duplicates
@@ -161,8 +166,8 @@ Otherwise run a narrower round on the fixes. Take the same snapshot into `after.
 fix diff, the full current diff for context, and the earlier findings with their outcomes: fixed,
 accepted as a risk, or rejected with a reason. Ask reviewers to raise an accepted risk or rejected
 finding again only with new evidence. Later rounds skip the Opus reviewers, the second Correctness
-reviewer, the Codex CLI, and the verifier. When Sol can't run, use Delegated review's replacement
-rule. Verify and weigh the findings as in step 3.
+reviewer, the Codex CLI, the verifier, and the contrarian. When Sol can't run, use Delegated
+review's replacement rule. Verify and weigh the findings as in step 3.
 
 Run at most three rounds per task, counting every round even when the scope grows. If the third
 round still has actionable findings above low severity, fix them and report that those fixes had no
