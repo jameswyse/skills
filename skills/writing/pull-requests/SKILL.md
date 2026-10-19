@@ -22,16 +22,17 @@ Commit only the task's changes. When the current branch is the default branch, c
 ## Workflow
 
 1. **Find the pull request.** Run `gh pr view --json url,number,title,body,state,baseRefName,headRefName` on the current branch. When none exists, inspect `git status --short --branch` and the branch's commits against its base. Ask the user to choose only when the current branch has no relevant work and the target is unclear. For a stack of dependent branches, use "gh-stack".
-2. **Gather only the context the description needs.**
+2. **Review before creating.** Before creating a pull request, when the global instructions' rule requires "code-review" and no review has covered the final diff, run it against the base branch, fix verified findings, and rerun the affected checks.
+3. **Gather only the context the description needs.**
    - The complete diff against the base branch, and enough surrounding code to understand behaviour and ownership.
    - The linked ticket, issue, or plan when one exists.
    - The repository's pull-request template, such as `.github/pull_request_template.md`, and the style of recent pull-request titles and commit messages.
    - The verification actually run for this change.
-3. **Write the title.** Follow the repository's convention, such as Conventional Commits. Name the change in the common terms a contributor scanning the pull request list would recognise, not the activity or a label from the conversation: "Lock prices before saving orders", not "Order fixes" or "Apply option B to the checkout flow". Keep it clear, concise, and under 72 characters.
-4. **Write the body** with [the description template](references/description-template.md). When the repository has its own template, keep its headings, checklists, and required fields, and fill them with this skill's content where each fits.
-5. **Add visual evidence for interface changes.** Use "before-and-after" when it is available and screenshots or recordings exist. Otherwise state in the description that no visual evidence is attached.
-6. **Publish when authorised.** Write the body to a file in the temporary directory, then run `gh pr create --base <base> --title <title> --body-file <file>` or `gh pr edit <number> --title <title> --body-file <file>`. For a stack, open its pull requests with `gh stack submit` from "gh-stack" instead of `gh pr create`, then set each title and body with `gh pr edit`. When editing, keep content the description does not own, such as author notes, media, checklists, linked issues, and bot sections. Confirm the result with `gh pr view --json url,title,body`.
-7. **Report.** Give the pull request link and title, two or three sentences on the change and its notes, and any authorised step that did not happen, such as an unpushed branch. Paste the full body only for a draft.
+4. **Write the title.** Follow the repository's convention, such as Conventional Commits. Name the change in the common terms a contributor scanning the pull request list would recognise, not the activity or a label from the conversation: "Lock prices before saving orders", not "Order fixes" or "Apply option B to the checkout flow". Keep it clear, concise, and under 72 characters.
+5. **Write the body** with [the description template](references/description-template.md). When the repository has its own template, keep its headings, checklists, and required fields, and fill them with this skill's content where each fits.
+6. **Add visual evidence for interface changes.** Use "before-and-after" when it is available and screenshots or recordings exist. Otherwise state in the description that no visual evidence is attached.
+7. **Publish when authorised.** Write the body to a file in the temporary directory, then run `gh pr create --base <base> --title <title> --body-file <file>` or `gh pr edit <number> --title <title> --body-file <file>`. For a stack, open its pull requests with `gh stack submit` from "gh-stack" instead of `gh pr create`, then set each title and body with `gh pr edit`. When editing, keep content the description does not own, such as author notes, media, checklists, linked issues, and bot sections. Confirm the result with `gh pr view --json url,title,body`.
+8. **Report.** Give the pull request link and title, two or three sentences on the change and its notes, and any authorised step that did not happen, such as an unpushed branch. Paste the full body only for a draft.
 
 ## Write the description
 
