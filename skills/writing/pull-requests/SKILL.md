@@ -51,7 +51,7 @@ Write as one person explaining the change to another. Use plain, specific langua
 
 Include only the outline views that explain this change, ordered so the story is easiest to follow:
 
-- SQL table and endpoint contract changes, with pseudocode for the business logic.
+- SQL table and endpoint request and response changes, with pseudocode for the business logic.
 - Key data structure and type changes.
 - A shallow file tree showing changed responsibilities.
 - React component tree changes, including important hooks, state, and package boundaries.

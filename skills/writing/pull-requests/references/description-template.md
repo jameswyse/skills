@@ -11,7 +11,7 @@
 {...short description...}
 
 ```diff|sql|json|etc
-{Show changed SQL tables, important columns and relationships, and endpoint request and response contracts.}
+{Show changed SQL tables, important columns and relationships, and endpoint request and response shapes.}
 ```
 
 {...short description...}
@@ -44,7 +44,7 @@
 {Show changed call trees, call stacks, control flow, or data flow.}
 ```
 
-{Tell the story in the order that makes it easiest to understand. It may make sense to show files first, or to establish a data structure, SQL table, or API contract first. All views and subheadings are optional. Use only the views that help explain the pull request, and name or order them based on the change rather than a fixed template. Write as one person would write to another. Use `diff` for a focused change to an existing shape. Show the complete target shape in a language-specific or `text` block when it is new, high level, or clearer without diff notation.}
+{Tell the story in the order that makes it easiest to understand. It may make sense to show files first, or to establish a data structure, SQL table, or API endpoint first. All views and subheadings are optional. Use only the views that help explain the pull request, and name or order them based on the change rather than a fixed template. Write as one person would write to another. Use `diff` for a focused change to an existing shape. Show the complete target shape in a language-specific or `text` block when it is new, high level, or clearer without diff notation.}
 
 ## Notes
 
