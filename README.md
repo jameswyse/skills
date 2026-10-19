@@ -14,7 +14,7 @@ Drafting, editing, and developer documentation. The hard writing rules for every
 | ------------------- | ------------------------------------------------------------------------------------------------- |
 | `writing`           | Drafting and editing guidance for documents, messages, and other prose people read.               |
 | `technical-writing` | Developer documentation, comments, commits, release notes, and agent instructions.                |
-| `pull-requests`     | Pull-request creation, titles, and descriptions with visual change outlines.                      |
+| `pull-requests`     | Pull-request creation, titles, descriptions with change outlines, and Airteam review labels.      |
 | `show-me`           | Visual explanations for code questions, code changes, and pull-request descriptions.              |
 
 ### UX and design

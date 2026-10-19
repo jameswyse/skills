@@ -54,7 +54,8 @@ Macroscope CLI, which bills separately.
 
    Reply to each thread with the fixing commit, or why it was rejected or accepted as a risk,
    following the global rule for posting on the user's behalf. Resolve it when the "babysit-pr"
-   thread rules allow. Update the description when a fix changes what it says.
+   thread rules allow. Update the description when a fix changes what it says, and add review
+   labels as [Airteam review labels](airteam-review-labels.md) describes when a fix adds a risk.
 4. **Repeat after fixes.** When step 3 pushed a commit, return to step 1, for at most three rounds. A
    round in which no comment needed a fix is clean and ends the loop.
 5. **Mark ready when clean.** After a clean round, confirm the head commit is still the one the bots
