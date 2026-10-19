@@ -60,11 +60,12 @@ smells as leads and report only a concrete cost in the scoped diff.
 
 ## 2. Run the reviewers
 
-Delegate every review, whatever its size. Run each applicable axis on both Sol and Opus in parallel,
-as [Delegated review](references/delegated-review.md) describes. Read it before preparing the packet.
-Only when delegation is unavailable or restricted, inspect the axes sequentially in the primary
-agent with the captured scope and the axis prompts below, keeping each axis's notes separate, and
-still run the Codex CLI reviewer that Delegated review describes. State which mode was used and why.
+Delegate every review, whatever its size. Run each applicable axis on both first-round review models
+in parallel, as [Delegated review](references/delegated-review.md) describes. Read it before
+preparing the packet. Only when delegation is unavailable or restricted, inspect the axes
+sequentially in the primary agent with the captured scope and the axis prompts below, keeping each
+axis's notes separate, and still run the Codex CLI reviewer that Delegated review describes. State
+which mode was used and why.
 
 ### Standards agent
 
@@ -107,7 +108,7 @@ Ask:
 
 ## 3. Verify and report
 
-Treat every report as a lead, not proof. Request any remaining batches and read the Sol verifier's
+Treat every report as a lead, not proof. Request any remaining batches and read the verifier's
 evidence from [Delegated review](references/delegated-review.md) when it ran. Then verify every
 candidate finding yourself:
 
@@ -162,12 +163,13 @@ pull request description, update it to match the fixes. Stop when the round had 
 finding above low severity. Low-severity fixes don't need another round.
 
 Otherwise run a narrower round on the fixes. Take the same snapshot into `after.index`, and capture
-`git diff <before-tree> <after-tree>` as the fix diff. Send one Sol reviewer per applicable axis the
-fix diff, the full current diff for context, and the earlier findings with their outcomes: fixed,
-accepted as a risk, or rejected with a reason. Ask reviewers to raise an accepted risk or rejected
-finding again only with new evidence. Later rounds skip the Opus reviewers, the second Correctness
-reviewer, the Codex CLI, the verifier, and the contrarian. When Sol can't run, use Delegated
-review's replacement rule. Verify and weigh the findings as in step 3.
+`git diff <before-tree> <after-tree>` as the fix diff. Send one later-round reviewer per applicable
+axis the fix diff, the full current diff for context, and the earlier findings with their outcomes:
+fixed, accepted as a risk, or rejected with a reason. Ask reviewers to raise an accepted risk or
+rejected finding again only with new evidence. Later rounds use only the later-round model from
+Delegated review's routing and skip the extra Correctness reviewer, the Codex CLI, the verifier, and
+the contrarian. When that model can't run, use Delegated review's replacement rule. Verify and weigh
+the findings as in step 3.
 
 Run at most three rounds per task, counting every round even when the scope grows. If the third
 round still has actionable findings above low severity, fix them and report that those fixes had no

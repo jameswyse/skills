@@ -7,15 +7,15 @@ describe.
 
 These are the first round's reviewers. Later rounds use the narrower set in code-review step 4.
 
-Run every applicable axis on the newest listed Sol model and the newest listed Opus model, so each
-axis gets two independent reviewers. Call `delegate_task` once per axis and model with
-`role: "review"`, including for the model from the session's own provider. Follow the call rules in
-the engineering [Cross-provider delegation](../../engineering/references/cross-provider-delegation.md)
-reference, including High effort, and issue every call in the same step.
+Run every applicable axis on both first-round review models in the routing table of the engineering
+[Cross-provider delegation](../../engineering/references/cross-provider-delegation.md) reference, so
+each axis gets two independent reviewers. Call `delegate_task` once per axis and model with
+`role: "review"`, including for the model from the session's own provider. Follow that reference's
+call rules and issue every call in the same step.
 
-Sol usage is plentiful, so give Sol the extra work. Add a second Sol Correctness reviewer with the
-Correctness prompt plus one instruction: give every [Missed findings](missed-findings.md) pattern a
-verdict in turn, saying whether it applies and what it found.
+Add the extra Correctness reviewer the routing table assigns, with the Correctness prompt plus one
+instruction: give every [Missed findings](missed-findings.md) pattern a verdict in turn, saying
+whether it applies and what it found.
 
 When the T3 tools are absent or a provider can't run a child task, replace the missing reviewers
 with the native subagent tool on the session's model, with parent-history inheritance disabled when
@@ -73,9 +73,10 @@ After a complete read succeeds, reopen only the cited lines needed to verify a c
 
 ## Gather verification evidence
 
-Once every report is in, send all candidate findings to the newest Sol model in one `delegate_task`
-with `role: "review"` and the same call rules. Ask it to reproduce or refute each candidate against
-the checkout with read-only commands, and to report for each one its evidence and verdict, how
-likely the trigger is in real use, the harm when it happens, and the complexity of the smallest fix.
-Treat its report as evidence for verification. You still make each call. When Sol can't run, under
-the cross-provider reference's fallback conditions, gather this evidence yourself.
+Once every report is in, send all candidate findings to the verifier model the routing table assigns
+in one `delegate_task` with `role: "review"` and the same call rules. Ask it to reproduce or refute
+each candidate against the checkout with read-only commands, and to report for each one its evidence
+and verdict, how likely the trigger is in real use, the harm when it happens, and the complexity of
+the smallest fix. Treat its report as evidence for verification. You still make each call. When the
+verifier can't run, under the cross-provider reference's fallback conditions, gather this evidence
+yourself.
