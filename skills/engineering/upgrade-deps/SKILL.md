@@ -19,7 +19,9 @@ Finish only when all of these conditions hold:
 - Node.js and pnpm run the latest release of their current major lines, and every source that
   names either version agrees.
 - The root project and every package selected by `pnpm-workspace.yaml` have been inventoried.
-- Every outdated dependency and GitHub Action is updated or has a verified compatibility hold.
+- Every outdated dependency and GitHub Action is updated to its resolved target, has a verified
+  compatibility hold, or is a release that appeared or became eligible after the targets were
+  resolved.
 - Every audit finding is fixed. A locally patched and verified advisory may be ignored only as
   described below.
 - The dependency-policy entries affected by the new graph are current and no proven-stale entries
@@ -79,6 +81,12 @@ Build one inventory that covers:
 Use machine-readable output where the installed pnpm version supports it. Treat non-zero
 "outdated dependencies found" exits as data, not command failures. Record registry errors and
 unresolved private dependencies as coverage gaps.
+
+Resolve every upgrade target once per run, including GitHub Actions. This inventory and the
+toolchain versions chosen in step 2 set the targets, and step 4's transitive refresh finalises them
+before the first full verification. Keep that set for the rest of the run. In later steps, "latest"
+means the resolved target, and a release that appears or becomes eligible afterwards waits for the
+next run.
 
 ## 4. Upgrade the compatible set
 
@@ -243,7 +251,7 @@ the repository's documented finish order. If the repository defines no order, us
    verification command when repository policy requires it, the dependency graph changed, or the
    remaining uncertainty spans the project. Reuse successful results for unchanged inputs.
 6. Run `git diff --check`, the recursive outdated scan with GitHub Actions, the full audit, and the
-   production audit.
+   production audit. Report releases newer than the resolved targets instead of upgrading them.
 7. Fetch the upstream again and report any commits that landed during the run.
 
 Create a changeset or release note only when the repository requires one for the changed dependency
@@ -261,7 +269,7 @@ the changes are uncommitted. Put every release-age exception directly after that
 - Overrides, patches, audit ignores, and build permissions, including those removed.
 - GitHub Actions changes and unresolved private actions.
 - The exact verification commands, their results, and any platform or environment not covered.
-- Every intentionally remaining outdated item or blocker.
+- Every intentionally remaining outdated item or blocker, including releases deferred to the next run.
 
 When T3 Code's `html_render` tool is available, show the report inline. Use "ux" and its HTML-report
 guidance for the design, build, verification, and delivery, and read
