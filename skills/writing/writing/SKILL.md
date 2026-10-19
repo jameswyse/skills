@@ -1,11 +1,11 @@
 ---
 name: writing
-description: Draft or edit documents, reports, and other substantial prose, or review prose against my preferences.
+description: Draft or edit prose other people will read, such as documents, reports, emails, messages, and comments on pull requests, issues or tickets, or review prose against my preferences.
 ---
 
 # Writing
 
-My global instructions hold the baseline writing rules, including the banned wording. They live in this repository's `global/AGENTS.md`, installed as `~/.agents/AGENTS.md`. This skill adds guidance for substantial drafting and editing. Specialist skills govern document structure and domain requirements, and these prose rules still apply to the text they produce. Existing source style alone isn't a reason to keep a pattern in newly written prose.
+My global instructions hold the baseline writing rules, including the banned wording. They live in this repository's `global/AGENTS.md`, installed as `~/.agents/AGENTS.md`. This skill adds guidance for drafting and editing prose other people will read. Specialist skills govern document structure and domain requirements, and these prose rules still apply to the text they produce. Existing source style alone isn't a reason to keep a pattern in newly written prose.
 
 For user-facing interface copy, use "better-writing" when available. For developer documents and agent instructions, use "technical-writing".
 

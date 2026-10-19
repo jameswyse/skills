@@ -49,7 +49,7 @@ Write concise, direct prose in every response and written artefact. Use Australi
 - Leave out puffery, flattery, chatbot greetings, generic conclusions and cutoff disclaimers.
 - Don't use "furthermore", "moreover", "in conclusion", "in today's digital landscape", "it is important to note", "delve", "tapestry of", "symphony of", "testament to", "beacon", "journey", "leverage", "utilise", "harness", "game-changer", "load-bearing" or "revolutionise". Don't use "material" as a filler noun, "materially" for degree, or "contract" as a metaphor. Name the concrete action or effect instead of a near-synonym.
 
-Check finished text against these rules silently before sending it. Use $writing when drafting or editing documents, reports, or other substantial prose.
+Check finished text against these rules silently before sending it. Use $writing when drafting or editing prose other people will read, such as documents, reports, emails, messages, and comments on pull requests, issues or tickets.
 
 ## Important rules
 
