@@ -18,7 +18,7 @@ Do not calculate an architecture-health score. If no candidate qualifies, say so
 - **Proposal callout.** What the module absorbs and what callers stop knowing. Two or three bullets.
 - **Fields.**
   - `Evidence`: the caller coordination, leaked knowledge, change pain, defects, or test gap that qualified it. Counts and similar shapes are supporting evidence only.
-  - `Wins`: at most three bullets naming locality, leverage, interface reduction, or a testing gain.
+  - `Wins`: at most three bullets naming locality, depth, interface reduction, or a testing gain.
   - `Files`: exact files, modules, and symbols.
 - **Conflict.** When the candidate contradicts an ADR or documented rule, add a `.callout.warn` titled with the document, stating the rule and why the evidence justifies reconsidering it.
 - **Diagram.** A `.compare` with `Current` and `Proposed` figures. Give each a one-line caption that states the change in text.
@@ -37,9 +37,9 @@ If a diagram needs a paragraph to be understood, redraw it.
 
 ## Wording
 
-Use the terms from the engineering [Design](../engineering/references/design.md) reference exactly: `module`, `interface`, `implementation`, `depth`, `deep`, `shallow`, `seam`, `adapter`, `leverage`, and `locality`. Keep exact framework, protocol, repository, and domain names.
+Use the terms from the [vocabulary](SKILL.md) exactly: `module`, `interface`, `implementation`, `depth`, `deep`, `shallow`, `seam`, `adapter`, and `locality`. Keep exact framework, protocol, repository, and domain names.
 
-Write phrases such as "Order intake module is shallow. Its interface nearly matches the implementation." and "Leverage gives 12 callers one interface." Do not write "easier to maintain" or "cleaner code".
+Write phrases such as "Order intake module is shallow. Its interface nearly matches the implementation." and "The deepened module gives 12 callers one interface." Do not write "easier to maintain" or "cleaner code".
 
 ## Report-specific checks
 

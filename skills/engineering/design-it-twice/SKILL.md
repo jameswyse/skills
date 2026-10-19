@@ -35,7 +35,7 @@ When delegation is unavailable or restricted, develop the alternatives sequentia
 
 Use these constraints unless the problem calls for a stronger distinction:
 
-1. Minimise the interface. Aim for one to three entry points and maximise leverage per entry point.
+1. Minimise the interface. Aim for one to three entry points and maximise the behaviour behind each entry point.
 2. Maximise supported variation and extension without moving implementation decisions into callers.
 3. Optimise for the most common caller so the default case is trivial.
 4. When remote or external dependencies matter, design around necessary ports and adapters.
@@ -47,7 +47,7 @@ Require each design to provide:
 3. The behaviour and decisions hidden inside the implementation.
 4. The dependency and adapter strategy.
 5. The testing strategy through the interface.
-6. The trade-offs, including where depth, leverage, or locality remains weak.
+6. The trade-offs, including where depth or locality remains weak.
 
 Reject superficial variations. The designs must differ in where the seam sits, what callers know, how state or operations are represented, or which decisions the module owns.
 
@@ -56,7 +56,7 @@ Reject superficial variations. The designs must differ in where the seam sits, w
 Present each design separately before comparing them. Use the same criteria for every design:
 
 - Interface size and caller knowledge.
-- Depth and leverage.
+- Depth.
 - Locality of decisions and change.
 - Seam placement and dependency handling.
 - Testability through the interface.

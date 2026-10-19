@@ -10,8 +10,14 @@ Find architectural friction and propose **deepening opportunities**, which are r
 
 Use the "engineering" skill. Read its [Design](../engineering/references/design.md) reference before assessing candidates. This workflow uses the project's domain model and the deep-module vocabulary:
 
-- Use **module**, **interface**, **depth**, **seam**, **adapter**, **leverage**, and **locality** as the deep-module reference defines them. Apply the deletion test before calling a module shallow. Classify dependencies before recommending a seam or adapter.
-- The domain language in the repository, if present, gives names to good seams.
+Use this vocabulary exactly. Keep established framework, protocol, and domain terms when they're exact: a React component stays a component.
+
+- **Module.** Anything with an interface and an implementation, at any scale.
+- **Interface.** Everything a caller must know to use the module correctly, including invariants, ordering, error modes, configuration, and performance, not only the type signature.
+- **Depth.** How much behaviour a caller gets for each part of the interface it must learn. A module is **deep** when substantial behaviour sits behind a small interface, and **shallow** when the interface is nearly as complex as the implementation. Measure behaviour and decisions hidden, not lines or size.
+- **Seam** _(Michael Feathers)_. A place where behaviour can vary without editing the code there. Use "bounded context" for the DDD concept, rather than using "boundary" for both.
+- **Adapter.** A concrete thing that fills a role at a seam. Use **implementation** for what's inside a module.
+- **Locality.** What maintainers get from depth. Changes, bugs, and verification concentrate in one module.
 
 Recommend the user-invoked "improve-organisation" skill when the primary problem is tree navigation, file or directory naming, companion-file ownership, or shallow filesystem structure without a qualified deepening. Organisation evidence may support an architecture candidate, but it does not bypass the qualification gate.
 

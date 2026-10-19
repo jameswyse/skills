@@ -15,8 +15,8 @@ management, and developer tooling. This skill owns the detailed standards. Choos
 reviewed behaviour. The author does not need to have read them for the result to meet them:
 
 - For code, read the sections of [Code standards](references/code-standards.md) that the diff
-  touches: simplicity and reader load, domain modelling, types, seams, failures, reliable
-  operations, migrations, security and dependencies, and named smells. For ownership, interface
+  touches: machinery and reader load, domain modelling, types and seams, failures, reliable
+  operations, migrations, security, and named smells. For ownership, interface
   compression, or seam placement, also read the engineering [Design](../engineering/references/design.md)
   reference.
 - When the scope contains tests, read [Testing](references/testing.md) and use its named test smells.

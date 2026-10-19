@@ -1,87 +1,50 @@
 # Codebase organisation and naming
 
-Treat the repository tree as an interface for maintainers. A developer should be able to predict where a capability lives, open that area, and follow its behaviour without carrying unrelated parts of the system in mind.
+Treat the repository tree as an interface for maintainers. A developer should be able to predict where a capability lives, open that area, and follow its behaviour without holding unrelated parts of the system in mind.
 
 ## Organise around ownership
 
-Use the repository's domain and capability language as the primary organising vocabulary. Group code that owns one body of knowledge and changes for the same reasons.
+Group code that owns one body of knowledge and changes for the same reasons, using the repository's domain and capability language.
 
-- Keep a capability's behaviour, types, provider adapters, presentation, and tests together when they change together.
-- Put framework and provider code beside its consumer when only that consumer needs it. Move shared mechanism out only when several owners genuinely use it.
-- Reserve global technical directories for application-wide mechanism with clear consumers. Do not scatter one capability across technical categories merely to classify each file.
-- Keep small areas flat. Add a directory when it groups a coherent set that a reader benefits from seeing together.
-- Follow repository conventions when they already make ownership clear. Change an established layout only when the new structure reduces total reader work.
-
-Do not impose domain-driven design, layered architecture, or another taxonomy on every repository. Use the simplest grouping that makes ownership and navigation obvious.
+- Keep a capability's behaviour, types, adapters, presentation, and tests together when they change together.
+- Put framework or provider code beside its only consumer. Move shared mechanism out only when several owners use it.
+- Don't scatter one capability across technical directories merely to classify each file, and don't split a capability into execution phases, such as load, validate, and save, that callers must reconstruct.
+- Keep small areas flat. Add a directory when it groups a coherent set a reader benefits from seeing together.
+- Follow established conventions when they already make ownership clear. Don't impose a taxonomy such as layered architecture on every repository.
 
 ## Make paths predict their contents
 
-Read a path from left to right. Each segment should narrow the reader's expectation of what the file contains and who owns it.
+Each path segment should narrow the reader's expectation of what the file contains and who owns it.
 
-- Name a behaviour or implementation file after its specific concept, operation, or main export. Prefer `quoteEligibility.ts` to `policy.ts` and `CmsBlock.ts` to `model.ts`.
-- Do not use `Contract` or `Policy` as generic filename suffixes. Names such as `paymentContract.ts` and `paymentPolicy.ts` hide whether the file contains types, constants, validation, configuration, or behaviour. Preserve the word only when it is established domain or external-protocol vocabulary and the file owns that exact concept.
-- Do not create or split files merely to group types or constants. Keep them with their owner when practical. When a separate support file already has a clear reason to exist and no more specific concept names it, prefer an honest contents-based name such as `types.ts` or `constants.ts` over a generic `*Contract` or `*Policy` name.
-- Treat unqualified names such as `model`, `service`, `common`, `shared`, `helper`, and `utils` as prompts to look for a more specific owner, not as bans. Keep one when it is the clearest honest grouping available.
-- When no clearer owner exists, prefer a small `utils` or similar directory with specifically named files over leaving several support files loose in a top-level grouping directory. Move a file out when a better owner emerges, and split the directory if its contents form clearer groups.
-- Match the basename of a primary implementation to its main export when language and framework conventions permit it.
-- Use recognisable patterns across siblings. A reader who understands one member of a family should be able to predict the others.
-- Preserve framework-mandated filenames such as route entrypoints. Use the surrounding directories and owned modules to supply the missing context.
-
-If a reader cannot make a useful prediction from a path, improve the name or the ownership before adding documentation that explains the surprise.
+- Name a file after its specific concept, operation, or main export: `quoteEligibility.ts` over `policy.ts`. Match the basename to the main export where conventions allow.
+- Don't use `Contract` or `Policy` as generic filename suffixes. Keep the word only when it's established domain or protocol vocabulary and the file owns that exact concept.
+- Don't create files merely to group types or constants. When a separate support file has a reason to exist, prefer an honest name such as `types.ts` or `constants.ts`.
+- Treat names such as `model`, `service`, `common`, `shared`, `helper`, and `utils` as prompts to look for a specific owner, not bans. With no clearer owner, prefer a small `utils` directory of specifically named files over loose support files.
+- Keep sibling names in a recognisable pattern, and keep framework-mandated filenames such as route entrypoints.
 
 ## Make every path earn its place
 
-Apply the deletion test to files and directories as well as modules.
+Apply the deletion test to files and directories.
 
-- A file earns its place when it owns behaviour, knowledge, or a supported interface. A file that only changes the import path usually makes the reader visit another location without hiding anything.
-- Prefer direct imports from the authoritative module inside an application. Keep a package entrypoint that re-exports symbols when it defines a supported public interface and protects consumers from internal layout.
-- Keep a dispatcher when it centralises a real choice, invariant, ordering rule, or failure mode. Inline it when it only switches between imported functions for one caller.
-- Keep a directory when its children form a coherent group. Flatten it when the directory adds a name and a navigation step without clarifying ownership.
-- Keep a small module when deleting it would scatter decisions or coordination. Combine it when deletion removes the concept entirely.
-- Organise around one body of knowledge instead of splitting a capability into execution phases that callers must reconstruct.
+- A file earns its place when it owns behaviour, knowledge, or a supported interface. A file that only changes the import path makes the reader visit another location for nothing.
+- Import directly from the authoritative module inside an application. Keep a re-exporting package entrypoint only when it defines a supported public interface.
+- Keep a dispatcher when it centralises a real choice, invariant, or failure mode. Inline it when it only switches between imported functions for one caller.
+- Keep a directory when its children form a coherent group. Flatten it when it adds a name and a navigation step without clarifying ownership.
 
-File size and child count are signals, not verdicts. Confirm what a path owns and what deleting it would do before changing it.
+File size and child count are signals, not verdicts.
 
 ## Keep companion files owned
 
-Tests, stories, styles, fixtures, and generated artefacts should have an obvious owner.
-
-- Co-locate a companion with its owner when the repository convention permits it.
-- Start the companion basename with the owner's basename. `Quote.history.test.tsx` clearly belongs to `Quote.tsx`.
-- Name a cross-module or integration test after the combined behaviour and place it at the nearest common owner.
-- After moving or deleting an implementation, find every companion that used its old basename or path.
-- Treat a companion without a matching owner as a candidate. Inspect framework conventions and cross-module intent before calling it orphaned.
-
-Automate owner checks only when the repository can express its valid exceptions. A noisy rule teaches maintainers to ignore the result.
-
-## Inspect the tree before changing it
-
-Before implementation:
-
-1. Inspect the affected subtree, its entrypoints, its sibling names, and any architecture guidance.
-2. Identify the module that owns the requested behaviour and the reason that module changes.
-3. Trace one representative path from entrypoint to outcome. Note each directory a maintainer must leave to understand it.
-4. Search for an existing owner before creating another file, directory, type, adapter, or helper.
-5. Choose a destination whose path predicts the new responsibility. Confirm that a new layer removes more reader work than it adds.
-
-Keep this inspection proportional to the task. Review the affected area and the callers needed to judge it. Do not turn a small change into an unrequested repository-wide reorganisation.
-
-## Reconsider the structure during the change
-
-Revisit the layout when implementation reveals a different owner, repeated coordination, an unexpected second consumer, or a file that no longer has independent meaning.
-
-When an authorised internal refactor chooses a new location, migrate callers and remove the old path in the same change. Retain a forwarding entrypoint only for a real compatibility requirement.
+Tests, stories, styles, fixtures, and generated artefacts need an obvious owner. Co-locate a companion with its owner when the repository allows it, and start its basename with the owner's: `Quote.history.test.tsx` belongs to `Quote.tsx`. Name a cross-module test after the combined behaviour and place it at the nearest common owner. After moving or deleting an implementation, find every companion that used its old basename or path.
 
 ## Inspect the finished tree
 
-Before final verification:
+Before final verification, check `git diff --name-status` and the affected subtree, not only changed hunks:
 
-1. Inspect the complete affected subtree and `git diff --name-status`, not only changed hunks.
-2. Start at the repository tree and confirm that the requested capability has an obvious route from its entrypoint to its implementation.
-3. Check every added or moved file and directory for a specific owner, a predictive name, and useful contents.
-4. Remove obsolete paths, re-export-only leftovers, one-caller forwarding modules, and parallel implementations that the change no longer needs.
-5. Find tests, stories, styles, fixtures, and generated artefacts whose basename or path no longer identifies an owner.
-6. Compare sibling filenames and exports for a recognisable pattern.
-7. Update architecture guidance when the authorised change alters a documented ownership rule.
+1. The requested capability has an obvious route from its entrypoint to its implementation.
+2. Every added or moved file and directory has a specific owner, a predictive name, and useful contents.
+3. No obsolete paths, re-export-only leftovers, one-caller forwarding modules, or parallel implementations remain.
+4. Companions still identify their owners, and siblings follow a recognisable pattern.
+5. Architecture guidance matches any ownership rule the change altered.
 
-Fix small adjacent problems when they are within scope and make the result coherent. Report broader organisation problems separately.
+Fix small adjacent problems within scope and report broader organisation problems separately.

@@ -53,7 +53,7 @@ Check finished text against these rules silently before sending it. Use $writing
 
 ## Important rules
 
-- Never add code comments.
+- Never add code comments. Put intent in names, types and tests, and a reason the code can't show in the commit message. Tool directives aren't comments, such as a lint suppression with its reason after `--`, `@ts-expect-error` or `#__PURE__`, and neither are JSDoc type tags in JavaScript files. Treat existing comments in code you change as claims to check against the code, and remove wrong ones.
 
 - Protect the context window: read only relevant material, cap verbose outputs and phase size, keep frequently used guidance inline. Subagents should not inherit the full context. If something you're doing often is quickly filling your context, let me know so I can find the cause and improve it.
 

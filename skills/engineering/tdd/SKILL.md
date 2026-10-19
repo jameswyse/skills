@@ -5,46 +5,14 @@ description: Use for explicit TDD requests or an authorised bug fix with a clear
 
 # TDD bug fix
 
-When fixing a bug with a clear, cheap test path, make the broken behaviour executable before changing production code. The goal is a focused regression test that fails before the fix and passes after it.
+Make the broken behaviour executable before changing production code: a focused regression test that fails before the fix and passes after it. Use the "engineering" skill, and read the code-review [Testing](../code-review/references/testing.md) reference before writing the test.
 
-Use the "engineering" skill and read the code-review [Testing](../code-review/references/testing.md) reference before writing the test. That reference owns test placement, expected values, test doubles, determinism, and supported alternatives. This skill owns the failing-first bug-fix loop.
+1. Write the smallest test that would have caught the bug, at the closest existing test seam for that path. It encodes the intended behaviour, not the current implementation.
+2. Run it before fixing and confirm it fails for the intended reason. If it passes or fails for another reason, correct the test first.
+3. Make the smallest production change that fixes the behaviour, then rerun the test and the adjacent checks.
 
-Do not force a test when it would be impractical. If the available test would require broad harness setup, brittle mocks, slow end-to-end infrastructure, production-only state, vague reproduction steps, or large unrelated fixture churn, skip adding a new test and use the closest useful verification instead.
+When the fix covers several behaviours, work in vertical slices: one failing test, the code that makes it pass, then the next. Writing every test first commits to imagined behaviour before the implementation teaches you anything.
 
-## Workflow
+When a failing test would need broad harness setup, brittle mocks, slow end-to-end infrastructure, production-only state, or large fixture churn, say why before fixing and use the closest executable check instead, such as a targeted script or a scripted reproduction. Don't build test infrastructure for a small fix.
 
-1. **Understand the bug.** Identify the intended behaviour, current behaviour, affected path, and smallest observable reproduction.
-2. **Choose the narrowest executable check.** Prefer the closest unit, component, integration, or regression test already used for that codepath. If no practical test path is obvious, do not create one from scratch just to satisfy the workflow.
-3. **Write the failing test first.** Add the smallest focused test that would have caught the bug. The test should encode intended behaviour, not mirror the current implementation.
-4. **Run the new test before fixing.** Confirm it fails for the intended reason. If it passes or fails for an unrelated reason, correct the test or reproduction before editing the implementation.
-5. **Fix the bug.** Make the smallest production change that satisfies the intended behaviour while preserving nearby behaviour and interfaces.
-6. **Rerun the regression test.** Confirm the test now passes.
-7. **Run nearby validation.** Run relevant adjacent tests, type checks, lint, or scenario checks when the change has broader risk.
-
-## If a failing test is impractical
-
-Do not silently skip the regression step. Before fixing, explicitly explain why a failing test is impossible or not worth the cost, then choose the closest executable regression check available. Examples include a targeted script, manual reproduction command, browser automation, snapshot comparison, log assertion, or focused integration check.
-
-Prefer no new test over one rejected by the Testing reference. Do not build expensive infrastructure for a small fix when a focused executable check provides better evidence.
-
-## Guardrails
-
-- Do not change tests merely to match a wrong implementation.
-- Do not weaken existing assertions unless the expected behaviour has genuinely changed and the reason is clear.
-- Keep the regression test focused on the bug. Avoid broad fixture churn or unrelated coverage expansion.
-- Do not add tests when the practical signal is weak. Use manual or scripted verification and say why.
-- If the bug exposes a broader class of failures, first add the focused regression path, then consider additional sibling coverage.
-
-## Work in vertical slices
-
-Do not write all tests and then all implementation. That horizontal sequence commits to imagined behaviour and a test structure before the implementation is understood.
-
-Add one failing test, add the implementation that makes it pass, then repeat. Each test is a **tracer bullet** that responds to what the last cycle taught you.
-
-## Final response
-
-Report the evidence, not just the outcome:
-
-- Name the failing-before test or executable check and the failure it produced.
-- Name the passing-after test run and any nearby validation performed.
-- If failing-before evidence could not be demonstrated, state why and describe the closest regression check used instead.
+Report the failing-before check and the failure it produced, the passing-after run, and any check you used instead of a test and why.
