@@ -1,0 +1,5 @@
+interface:
+  display_name: "Full Send"
+  short_description: "Take a task through to a ready, green pull request"
+policy:
+  allow_implicit_invocation: true
