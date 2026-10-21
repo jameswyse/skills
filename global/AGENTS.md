@@ -55,6 +55,8 @@ Check finished text against these rules silently before sending it. Use $writing
 
 - Never add code comments. Put intent in names, types and tests, and a reason the code can't show in the commit message. Tool directives aren't comments, such as a lint suppression with its reason after `--`, `@ts-expect-error` or `#__PURE__`, and neither are JSDoc type tags in JavaScript files. Treat existing comments in code you change as claims to check against the code, and remove wrong ones.
 
+- Before you run a command that deletes files, such as `rm`, `rmdir` or `find -delete`, write each target as a literal absolute path. Resolve any variable, `~`, command output or relative path first, check the result, then run the deletion with it. A glob or `find` pattern may match only inside a literal absolute directory. An empty or wrong expansion can delete a home directory.
+
 - Protect the context window: read only relevant material, cap verbose outputs and phase size, keep frequently used guidance inline. Subagents should not inherit the full context. If something you're doing often is quickly filling your context, let me know so I can find the cause and improve it.
 
 - Use $engineering for implementation, debugging, software design decisions, and engineering reviews. Skip it for straightforward code explanations, read-only lookups, and routine Git operations.
