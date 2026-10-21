@@ -1,14 +1,14 @@
 # Performance HTML report format
 
-Build the report with the ux skill's [HTML reports](../ux/references/html-reports.md) guidance. It owns the design, components, build script, verification, and delivery. This file owns what the performance report says. Write the body to `<tmpdir>/performance-improvement-<timestamp>.body.html` and build `<tmpdir>/performance-improvement-<timestamp>.html`.
+Build the report with the "html-report" skill. This file owns what the performance report says. Write the body to `<tmpdir>/performance-improvement-<timestamp>.body.html` and build `<tmpdir>/performance-improvement-<timestamp>.html`.
 
 ## Sections
 
 1. **Header.** Eyebrow `Performance improvement`, the target as the title, then date, revision, working-tree state, and build mode.
-2. **Summary.** The measured result in one sentence, such as `Median warm navigation fell from 820 ms to 560 ms, a 31.7% reduction across 20 measured runs.` Add whether the target or budget was met. Follow with a muted line naming the workload, environment, and summary statistic. Counts: experiments kept, rejected, and inconclusive.
-3. **Result.** A `figure.chart` of baseline and final values for each scenario, then a table with baseline, final, absolute change, percentage change, spread, sample count, and status badge.
+2. **Summary.** The measured result in one sentence, such as `Median warm navigation fell from 820 ms to 560 ms, a 31.7% reduction across 20 measured runs.` Add whether the target or budget was met, and name the workload, environment, and summary statistic. Counts: experiments kept, rejected, and inconclusive.
+3. **Result.** A `figure.chart` of baseline and final values for each scenario, then a two-column table: the scenario with a note giving baseline, final, absolute change, spread, and sample count, then the percentage change and a status badge.
 4. **Where the time went.** One breakdown of the measured resource before and after.
-5. **Experiments.** One `.item` per hypothesis, in the order tested.
+5. **Experiments.** One `.item` per hypothesis, in the order tested, however many there are.
 6. **Remaining work.** Measured bottlenecks that remain, then architectural follow-ups.
 7. **How this was checked.** The benchmark method and the correctness and guardrail checks.
 
@@ -49,12 +49,8 @@ Show rejected experiments at the same weight as kept ones. Only `Kept` experimen
 
 For each architectural follow-up, give the supporting measurement, the ceiling it controls, the affected modules, and why it was out of scope. Do not present an unmeasured redesign as the next optimisation.
 
-In the checks section, use a `.fields` list for target, workload, environment, toolchain, benchmark command, warm-up count, sample count, statistic, and cache state. Follow it with a checks table naming each command, its result, `Fresh` or `Cached`, and the behaviour it established. Add `Not run` rows for important browser, build, integration, load, or production paths.
+In the checks section, use a `.fields` list for target, workload, environment, toolchain, benchmark command, warm-up count, sample count, statistic, and cache state. Follow it with the checks table, noting what each check established when the name does not show it and `Cached` when a result came from cache. Add `Not run` rows for important browser, build, integration, load, or production paths.
 
 ## Wording
 
 Name the workload, metric, sample count, variance, and change. Distinguish measurement from inference. Avoid `faster`, `lighter`, `optimised`, and `significant` when a number can state the result.
-
-## Report-specific checks
-
-In addition to the shared verification, confirm that every chart uses one honest scale, prints exact values, and keeps its labels at `320px`, and that experiments appear in test order.

@@ -261,7 +261,7 @@ or peer declaration.
 
 Lead with the outcome: complete or blocked, the headline upgrades and security fixes, and whether
 the changes are uncommitted. Put every release-age exception directly after that summary, with its
-`package@version`, publication date, reason, and the date it ages past the threshold. Then name:
+`package@version`, reason, and the date it ages past the threshold. Then name:
 
 - The upgraded dependency families, with old and new versions, and their source migrations.
 - Applied Node.js and pnpm updates, the files that name them, and available majors not adopted.
@@ -271,7 +271,6 @@ the changes are uncommitted. Put every release-age exception directly after that
 - The exact verification commands, their results, and any platform or environment not covered.
 - Every intentionally remaining outdated item or blocker, including releases deferred to the next run.
 
-When T3 Code's `html_render` tool is available, show the report inline. Use "ux" and its HTML-report
-guidance for the design, build, verification, and delivery, and read
-[HTML report](references/html-report.md) for the content. Otherwise give the report as Markdown in
-the final reply.
+When T3 Code's `html_render` tool is available, use the "html-report" skill to show the report
+inline, filling in the template in [HTML report](references/html-report.md). Otherwise give the
+report as Markdown in the final reply.

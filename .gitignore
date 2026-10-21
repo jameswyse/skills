@@ -1,5 +1,5 @@
 __pycache__/
 *.py[cod]
 assets
-!skills/ux/ux/assets/
+!skills/ux/html-report/assets/
 /NOTES.md

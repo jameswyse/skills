@@ -21,9 +21,10 @@ Drafting, editing, and developer documentation. The hard writing rules for every
 
 Product design and user-facing interface work.
 
-| Skill | Purpose                                                                                  |
-| ----- | ---------------------------------------------------------------------------------------- |
-| `ux`  | Routes product design, UX, UI, accessibility, interface copy, visual polish, and motion. |
+| Skill         | Purpose                                                                                     |
+| ------------- | ------------------------------------------------------------------------------------------- |
+| `ux`          | Routes product design, UX, UI, accessibility, interface copy, visual polish, and motion.    |
+| `html-report` | Builds compact HTML reports from shared components and delivers them inline in T3 Code.     |
 
 ### Engineering
 
@@ -62,7 +63,7 @@ List the repository's skills or install the baseline skills globally for Codex a
 
 ```sh
 npx skills@latest add jameswyse/skills --list
-npx skills@latest add jameswyse/skills --global --agent codex --agent claude-code --skill writing --skill engineering --skill ux --skill show-me --yes
+npx skills@latest add jameswyse/skills --global --agent codex --agent claude-code --skill writing --skill engineering --skill ux --skill html-report --skill show-me --yes
 ```
 
 With Codex and Claude Code selected together, `npx skills` keeps a canonical copy under

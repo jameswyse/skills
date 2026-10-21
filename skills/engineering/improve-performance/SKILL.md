@@ -101,13 +101,13 @@ Stop when one of these conditions holds:
 
 ## Phase 4: Report the measured result
 
-Use "ux" and its HTML-report guidance for the design, build, verification, and delivery. Before writing the report, read [HTML-REPORT.md](HTML-REPORT.md) in full. It owns the report's sections, charts, experiment content, and output location in the temporary directory.
+Use the "html-report" skill to build and deliver the report. Before writing it, read [HTML-REPORT.md](HTML-REPORT.md) in full. It owns the report's sections, charts, experiment content, and output location in the temporary directory.
 
 Lead with the measured result and whether the target was met. Then show the before-and-after values, where the resource went, every experiment with its `Kept`, `Rejected`, or `Inconclusive` result, and the remaining bottlenecks and follow-ups. End with the benchmark method, correctness checks, guardrails, and measurement gaps.
 
 Report an inconclusive or negative result honestly. Do not select the fastest run, hide rejected experiments, combine unlike scenarios, or imply causation that the controlled experiment did not establish.
 
-Verify the rendered report and deliver it as the ux guidance describes, or state why visual verification could not run. Summarise the measured outcome in your reply.
+Summarise the measured outcome in your reply.
 
 ## Finish the code change
 

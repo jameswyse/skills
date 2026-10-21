@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 import sys
 import tempfile
@@ -8,8 +9,14 @@ import unittest
 from pathlib import Path
 
 
-UX_SKILL = Path(__file__).resolve().parents[1] / "skills" / "ux" / "ux"
-BUILD_SCRIPT = UX_SKILL / "scripts" / "build_report.py"
+SKILLS = Path(__file__).resolve().parents[1] / "skills"
+REPORT_SKILL = SKILLS / "ux" / "html-report"
+BUILD_SCRIPT = REPORT_SKILL / "scripts" / "build_report.py"
+DOCUMENTED_TEMPLATES = (
+    REPORT_SKILL / "SKILL.md",
+    SKILLS / "engineering" / "upgrade-deps" / "references" / "html-report.md",
+)
+HTML_BLOCK = re.compile(r"```html\n(.*?)```", re.DOTALL)
 
 
 class BuildReportTest(unittest.TestCase):
@@ -44,7 +51,7 @@ class BuildReportTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         document = output.read_text()
         self.assertIn("<title>Review &lt;acme&gt; &amp; co</title>", document)
-        self.assertIn((UX_SKILL / "assets" / "report.css").read_text(), document)
+        self.assertIn((REPORT_SKILL / "assets" / "report.css").read_text(), document)
         self.assertIn('<main class="report">\n<p class="lead">Ship it.</p>\n</main>', document)
         self.assertNotIn("<script", document)
         self.assertIn('<html lang="en-AU">', document)
@@ -69,17 +76,50 @@ class BuildReportTest(unittest.TestCase):
             },
         )
 
-    def test_adds_scripts_only_for_mermaid_blocks_and_filters(self) -> None:
-        body = (
-            '<pre class="mermaid">flowchart LR\n  A --> B</pre>'
-            '<div class="filter" data-filter-for="inventory" hidden></div>'
+    def test_adds_the_filter_script_for_filter_controls(self) -> None:
+        result, output = self.build(
+            "Review", '<div class="filter" data-filter-for="inventory" hidden></div>'
         )
-        result, output = self.build("Review", body)
 
         self.assertEqual(result.returncode, 0, result.stderr)
-        document = output.read_text()
-        self.assertIn("mermaid.esm.min.mjs", document)
-        self.assertIn("data-filter-text", document)
+        self.assertIn("data-filter-text", output.read_text())
+
+    def test_rejects_markup_outside_the_report_components(self) -> None:
+        fragments = {
+            '<div class="grid-cols-2">x</div>': 'class "grid-cols-2"',
+            '<p style="color: red">x</p>': 'style="color: red" on <p>',
+            '<span class="bar-track" style="--value: 40%"></span>': 'style="--value: 40%" on <span>',
+            '<span class="bar" style="inset: 0" style="--value: 40%"></span>': "duplicate style",
+            "<script>alert(1)</script>": "<script> element",
+            '<p onclick="go()">x</p>': "onclick attribute on <p>",
+            '<a href=" JavaScript:go()">x</a>': "javascript: URL in href on <a>",
+            '<a href="java&#9;script:go()">x</a>': "javascript: URL in href on <a>",
+            '<svg><a xlink:href="javascript:go()">x</a></svg>': "javascript: URL in xlink:href",
+            "<![CDATA[><style>p{}</style>]]>": "<![...]> section",
+            '<meta http-equiv="refresh" content="0">': "<meta> element",
+        }
+        for fragment, problem in fragments.items():
+            with self.subTest(fragment=fragment):
+                result, output = self.build("Review", fragment)
+
+                self.assertEqual(result.returncode, 1)
+                self.assertIn(problem, result.stderr)
+                self.assertFalse(output.exists())
+
+    def test_accepts_a_bar_value(self) -> None:
+        result, _ = self.build("Review", '<span class="bar" style="--value: 62.5%"></span>')
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_builds_every_documented_template(self) -> None:
+        for path in DOCUMENTED_TEMPLATES:
+            blocks = HTML_BLOCK.findall(path.read_text())
+            self.assertTrue(blocks, f"{path} has no html block")
+            for index, block in enumerate(blocks):
+                with self.subTest(path=path.name, block=index):
+                    result, _ = self.build("Review", block)
+
+                    self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_rejects_a_fragment_that_brings_its_own_document_or_styles(self) -> None:
         for fragment in ("<!doctype html><p>x</p>", "<body><p>x</p></body>", "<style>p{}</style>"):

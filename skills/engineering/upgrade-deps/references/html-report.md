@@ -1,34 +1,102 @@
-# Upgrade HTML report format
+# Upgrade HTML report
 
-Build the report with the ux skill's [HTML reports](../../ux/references/html-reports.md) guidance and
-its `--inline` option. It owns the design, components, build script, verification, and delivery.
-This file owns what the upgrade report says. Write the body to
-`<run-dir>/upgrade-report.body.html` and build `<run-dir>/upgrade-report.html`.
+Fill in the template below and build it with the "html-report" skill. This file owns what the
+upgrade report says. Write the body to `<run-dir>/upgrade-report.body.html` and build
+`<run-dir>/upgrade-report.html`. Keep the template's structure.
 
-The report has no ranked items, so it has no `Start here` badge. Omit any section with nothing to
-report.
+## Keep it short
 
-## Sections
+- Leave out the summary counts. The tables carry them.
+- Write one line per note. Note a migration, a removed patch, a hold, or a failure.
+- Put companion packages that share a version and reason in one row, such as
+  `@storybook/* 10.6.3 (7 packages)`.
+- When a family's packages have different versions, give each version line its own row.
+- Put patch updates without a note in one final `Patch updates` row whose note lists each package
+  with its old and new versions.
+- Show the Node.js and pnpm rows only when their version changed, and list the files updated and any
+  pnpm migration in the note. Report an available major not adopted under Remaining.
 
-1. **Header.** Eyebrow `Dependency upgrade`, the repository name as the title, then the date,
-   revision and branch, `Complete` or `Blocked`, and whether the changes are uncommitted.
-2. **Summary.** One or two sentences with the outcome, the headline upgrades, and the security
-   fixes. Up to four counts, such as packages upgraded as `accent`, advisories fixed as `good`, and
-   release-age exceptions and holds as `warn`.
-3. **Release-age exceptions.** A table with `package@version`, publication date, reason, and the
-   date it ages past the threshold. When there are none, say so in the summary instead.
-4. **Upgrades.** A table with one row per package family: its packages, old and new versions,
-   and a note naming the migration. Badge a major upgrade `Major` as neutral and a security fix
-   `Security` as `good`. When patch-only updates outnumber the rest, move them into a closed
-   `details.more`.
-5. **Toolchain.** `.fields` rows for Node.js and pnpm with old and new versions, the files updated
-   as `.files`, and available majors not adopted. Include a pnpm migration here when one ran.
-6. **Policy.** A table of holds, overrides, patches, audit ignores, and build permissions, each
-   `Added`, `Kept`, or `Removed`, with its reason and removal condition.
-7. **Remaining.** Outdated items and blockers, each with the reason it remains and what would
-   unblock it.
-8. **How this was checked.** A table of each verification command and its result, as `good` for
-   a pass and `risk` for a failure. Mark checks that could not run `Not verified` with the reason,
-   and name upstream commits that landed during the run.
+## Template
 
-Put versions in `.nowrap` cells.
+```html
+<header class="report-header">
+  <p class="eyebrow">Dependency upgrade</p>
+  <h1>REPO</h1>
+  <ul class="meta">
+    <li>DD/MM/YYYY</li>
+    <li><code>REV</code> on <code>BRANCH</code></li>
+    <li>Complete | Blocked: SHORT REASON</li>
+    <li>Uncommitted | Committed | Pushed</li>
+  </ul>
+</header>
+
+<section class="summary" aria-label="Summary">
+  <p class="lead">ONE OR TWO SENTENCES: OUTCOME, HEADLINE UPGRADES, SECURITY FIXES.</p>
+</section>
+
+<section class="section" aria-labelledby="exceptions">
+  <div class="section-head"><h2 id="exceptions">Release-age exceptions</h2></div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Package</th><th>Eligible</th></tr></thead>
+    <tbody>
+      <tr><td><code>PACKAGE@VERSION</code><div class="small muted">REASON</div></td><td class="nowrap">DD/MM</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="section" aria-labelledby="upgrades">
+  <div class="section-head"><h2 id="upgrades">Upgrades</h2></div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Package</th><th>Version</th></tr></thead>
+    <tbody>
+      <tr><td>Node.js<div class="small muted">FILES UPDATED</div></td><td class="nowrap">OLD → NEW</td></tr>
+      <tr><td>pnpm<div class="small muted">FILES UPDATED</div></td><td class="nowrap">OLD → NEW</td></tr>
+      <tr><td>PACKAGES <span class="badge">Major</span><div class="small muted">MIGRATION NOTE</div></td><td class="nowrap">OLD → NEW</td></tr>
+      <tr><td>PACKAGE <span class="badge good">Security</span><div class="small muted">Fixes GHSA-…</div></td><td class="nowrap">OLD → NEW</td></tr>
+      <tr><td>OWNER/ACTION</td><td class="nowrap">OLD → NEW</td></tr>
+      <tr><td>Patch updates<div class="small muted">PACKAGE OLD → NEW, PACKAGE OLD → NEW</div></td><td class="nowrap">COUNT</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="section" aria-labelledby="policy">
+  <div class="section-head"><h2 id="policy">Policy changes</h2></div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Entry</th><th>Change</th></tr></thead>
+    <tbody>
+      <tr><td>ENTRY<div class="small muted">REASON. Remove when CONDITION</div></td><td><span class="badge warn">Added</span></td></tr>
+      <tr><td>ENTRY<div class="small muted">REASON</div></td><td><span class="badge good">Removed</span></td></tr>
+    </tbody>
+  </table></div>
+  <details class="more">
+    <summary>COUNT kept entries</summary>
+    <ul>
+      <li>ENTRY: EVIDENCE IT IS STILL NEEDED. Remove when CONDITION</li>
+    </ul>
+  </details>
+</section>
+
+<section class="section" aria-labelledby="remaining">
+  <div class="section-head"><h2 id="remaining">Remaining</h2></div>
+  <ul>
+    <li>ITEM: WHY IT REMAINS. Unblocks when CONDITION.</li>
+    <li>Deferred until the next run: PACKAGE VERSION, PACKAGE VERSION.</li>
+  </ul>
+</section>
+
+<section class="section" aria-labelledby="checks">
+  <div class="section-head"><h2 id="checks">How this was checked</h2></div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Check</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td><code>COMMAND</code></td><td><span class="badge good">Pass</span></td></tr>
+      <tr><td><code>COMMAND</code><div class="small muted">WHAT FAILED</div></td><td><span class="badge risk">Fail</span></td></tr>
+      <tr><td>CHECK<div class="small muted">REASON</div></td><td><span class="badge warn">Not verified</span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+```
+
+Policy changes cover holds, overrides, patches, audit ignores, release-age exclusions, and build
+permissions. Under How this was checked, include the code review, and add an `Upstream` row naming
+any commits that landed during the run.

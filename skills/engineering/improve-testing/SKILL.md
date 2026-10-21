@@ -53,7 +53,7 @@ Run proportionate existing test commands when they are safe and useful. Capture 
 
 ## Produce the HTML report
 
-Use "ux" and its HTML-report guidance for the design, build, verification, and delivery. Before writing the report, read [HTML-REPORT.md](HTML-REPORT.md) in full. It owns the report's sections, tables, and output location in the temporary directory. Keep generated inventories and working ledgers out of the repository.
+Use the "html-report" skill to build and deliver the report. Before writing it, read [HTML-REPORT.md](HTML-REPORT.md) in full. It owns the report's sections, tables, and output location in the temporary directory. Keep generated inventories and working ledgers out of the repository.
 
 The report must include, in this order:
 
@@ -66,7 +66,5 @@ The report must include, in this order:
 7. Inventory completeness, verification evidence, and remaining review gaps.
 
 Use charts to show exact inventory composition, not codebase health or invented coverage percentages. Keep the complete table searchable and readable without JavaScript. Use exact paths, symbols, test IDs, framework names, commands, and domain terms.
-
-Verify the rendered report and deliver it as the ux guidance describes, or state why visual verification could not run.
 
 After a review-only request, ask which removal candidates, test repairs, or guarantee gaps the user wants to tackle. Selecting an item for discussion does not authorise changes. If implementation is already authorised, apply the governing authority rules and continue with covered changes. Revalidate the chosen items against the current tree before implementation.

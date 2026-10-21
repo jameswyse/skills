@@ -1,13 +1,13 @@
 # Architecture HTML report format
 
-Build the report with the ux skill's [HTML reports](../ux/references/html-reports.md) guidance. It owns the design, components, build script, verification, and delivery. This file owns what the architecture report says. Write the body to `<tmpdir>/architecture-review-<timestamp>.body.html` and build `<tmpdir>/architecture-review-<timestamp>.html`.
+Build the report with the "html-report" skill. This file owns what the architecture report says. Write the body to `<tmpdir>/architecture-review-<timestamp>.body.html` and build `<tmpdir>/architecture-review-<timestamp>.html`.
 
 ## Sections
 
 1. **Header.** Eyebrow `Architecture review`, the repository name as the title, then date, revision, working-tree state, and requested scope.
 2. **Summary.** Answer in one or two sentences: how many candidates are worth doing and which to start with, naming the evidence that puts it first. Counts by strength, such as `Strong` and `Worth exploring`, plus coverage gaps when there are any.
-3. **Candidates.** One `.item` per qualified candidate, ranked. The first is the `.lead-item` with a `Start here` badge.
-4. **How this was checked.** One table of major areas with a verdict each: `Candidate`, `No candidate`, or `Not verified` with the reason. Follow it with the evidence that limits confidence, such as an ADR conflict or a test not run. Put the full list of callers, tests, and documents consulted in a closed `details.more`.
+3. **Candidates.** Qualified candidates, ranked, as the html-report skill lays out ranked items. The first is the `.lead-item` with a `Start here` badge.
+4. **How this was checked.** A two-column table of major areas with a verdict badge each: `Candidate`, `No candidate`, or `Not verified` with the reason as a note. Follow it with the evidence that limits confidence, such as an ADR conflict or a test not run. Put the full list of callers, tests, and documents consulted in a closed `details.more`.
 
 Do not calculate an architecture-health score. If no candidate qualifies, say so in the summary and keep only the checks section.
 
@@ -27,11 +27,11 @@ Omit a separate "why it ranks here" field. The summary explains the first choice
 
 ## Diagrams
 
-Prefer the `.flow`, `.node`, `.module`, and `.layers` diagram classes. They render without network access and match the report.
+Draw with the `.flow`, `.node`, `.module`, and `.layers` diagram classes.
 
-- **Call flow.** A `.flow` of current steps, with `.node.leak` where knowledge crosses a seam. The proposed side wraps the absorbed steps as `.node.faded` inside one `.module`.
+- **Call flow.** A `.flow` of current steps, with `.node.leak` where knowledge crosses a seam. Explain every leak in the caption. The proposed side wraps the absorbed steps as `.node.faded` inside one `.module`.
 - **Layered shallowness.** `.layers` with several thin bands for the current view and one `deep` band for the proposal.
-- **Dependencies.** A Mermaid `flowchart` only when the graph has branches or cycles those classes cannot show.
+- **Dependencies.** When the graph has branches or cycles those classes cannot show, list the edges that matter in a two-column table.
 
 If a diagram needs a paragraph to be understood, redraw it.
 
@@ -40,7 +40,3 @@ If a diagram needs a paragraph to be understood, redraw it.
 Use the terms from the [vocabulary](SKILL.md) exactly: `module`, `interface`, `implementation`, `depth`, `deep`, `shallow`, `seam`, `adapter`, and `locality`. Keep exact framework, protocol, repository, and domain names.
 
 Write phrases such as "Order intake module is shallow. Its interface nearly matches the implementation." and "The deepened module gives 12 callers one interface." Do not write "easier to maintain" or "cleaner code".
-
-## Report-specific checks
-
-In addition to the shared verification, confirm that each comparison keeps its `Current` and `Proposed` labels when stacked at `320px`, and that every `.node.leak` is explained in its caption.

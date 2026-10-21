@@ -1,6 +1,6 @@
 ---
 name: ux
-description: Design, implement, or review interfaces, HTML reports, and motion. Excludes software architecture and data models.
+description: Design, implement, or review interfaces and motion. Excludes software architecture and data models.
 ---
 
 # UX
@@ -19,7 +19,7 @@ Let project-specific design rules govern when they differ from an external skill
 
 ### HTML reports
 
-Treat a generated HTML report as interface work even when its subject is engineering. Before generating one, read [HTML reports](references/html-reports.md). It owns the shared design, the build script, verification, and delivery. The report workflow's format reference owns the sections and item content. Load the installed "better-layout", "better-typography", and "better-ui" skills only when changing the shared report design itself.
+For a generated HTML report, use the "html-report" skill.
 
 ### Interface skills
 

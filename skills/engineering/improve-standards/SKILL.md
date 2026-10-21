@@ -67,7 +67,7 @@ Prefer fresh verification when it is safe and proportionate. Use the repository'
 
 ### 4. Present the HTML report
 
-Use "ux" and its HTML-report guidance for the design, build, verification, and delivery, even when no finding concerns an interface. Before writing HTML, read [HTML-REPORT.md](HTML-REPORT.md) in full. It owns the report's sections, finding content, and output location in the temporary directory, so nothing enters the repository.
+Use the "html-report" skill to build and deliver the report. Before writing HTML, read [HTML-REPORT.md](HTML-REPORT.md) in full. It owns the report's sections, finding content, and output location in the temporary directory, so nothing enters the repository.
 
 Lead with the recommended improvement and the ranked findings. Keep follow-ups for "improve-architecture" and "improve-organisation" separate and unranked. End with the toolchain, the checks with their cache state, and the paths not exercised. Omit method narration such as searches performed or files opened.
 
