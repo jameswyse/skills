@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import os
 import re
 import socket
@@ -132,7 +133,20 @@ def run_step(host: str, description: str, command: list[str], script: str | None
     return True
 
 
+def parse_args() -> None:
+    parser = argparse.ArgumentParser(
+        description=(
+            f"Roll the pushed skills commit out to the fleet ({', '.join(FLEET)}). "
+            "This machine validates it first. Every machine syncs skills and sets up "
+            "external skills, and the others pull the commit before they do. The "
+            "checkout must be clean and match its upstream."
+        )
+    )
+    parser.parse_args()
+
+
 def main() -> int:
+    parse_args()
     try:
         commit, branch = check_published()
     except PreflightError as error:

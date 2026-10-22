@@ -41,13 +41,31 @@ class UpdateFleetSkillsPreflightTest(unittest.TestCase):
         git(self.repository, "add", "--all")
         git(self.repository, "commit", "--quiet", "--allow-empty", "-m", message)
 
-    def run_script(self) -> subprocess.CompletedProcess[str]:
+    def run_script(self, *args: str) -> subprocess.CompletedProcess[str]:
         return subprocess.run(
-            [str(self.repository / "scripts" / "update-fleet-skills")],
+            [str(self.repository / "scripts" / "update-fleet-skills"), *args],
             capture_output=True,
             text=True,
             env={**os.environ, "HOMELAB_DIR": str(self.root / "missing-homelab")},
         )
+
+    def test_help_exits_without_running_the_rollout(self) -> None:
+        (self.repository / "draft.md").write_text("draft\n", encoding="utf-8")
+
+        result = self.run_script("--help")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("update-fleet-skills", result.stdout)
+        self.assertNotIn("uncommitted changes", result.stderr)
+
+    def test_rejects_an_unknown_argument_without_running_the_rollout(self) -> None:
+        (self.repository / "draft.md").write_text("draft\n", encoding="utf-8")
+
+        result = self.run_script("--no-such-option")
+
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("--no-such-option", result.stderr)
+        self.assertNotIn("uncommitted changes", result.stderr)
 
     def test_refuses_uncommitted_changes(self) -> None:
         (self.repository / "draft.md").write_text("draft\n", encoding="utf-8")
