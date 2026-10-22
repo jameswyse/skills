@@ -6,15 +6,15 @@ Use when a skill or the global instructions send work to another model through T
 
 Call `orchestrator_capabilities`. Its `inheritedProviderInstanceId` and `inheritedModel` identify the session, so do not rely on your own model name. Tool names may carry a prefix such as `mcp__t3-code__`.
 
-| Work                                                                                    | Provider                       | Model                      | Effort             |
-| --------------------------------------------------------------------------------------- | ------------------------------ | -------------------------- | ------------------ |
-| Taste subagents: code, architecture, and UI                                             | Same provider, native subagent | Newest Opus                | High               |
-| Investigations: non-trivial debugging, unfamiliar code, computer use, and visual checks | `codex`                        | Newest listed Sol          | High               |
-| A skill's cross-provider step from a `claudeAgent` Fable or Opus session                | `codex`                        | Newest listed Sol          | High               |
-| A skill's cross-provider step from a `codex` Astra or Sol session                       | `claudeAgent`                  | Newest listed Opus         | High               |
-| First-round code review, each axis                                                      | `codex` and `claudeAgent`      | Newest listed Sol and Opus | High               |
-| The extra Correctness reviewer, the verifier, and later review rounds                   | `codex`                        | Newest listed Sol          | High               |
-| A contrarian check                                                                      | `cursor`                       | Newest listed Grok         | Catalogue defaults |
+| Work                                                                                    | Provider                       | Model                      | Effort                       |
+| --------------------------------------------------------------------------------------- | ------------------------------ | -------------------------- | ---------------------------- |
+| Taste subagents: code, architecture, and UI                                             | Same provider, native subagent | Newest Opus                | High                         |
+| Investigations: non-trivial debugging, unfamiliar code, computer use, and visual checks | `codex`                        | Newest listed Sol          | High                         |
+| A skill's cross-provider step from a `claudeAgent` Fable or Opus session                | `codex`                        | Newest listed Sol          | High                         |
+| A skill's cross-provider step from a `codex` Astra or Sol session                       | `claudeAgent`                  | Newest listed Opus         | High                         |
+| First-round code review, each axis                                                      | `codex` and `claudeAgent`      | Newest listed Sol and Opus | High                         |
+| The extra Correctness reviewer, the verifier, and later review rounds                   | `codex`                        | Newest listed Sol          | High                         |
+| A contrarian check                                                                      | `cursor`                       | Newest listed Grok         | High, 256K context, Fast off |
 
 Pick the highest-versioned model of that family from the target provider's `models` list instead of a remembered ID. When a native subagent tool can't select the model, use `delegate_task` on the same provider. For any other session model, keep the caller's same-provider path. First-round code review calls both providers, including the session's own, and code-review's Delegated review reference covers replacements.
 
@@ -41,6 +41,6 @@ Treat the child's report as leads under the calling skill's verification rules.
 
 Use when a calling skill asks a contrarian to argue against a judgement you've made. The calling skill decides when to ask and what the judgement covers.
 
-- Route it as the table above describes, setting every option the catalogue lists for that Grok model to its default value. Cursor's plan fixes each model's settings and rejects a call that leaves them unset.
+- Route it as the table above describes. Set the effort to `high`, the context window to `256k` and Fast to `false` through `target.options`, with the option IDs the catalogue advertises for that model, such as `reasoning_effort`, `contextWindow` and `fastMode` for Grok 4.7. Set all three, because an unset option takes the catalogue default, and Cursor rejects the default 500K context through T3 with "Invalid parameters for registry model".
 - Follow the Delegate rules above with `role: "review"`. Give it the judgement, your reasoning and evidence, and the relevant paths. Ask it to make the strongest evidence-based case against each part of the judgement, and to answer "no real objection" for a part where it finds none instead of inventing one.
 - Skip the check instead of falling back when you're a delegated task or subagent, delegation is restricted, the session already runs on Cursor, or a Fall back condition above applies. Cursor usage is limited, so don't retry a failed call. Don't substitute another model either, because the check needs a model family that took no part in the judgement. Report that the check was skipped and why.
