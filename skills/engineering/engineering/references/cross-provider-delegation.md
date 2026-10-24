@@ -1,6 +1,6 @@
 # Cross-provider delegation
 
-Use when a skill or the global instructions send work to another model through T3 Code's orchestration tools. The caller decides whether the work goes cross-provider. This reference routes each kind of delegated work to a provider, model, and effort, then covers calling the target and falling back. Its last section covers a contrarian check from a third provider.
+Use when a skill or the global instructions send work to another model through T3 Code's orchestration tools. The caller decides whether the work goes cross-provider. This reference routes each kind of delegated work to a provider, model, and effort, then covers calling the target and falling back. Its last sections cover a Fable advisor on a plan and a contrarian check from a third provider.
 
 ## Route the work
 
@@ -9,6 +9,7 @@ Call `orchestrator_capabilities`. Its `inheritedProviderInstanceId` and `inherit
 | Work                                                                                    | Provider                       | Model                      | Effort                       |
 | --------------------------------------------------------------------------------------- | ------------------------------ | -------------------------- | ---------------------------- |
 | Taste subagents: code, architecture, and UI                                             | Same provider, native subagent | Newest Opus                | High                         |
+| An advisor on a drafted plan                                                            | Same provider, native subagent | Newest Fable               | High                         |
 | Investigations: non-trivial debugging, unfamiliar code, computer use, and visual checks | `codex`                        | Newest listed Sol          | High                         |
 | A skill's cross-provider step from a `claudeAgent` Fable or Opus session                | `codex`                        | Newest listed Sol          | High                         |
 | A skill's cross-provider step from a `codex` Astra or Sol session                       | `claudeAgent`                  | Newest listed Opus         | High                         |
@@ -36,6 +37,14 @@ T3's default effort setting is unreliable, so set High explicitly through `targe
 Use the caller's same-provider path when the T3 tools are absent, the target provider reports `canRunCrossProviderChildTask: false`, its catalogue lacks the target family, or the delegation fails. Report the provider and model that did the work, or the reason for the fallback.
 
 Treat the child's report as leads under the calling skill's verification rules.
+
+## Advisor
+
+Use when the global instructions ask for a Fable advisor on a plan you've drafted. They decide when to ask.
+
+- Route it as the table above describes, with the model set to Fable and the effort to `high`. When the native subagent tool can't select Fable, use `delegate_task` on the same provider and set the effort through `target.options`.
+- Follow the Delegate rules above with `role: "review"`, and state that the work is read-only. Give it the goal and constraints, your draft plan, the alternatives you rejected and why, and the relevant paths. Ask for the plan's biggest risks, a simpler approach if one exists, and its recommendation with reasons, and to say the plan holds instead of inventing changes.
+- Skip the advisor when you're a delegated task or subagent, the session already runs on Fable, the catalogue lacks Fable, or the call fails. Don't substitute another model, because the advisor exists for Fable's judgement. Report that the advisor was skipped and why.
 
 ## Contrarian
 
