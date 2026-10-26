@@ -69,6 +69,6 @@ Check finished text against these rules silently before sending it. Use $writing
 
 - Use $show-me when explaining code or code changes, or answering questions about code.
 
-- Use $pull-requests when creating a pull request or writing or updating its title, description, or labels.
+- Use $pull-requests when creating a pull request or writing or updating its title, description, or labels. Mark new pull requests ready for review unless I ask for a draft.
 
 - Use $gh-stack for stacked or dependent pull requests, from creating the branches to opening and updating the pull requests.

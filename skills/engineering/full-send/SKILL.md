@@ -36,7 +36,7 @@ In the final account, list these under "Other issues" with the fix you recommend
 
 1. **Implement** with "engineering" and the skills it routes to, and verify the change as it requires.
 2. **Review** with "code-review" through its repeat rounds.
-3. **Open the pull request** with "pull-requests", which commits, pushes, and runs its bot draft review. Just before the pull request is marked ready, note the IDs of the active bots' check runs and reviews on the head commit. When that review leaves the pull request as a draft, mark it ready anyway and report why.
+3. **Open the pull request** with "pull-requests", which commits, pushes, and runs its bot draft review. Just before the pull request is marked ready, note the IDs of the active bots' check runs and reviews on the head commit.
 4. **Watch** with "babysit-pr". After each push, or when resuming a pull request whose head commit an active bot hasn't reviewed, request and wait for the active bots' reviews with steps 1 and 2 of the bot draft review. After marking the pull request ready, use step 2 to wait for bot runs and reviews missing from the IDs noted in step 3. Handle their comments as the bot draft review's step 3 describes. A round is one push of fixes for bot findings. After three rounds since marking the pull request ready, stop fixing bot findings and list the rest as other issues.
 5. **Finish** when all of these hold, even on the first snapshot:
    - the pull request is open and ready for review;

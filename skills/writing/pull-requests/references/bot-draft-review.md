@@ -63,7 +63,7 @@ Macroscope CLI, which bills separately.
    note as a reviewer, then run `gh pr ready <number>` unless the user asked for a draft. Macroscope
    checks again when the pull request is marked ready, and "babysit-pr" handles comments from that
    check. When a review request fails, a review fails or times out, or the third round still needed
-   fixes, leave the pull request as a draft and report why.
+   fixes, mark the pull request ready anyway unless the user asked for a draft, and report why.
 
 Report Macroscope's Approvability verdict, the title of its `Macroscope - Approvability Check` run on
 the final head commit. The verdict can depend on the change's scope rather than defects, so it never
