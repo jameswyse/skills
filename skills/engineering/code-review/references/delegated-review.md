@@ -31,7 +31,8 @@ codex review --base <base> -c 'sandbox_mode="read-only"' --disable multi_agent \
   > <packet>/codex-review-base.txt 2> <packet>/codex-review-base.log
 ```
 
-For a working-tree scope, use `--uncommitted` instead of `--base <base>` and name the files
+In another-author mode, append that mode's rules to `developer_instructions`. For a working-tree
+scope, use `--uncommitted` instead of `--base <base>` and name the files
 `codex-review-uncommitted`. For a scope with both, run each with its own files. The read-only
 sandbox and disabled subagents stop it from starting this workflow again. Read only the `.txt` files
 with the other reports before verifying. Start a 30-minute limit when the other reviewers or your

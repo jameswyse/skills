@@ -49,8 +49,9 @@ Macroscope CLI, which bills separately.
    This includes other bots, such as the Codex connector. Treat a concern raised only in Copilot's
    review body, such as "Needs a closer look", as a comment too.
 
-   Verify and weigh each comment as a lead under the code-review skill's verification step. Fix the
-   actionable ones, rerun the checks the fixes affect, then commit and push once.
+   Verify and weigh each comment as a lead under the code-review skill's verification step, and
+   record each bot's counts in the code-review run report. Fix the actionable ones, rerun the checks the fixes
+   affect, then commit and push once.
 
    Reply to each thread with the fixing commit, or why it was rejected or accepted as a risk,
    following the global rule for posting on the user's behalf. Resolve it when the "babysit-pr"

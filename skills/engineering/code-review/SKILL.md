@@ -31,6 +31,23 @@ authorisation, sensitive data, secret handling, permissions, security configurat
 dependency graph. Keep this check scoped to the diff and the context needed to verify it. Recommend
 the user-invoked "improve-security" skill only when the user requests a dedicated security review.
 
+## Another author's change
+
+To review someone else's pull request and post or draft a comment on it, use "pull-request-reviews",
+which calls this skill.
+
+When the change isn't the user's, use another-author mode, where the user's personal rules don't
+apply. Delegated reviewers load the user's global instructions, so state this mode at the top of the
+Standards manifest and in every reviewer, verifier, and contrarian prompt, and apply it to your own
+verification:
+
+- Standards sources are the repository's rule files and the conventions in the touched files and
+  their neighbours. The engineering baseline and named smells are leads, reportable only when the
+  repository's own code or rules support them.
+- The linked ticket or issue holds the requirements, and the pull request's title and body are the
+  author's claims to check against the change. Without a ticket or issue, the title and body are the
+  spec.
+
 ## 1. Fix the scope
 
 - When the user supplies a fixed point, verify it with `git rev-parse`, capture
@@ -60,6 +77,7 @@ smells as leads and report only a concrete cost in the scoped diff.
 
 ## 2. Run the reviewers
 
+Start the ledger described in [Run report](references/run-report.md) before the first reviewer runs.
 Delegate every review, whatever its size. Run each applicable axis on both first-round review models
 in parallel, as [Delegated review](references/delegated-review.md) describes. Read it before
 preparing the packet. Only when delegation is unavailable or restricted, inspect the axes
@@ -143,8 +161,7 @@ missed. Present actionable findings in your own words, with their severity, unde
 within an axis, including the same finding from both model families, but do not merge or rerank
 findings across axes.
 
-End with one line giving each axis's actionable finding count and worst issue, if any, and the
-number of accepted risks.
+End with the run report.
 
 ## 4. Repeat after fixes
 

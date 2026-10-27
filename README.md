@@ -10,12 +10,13 @@ Follows the [Agent Skills specification](https://agentskills.io/specification).
 
 Drafting, editing, and developer documentation. The hard writing rules for every response live in `global/AGENTS.md`.
 
-| Skill               | Purpose                                                                                           |
-| ------------------- | ------------------------------------------------------------------------------------------------- |
-| `writing`           | Drafting and editing guidance for documents, messages, and other prose people read.               |
-| `technical-writing` | Developer documentation, comments, commits, release notes, and agent instructions.                |
-| `pull-requests`     | Pull-request creation, titles, descriptions with change outlines, and Airteam review labels.      |
-| `show-me`           | Visual explanations for code questions, code changes, and pull-request descriptions.              |
+| Skill                  | Purpose                                                                                      |
+| ---------------------- | -------------------------------------------------------------------------------------------- |
+| `writing`              | Drafting and editing guidance for documents, messages, and other prose people read.          |
+| `technical-writing`    | Developer documentation, comments, commits, release notes, and agent instructions.           |
+| `pull-requests`        | Pull-request creation, titles, descriptions with change outlines, and Airteam review labels. |
+| `pull-request-reviews` | Reviews another author's pull request and drafts or posts one comment with a run report.     |
+| `show-me`              | Visual explanations for code questions, code changes, and pull-request descriptions.         |
 
 ### UX and design
 

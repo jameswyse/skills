@@ -44,7 +44,7 @@ For a change at a security boundary, check authorisation at the server-side oper
 
 A smell is a lead. Report it only with the concrete maintenance or correctness cost in the diff and the smallest coherent response. Every smell finding is a labelled judgement call.
 
-- **Code Comment.** The change adds a comment the global no-comments rule forbids, or keeps one in touched code that restates or contradicts the code.
+- **Code Comment.** The change adds a comment the global no-comments rule forbids, or keeps one in touched code that restates or contradicts the code. For another author's change, report only a comment that contradicts the code, unless the repository's rules or conventions forbid comments.
 - **Symptom Guard.** A null check, fallback, or catch silences invalid state instead of preventing it where it enters.
 - **Parallel Path.** An old and new way to do the same thing coexist without a compatibility requirement.
 - **Speculative Generality.** Abstraction, parameters, or hooks for needs nobody asked for.

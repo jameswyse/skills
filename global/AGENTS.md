@@ -63,7 +63,7 @@ Check finished text against these rules silently before sending it. Use $writing
 
 - Use $engineering for implementation, debugging, software design decisions, and engineering reviews. Skip it for straightforward code explanations, read-only lookups, and routine Git operations.
 
-- Use $code-review on a code change before reporting it complete or opening a pull request for it. Skip it only when the change can't plausibly break anything, such as documentation, copy, formatting, or a rename the toolchain verifies. Size alone doesn't make a change trivial: a one-line change to logic, types, configuration, queries, or dependencies still needs review. When unsure, review. Subagents and delegated tasks leave the review to the parent.
+- Use $code-review on a code change before reporting it complete or opening a pull request for it. Skip it only when the change can't plausibly break anything, such as documentation, copy, formatting, or a rename the toolchain verifies. Size alone doesn't make a change trivial: a one-line change to logic, types, configuration, queries, or dependencies still needs review. When unsure, review. Include its run report in your final account. Subagents and delegated tasks leave the review to the parent.
 
 - Use $ux for user-facing product and interface design, UX, UI, interaction, visual presentation, accessibility, interface copy, or motion. For interface implementation, use both $engineering and $ux.
 
