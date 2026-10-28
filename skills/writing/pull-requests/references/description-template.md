@@ -54,5 +54,12 @@
 
 - {List the checks that confirmed the change and their results. Omit checks that did not run and external or private references.}
 
+<details>
+<summary>How this change was reviewed</summary>
+
+{The run report from "code-review": its table and outcome line. Omit this block when "code-review" did not run.}
+
+</details>
+
 > [!NOTE]
 > 🤖 {Each model that worked on the change and its role, including reviewers, such as "Claude Opus 5.5 (implementation), GPT-6.1-Sol (code review)".}
