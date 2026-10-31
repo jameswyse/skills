@@ -7,11 +7,13 @@ describe.
 
 These are the first round's reviewers. Later rounds use the narrower set in code-review step 4.
 
-Run every applicable axis on both first-round review models in the routing table of the engineering
-[Cross-provider delegation](../../engineering/references/cross-provider-delegation.md) reference, so
-each axis gets two independent reviewers. Call `delegate_task` once per axis and model with
-`role: "review"`, including for the model from the session's own provider. Follow that reference's
-call rules and issue every call in the same step.
+Run each applicable axis on the first-round models the routing table of the engineering
+[Cross-provider delegation](../../engineering/references/cross-provider-delegation.md) reference
+assigns it. Spec and Correctness each get two independent reviewers, one per model family. Standards
+gets one, because in late October 2026 a second family's Standards reviewer had the highest
+rejection rate and no confirmed finding the others missed. Call `delegate_task` once per axis and
+model with `role: "review"`, including for the model from the session's own provider. Follow that
+reference's call rules and issue every call in the same step.
 
 Add the extra Correctness reviewer the routing table assigns, with the Correctness prompt plus one
 instruction: give every [Missed findings](missed-findings.md) pattern a verdict in turn, saying

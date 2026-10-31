@@ -78,7 +78,7 @@ smells as leads and report only a concrete cost in the scoped diff.
 ## 2. Run the reviewers
 
 Start the ledger described in [Run report](references/run-report.md) before the first reviewer runs.
-Delegate every review, whatever its size. Run each applicable axis on both first-round review models
+Delegate every review, whatever its size. Run each applicable axis on its first-round review models
 in parallel, as [Delegated review](references/delegated-review.md) describes. Read it before
 preparing the packet. Only when delegation is unavailable or restricted, inspect the axes
 sequentially in the primary agent with the captured scope and the axis prompts below, keeping each
@@ -157,9 +157,10 @@ reference describes. Give it the packet paths and each item with its evidence an
 
 Make one final pass over the complete scope for high-risk correctness or security issues the agents
 missed. Present actionable findings in your own words, with their severity, under `## Standards`,
-`## Spec`, and `## Correctness`, and accepted risks under `## Accepted risks`. Merge duplicates
-within an axis, including the same finding from both model families, but do not merge or rerank
-findings across axes.
+`## Spec`, and `## Correctness`, and accepted risks under `## Accepted risks`. Start each one with
+its ledger ID and every reviewer that reported it, as named in the run report or "Primary". Merge
+duplicates within an axis, including the same finding from several reviewers, but do not merge or
+rerank findings across axes.
 
 End with the run report.
 

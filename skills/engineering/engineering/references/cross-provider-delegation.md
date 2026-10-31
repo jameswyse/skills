@@ -13,11 +13,11 @@ Call `orchestrator_capabilities`. Its `inheritedProviderInstanceId` and `inherit
 | Investigations: non-trivial debugging, unfamiliar code, computer use, and visual checks | `codex`                        | Newest listed Sol          | High                         |
 | A skill's cross-provider step from a `claudeAgent` Fable or Opus session                | `codex`                        | Newest listed Sol          | High                         |
 | A skill's cross-provider step from a `codex` Astra or Sol session                       | `claudeAgent`                  | Newest listed Opus         | High                         |
-| First-round code review, each axis                                                      | `codex` and `claudeAgent`      | Newest listed Sol and Opus | High                         |
-| The extra Correctness reviewer, the verifier, and later review rounds                   | `codex`                        | Newest listed Sol          | High                         |
+| First-round code review, Spec and Correctness axes                                      | `codex` and `claudeAgent`      | Newest listed Sol and Opus | High                         |
+| First-round Standards review, extra Correctness reviewer, verifier, and later rounds    | `codex`                        | Newest listed Sol          | High                         |
 | A contrarian check                                                                      | `cursor`                       | Newest listed Grok         | High, 256K context, Fast off |
 
-Pick the highest-versioned model of that family from the target provider's `models` list instead of a remembered ID. When a native subagent tool can't select the model, use `delegate_task` on the same provider. For any other session model, keep the caller's same-provider path. First-round code review calls both providers, including the session's own, and code-review's Delegated review reference covers replacements.
+Pick the highest-versioned model of that family from the target provider's `models` list instead of a remembered ID. When a native subagent tool can't select the model, use `delegate_task` on the same provider. For any other session model, keep the caller's same-provider path. First-round Spec and Correctness review calls both providers, including the session's own, and code-review's Delegated review reference covers replacements.
 
 T3's default effort setting is unreliable, so set High explicitly through `target.options` with the option ID the catalogue advertises for that model, such as `reasoningEffort` for Codex or `effort` for Claude, and the value `high`.
 

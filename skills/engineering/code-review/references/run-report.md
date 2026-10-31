@@ -6,11 +6,18 @@ later round.
 
 ## Keep the ledger
 
+Give each candidate finding an ID from its axis and a number, such as `S1`, `P1`, or `C1`, when it
+is first reported. Reuse that ID when another reviewer or a later round reports the same finding, so
+the ledger shows every reviewer that found it. Record a finding from your own final pass with the
+reviewer "Primary", which gets no table row. For each finding, record its reviewers and its outcome:
+its severity when actionable, accepted risk, Spec decision for the user, or rejected. Code-review
+step 3 shows each verified finding's ID and reviewers.
+
 Record one entry per reviewer run:
 
 - the provider and model, or "Codex CLI", noting any replacement and its reason;
 - the axis it reviewed and the round;
-- the candidate findings it reported;
+- the IDs of the candidate findings it reported;
 - how many of those survived verification as actionable findings or accepted risks. When several
   reviewers report the same finding, count it for each of them.
 
@@ -29,7 +36,7 @@ for an axis it didn't review. Then give one line of outcomes:
 | Round | Reviewer            | Standards | Spec  | Correctness |
 | ----- | ------------------- | --------- | ----- | ----------- |
 | 1     | GPT-6.1-Sol         | 3 / 1     | 2 / 0 | 4 / 3       |
-| 1     | Claude Opus 5.5     | 2 / 1     | 1 / 0 | 4 / 2       |
+| 1     | Claude Opus 5.5     | -         | 1 / 0 | 4 / 2       |
 | 1     | GPT-6.1-Sol (extra) | -         | -     | 3 / 1       |
 | 1     | Codex CLI           | 0 / 0     | 0 / 0 | 2 / 1       |
 | 2     | GPT-6.1-Sol         | -         | -     | 1 / 0       |
