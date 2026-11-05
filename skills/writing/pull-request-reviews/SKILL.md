@@ -11,12 +11,6 @@ Review someone else's pull request with "code-review", then give the author one 
 
 Posting a review contacts the author. A request to leave, post, or submit the review authorises posting one review comment on that pull request. Otherwise return the draft. Always submit with the comment event, never approve or request changes. Follow the global rule for posting on the user's behalf.
 
-## Priorities and IDs
-
-Label each actionable finding with a priority from its "code-review" severity: `P0` for a high-severity security issue, data loss, data corruption, or outage that normal use can reach, `P1` for any other high, `P2` for medium, and `P3` for low.
-
-Number the posted items across the pull request: `F1` for findings, `Q1` for Spec questions, and `R1` for accepted risks. On a re-review, an item that still stands keeps its earlier ID, and new items continue after the highest earlier number. Use these IDs in the comment instead of the "code-review" ledger IDs, whose Spec `P1` would read as a priority.
-
 ## Workflow
 
 1. **Find the pull request.** Run `gh pr view <ref> --json url,number,title,body,author,headRefName,baseRefName,baseRefOid,headRefOid,closingIssuesReferences`, then `gh api user --hostname <pull request host> --jq .login`.
@@ -26,7 +20,7 @@ Number the posted items across the pull request: `F1` for findings, `Q1` for Spe
 
    Alongside each first-round Opus reviewer, run the same axis on the newest listed Fable on `claudeAgent` at High effort, with Delegated review's call rules, or a native subagent that can select Fable when the T3 tools are absent. Fable sometimes catches what Opus misses. When Fable can't run, record that in the run report and don't substitute another model.
 5. **Choose what to post.** Post every actionable finding, Spec findings left for a decision as questions to the author, and accepted risks. Drop findings that rest only on a personal preference and points an existing thread already makes. Dropped findings appear only as counts in the footer.
-6. **Write the comment** with [the comment template](references/comment-template.md).
+6. **Write the comment** with [the comment template](references/comment-template.md). Use the priorities and ID prefixes from "code-review" step 3, numbering only the posted items. On a re-review, an item that still stands keeps its ID from the earlier comment, and new items continue after the highest earlier number.
 7. **Post when authorised.** When one of the user's earlier reviews from this skill already covers `headRefOid`, don't post again. Otherwise write the comment to a file in the temporary directory and pin it to the reviewed commit:
 
    ```bash

@@ -6,18 +6,19 @@ later round.
 
 ## Keep the ledger
 
-Give each candidate finding an ID from its axis and a number, such as `S1`, `P1`, or `C1`, when it
-is first reported. Reuse that ID when another reviewer or a later round reports the same finding, so
-the ledger shows every reviewer that found it. Record a finding from your own final pass with the
-reviewer "Primary", which gets no table row. For each finding, record its reviewers and its outcome:
-its severity when actionable, accepted risk, Spec decision for the user, or rejected. Code-review
-step 3 shows each verified finding's ID and reviewers.
+Give each candidate finding a plain number when it is first reported, and record its axis. Reuse
+that number when another reviewer or a later round reports the same finding, so the ledger shows
+every reviewer that found it. Record a finding from your own final pass with the reviewer "Primary",
+which gets no table row. For each finding, record its reviewers and its outcome: actionable with its
+priority, accepted risk, Spec decision for the user, or rejected. The number stays in the ledger.
+Code-review step 3 gives each verified finding the ID that readers see, so a rejected candidate
+leaves no gap.
 
 Record one entry per reviewer run:
 
 - the provider and model, or "Codex CLI", noting any replacement and its reason;
 - the axis it reviewed and the round;
-- the IDs of the candidate findings it reported;
+- the numbers of the candidate findings it reported;
 - how many of those survived verification as actionable findings or accepted risks. When several
   reviewers report the same finding, count it for each of them.
 
@@ -43,7 +44,7 @@ for an axis it didn't review. Then give one line of outcomes:
 | Bot 1 | Copilot             | 1 / 0     | 0 / 0 | 2 / 1       |
 
 Cells show reported / verified. Verifier GPT-6.1-Sol confirmed 6 and refuted 9. Contrarian Grok 4.7
-reversed 1 rejection. Actionable: Standards 1, Spec 0, Correctness 3. Worst: high, unlocked price
+reversed 1 rejection. Actionable: Standards 1, Spec 0, Correctness 3. Worst: P1, unlocked price
 saved. Accepted risks 1.
 ```
 

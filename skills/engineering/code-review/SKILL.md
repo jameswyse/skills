@@ -97,7 +97,7 @@ Ask:
 > 3. Every named test smell from the Testing reference when the scope contains tests.
 > Separate hard documented breaches from baseline judgement calls. Repository rules override the
 > baseline. Skip other tooling-enforced issues.
-> Prioritise by severity. Return all supported findings concisely. If the tool output limit would
+> Put the highest-impact findings first. Return all supported findings concisely. If the tool output limit would
 > truncate the report, return the first batch and state how many supported findings remain.
 
 ### Spec agent
@@ -146,9 +146,12 @@ corruption weigh heavily even when unlikely. A Spec finding is never an accepted
 looks disproportionate, report it as a decision for the user.
 
 Every other verified finding is actionable, apart from a Spec finding left for the user to decide.
-Rate each actionable finding high, medium, or low
-severity. Low severity covers wording, naming, formatting, and other changes with no behavioural or
-requirement effect.
+Give each actionable finding a priority:
+
+- `P0`: a security issue, data loss, data corruption, or outage that normal use can reach.
+- `P1`: any other wrong behaviour or missed requirement in real use.
+- `P2`: a problem with limited or rare effect, or a maintenance cost worth fixing.
+- `P3`: wording, naming, formatting, and other changes with no behavioural or requirement effect.
 
 When you rejected any candidate finding or accepted a risk, ask a contrarian to argue each of those
 items back, as the engineering
@@ -156,11 +159,16 @@ items back, as the engineering
 reference describes. Give it the packet paths and each item with its evidence and your reason.
 
 Make one final pass over the complete scope for high-risk correctness or security issues the agents
-missed. Present actionable findings in your own words, with their severity, under `## Standards`,
-`## Spec`, and `## Correctness`, and accepted risks under `## Accepted risks`. Start each one with
-its ledger ID and every reviewer that reported it, as named in the run report or "Primary". Merge
-duplicates within an axis, including the same finding from several reviewers, but do not merge or
-rerank findings across axes.
+missed. Present actionable findings and Spec decisions in your own words under `## Standards`,
+`## Spec`, and `## Correctness`, and accepted risks under `## Accepted risks`. Merge duplicates
+within an axis, including the same finding from several reviewers, but do not merge or rerank
+findings across axes.
+
+Give each presented item an ID, numbered in the order presented: `F1` for an actionable finding,
+`Q1` for a Spec decision, and `R1` for an accepted risk. A later round keeps an item's ID and
+continues after the highest number used. Start each item with its ID, its priority when it has one,
+and every reviewer that reported it, as named in the run report or "Primary", such as
+`F1 [P1] GPT-6.1-Sol, Claude Opus 5.5`.
 
 End with the run report.
 
@@ -178,7 +186,7 @@ GIT_INDEX_FILE=<packet>/before.index git write-tree
 Keep the printed tree ID. Then fix every actionable finding, rerun the checks the fixes affect, and
 continue with the rest while a Spec decision waits for the user. When the spec includes a drafted
 pull request description, update it to match the fixes. Stop when the round had no actionable
-finding above low severity. Low-severity fixes don't need another round.
+finding above `P3`. `P3` fixes don't need another round.
 
 Otherwise run a narrower round on the fixes. Take the same snapshot into `after.index`, and capture
 `git diff <before-tree> <after-tree>` as the fix diff. Send one later-round reviewer per applicable
@@ -190,7 +198,7 @@ the contrarian. When that model can't run, use Delegated review's replacement ru
 the findings as in step 3.
 
 Run at most three rounds per task, counting every round even when the scope grows. If the third
-round still has actionable findings above low severity, fix them and report that those fixes had no
+round still has actionable findings above `P3`, fix them and report that those fixes had no
 independent review.
 
 ## Calibrate against bot comments

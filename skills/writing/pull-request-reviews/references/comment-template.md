@@ -34,7 +34,7 @@
 <details>
 <summary>How this review was run</summary>
 
-{The run report from "code-review": its table and outcome line, with priority labels in place of severity words.}
+{The run report from "code-review": its table and outcome line.}
 
 Posted {n} findings ({p0} P0, {p1} P1, {p2} P2, {p3} P3), {q} questions, and {a} accepted risks. Dropped {d} as personal preference or already raised. Rejected {r} candidates.
 
