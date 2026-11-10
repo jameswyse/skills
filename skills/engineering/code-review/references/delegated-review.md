@@ -15,13 +15,11 @@ rejection rate and no confirmed finding the others missed. Call `delegate_task` 
 model with `role: "review"`, including for the model from the session's own provider. Follow that
 reference's call rules and issue every call in the same step.
 
-Add the extra Correctness reviewer the routing table assigns, with the Correctness prompt plus one
-instruction: give every [Missed findings](missed-findings.md) pattern a verdict in turn, saying
-whether it applies and what it found.
-
-When the T3 tools are absent or a provider can't run a child task, replace the missing reviewers
-with the native subagent tool on the session's model, with parent-history inheritance disabled when
-the tool supports it. When stating the execution mode, name the provider and model behind each
+When the T3 tools are absent, a provider can't run a child task, or the catalogue lacks a reviewer's
+model or its call fails, replace the missing reviewers with the native subagent tool, with
+parent-history inheritance disabled when the tool supports it. Run a replaced Claude reviewer on the
+other Claude model when the tool can select it and it didn't just fail, and every other replacement
+on the session's model. When stating the execution mode, name the provider and model behind each
 reviewer and the reason for any replacement.
 
 When the `codex` command is available, also run the Codex CLI review in the background as an extra

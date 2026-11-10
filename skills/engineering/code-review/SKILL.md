@@ -153,10 +153,11 @@ Give each actionable finding a priority:
 - `P2`: a problem with limited or rare effect, or a maintenance cost worth fixing.
 - `P3`: wording, naming, formatting, and other changes with no behavioural or requirement effect.
 
-When you rejected any candidate finding or accepted a risk, ask a contrarian to argue each of those
-items back, as the engineering
+Ask a contrarian to argue back each rejected finding that would be `P0` or `P1` if it were real,
+and each accepted risk involving security, data loss, or data corruption, as the engineering
 [Cross-provider delegation](../engineering/references/cross-provider-delegation.md#contrarian)
-reference describes. Give it the packet paths and each item with its evidence and your reason.
+reference describes. Give it each item with its quoted evidence and your reason. Skip duplicates and
+items the evidence plainly refutes.
 
 Make one final pass over the complete scope for high-risk correctness or security issues the agents
 missed. Present actionable findings and Spec decisions in your own words under `## Standards`,
@@ -168,7 +169,7 @@ Give each presented item an ID, numbered in the order presented: `F1` for an act
 `Q1` for a Spec decision, and `R1` for an accepted risk. A later round keeps an item's ID and
 continues after the highest number used. Start each item with its ID, its priority when it has one,
 and every reviewer that reported it, as named in the run report or "Primary", such as
-`F1 [P1] GPT-6.1-Sol, Claude Opus 5.5`.
+`F1 [P1] GPT-6.1-Sol, Claude Fable 5.2`.
 
 End with the run report.
 
@@ -193,8 +194,7 @@ Otherwise run a narrower round on the fixes. Take the same snapshot into `after.
 axis the fix diff, the full current diff for context, and the earlier findings with their outcomes:
 fixed, accepted as a risk, or rejected with a reason. Ask reviewers to raise an accepted risk or
 rejected finding again only with new evidence. Later rounds use only the later-round model from
-Delegated review's routing and skip the extra Correctness reviewer, the Codex CLI, the verifier, and
-the contrarian. When that model can't run, use Delegated review's replacement rule. Verify and weigh
+Delegated review's routing and skip the Codex CLI, the verifier, and the contrarian. When that model can't run, use Delegated review's replacement rule. Verify and weigh
 the findings as in step 3.
 
 Run at most three rounds per task, counting every round even when the scope grows. If the third

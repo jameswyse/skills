@@ -37,8 +37,7 @@ for an axis it didn't review. Then give one line of outcomes:
 | Round | Reviewer            | Standards | Spec  | Correctness |
 | ----- | ------------------- | --------- | ----- | ----------- |
 | 1     | GPT-6.1-Sol         | 3 / 1     | 2 / 0 | 4 / 3       |
-| 1     | Claude Opus 5.5     | -         | 1 / 0 | 4 / 2       |
-| 1     | GPT-6.1-Sol (extra) | -         | -     | 3 / 1       |
+| 1     | Claude Fable 5.2    | -         | 1 / 0 | 4 / 2       |
 | 1     | Codex CLI           | 0 / 0     | 0 / 0 | 2 / 1       |
 | 2     | GPT-6.1-Sol         | -         | -     | 1 / 0       |
 | Bot 1 | Copilot             | 1 / 0     | 0 / 0 | 2 / 1       |

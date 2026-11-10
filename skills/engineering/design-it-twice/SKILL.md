@@ -64,7 +64,7 @@ Present each design separately before comparing them. Use the same criteria for 
 - Fit with current requirements and likely change.
 - Total complexity across the affected system.
 
-Choose the strongest design, then ask a contrarian to argue against that choice, as the engineering [Cross-provider delegation](../engineering/references/cross-provider-delegation.md#contrarian) reference describes. Give it the problem space, every design, and your comparison.
+Choose the strongest design. Unless the choice is clear and cheap to undo, ask a contrarian to argue against it, as the engineering [Cross-provider delegation](../engineering/references/cross-provider-delegation.md#contrarian) reference describes. Give it the problem space, each design's interface, usage example, and main trade-offs, and your comparison.
 
 Recommend the strongest design and explain why it wins. Propose a hybrid when it combines compatible strengths without widening the interface or preserving two competing paths. Do not stop at a menu of options.
 

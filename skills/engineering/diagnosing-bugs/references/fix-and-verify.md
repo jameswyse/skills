@@ -4,7 +4,7 @@ Read only when the user requested a fix.
 
 ## Challenge the cause
 
-Before fixing, ask a contrarian to argue that the cause you settled on is wrong, as the engineering [Cross-provider delegation](../../engineering/references/cross-provider-delegation.md#contrarian) reference describes. Ask it to name the observation that would tell each alternative apart from your cause, and give it the symptom, the evidence, the alternatives you ruled out, and the affected paths. When the existing evidence can't rule out an alternative, make that observation if it's available and proportionate, or report the alternative as a verification gap. Then fix the cause the evidence supports.
+Before fixing, ask a contrarian to argue that the cause you settled on is wrong, unless an observation you've already made rules out the alternatives, such as changing only the suspected cause and watching the symptom appear and disappear. Follow the engineering [Cross-provider delegation](../../engineering/references/cross-provider-delegation.md#contrarian) reference, treating each alternative as a part of the judgement. Ask it to name the observation that would tell each alternative apart from your cause, and give it the symptom, the evidence, the alternatives you ruled out, and the affected paths. When the existing evidence can't rule out an alternative, make that observation if it's available and proportionate, or report the alternative as a verification gap. Then fix the cause the evidence supports.
 
 ## Add a regression test at the right seam
 

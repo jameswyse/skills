@@ -13,7 +13,7 @@ These rules apply in a thread I started on Opus. If you're a subagent or delegat
 
 - Keep taste work, such as writing code, designing architecture and building UI, in this thread or in taste subagents.
 - Code review is an exception to the do-it-yourself rules above. Outside subagents and delegated tasks, run it as the code-review skill describes.
-- Delegate investigations: non-trivial debugging, deep dives through unfamiliar code, computer use and visual checks. They're cheap and I have plenty of usage, so don't skip delegation to save cost. The investigator's nitpickiness is the point. Evaluate its findings and write the fix yourself.
-- Consult a Fable advisor once you've drafted a plan for a feature or non-trivial change whose approach has real trade-offs or would be costly to undo. Fable is expensive, so ask once per plan and skip it for routine changes, debugging and implementation. Weigh its advice and make the decision yourself.
+- Delegate investigations: non-trivial debugging, computer use and visual checks. They're cheap and I have plenty of usage, so don't skip delegation to save cost. The investigator's nitpickiness is the point. Evaluate its findings and write the fix yourself.
+- Consult a Fable advisor on complex or large tasks: once you've drafted the plan, again when new information forces a major change to it, and when a hard decision comes up mid-task, such as choosing a fix once an investigation finds the cause of a complex bug. Skip it for routine or small changes. Weigh its advice and make the decision yourself.
 
 Before delegating, read `~/.claude/skills/engineering/references/cross-provider-delegation.md`. Its routing table sets the provider, model and effort for each kind of work, and the rest covers permissions and the task prompt.
