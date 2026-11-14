@@ -34,25 +34,13 @@ The `interface-review`, `variant`, and `explain-interface` skills are user-invok
 - `better-writing`: own user-facing interface copy, terminology, voice, labels, errors, and empty states.
 - `better-typography`: own typefaces, type scales, text rendering, wrapping, truncation, and text spacing.
 - `better-colors`: own palettes, colour tokens, theming, gradients, semantic colour, and measured contrast pairs.
-- `better-ui`: own general visual polish, surfaces, radii, shadows, icons, optical alignment, and motion when no animation skill has scoped authority.
-
-### Animation skills
-
-- `animate`: build a requested animation or transition.
-- `review-animations`: review existing animation or motion code.
-- `improve-animations`: audit motion across a codebase and write improvement plans.
-- `find-animation-opportunities`: find places where motion would help and reject places where it would not.
-- `animation-vocabulary`: name an animation or motion effect from a description.
-
-For an animation-only request, use the selected animation skill as the sole motion and polish specialist. Add an interface skill only when the request also contains work in that skill's non-motion domain.
+- `better-ui`: own general visual polish, surfaces, radii, shadows, icons, optical alignment, and motion.
 
 ## Resolve overlap
 
 Use one authority for each design decision.
 
-- When motion is the explicit subject, the selected animation skill owns motion values and behaviour. Do not also apply `better-ui` motion rules.
-- The relevant interface skills still own accessibility, layout, typography, colour, and interface copy. `better-accessibility` owns reduced-motion requirements.
-- For a holistic interface review without an explicit motion focus, let `better-interface` and its `better-ui` handoff own motion within that review.
+- `better-ui` owns motion values and behaviour. `better-accessibility` owns reduced-motion requirements.
 - For user-facing interface copy, let `better-writing` govern UX-copy decisions when it is available.
 
 ## Verify native mobile controls on a device

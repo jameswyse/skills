@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import shlex
+import shutil
 import subprocess
 import tempfile
 import unittest
@@ -10,10 +11,15 @@ from pathlib import Path
 
 
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "setup-external-skills"
+MANIFEST = {
+    "example/skills": ["first-skill", "second-skill"],
+    "https://skills.example.dev": ["hosted-skill"],
+}
 
 
 class SetupExternalSkillsTest(unittest.TestCase):
     root: Path
+    script: Path
     bin_dir: Path
     state: Path
     log: Path
@@ -23,6 +29,10 @@ class SetupExternalSkillsTest(unittest.TestCase):
         directory = tempfile.TemporaryDirectory(prefix="external-skills-test-")
         self.addCleanup(directory.cleanup)
         self.root = Path(directory.name)
+        self.script = self.root / "scripts" / SCRIPT.name
+        self.script.parent.mkdir()
+        shutil.copy(SCRIPT, self.script)
+        (self.root / "external-skills.json").write_text(json.dumps(MANIFEST), encoding="utf-8")
         self.bin_dir = self.root / "bin"
         self.bin_dir.mkdir()
         self.state = self.root / "state.json"
@@ -57,8 +67,7 @@ if command == "list":
 
 if command == "add":
     source = args[2]
-    if source == "https://cli.sentry.dev":
-        source = "cli.sentry.dev"
+    source = source.removeprefix("https://")
     skill_index = args.index("--skill") + 1
     agent_names = {
         "codex": "Codex",
@@ -115,7 +124,7 @@ raise SystemExit(2)
         self, *args: str, cwd: Path | None = None
     ) -> subprocess.CompletedProcess[str]:
         return subprocess.run(
-            [str(SCRIPT), *args],
+            [str(self.script), *args],
             check=False,
             capture_output=True,
             text=True,
@@ -132,19 +141,17 @@ raise SystemExit(2)
         self.assertIn("setup complete", first.stdout)
         installed = json.loads(self.state.read_text(encoding="utf-8"))
         names = {record["name"] for record in installed}
-        self.assertIn("animate", names)
-        self.assertIn("sentry-cli", names)
-        self.assertNotIn("emil-design-eng", names)
+        self.assertIn("first-skill", names)
+        self.assertIn("hosted-skill", names)
 
         self.log.write_text("", encoding="utf-8")
         second = self.run_setup()
         self.assertEqual(second.returncode, 0, second.stderr)
         commands = self.commands()
         update = next(command for command in commands if command[1] == "update")
-        self.assertIn("animate", update)
-        self.assertIn("sentry-cli", update)
-        self.assertIn("vercel-react-best-practices", update)
-        self.assertNotIn("emil-design-eng", update)
+        self.assertIn("first-skill", update)
+        self.assertIn("hosted-skill", update)
+        self.assertIn("second-skill", update)
         self.assertFalse(any(command[1] == "add" for command in commands))
 
     def test_refuses_to_overwrite_a_skill_from_another_source(self) -> None:
@@ -152,7 +159,7 @@ raise SystemExit(2)
             json.dumps(
                 [
                     {
-                        "name": "animate",
+                        "name": "first-skill",
                         "source": "another/source",
                         "agents": ["Codex"],
                     }
@@ -174,8 +181,8 @@ raise SystemExit(2)
             json.dumps(
                 [
                     {
-                        "name": "animate",
-                        "source": "emilkowalski/skills",
+                        "name": "first-skill",
+                        "source": "example/skills",
                         "agents": ["Codex"],
                     }
                 ]
@@ -189,14 +196,14 @@ raise SystemExit(2)
         add = next(
             command
             for command in self.commands()
-            if command[1] == "add" and command[2] == "emilkowalski/skills"
+            if command[1] == "add" and command[2] == "example/skills"
         )
-        self.assertIn("animate", add)
+        self.assertIn("first-skill", add)
         self.assertIn("claude-code", add)
         installed = {
             record["name"]: record for record in json.loads(self.state.read_text())
         }
-        self.assertIn("Claude Code", installed["animate"]["agents"])
+        self.assertIn("Claude Code", installed["first-skill"]["agents"])
 
     def test_dry_run_reports_changes_without_installing(self) -> None:
         unlisted = [{"name": "ad-hoc", "source": "someone/skills", "agents": ["Codex"]}]
@@ -213,7 +220,7 @@ raise SystemExit(2)
         removal = next(command for command in printed if command[2] == "remove")
         self.assertIn("ad-hoc", removal)
         self.assertIn("--global", removal)
-        self.assertIn("npx skills@latest add https://cli.sentry.dev", result.stdout)
+        self.assertIn("npx skills@latest add https://skills.example.dev", result.stdout)
         self.assertIn("npx skills@latest add", result.stdout)
         self.assertIn("--agent codex --agent claude-code", result.stdout)
         self.assertEqual(json.loads(self.state.read_text(encoding="utf-8")), unlisted)
@@ -260,7 +267,7 @@ raise SystemExit(2)
     def test_fails_when_removal_takes_a_listed_skill_with_it(self) -> None:
         self.state.write_text(
             json.dumps(
-                [{"name": "Animate", "source": "emilkowalski/skills", "agents": ["Codex"]}]
+                [{"name": "First-Skill", "source": "example/skills", "agents": ["Codex"]}]
             ),
             encoding="utf-8",
         )
@@ -268,7 +275,7 @@ raise SystemExit(2)
         result = self.run_setup()
 
         self.assertEqual(result.returncode, 1)
-        self.assertIn("animate", result.stderr)
+        self.assertIn("first-skill", result.stderr)
 
     def test_keeps_an_unlisted_skill_when_installing_a_listed_one_fails(self) -> None:
         self.state.write_text(

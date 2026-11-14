@@ -103,8 +103,6 @@ Skills in this repository can defer specialised work to external skills when the
 
 `ux` routes interface work to the installed [`jakubkrehel/skills`](https://github.com/jakubkrehel/skills) family. It uses that family's own workflow and domain routing. `writing` also delegates user-facing interface copy to `better-writing` when available.
 
-Animation work routes to the focused skills from [`emilkowalski/skills`](https://github.com/emilkowalski/skills). `animate` builds motion, `review-animations` reviews it, `improve-animations` audits it, `find-animation-opportunities` finds useful additions, and `animation-vocabulary` names effects.
-
 The upstream `interface-review`, `variant`, and `explain-interface` skills are user-invoked. Invoke them explicitly with the syntax supported by the current agent, such as `$interface-review` in Codex or `/interface-review` in Claude Code. The local `ux` router identifies those cases but does not replace their invocation policy.
 
 ## Recommended specialist skills

@@ -2,24 +2,8 @@
   "anthropics/skills": [
     "frontend-design"
   ],
-  "apollographql/skills": [
-    "apollo-client",
-    "apollo-server",
-    "graphql-operations",
-    "graphql-schema"
-  ],
   "https://cli.sentry.dev": [
     "sentry-cli"
-  ],
-  "Effect-TS/skills": [
-    "effect-ts"
-  ],
-  "emilkowalski/skills": [
-    "animate",
-    "animation-vocabulary",
-    "find-animation-opportunities",
-    "improve-animations",
-    "review-animations"
   ],
   "github/gh-stack": [
     "gh-stack"
@@ -36,30 +20,7 @@
     "interface-review",
     "variant"
   ],
-  "openai/skills": [
-    "playwright"
-  ],
   "vercel-labs/agent-skills": [
-    "vercel-composition-patterns",
-    "vercel-react-best-practices",
-    "vercel-react-view-transitions"
-  ],
-  "vercel-labs/before-and-after": [
-    "before-and-after"
-  ],
-  "vercel-labs/openreview": [
-    "next-best-practices",
-    "next-cache-components"
-  ],
-  "vercel/components.build": [
-    "building-components"
-  ],
-  "vercel/next.js": [
-    "next-cache-components-adoption",
-    "next-cache-components-optimizer",
-    "next-dev-loop"
-  ],
-  "vercel/turborepo": [
-    "turborepo"
+    "vercel-react-best-practices"
   ]
 }
