@@ -243,8 +243,10 @@ tests are unchanged.
 at commit `2880b6799dd9000e65cc476d066abcbb48bce94e`. It retains the upstream PolyForm Shield 1.0.0
 [licence](skills/writing/before-and-after/LICENSE). Local changes point its commands at the
 installed script, write intermediate files to a temporary directory for each task, adjust three
-phrases to this library's writing rules, and add `agents/openai.yaml`. The formatter script is
-unchanged.
+phrases to this library's writing rules, and add `agents/openai.yaml`. The formatter script now
+leaves the text around its block untouched when it replaces the block, escapes `|` in image-table
+labels and HTML in video-table labels, and rejects `#` in file names, which `gh --attach` reads as
+the start of alt text.
 
 `show-me` is adapted from [HumanLayer's source skill](https://github.com/humanlayer/skills/blob/main/plugins/show-me/skills/show-me/SKILL.md) and retains its MIT licence.
 

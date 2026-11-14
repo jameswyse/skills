@@ -29,6 +29,9 @@ export function localRef(file, cwd = process.cwd()) {
   }
   const ref = path.startsWith(".") ? path : `./${path}`;
   if (/\s/.test(ref)) throw new Error(`Media paths cannot contain whitespace: "${ref}"`);
+  if (ref.includes("#")) {
+    throw new Error(`Media paths cannot contain "#", which gh reads as the start of alt text: "${ref}"`);
+  }
   return ref;
 }
 
@@ -50,6 +53,14 @@ function heading(label) {
   return label ? ` (${label})` : "";
 }
 
+function tableCellText(text) {
+  return text.replaceAll("|", "\\|");
+}
+
+function htmlText(text) {
+  return text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+}
+
 function imageRef(file, alt, cwd) {
   return `![${alt}](${localRef(file, cwd)})`;
 }
@@ -68,7 +79,7 @@ function githubAttachmentUrl(value) {
 }
 
 function renderImagePair(pair, cwd, lines) {
-  const suffix = heading(pair.label);
+  const suffix = tableCellText(heading(pair.label));
   if (pair.before) {
     lines.push(
       `| Before${suffix} | After${suffix} |`,
@@ -90,7 +101,7 @@ function renderVideoPair(pair, cwd, lines) {
 }
 
 function renderVideoTablePair(pair, lines) {
-  const suffix = heading(pair.label);
+  const suffix = htmlText(heading(pair.label));
   const beforeUrl = pair.before ? githubAttachmentUrl(pair.before) : null;
   const afterUrl = githubAttachmentUrl(pair.after);
   lines.push("<table>", "  <tr>");
@@ -148,10 +159,7 @@ export function replaceMarkedBlock(body, block) {
     throw new Error("PR body contains multiple before-and-after marker blocks");
   }
 
-  const afterEnd = end + MARKER_END.length;
-  const prefix = body.slice(0, start).trimEnd();
-  const suffix = body.slice(afterEnd).trim();
-  return [prefix, block.trim(), suffix].filter(Boolean).join("\n\n") + "\n";
+  return body.slice(0, start) + block.trim() + body.slice(end + MARKER_END.length);
 }
 
 function validateFiles(pairs, cwd) {

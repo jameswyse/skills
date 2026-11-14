@@ -11,7 +11,7 @@ Use `agent-browser` to create the screenshots or recordings. This skill only own
 
 1. Load the version-matched core instructions with `agent-browser skills get core --full` and follow them for sessions, navigation, page state, screenshots, and recordings.
 2. If a Vercel URL is protected, load `agent-browser skills get protected-vercel-deployments --full`. Do not reproduce its authentication workflow here.
-3. Save media under the repository with paths that contain no whitespace, for example:
+3. Save media under the repository with paths that contain no whitespace or `#`, for example:
 
    ```text
    captures/desktop-before.png
