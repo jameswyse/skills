@@ -5,7 +5,7 @@ description: Draft or edit prose other people will read, such as documents, repo
 
 # Writing
 
-My global instructions hold the baseline writing rules, including the banned wording. They live in this repository's `global/AGENTS.md`, installed as `~/.agents/AGENTS.md`. This skill adds guidance for drafting and editing prose other people will read. Specialist skills govern document structure and domain requirements, and these prose rules still apply to the text they produce. Existing source style alone isn't a reason to keep a pattern in newly written prose.
+My global instructions hold the baseline writing rules, including the banned wording. They are installed as `~/.agents/AGENTS.md` from `global/AGENTS.md` in the skills repository. This skill adds guidance for drafting and editing prose other people will read. Specialist skills govern document structure and domain requirements, and these prose rules still apply to the text they produce. Existing source style alone isn't a reason to keep a pattern in newly written prose.
 
 For user-facing interface copy, use "better-writing" when available. For developer documents and agent instructions, use "technical-writing".
 

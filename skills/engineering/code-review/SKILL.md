@@ -168,7 +168,7 @@ Give each presented item an ID, numbered in the order presented: `F1` for an act
 `Q1` for a Spec decision, and `R1` for an accepted risk. A later round keeps an item's ID and
 continues after the highest number used. Start each item with its ID, its priority when it has one,
 and every reviewer that reported it, as named in the run report or "Primary", such as
-`F1 [P1] GPT-6.1-Sol, Claude Fable 5.2`.
+`F1 [P1] <reviewer>, <reviewer>`.
 
 End with the run report.
 

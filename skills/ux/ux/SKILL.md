@@ -43,6 +43,15 @@ Use one authority for each design decision.
 - `better-ui` owns motion values and behaviour. `better-accessibility` owns reduced-motion requirements.
 - For user-facing interface copy, let `better-writing` govern UX-copy decisions when it is available.
 
+## Avoid generated-page defaults
+
+When the brief and the project's design rules leave a visual choice open, don't spend it on what generated pages reach for whatever the subject:
+
+- The same typefaces: Inter, Roboto, Arial and system UI stacks, Geist and Space Grotesk for sans, and Instrument Serif, Fraunces and Playfair Display for serif display. Choose typefaces for this brief.
+- Pill-shaped, fully rounded buttons and tags.
+
+Use one when the brief or the project's design system calls for it.
+
 ## Verify native mobile controls on a device
 
 Emulated touch and responsive modes don't show native mobile controls, such as date, time, and select pickers. When a change depends on how one behaves, ask me to check it on a real device before reporting the change done.

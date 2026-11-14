@@ -18,7 +18,7 @@ Committing, pushing, creating a pull request, and editing one change shared syst
 - Applying review labels also authorises creating a baseline label the repository lacks, exactly as [Airteam review labels](references/airteam-review-labels.md) defines it.
 - A request to draft or review a description authorises only the draft. Return it in the reply without publishing.
 
-Commit only the task's changes. When the current branch is the default branch, create a branch first. Follow the repository's Git safety rules. Never add AI attribution to commit messages or pull requests.
+Commit only the task's changes. When the current branch is the default branch, create a branch first. Follow the repository's Git safety rules. Never add AI attribution to commit messages or pull requests, such as a `Co-Authored-By` trailer or a "Generated with" line. The Models note and the review report are the only places a description names models.
 
 ## Workflow
 

@@ -121,10 +121,7 @@ Use the same PR selector and any custom `--state-file` or `--max-flaky-retries` 
 Under `--watch`, avoid overlapping a retry with a watcher poll: pause the watcher, run the retry,
 then restart `--watch` immediately with those same settings.
 
-Use the repository's commit conventions. If none apply, the upstream defaults are:
-
-- `fix: fix CI failure on PR #<n>`
-- `fix: address PR review feedback (#<n>)`
+Use the repository's commit conventions, and name the change each fix makes in its message.
 
 ## Published review feedback
 
