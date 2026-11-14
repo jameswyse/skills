@@ -107,7 +107,7 @@ Lead with the measured result and whether the target was met. Then show the befo
 
 Report an inconclusive or negative result honestly. Do not select the fastest run, hide rejected experiments, combine unlike scenarios, or imply causation that the controlled experiment did not establish.
 
-Summarise the measured outcome in your reply.
+When the report is attached rather than rendered inline, also summarise the measured outcome in your reply.
 
 ## Finish the code change
 

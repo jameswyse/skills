@@ -14,7 +14,7 @@ Keep this review distinct from narrower workflows:
 
 - Use the "code-review" skill when the task is to approve or find defects in a specific change. Keep an explicitly requested recent-history standards scan in this workflow.
 - Use the "diagnosing-bugs" skill for a known failure or performance regression.
-- Recommend the user-invoked "upgrade-deps" skill for a comprehensive dependency refresh.
+- Recommend the "upgrade-deps" skill for a comprehensive dependency refresh.
 - Recommend the user-invoked "improve-security" skill for a dedicated security review. Report a concrete security flaw discovered here, but do not expand this workflow into a general security audit.
 - Recommend the user-invoked "improve-architecture" skill when the primary improvement requires deeper modules, a different seam, or a substantial interface redesign. Do not include that work in the standards ranking.
 - Recommend the user-invoked "improve-organisation" skill when the primary improvement requires a repository-wide tree, placement, filename, or companion-file audit. Report a concrete organisation problem discovered here, but do not expand this workflow into that audit.

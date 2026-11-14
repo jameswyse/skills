@@ -23,33 +23,26 @@ Drafting, editing, and developer documentation. The hard writing rules for every
 
 Product design and user-facing interface work.
 
-| Skill         | Purpose                                                                                     |
-| ------------- | ------------------------------------------------------------------------------------------- |
-| `ux`          | Routes product design, UX, UI, accessibility, interface copy, visual polish, and motion.    |
-| `html-report` | Builds compact HTML reports from shared components and delivers them inline in T3 Code.     |
+| Skill         | Purpose                                                                                  |
+| ------------- | ---------------------------------------------------------------------------------------- |
+| `ux`          | Routes product design, UX, UI, accessibility, interface copy, visual polish, and motion. |
+| `html-report` | Builds compact HTML reports from shared components and delivers them inline in T3 Code.  |
 
 ### Engineering
 
 Software development, diagnosis, reviews, and maintenance.
 
-| Skill                             | Purpose                                                                                                        |
-| --------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `engineering`                     | Implementation baseline for source fixes, toolchain checks, design decisions, delegation, and verification.    |
-| `typescript`                      | TypeScript-specific type, validation, and code guidance.                                                       |
-| `diagnosing-bugs`                 | Evidence-driven diagnosis for hard bugs and performance regressions.                                           |
-| `diagnosing-production-incidents` | Read-only evidence collection and diagnosis for urgent live production incidents.                              |
-| `tdd`                             | A focused failing-test-first loop when a practical test target exists.                                         |
-| `code-review`                     | Reviews spec and correctness on Sol plus Fable or Opus, standards on Sol, and calibrates against bot comments. |
-| `babysit-pr`                      | Monitors pull-request reviews, CI, and mergeability, with authorised fixes and bounded flaky retries.          |
-| `full-send`                       | Takes a task through review to a ready pull request with passing checks and resolved bot comments.             |
-| `design-it-twice`                 | Compares several software module interface designs before choosing one.                                        |
-| `upgrade-deps`                    | Comprehensive pnpm dependency, GitHub Actions, security, and Node.js and pnpm toolchain upgrades.              |
-| `improve-architecture`            | Finds deep-module and seam improvements across a codebase, then produces a visual report.                      |
-| `improve-organisation`            | Reviews codebase structure, ownership, filenames, shallow paths, and companion-file ownership.                 |
-| `improve-performance`             | Benchmarks and improves a selected critical path, then produces a measured before-and-after report.            |
-| `improve-security`                | Reviews trust boundaries, access control, secrets, sensitive data, and dependency risk.                        |
-| `improve-standards`               | Reviews a codebase against repository and engineering standards, then produces a visual report.                |
-| `improve-testing`                 | Ranks every test by value, maps behavioural guarantees, and produces a visual testing report.                  |
+| Skill             | Purpose                                                                                                        |
+| ----------------- | -------------------------------------------------------------------------------------------------------------- |
+| `engineering`     | Implementation baseline for source fixes, toolchain checks, design decisions, delegation, and verification.    |
+| `typescript`      | TypeScript-specific type, validation, and code guidance.                                                       |
+| `diagnosing-bugs` | Evidence-driven diagnosis for hard bugs and performance regressions.                                           |
+| `tdd`             | A focused failing-test-first loop when a practical test target exists.                                         |
+| `code-review`     | Reviews spec and correctness on Sol plus Fable or Opus, standards on Sol, and calibrates against bot comments. |
+| `babysit-pr`      | Monitors pull-request reviews, CI, and mergeability, with authorised fixes and bounded flaky retries.          |
+| `full-send`       | Takes a task through review to a ready pull request with passing checks and resolved bot comments.             |
+| `design-it-twice` | Compares several software module interface designs before choosing one.                                        |
+| `upgrade-deps`    | Comprehensive pnpm dependency, GitHub Actions, security, and Node.js and pnpm toolchain upgrades.              |
 
 ### Productivity
 
@@ -58,6 +51,18 @@ Access to the homelab.
 | Skill     | Purpose                                                                                   |
 | --------- | ----------------------------------------------------------------------------------------- |
 | `homelab` | Routes access to fleet computers and self-hosted services through the homelab repository. |
+
+### Archived
+
+Skills taken out of use live under `archive/`, which mirrors the repository. A skill sits at
+`archive/skills/<group>/<skill-name>` and its test, when it has one, under `archive/tests/`. The
+sync, validation and test scripts read only `skills/` and `tests/`, so an archived skill is not
+installed or tested anywhere.
+
+Restore a skill by moving each of its paths back to the same place without the `archive/` prefix,
+such as `git mv archive/skills/<group>/<skill-name> skills/<group>/<skill-name>`, then run the sync
+script. Relative links in an archived skill are written for its restored location, so links to
+live skills resolve again once it is back.
 
 ## Install with `npx skills`
 
@@ -234,10 +239,6 @@ the safeguards from the upstream [review monitoring](https://github.com/openai/c
 [pending review](https://github.com/openai/codex/commit/a770e5b8470d) fixes. The watcher and its
 tests are unchanged.
 
-`show-me` is adapted from [HumanLayer's source skill](https://github.com/humanlayer/skills/blob/main/plugins/show-me/skills/show-me/SKILL.md) and retains its MIT licence.
-
-This curated collection also draws on skills and ideas from [`mattpocock/skills`](https://github.com/mattpocock/skills),
-[`poteto/noodle`](https://github.com/poteto/noodle), [`dmmulroy/skills`](https://github.com/dmmulroy/skills) and others.
 `before-and-after` is imported from [`vercel-labs/before-and-after`](https://github.com/vercel-labs/before-and-after/tree/2880b6799dd9000e65cc476d066abcbb48bce94e/skill)
 at commit `2880b6799dd9000e65cc476d066abcbb48bce94e`. It retains the upstream PolyForm Shield 1.0.0
 [licence](skills/writing/before-and-after/LICENSE). Local changes point its commands at the
@@ -245,3 +246,7 @@ installed script, write intermediate files to a temporary directory for each tas
 phrases to this library's writing rules, and add `agents/openai.yaml`. The formatter script is
 unchanged.
 
+`show-me` is adapted from [HumanLayer's source skill](https://github.com/humanlayer/skills/blob/main/plugins/show-me/skills/show-me/SKILL.md) and retains its MIT licence.
+
+This curated collection also draws on skills and ideas from [`mattpocock/skills`](https://github.com/mattpocock/skills),
+[`poteto/noodle`](https://github.com/poteto/noodle), [`dmmulroy/skills`](https://github.com/dmmulroy/skills) and others.

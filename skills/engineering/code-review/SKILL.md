@@ -28,8 +28,7 @@ Do not load every section for a small diff.
 
 Treat security as part of Standards when the diff changes a trust boundary, authentication,
 authorisation, sensitive data, secret handling, permissions, security configuration, or the
-dependency graph. Keep this check scoped to the diff and the context needed to verify it. Recommend
-the user-invoked "improve-security" skill only when the user requests a dedicated security review.
+dependency graph. Keep this check scoped to the diff and the context needed to verify it.
 
 ## Another author's change
 

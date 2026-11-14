@@ -11,7 +11,7 @@ Use "engineering" and its source-fix rules when choosing a fix.
 
 A diagnosis-only, debugging-only, or explanation request doesn't authorise a fix or persistent repository changes. Use existing commands, runtime inspection, or temporary files outside the repository, and get authority before adding repository instrumentation or touching production. A request that includes a fix authorises continuing through the fix and verification.
 
-Redact secrets before showing commands, output, or captures. For a possible active outage or an urgent recovery request, suggest the explicitly invoked "diagnosing-production-incidents" workflow without blocking the investigation.
+Redact secrets before showing commands, output, or captures.
 
 ## Investigate
 
