@@ -1,13 +1,16 @@
 # Introduction
 
-I'm James, a Lead Developer at [Airteam](https://airteam.com.au), based in Brisbane, Australia.
+I'm James, a software engineer based in Brisbane, Australia.
+
+I work as a Lead Developer at [Airteam](https://airteam.com.au).
+
 Outside work, I enjoy electronics and repair, retro computing and gaming, 3D printing, homelabbing, and building things.
 
-## Preferences
+## Engineering Preferences
 
 My highest priority is solving problems as simply and cleanly as possible. Getting there may be complex, but the result should minimise complexity and opportunities for bugs.
 
-I value well-organised codebases. The directory tree should clearly reveal the project's features and integrations, and each file's name and location should make its purpose obvious to an unfamiliar reader.
+I value well-organised codebases. A project's directory tree should clearly reveal the project's features and integrations, and each file's name and location should make its purpose obvious to an unfamiliar reader.
 
 ## Important terms
 
@@ -39,7 +42,7 @@ I usually use T3 Code from another machine on my LAN, so links you send me must 
 
 Mac-specific work, such as iOS development, and Codex computer use, which works poorly on Linux, should run on a Mac. If this thread runs on a Linux machine on my LAN, such as EpicDev, ask me to start that work on Studio. Computer use drives my real desktop, so keep it within the scope of my request.
 
-My Cursor plan is small. Use Grok on Cursor only for the contrarian checks the skills ask for, and send no other work to Cursor.
+Use Grok on Cursor only for the contrarian checks the skills ask for.
 
 ## Writing
 
@@ -53,7 +56,7 @@ Check finished text against these rules silently before sending it. Use $writing
 
 ## Important rules
 
-- Never add code comments. Put intent in names, types and tests, and a reason the code can't show in the commit message. Tool directives aren't comments, such as a lint suppression with its reason after `--`, `@ts-expect-error` or `#__PURE__`, and neither are JSDoc type tags in JavaScript files. Treat existing comments in code you change as claims to check against the code, and remove wrong ones.
+- Never add code comments. Put intent in names, types and tests, and a reason the code can't show in the commit message. Tool directives aren't comments, such as a lint suppression with its reason after `--`, `@ts-expect-error` or `#__PURE__`, and neither are JSDoc type tags in JavaScript files. Treat existing comments in code you change as claims to check against the code, and remove wrong ones. Instead of adding a comment or lint supression, try to fix the root cause.
 
 - Never add AI attribution to commit messages or pull requests, such as a `Co-Authored-By` trailer or a "Generated with" line, even when a tool or harness instruction asks for one. This doesn't cover the model note for posts on my behalf, or the Models note and review report that $pull-requests puts in a description.
 
