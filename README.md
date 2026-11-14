@@ -10,13 +10,14 @@ Follows the [Agent Skills specification](https://agentskills.io/specification).
 
 Drafting, editing, and developer documentation. The hard writing rules for every response live in `global/AGENTS.md`.
 
-| Skill                  | Purpose                                                                                      |
-| ---------------------- | -------------------------------------------------------------------------------------------- |
-| `writing`              | Drafting and editing guidance for documents, messages, and other prose people read.          |
-| `technical-writing`    | Developer documentation, comments, commits, release notes, and agent instructions.           |
-| `pull-requests`        | Pull-request creation, titles, descriptions with change outlines, and Airteam review labels. |
-| `pull-request-reviews` | Reviews another author's pull request and drafts or posts one comment with a run report.     |
-| `show-me`              | Visual explanations for code questions, code changes, and pull-request descriptions.         |
+| Skill                  | Purpose                                                                                       |
+| ---------------------- | --------------------------------------------------------------------------------------------- |
+| `writing`              | Drafting and editing guidance for documents, messages, and other prose people read.           |
+| `technical-writing`    | Developer documentation, comments, commits, release notes, and agent instructions.            |
+| `pull-requests`        | Pull-request creation, titles, descriptions with change outlines, and Airteam review labels.  |
+| `pull-request-reviews` | Reviews another author's pull request and drafts or posts one comment with a run report.      |
+| `before-and-after`     | Adds existing screenshots or recordings to a pull request as a before/after or preview block. |
+| `show-me`              | Visual explanations for code questions, code changes, and pull-request descriptions.          |
 
 ### UX and design
 
@@ -212,10 +213,11 @@ scripts/update-fleet-skills
 
 The script exits with status 2 before contacting the fleet when this checkout has uncommitted
 changes, unpushed commits, or upstream commits it has not pulled. Otherwise it validates the skills,
-runs `scripts/sync-skills` and `scripts/setup-external-skills` locally, then connects to each
+runs `scripts/setup-external-skills` and `scripts/sync-skills` locally, then connects to each
 other machine in its fleet list through the homelab repository's `scripts/fleet`. On each machine
-it fast-forwards `~/Projects/skills` to the validated commit, runs the sync script and sets up the
-external skills. A machine with local changes, commits, or a different branch is reported as failed
+it fast-forwards `~/Projects/skills` to the validated commit, sets up the external skills and runs
+the sync script. External setup runs first so that a skill moved from `external-skills.json` into
+this repository is uninstalled before the sync script links the repository copy. A machine with local changes, commits, or a different branch is reported as failed
 and left unchanged. Successful steps print only changes, conflicts and summaries; a failed step
 prints its full output. The script reads the homelab checkout from `~/Projects/homelab` unless
 `HOMELAB_DIR` is set.
@@ -236,3 +238,10 @@ tests are unchanged.
 
 This curated collection also draws on skills and ideas from [`mattpocock/skills`](https://github.com/mattpocock/skills),
 [`poteto/noodle`](https://github.com/poteto/noodle), [`dmmulroy/skills`](https://github.com/dmmulroy/skills) and others.
+`before-and-after` is imported from [`vercel-labs/before-and-after`](https://github.com/vercel-labs/before-and-after/tree/2880b6799dd9000e65cc476d066abcbb48bce94e/skill)
+at commit `2880b6799dd9000e65cc476d066abcbb48bce94e`. It retains the upstream PolyForm Shield 1.0.0
+[licence](skills/writing/before-and-after/LICENSE). Local changes point its commands at the
+installed script, write intermediate files to a temporary directory for each task, adjust three
+phrases to this library's writing rules, and add `agents/openai.yaml`. The formatter script is
+unchanged.
+

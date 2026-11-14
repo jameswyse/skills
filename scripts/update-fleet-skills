@@ -48,8 +48,10 @@ if [ "$(git rev-parse HEAD)" != "$expected" ]; then
     echo "error: checkout has commits that are not on origin" >&2
     exit 1
 fi
-scripts/sync-skills
-scripts/setup-external-skills < /dev/null
+status=0
+scripts/setup-external-skills < /dev/null || status=$?
+scripts/sync-skills || status=$?
+exit "$status"
 """
 
 
@@ -137,8 +139,8 @@ def parse_args() -> None:
     parser = argparse.ArgumentParser(
         description=(
             f"Roll the pushed skills commit out to the fleet ({', '.join(FLEET)}). "
-            "This machine validates it first. Every machine syncs skills and sets up "
-            "external skills, and the others pull the commit before they do. The "
+            "This machine validates it first. Every machine sets up external skills "
+            "and syncs skills, and the others pull the commit before they do. The "
             "checkout must be clean and match its upstream."
         )
     )
@@ -171,12 +173,12 @@ def main() -> int:
     results: dict[str, bool] = {}
     results[local_host] = all(
         [
-            run_step(local_host, "sync skills", [str(REPOSITORY / "scripts" / "sync-skills")]),
             run_step(
                 local_host,
                 "set up external skills",
                 [str(REPOSITORY / "scripts" / "setup-external-skills")],
             ),
+            run_step(local_host, "sync skills", [str(REPOSITORY / "scripts" / "sync-skills")]),
         ]
     )
 
@@ -185,7 +187,7 @@ def main() -> int:
             continue
         results[host] = run_step(
             host,
-            "pull, sync and set up external skills",
+            "pull, set up external skills and sync",
             [
                 str(fleet_command),
                 "ssh",
