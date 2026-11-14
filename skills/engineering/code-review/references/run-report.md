@@ -26,7 +26,7 @@ File findings from a reviewer that covers every axis, such as the Codex CLI or a
 the axis each belongs to. Record a reviewer that failed or timed out with its reason. Also record the
 verifier's confirmed and refuted counts, and how many contrarian objections changed a decision, or
 why the contrarian was skipped. When this skill's verification step weighs review-bot comments, such
-as in a bot draft review, record each bot's rounds as "Bot 1", "Bot 2", and so on.
+as in a bot review, record each bot's rounds as "Bot 1", "Bot 2", and so on.
 
 ## Write the report
 

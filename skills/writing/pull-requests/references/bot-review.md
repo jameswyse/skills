@@ -1,8 +1,7 @@
-# Bot draft review
+# Bot review
 
-Use after creating a draft pull request whose change needed "code-review". The repository's review
-bots review the draft, so their comments are handled before the pull request is marked ready for
-review. For a stack, work from the bottom layer up, and restart the loop for higher layers whenever a
+Use after creating a pull request whose change needed "code-review". The repository's review bots
+review it, and this loop handles their comments. For a stack, work from the bottom layer up, and restart the loop for higher layers whenever a
 fix to a lower layer changes their head commits.
 
 ## Review bots
@@ -13,15 +12,14 @@ fix to a lower layer changes their head commits.
 | Macroscope | `Macroscope - Correctness Check` | Automatically after each push, or a comment `@macroscope-app review` |
 
 A bot is active when its detection name appears in the output below, or when it reviews the new
-draft by itself:
+pull request by itself:
 
 ```bash
 gh pr list --state all --limit 10 --json reviews,statusCheckRollup \
   --jq '.[] | (.reviews[].author.login), (.statusCheckRollup[] | .name // .context)' | sort -u
 ```
 
-Wait only for active bots in the table. When there are none, run `gh pr ready <number>` unless the
-user asked for a draft, and stop.
+Wait only for active bots in the table. When there are none, stop.
 
 Every push starts a billed Macroscope review, so push each round's fixes together. Don't use the
 Macroscope CLI, which bills separately.
@@ -59,13 +57,11 @@ Macroscope CLI, which bills separately.
    labels as [Airteam review labels](airteam-review-labels.md) describes when a fix adds a risk.
 4. **Repeat after fixes.** When step 3 pushed a commit, return to step 1, for at most three rounds. A
    round in which no comment needed a fix is clean and ends the loop.
-5. **Mark ready when clean.** After a clean round, confirm the head commit is still the one the bots
+5. **Finish when clean.** After a clean round, confirm the head commit is still the one the bots
    reviewed, and return to step 1 if it changed. Add each reviewing bot to the description's models
-   note as a reviewer, then run `gh pr ready <number>` unless the user asked for a draft. Macroscope
-   checks again when the pull request is marked ready, and "babysit-pr" handles comments from that
-   check. When a review request fails, a review fails or times out, or the third round still needed
-   fixes, mark the pull request ready anyway unless the user asked for a draft, and report why.
+   note as a reviewer. When a review request fails, a review fails or times out, or the third round
+   still needed fixes, stop and report why.
 
 Report Macroscope's Approvability verdict, the title of its `Macroscope - Approvability Check` run on
-the final head commit. The verdict can depend on the change's scope rather than defects, so it never
-blocks marking the pull request ready.
+the final head commit. The verdict can depend on the change's scope rather than defects, so report
+it without treating it as a finding.
