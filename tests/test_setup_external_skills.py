@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import shlex
 import subprocess
 import tempfile
 import unittest
@@ -19,7 +20,9 @@ class SetupExternalSkillsTest(unittest.TestCase):
     environment: dict[str, str]
 
     def setUp(self) -> None:
-        self.root = Path(tempfile.mkdtemp(prefix="external-skills-test-"))
+        directory = tempfile.TemporaryDirectory(prefix="external-skills-test-")
+        self.addCleanup(directory.cleanup)
+        self.root = Path(directory.name)
         self.bin_dir = self.root / "bin"
         self.bin_dir.mkdir()
         self.state = self.root / "state.json"
@@ -31,6 +34,7 @@ class SetupExternalSkillsTest(unittest.TestCase):
             """#!/usr/bin/env python3
 import json
 import os
+import shutil
 import sys
 from pathlib import Path
 
@@ -43,6 +47,9 @@ with log_path.open("a", encoding="utf-8") as log:
 
 state = json.loads(state_path.read_text(encoding="utf-8"))
 command = args[1]
+
+if command == os.environ.get("FAKE_SKILLS_FAILING_COMMAND"):
+    raise SystemExit(1)
 
 if command == "list":
     print(json.dumps(state))
@@ -76,6 +83,21 @@ if command == "add":
 if command == "update":
     raise SystemExit(0)
 
+if command == "remove":
+    names = []
+    for value in args[2:]:
+        if value.startswith("-"):
+            break
+        names.append(value)
+    for name in names:
+        shutil.rmtree(Path.cwd() / "agent" / "skills" / name, ignore_errors=True)
+    removed = {name.lower() for name in names}
+    remaining = [record for record in state if record["name"].lower() not in removed]
+    if "survives-removal" in names:
+        remaining.append({"name": "survives-removal", "source": None, "agents": ["Codex"]})
+    state_path.write_text(json.dumps(remaining), encoding="utf-8")
+    raise SystemExit(0)
+
 raise SystemExit(2)
 """,
             encoding="utf-8",
@@ -89,20 +111,16 @@ raise SystemExit(2)
             "FAKE_SKILLS_LOG": str(self.log),
         }
 
-    def tearDown(self) -> None:
-        for path in (self.log, self.state, self.bin_dir / "npx"):
-            if path.exists():
-                path.unlink()
-        self.bin_dir.rmdir()
-        self.root.rmdir()
-
-    def run_setup(self, *args: str) -> subprocess.CompletedProcess[str]:
+    def run_setup(
+        self, *args: str, cwd: Path | None = None
+    ) -> subprocess.CompletedProcess[str]:
         return subprocess.run(
             [str(SCRIPT), *args],
             check=False,
             capture_output=True,
             text=True,
             env=self.environment,
+            cwd=cwd,
         )
 
     def commands(self) -> list[list[str]]:
@@ -181,18 +199,29 @@ raise SystemExit(2)
         self.assertIn("Claude Code", installed["animate"]["agents"])
 
     def test_dry_run_reports_changes_without_installing(self) -> None:
+        unlisted = [{"name": "ad-hoc", "source": "someone/skills", "agents": ["Codex"]}]
+        self.state.write_text(json.dumps(unlisted), encoding="utf-8")
+
         result = self.run_setup("--dry-run")
 
         self.assertEqual(result.returncode, 0, result.stderr)
+        printed = [
+            shlex.split(line.removeprefix("$ "))
+            for line in result.stdout.splitlines()
+            if line.startswith("$ ")
+        ]
+        removal = next(command for command in printed if command[2] == "remove")
+        self.assertIn("ad-hoc", removal)
+        self.assertIn("--global", removal)
         self.assertIn("npx skills@latest add https://cli.sentry.dev", result.stdout)
         self.assertIn("npx skills@latest add", result.stdout)
         self.assertIn("--agent codex --agent claude-code", result.stdout)
-        self.assertEqual(json.loads(self.state.read_text(encoding="utf-8")), [])
+        self.assertEqual(json.loads(self.state.read_text(encoding="utf-8")), unlisted)
         self.assertFalse(
-            any(command[1] in {"add", "update"} for command in self.commands())
+            any(command[1] in {"add", "update", "remove"} for command in self.commands())
         )
 
-    def test_reports_installed_skills_missing_from_the_manifest(self) -> None:
+    def test_removes_installed_skills_missing_from_the_manifest(self) -> None:
         self.state.write_text(
             json.dumps(
                 [
@@ -203,13 +232,70 @@ raise SystemExit(2)
             encoding="utf-8",
         )
 
-        result = self.run_setup()
+        project_skill = self.root / "project" / "agent" / "skills" / "ad-hoc" / "SKILL.md"
+        project_skill.parent.mkdir(parents=True)
+        project_skill.write_text("a project skill that shares the removed name\n", encoding="utf-8")
+
+        result = self.run_setup(cwd=self.root / "project")
 
         self.assertEqual(result.returncode, 0, result.stderr)
-        report = [line for line in result.stdout.splitlines() if line.startswith("not in ")]
-        self.assertEqual(report, ["not in external-skills.json: ad-hoc (someone/skills)"])
+        installed = {record["name"] for record in json.loads(self.state.read_text(encoding="utf-8"))}
+        self.assertNotIn("ad-hoc", installed)
+        self.assertIn("writing", installed)
+        self.assertTrue(project_skill.exists())
+
+    def test_fails_when_an_unlisted_skill_survives_removal(self) -> None:
+        self.state.write_text(
+            json.dumps(
+                [{"name": "survives-removal", "source": "someone/skills", "agents": ["Codex"]}]
+            ),
+            encoding="utf-8",
+        )
+
+        result = self.run_setup()
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("survives-removal", result.stderr)
+
+    def test_fails_when_removal_takes_a_listed_skill_with_it(self) -> None:
+        self.state.write_text(
+            json.dumps(
+                [{"name": "Animate", "source": "emilkowalski/skills", "agents": ["Codex"]}]
+            ),
+            encoding="utf-8",
+        )
+
+        result = self.run_setup()
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("animate", result.stderr)
+
+    def test_keeps_an_unlisted_skill_when_installing_a_listed_one_fails(self) -> None:
+        self.state.write_text(
+            json.dumps([{"name": "ad-hoc", "source": "someone/skills", "agents": ["Codex"]}]),
+            encoding="utf-8",
+        )
+        self.environment["FAKE_SKILLS_FAILING_COMMAND"] = "add"
+
+        result = self.run_setup()
+
+        self.assertEqual(result.returncode, 1)
         installed = {record["name"] for record in json.loads(self.state.read_text(encoding="utf-8"))}
         self.assertIn("ad-hoc", installed)
+
+    def test_refuses_to_remove_a_skill_whose_name_reads_as_an_option(self) -> None:
+        self.state.write_text(
+            json.dumps([{"name": "--all", "source": "someone/skills", "agents": ["Codex"]}]),
+            encoding="utf-8",
+        )
+
+        result = self.run_setup()
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("--all", result.stderr)
+        self.assertFalse(
+            any(command[1] in {"add", "update", "remove"} for command in self.commands())
+        )
 
 
 if __name__ == "__main__":

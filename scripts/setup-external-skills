@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Install or update the recommended global external skills."""
+"""Make the global external skills match the recommended list."""
 
 from __future__ import annotations
 
@@ -8,6 +8,7 @@ import json
 import shlex
 import subprocess
 import sys
+import tempfile
 from collections.abc import Sequence
 from pathlib import Path
 from typing import TypedDict
@@ -31,19 +32,21 @@ class InstalledSkill(TypedDict):
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
-            f"Install the skills listed in {MANIFEST.name} that are missing and "
-            "update the installed ones globally."
+            f"Install the skills listed in {MANIFEST.name} that are missing, update "
+            "the installed ones and remove the ones it does not list, globally."
         )
     )
     parser.add_argument(
         "--dry-run",
         action="store_true",
-        help="print the changes without installing or updating skills",
+        help="print the changes without installing, updating or removing skills",
     )
     return parser.parse_args()
 
 
-def run(command: Sequence[str], *, capture: bool = False) -> str:
+def run(
+    command: Sequence[str], *, capture: bool = False, cwd: str | None = None
+) -> str:
     if not capture:
         print(f"$ {shlex.join(command)}", flush=True)
     result = subprocess.run(
@@ -51,6 +54,7 @@ def run(command: Sequence[str], *, capture: bool = False) -> str:
         check=False,
         capture_output=capture,
         text=True,
+        cwd=cwd,
     )
     if result.returncode != 0:
         detail = result.stderr.strip() if capture else "command failed"
@@ -132,6 +136,40 @@ def ensure_no_conflicts(installed: dict[str, InstalledSkill], expected: dict[str
         raise SetupError(f"Refusing to overwrite existing skills:\n{details}")
 
 
+def ensure_recommendations_installed(
+    installed: dict[str, InstalledSkill], expected: dict[str, str]
+) -> None:
+    ensure_no_conflicts(installed, expected)
+    missing = sorted(
+        name
+        for name in expected
+        if name not in installed
+        or not TARGET_AGENT_DISPLAY_NAMES.issubset(installed[name]["agents"])
+    )
+    if missing:
+        raise SetupError("Recommended skills are still missing: " + ", ".join(missing))
+
+
+def unlisted_skills(
+    installed: dict[str, InstalledSkill], expected: dict[str, str]
+) -> list[str]:
+    return sorted(
+        name
+        for name, record in installed.items()
+        if record["source"] is not None and name not in expected
+    )
+
+
+def removal_command(unlisted: list[str]) -> tuple[str, ...]:
+    read_as_options = [name for name in unlisted if name.startswith("-") or name == "*"]
+    if read_as_options:
+        raise SetupError(
+            "Refusing to remove skills whose names npx skills reads as options: "
+            + ", ".join(read_as_options)
+        )
+    return (*SKILLS_COMMAND, "remove", *unlisted, "--global", "--yes")
+
+
 def main() -> int:
     args = parse_args()
     try:
@@ -154,6 +192,9 @@ def main() -> int:
             )
             for source, skills in manifest.items()
         }
+
+        unlisted = unlisted_skills(installed, expected)
+        remove_unlisted = removal_command(unlisted)
 
         for source, missing in missing_by_source.items():
             if not missing:
@@ -187,31 +228,24 @@ def main() -> int:
                 run(command)
 
         if args.dry_run:
+            if unlisted:
+                print(f"$ {shlex.join(remove_unlisted)}")
             print("dry run complete")
             return 0
 
-        final_inventory = list_global_skills()
-        ensure_no_conflicts(final_inventory, expected)
-        missing = sorted(
-            name
-            for name in expected
-            if name not in final_inventory
-            or not TARGET_AGENT_DISPLAY_NAMES.issubset(
-                final_inventory[name]["agents"]
-            )
-        )
-        if missing:
-            raise SetupError(
-                "Recommended skills are still missing: " + ", ".join(missing)
-            )
+        ensure_recommendations_installed(list_global_skills(), expected)
 
-        unlisted = sorted(
-            f"{name} ({record['source']})"
-            for name, record in final_inventory.items()
-            if record["source"] is not None and name not in expected
-        )
         if unlisted:
-            print(f"not in {MANIFEST.name}: " + ", ".join(unlisted))
+            with tempfile.TemporaryDirectory() as directory_without_project_skills:
+                run(remove_unlisted, cwd=directory_without_project_skills)
+            inventory_after_removal = list_global_skills()
+            ensure_recommendations_installed(inventory_after_removal, expected)
+            still_installed = [name for name in unlisted if name in inventory_after_removal]
+            if still_installed:
+                raise SetupError(
+                    f"Skills not in {MANIFEST.name} are still installed: "
+                    + ", ".join(still_installed)
+                )
 
         print(f"setup complete: {len(expected)} skills present")
         return 0

@@ -111,9 +111,10 @@ The upstream `interface-review`, `variant`, and `explain-interface` skills are u
 
 [`external-skills.json`](external-skills.json) lists every external skill to install globally,
 keyed by its `npx skills` install source. To add a skill to every machine, add its name under its
-source, commit and push, then run `scripts/update-fleet-skills`.
+source, commit and push, then run `scripts/update-fleet-skills`. To remove one from every machine,
+delete its name and do the same.
 
-Install missing skills and update installed ones on this machine with:
+Make this machine match the list with:
 
 ```sh
 scripts/setup-external-skills
@@ -125,11 +126,12 @@ Inspect the commands without changing the global installation:
 scripts/setup-external-skills --dry-run
 ```
 
-The script installs the listed skills for both Codex and Claude Code. It reads the global inventory
-before making changes, refuses to overwrite a same-named skill owned by another source, and lists
-installed `npx skills` skills that the file does not mention. It never removes a skill. `npx skills`
-records its installations in `~/.agents/.skill-lock.json`. The script does not manage this
-repository's live symlinks.
+The script installs the listed skills for both Codex and Claude Code and updates the ones already
+installed. Once those are in place, it removes every skill that `npx skills` tracks in
+`~/.agents/.skill-lock.json` and the file does not list. Removal deletes that name from every
+agent's global skills directory, including a copy installed another way. A skill that `npx skills`
+does not track, such as this repository's live symlinks, is left alone. The script reads the global
+inventory before making changes and refuses to overwrite a same-named skill owned by another source.
 
 The Sentry skill needs an up-to-date [Sentry CLI](https://cli.sentry.dev/).
 
