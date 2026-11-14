@@ -8,32 +8,6 @@
     "graphql-operations",
     "graphql-schema"
   ],
-  "aws agent-toolkit": [
-    "amazon-bedrock",
-    "aws-ai-ml",
-    "aws-auth",
-    "aws-billing-and-cost-management",
-    "aws-blocks",
-    "aws-cdk",
-    "aws-cloudformation",
-    "aws-compute",
-    "aws-containers",
-    "aws-database",
-    "aws-deployment",
-    "aws-iam",
-    "aws-messaging-and-streaming",
-    "aws-networking",
-    "aws-observability",
-    "aws-sdk-js-v3-usage",
-    "aws-sdk-python-usage",
-    "aws-sdk-swift-usage",
-    "aws-security",
-    "aws-serverless",
-    "aws-storage",
-    "launch-with-aws",
-    "setting-up-cloudwatch-observability",
-    "signing-in-to-aws"
-  ],
   "https://cli.sentry.dev": [
     "sentry-cli"
   ],
@@ -64,18 +38,6 @@
   ],
   "openai/skills": [
     "playwright"
-  ],
-  "sanity-io/agent-toolkit": [
-    "content-experimentation-best-practices",
-    "content-modeling-best-practices",
-    "portable-text-conversion",
-    "portable-text-serialization",
-    "sanity-best-practices",
-    "sanity-migration",
-    "seo-aeo-best-practices"
-  ],
-  "sanity-io/next-sanity": [
-    "sanity-live-cache-components"
   ],
   "vercel-labs/agent-skills": [
     "vercel-composition-patterns",

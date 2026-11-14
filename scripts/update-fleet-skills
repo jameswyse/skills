@@ -22,7 +22,7 @@ ANSI_ESCAPE = re.compile(r"\x1b\[[0-9;]*[A-Za-z]")
 # steps omit these so the report shows changes, conflicts and summaries only.
 ROUTINE_OUTPUT = re.compile(
     r"^(skills/.*:|  valid|current .*|absent .*|Checking .*|Updating .*"
-    r"|\$ npx skills@latest update .*|\$ aws agent-toolkit update-skill .*"
+    r"|\$ npx skills@latest update .*"
     r"|.* is already up to date.*|✓ All global skills are up to date|\s*)$"
 )
 

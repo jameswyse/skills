@@ -110,9 +110,8 @@ The upstream `interface-review`, `variant`, and `explain-interface` skills are u
 ## Recommended specialist skills
 
 [`external-skills.json`](external-skills.json) lists every external skill to install globally,
-keyed by install source. The `aws agent-toolkit` entry lists the AWS skills; every other key is an
-`npx skills` source. To add a skill to every machine, add its name under its source, commit and
-push, then run `scripts/update-fleet-skills`.
+keyed by its `npx skills` install source. To add a skill to every machine, add its name under its
+source, commit and push, then run `scripts/update-fleet-skills`.
 
 Install missing skills and update installed ones on this machine with:
 
@@ -126,18 +125,13 @@ Inspect the commands without changing the global installation:
 scripts/setup-external-skills --dry-run
 ```
 
-The script installs the `npx skills` entries for both Codex and Claude Code and manages the AWS
-entries with `aws agent-toolkit add-skill` and `update-skill`. It reads the global inventories
+The script installs the listed skills for both Codex and Claude Code. It reads the global inventory
 before making changes, refuses to overwrite a same-named skill owned by another source, and lists
 installed `npx skills` skills that the file does not mention. It never removes a skill. `npx skills`
 records its installations in `~/.agents/.skill-lock.json`. The script does not manage this
 repository's live symlinks.
 
-The AWS skills need an up-to-date AWS CLI, as described in the
-[AWS CLI setup for Agent Toolkit](https://docs.aws.amazon.com/agent-toolkit/latest/userguide/aws-cli.html#aws-cli-setup).
-The script does not configure the AWS MCP server. Run `aws configure agent-toolkit` interactively
-when a machine needs it. The Sentry skill needs an up-to-date
-[Sentry CLI](https://cli.sentry.dev/).
+The Sentry skill needs an up-to-date [Sentry CLI](https://cli.sentry.dev/).
 
 ## Development and using skills locally
 

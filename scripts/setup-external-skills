@@ -14,9 +14,6 @@ from typing import TypedDict
 
 
 SKILLS_COMMAND = ("npx", "skills@latest")
-AWS_TOOLKIT_COMMAND = ("aws", "agent-toolkit")
-AWS_OPTIONS = ("--region", "us-east-1", "--no-sign-request")
-AWS_SOURCE = "aws agent-toolkit"
 MANIFEST = Path(__file__).resolve().parents[1] / "external-skills.json"
 TARGET_AGENTS = ("codex", "claude-code")
 TARGET_AGENT_DISPLAY_NAMES = frozenset({"Codex", "Claude Code"})
@@ -90,22 +87,6 @@ def list_global_skills() -> dict[str, InstalledSkill]:
     return installed
 
 
-def list_aws_skills() -> frozenset[str]:
-    output = run(
-        (*AWS_TOOLKIT_COMMAND, "list-installed-skills", "--output", "json", *AWS_OPTIONS),
-        capture=True,
-    )
-    try:
-        records = json.loads(output)["skills"]
-    except (json.JSONDecodeError, KeyError, TypeError) as error:
-        raise SetupError(f"aws agent-toolkit returned an invalid inventory: {error}") from error
-    if not isinstance(records, list) or not all(
-        isinstance(record, dict) and isinstance(record.get("name"), str) for record in records
-    ):
-        raise SetupError("aws agent-toolkit returned an invalid skill record")
-    return frozenset(record["name"] for record in records)
-
-
 def load_manifest() -> dict[str, tuple[str, ...]]:
     try:
         raw_manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
@@ -155,7 +136,6 @@ def main() -> int:
     args = parse_args()
     try:
         manifest = load_manifest()
-        aws_skills = manifest.pop(AWS_SOURCE, ())
         expected = expected_sources(manifest)
         installed = list_global_skills()
         ensure_no_conflicts(installed, expected)
@@ -174,15 +154,6 @@ def main() -> int:
             )
             for source, skills in manifest.items()
         }
-
-        installed_aws = list_aws_skills() if aws_skills else frozenset()
-        for name in aws_skills:
-            action = "update-skill" if name in installed_aws else "add-skill"
-            command = (*AWS_TOOLKIT_COMMAND, action, "--skill-name", name, *AWS_OPTIONS)
-            if args.dry_run:
-                print(f"$ {shlex.join(command)}")
-            else:
-                run(command)
 
         for source, missing in missing_by_source.items():
             if not missing:
@@ -229,8 +200,6 @@ def main() -> int:
                 final_inventory[name]["agents"]
             )
         )
-        if aws_skills:
-            missing += sorted(set(aws_skills) - list_aws_skills())
         if missing:
             raise SetupError(
                 "Recommended skills are still missing: " + ", ".join(missing)
@@ -244,10 +213,7 @@ def main() -> int:
         if unlisted:
             print(f"not in {MANIFEST.name}: " + ", ".join(unlisted))
 
-        print(
-            f"setup complete: {len(expected)} npx skills and "
-            f"{len(aws_skills)} AWS Agent Toolkit skills present"
-        )
+        print(f"setup complete: {len(expected)} skills present")
         return 0
     except (OSError, SetupError) as error:
         print(f"setup failed: {error}", file=sys.stderr)
