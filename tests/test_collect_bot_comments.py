@@ -12,7 +12,6 @@ from pathlib import Path
 COLLECT_SCRIPT = (
     Path(__file__).resolve().parents[1]
     / "skills"
-    / "engineering"
     / "code-review"
     / "scripts"
     / "collect_bot_comments.py"

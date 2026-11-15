@@ -9,7 +9,6 @@ from pathlib import Path
 FORMAT_SCRIPT = (
     Path(__file__).resolve().parents[1]
     / "skills"
-    / "writing"
     / "before-and-after"
     / "scripts"
     / "format.mjs"

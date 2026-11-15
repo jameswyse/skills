@@ -1,4 +1,4 @@
-skill = "engineering/upgrade-deps"
+skill = "upgrade-deps"
 include = []
 
 [[probe]]

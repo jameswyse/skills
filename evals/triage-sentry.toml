@@ -1,4 +1,4 @@
-skill = "engineering/triage-sentry"
+skill = "triage-sentry"
 include = []
 
 [[probe]]

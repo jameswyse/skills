@@ -14,17 +14,15 @@ class ValidateSkillsTest(unittest.TestCase):
     root: Path
     repository: Path
     skills: list[Path]
-    groups: list[Path]
 
     def setUp(self) -> None:
         self.root = Path(tempfile.mkdtemp(prefix="skills-validation-test-"))
         self.repository = self.root / "repository"
         self.skills = []
-        self.groups = []
 
         scripts = self.repository / "scripts"
         scripts.mkdir(parents=True)
-        self.skill = self.add_skill("writing", "writing")
+        self.skill = self.add_skill("writing")
         repository_script = scripts / "validate-skills"
         shutil.copyfile(SOURCE_SCRIPT, repository_script)
         repository_script.chmod(0o755)
@@ -36,10 +34,6 @@ class ValidateSkillsTest(unittest.TestCase):
                 skill_file.unlink()
             if skill.exists():
                 skill.rmdir()
-
-        for group in self.groups:
-            if group.exists():
-                group.rmdir()
 
         skills_root = self.repository / "skills"
         if skills_root.exists():
@@ -54,15 +48,14 @@ class ValidateSkillsTest(unittest.TestCase):
             self.repository.rmdir()
         self.root.rmdir()
 
-    def add_skill(self, group: str, name: str) -> Path:
-        skill = self.repository / "skills" / group / name
+    def add_skill(self, name: str) -> Path:
+        skill = self.repository / "skills" / name
         skill.mkdir(parents=True)
         (skill / "SKILL.md").write_text(
             f"---\nname: {name}\ndescription: Test skill.\n---\n",
             encoding="utf-8",
         )
         self.skills.append(skill)
-        self.groups.append(skill.parent)
         return skill
 
     def run_validation(self, *arguments: str) -> subprocess.CompletedProcess[str]:
@@ -76,29 +69,29 @@ class ValidateSkillsTest(unittest.TestCase):
             text=True,
         )
 
-    def test_validates_grouped_skill_by_name_without_codex(self) -> None:
+    def test_validates_skill_by_name_without_codex(self) -> None:
         result = self.run_validation("writing")
 
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("skills/writing/writing", result.stdout)
+        self.assertIn("skills/writing", result.stdout)
         self.assertIn("validation complete", result.stdout)
 
-    def test_validates_every_grouped_skill_in_name_order(self) -> None:
-        self.add_skill("engineering", "typescript")
+    def test_validates_every_skill_in_name_order(self) -> None:
+        self.add_skill("typescript")
 
         result = self.run_validation()
 
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertLess(
-            result.stdout.index("skills/engineering/typescript"),
-            result.stdout.index("skills/writing/writing"),
+            result.stdout.index("skills/typescript"),
+            result.stdout.index("skills/writing"),
         )
 
-    def test_accepts_repository_relative_grouped_path(self) -> None:
-        result = self.run_validation("skills/writing/writing")
+    def test_accepts_repository_relative_path(self) -> None:
+        result = self.run_validation("skills/writing")
 
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("skills/writing/writing", result.stdout)
+        self.assertIn("skills/writing", result.stdout)
 
     def test_accepts_claude_code_frontmatter(self) -> None:
         (self.skill / "SKILL.md").write_text(
@@ -153,15 +146,6 @@ class ValidateSkillsTest(unittest.TestCase):
 
         self.assertEqual(result.returncode, 1)
         self.assertIn("unfinished TODO placeholder", result.stderr)
-
-    def test_rejects_duplicate_skill_names_across_groups(self) -> None:
-        self.add_skill("productivity", "writing")
-
-        result = self.run_validation()
-
-        self.assertEqual(result.returncode, 1)
-        self.assertIn("Duplicate skill directory name: writing", result.stderr)
-
 
 if __name__ == "__main__":
     unittest.main()

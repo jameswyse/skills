@@ -11,7 +11,6 @@ from pathlib import Path
 INVENTORY_SCRIPT = (
     Path(__file__).resolve().parents[1]
     / "skills"
-    / "engineering"
     / "improve-testing"
     / "scripts"
     / "collect_test_inventory.py"

@@ -20,7 +20,6 @@ class SyncSkillsTest(unittest.TestCase):
     claude_target: Path
     skill: Path
     created_skills: list[Path]
-    created_groups: list[Path]
     instructions: Path
     installed_agents: Path
     installed_claude: Path
@@ -32,9 +31,8 @@ class SyncSkillsTest(unittest.TestCase):
         self.target = self.root / "installed"
         self.claude_target = self.root / "claude" / "skills"
         scripts = self.repository / "scripts"
-        self.skill = self.repository / "skills" / "writing" / "writing"
+        self.skill = self.repository / "skills" / "writing"
         self.created_skills = [self.skill]
-        self.created_groups = [self.skill.parent]
         scripts.mkdir(parents=True)
         self.skill.mkdir(parents=True)
         shutil.copyfile(SOURCE_SCRIPT, scripts / "sync-skills")
@@ -89,10 +87,6 @@ class SyncSkillsTest(unittest.TestCase):
                 skill_file.unlink()
             if skill.exists():
                 skill.rmdir()
-
-        for group in self.created_groups:
-            if group.exists():
-                group.rmdir()
 
         skills = self.repository / "skills"
         if skills.exists():
@@ -171,17 +165,6 @@ class SyncSkillsTest(unittest.TestCase):
         self.assertEqual(result.returncode, 1)
         self.assertEqual(self.installed_agents.readlink(), elsewhere)
         self.assertIn("left unchanged", result.stderr)
-
-    def add_skill(self, group: str, name: str) -> Path:
-        skill = self.repository / "skills" / group / name
-        skill.mkdir(parents=True)
-        (skill / "SKILL.md").write_text(
-            f"---\nname: {name}\ndescription: Test skill.\n---\n",
-            encoding="utf-8",
-        )
-        self.created_skills.append(skill)
-        self.created_groups.append(skill.parent)
-        return skill
 
     def test_creates_keeps_and_removes_managed_link(self) -> None:
         first = self.run_sync()
@@ -269,32 +252,24 @@ class SyncSkillsTest(unittest.TestCase):
         self.assertIn("must be different directories", result.stderr)
         self.assertFalse(self.target.exists())
 
-    def test_updates_managed_link_when_skill_moves_between_groups(self) -> None:
+    def test_updates_managed_link_whose_source_moved(self) -> None:
         first = self.run_sync()
         self.assertEqual(first.returncode, 0, first.stderr)
 
-        moved_skill = self.repository / "skills" / "engineering" / "writing"
-        moved_skill.parent.mkdir()
-        self.created_skills.append(moved_skill)
-        self.created_groups.append(moved_skill.parent)
-        self.skill.rename(moved_skill)
+        earlier_source = str(self.repository / "skills" / "writing" / "writing")
+        installed = self.target / "writing"
+        installed.unlink()
+        installed.symlink_to(earlier_source)
+        state_path = self.target / STATE_FILENAME
+        state = json.loads(state_path.read_text(encoding="utf-8"))
+        state["links"]["writing"] = earlier_source
+        state_path.write_text(json.dumps(state), encoding="utf-8")
 
         second = self.run_sync()
 
-        installed = self.target / "writing"
         self.assertEqual(second.returncode, 0, second.stderr)
         self.assertIn("updated", second.stdout)
-        self.assertEqual(installed.readlink(), moved_skill.resolve())
-
-    def test_rejects_duplicate_skill_names_across_groups(self) -> None:
-        duplicate = self.add_skill("productivity", "writing")
-
-        result = self.run_sync()
-
-        self.assertEqual(result.returncode, 1)
-        self.assertIn("Duplicate skill directory name: writing", result.stderr)
-        self.assertFalse((self.target / duplicate.name).exists())
-
+        self.assertEqual(installed.readlink(), self.skill.resolve())
 
 if __name__ == "__main__":
     unittest.main()

@@ -9,7 +9,7 @@
 
 ## Layout
 
-- `skills/<group>/<skill-name>` holds each skill. Groups are for people. Installed skills are flat.
+- `skills/<skill-name>` holds each skill.
 - `global/` holds the global `AGENTS.md` and `CLAUDE.md`.
 - `evals/` holds the model probes and fixture repositories.
 - `archive/` mirrors the repository for retired skills. Scripts ignore it.
@@ -86,4 +86,4 @@ The script reaches machines through the homelab repository's `scripts/fleet`, re
 
 ## Archive a skill
 
-Move its paths under `archive/` with `git mv`, such as `skills/engineering/tdd` to `archive/skills/engineering/tdd` and its test to `archive/tests/`. Reverse the move to restore it. Run `scripts/sync-skills` either way. Relative links in an archived skill point to where it lives once restored, so they only resolve after the move back.
+Move its paths under `archive/` with `git mv`, such as `skills/tdd` to `archive/skills/tdd` and its test to `archive/tests/`. Reverse the move to restore it. Run `scripts/sync-skills` either way. Relative links in an archived skill point to where it lives once restored, so they only resolve after the move back.

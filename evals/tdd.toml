@@ -1,5 +1,5 @@
-skill = "engineering/tdd"
-include = ["engineering/code-review/references/testing.md"]
+skill = "tdd"
+include = ["code-review/references/testing.md"]
 
 [[probe]]
 id = "test-passes-before-fix"

@@ -1,4 +1,4 @@
-skill = "ux/ux"
+skill = "ux"
 include = []
 
 [[probe]]

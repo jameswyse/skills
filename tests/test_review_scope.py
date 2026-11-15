@@ -12,7 +12,6 @@ from pathlib import Path
 REVIEW_SCOPE_SCRIPT = (
     Path(__file__).resolve().parents[1]
     / "skills"
-    / "engineering"
     / "code-review"
     / "scripts"
     / "review_scope.py"

@@ -1,7 +1,7 @@
-skill = "engineering/code-review"
+skill = "code-review"
 include = [
-  "engineering/engineering/references/cross-provider-delegation.md",
-  "engineering/engineering/references/design.md",
+  "engineering/references/cross-provider-delegation.md",
+  "engineering/references/design.md",
 ]
 
 [[probe]]

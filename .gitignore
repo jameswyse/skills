@@ -1,6 +1,6 @@
 __pycache__/
 *.py[cod]
 assets
-!skills/ux/html-report/assets/
+!skills/html-report/assets/
 /NOTES.md
 .claude/worktrees/

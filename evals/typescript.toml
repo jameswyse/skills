@@ -1,4 +1,4 @@
-skill = "engineering/typescript"
+skill = "typescript"
 include = []
 
 [[probe]]

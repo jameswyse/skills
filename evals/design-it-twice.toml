@@ -1,5 +1,5 @@
-skill = "engineering/design-it-twice"
-include = ["engineering/engineering/references/design.md"]
+skill = "design-it-twice"
+include = ["engineering/references/design.md"]
 
 [[probe]]
 id = "no-production-changes"

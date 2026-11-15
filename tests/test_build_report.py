@@ -10,11 +10,11 @@ from pathlib import Path
 
 
 SKILLS = Path(__file__).resolve().parents[1] / "skills"
-REPORT_SKILL = SKILLS / "ux" / "html-report"
+REPORT_SKILL = SKILLS / "html-report"
 BUILD_SCRIPT = REPORT_SKILL / "scripts" / "build_report.py"
 DOCUMENTED_TEMPLATES = (
     REPORT_SKILL / "SKILL.md",
-    SKILLS / "engineering" / "upgrade-deps" / "references" / "html-report.md",
+    SKILLS / "upgrade-deps" / "references" / "html-report.md",
 )
 HTML_BLOCK = re.compile(r"```html\n(.*?)```", re.DOTALL)
 

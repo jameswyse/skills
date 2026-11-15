@@ -1,5 +1,5 @@
-skill = "engineering/engineering"
-include = ["engineering/code-review/references/testing.md"]
+skill = "engineering"
+include = ["code-review/references/testing.md"]
 
 [[probe]]
 id = "source-fix-over-guard"

@@ -22,7 +22,7 @@ if __name__ == "__main__":
                 "-q",
                 "-p", "no:cacheprovider",
                 str(REPOSITORY / "tests"),
-                str(REPOSITORY / "skills/engineering/babysit-pr/scripts/test_gh_pr_watch.py"),
+                str(REPOSITORY / "skills/babysit-pr/scripts/test_gh_pr_watch.py"),
             ]
         )
     )

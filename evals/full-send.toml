@@ -1,4 +1,4 @@
-skill = "engineering/full-send"
+skill = "full-send"
 include = []
 
 [[probe]]

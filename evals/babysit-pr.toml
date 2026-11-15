@@ -1,4 +1,4 @@
-skill = "engineering/babysit-pr"
+skill = "babysit-pr"
 include = []
 
 [[probe]]

@@ -47,22 +47,17 @@ ALLOWED_FIELDS = STANDARD_FIELDS | CLAUDE_FIELDS
 
 
 class ValidationError(Exception):
-    """Raised when the grouped skill source cannot be resolved safely."""
+    """Raised when the skill source cannot be resolved safely."""
 
 
 def discover_skills() -> dict[str, Path]:
     discovered: dict[str, Path] = {}
-    for skill_file in sorted(SKILLS.glob("*/*/SKILL.md")):
+    for skill_file in sorted(SKILLS.glob("*/SKILL.md")):
         skill = skill_file.parent
-        group = skill.parent
-        if group.name.startswith(".") or skill.name.startswith("."):
+        if skill.name.startswith("."):
             continue
-        if not SKILL_NAME.fullmatch(group.name):
-            raise ValidationError(f"Invalid skill group directory name: {group.name}")
         if not SKILL_NAME.fullmatch(skill.name):
             raise ValidationError(f"Invalid skill directory name: {skill.name}")
-        if skill.name in discovered:
-            raise ValidationError(f"Duplicate skill directory name: {skill.name}")
         discovered[skill.name] = skill.resolve()
     return discovered
 

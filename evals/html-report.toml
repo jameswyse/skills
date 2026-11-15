@@ -1,4 +1,4 @@
-skill = "ux/html-report"
+skill = "html-report"
 include = []
 
 [[probe]]

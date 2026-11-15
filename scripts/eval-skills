@@ -120,15 +120,21 @@ def skill_files(arm: str, skill: str, include: tuple[str, ...], base: str) -> li
     if arm == "none":
         return []
     skill_root = f"skills/{skill}"
+    required = [f"{skill_root}/SKILL.md", *[f"skills/{path}" for path in include]]
     if arm == "before":
-        listed = git("ls-tree", "-r", "--name-only", base, "--", skill_root).split("\n")
         tracked = set(git("ls-tree", "-r", "--name-only", base, "--", "skills").split("\n"))
-        paths = [path for path in listed if path.endswith(".md")]
-        paths += [f"skills/{path}" for path in include if f"skills/{path}" in tracked]
-        return [(path, git("show", f"{base}:{path}")) for path in order_entrypoint_first(paths)]
+        require_files(required, tracked, base)
+        paths = [path for path in tracked if path.startswith(f"{skill_root}/") and path.endswith(".md")]
+        return [(path, git("show", f"{base}:{path}")) for path in order_entrypoint_first(paths + required)]
+    require_files(required, {path for path in required if (REPOSITORY / path).is_file()}, "the working tree")
     paths = [str(path.relative_to(REPOSITORY)) for path in (REPOSITORY / skill_root).rglob("*.md")]
-    paths += [f"skills/{path}" for path in include if (REPOSITORY / "skills" / path).is_file()]
-    return [(path, (REPOSITORY / path).read_text()) for path in order_entrypoint_first(paths)]
+    return [(path, (REPOSITORY / path).read_text()) for path in order_entrypoint_first(paths + required)]
+
+
+def require_files(required: list[str], available: set[str], source: str) -> None:
+    missing = [path for path in required if path not in available]
+    if missing:
+        raise ValueError(f"{source} has no {', '.join(missing)}")
 
 
 def order_entrypoint_first(paths: list[str]) -> list[str]:
@@ -142,9 +148,8 @@ def render_files(files: list[tuple[str, str]]) -> str:
 def text_prompt(probe: Probe, files: list[tuple[str, str]]) -> str:
     parts = ["You are a coding agent partway through a task for the user."]
     if files:
-        skill_name = probe.skill.rsplit("/", 1)[-1]
         parts.append(
-            f'The "{skill_name}" skill is loaded. Its files, and the files it links to, follow.\n\n'
+            f'The "{probe.skill}" skill is loaded. Its files, and the files it links to, follow.\n\n'
             + render_files(files)
         )
     parts.append(f"Scenario:\n\n{probe.prompt}")
@@ -459,36 +464,36 @@ def summarize(records: list[dict], arms: list[str], models: list[str]) -> str:
 
 def audit(skills: list[str], models: list[str], base: str, out: Path) -> None:
     documents = [tomllib.loads(path.read_text()) for path in sorted(EVALS.glob("*.toml"))]
-    targets = [document for document in documents if not skills or document["skill"].rsplit("/", 1)[-1] in skills]
+    targets = [document for document in documents if not skills or document["skill"] in skills]
 
     def ask(target: dict, model: str) -> tuple[str, str, str]:
-        before = render_files(skill_files("before", target["skill"], (), base))
-        after = render_files(skill_files("after", target["skill"], (), base))
-        prompt = "\n\n".join(
-            [
-                "An agent skill was edited to make it shorter. Compare the two versions as an agent"
-                " that must act on them.",
-                f"<before>\n{before}\n</before>",
-                f"<after>\n{after}\n</after>",
-                "List every requirement, prohibition, condition, or decision rule that BEFORE gives an"
-                " agent and AFTER drops, weakens, or changes. Quote the BEFORE sentence for each and"
-                " say in one line what an agent would now do differently. Ignore wording, order,"
-                " rationale, history, and file layout. Ignore anything an agent in your position does"
-                " without being told, and say so in one closing line that lists what you skipped for"
-                " that reason. Most important first. If nothing was lost, say so.",
-            ]
-        )
-        with tempfile.TemporaryDirectory() as empty:
-            try:
+        try:
+            before = render_files(skill_files("before", target["skill"], (), base))
+            after = render_files(skill_files("after", target["skill"], (), base))
+            prompt = "\n\n".join(
+                [
+                    "An agent skill was edited to make it shorter. Compare the two versions as an agent"
+                    " that must act on them.",
+                    f"<before>\n{before}\n</before>",
+                    f"<after>\n{after}\n</after>",
+                    "List every requirement, prohibition, condition, or decision rule that BEFORE gives an"
+                    " agent and AFTER drops, weakens, or changes. Quote the BEFORE sentence for each and"
+                    " say in one line what an agent would now do differently. Ignore wording, order,"
+                    " rationale, history, and file layout. Ignore anything an agent in your position does"
+                    " without being told, and say so in one closing line that lists what you skipped for"
+                    " that reason. Most important first. If nothing was lost, say so.",
+                ]
+            )
+            with tempfile.TemporaryDirectory() as empty:
                 return target["skill"], model, run_model(model, prompt, Path(empty), [])["answer"]
-            except (RuntimeError, subprocess.SubprocessError) as error:
-                return target["skill"], model, f"error: {error}"
+        except (RuntimeError, subprocess.SubprocessError, ValueError) as error:
+            return target["skill"], model, f"error: {error}"
 
     with ThreadPoolExecutor(max_workers=8) as pool:
         futures = [pool.submit(ask, target, model) for target in targets for model in models]
     for future in futures:
         skill, model, answer = future.result()
-        path = out / "audit" / f"{skill.rsplit('/', 1)[-1]}.{model}.md"
+        path = out / "audit" / f"{skill}.{model}.md"
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(answer + "\n")
         print(f"wrote {path}")

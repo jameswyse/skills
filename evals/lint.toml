@@ -1,5 +1,5 @@
-skill = "engineering/engineering"
-include = ["engineering/typescript/SKILL.md"]
+skill = "engineering"
+include = ["typescript/SKILL.md"]
 
 [[live]]
 id = "live-accounts-lint-configured"

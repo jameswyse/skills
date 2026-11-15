@@ -18,44 +18,27 @@ This repository's `code-review` replaces Claude Code's bundled `/code-review`. U
 
 ## Skills
 
-### Writing
-
-| Skill                  | What it does                                                                    |
-| ---------------------- | ------------------------------------------------------------------------------- |
-| `writing`              | Drafts, edits and reviews prose other people will read.                         |
-| `technical-writing`    | Writes developer docs, READMEs, commit messages, skills and agent instructions. |
-| `pull-requests`        | Opens pull requests and writes their titles, descriptions and review labels.    |
-| `pull-request-reviews` | Reviews someone else's pull request and drafts or posts one comment.            |
-| `before-and-after`     | Adds screenshots or recordings to a pull request description.                   |
-| `show-me`              | Explains code and code changes, with a diagram when one helps.                  |
-
-### UX
-
-| Skill         | What it does                                           |
-| ------------- | ------------------------------------------------------ |
-| `ux`          | Designs, builds and reviews user-facing interfaces.    |
-| `html-report` | Builds compact HTML reports and shows them in T3 Code. |
-
-### Engineering
-
-| Skill             | What it does                                                                     |
-| ----------------- | -------------------------------------------------------------------------------- |
-| `engineering`     | Sets the baseline for implementing, debugging, designing and verifying software. |
-| `typescript`      | Adds rules for TypeScript types and validation.                                  |
-| `diagnosing-bugs` | Finds the cause of hard bugs and performance regressions from evidence.          |
-| `tdd`             | Runs a failing-test-first loop.                                                  |
-| `code-review`     | Reviews a change for spec, correctness and standards across several models.      |
-| `babysit-pr`      | Watches a pull request's CI, reviews and merge conflicts, and fixes what it can. |
-| `full-send`       | Takes a task through to a ready pull request with passing checks.                |
-| `triage-sentry`   | Investigates a Sentry issue or triages a project's issues.                       |
-| `design-it-twice` | Compares several interface designs for a module before choosing one.             |
-| `upgrade-deps`    | Upgrades a pnpm project's dependencies, Node.js, pnpm and GitHub Actions.        |
-
-### Productivity
-
-| Skill     | What it does                                                        |
-| --------- | ------------------------------------------------------------------- |
-| `homelab` | Reaches my machines and self-hosted services. Personal, so skip it. |
+| Skill                  | What it does                                                                     |
+| ---------------------- | -------------------------------------------------------------------------------- |
+| `engineering`          | Sets the baseline for implementing, debugging, designing and verifying software. |
+| `typescript`           | Adds rules for TypeScript types and validation.                                  |
+| `design-it-twice`      | Compares several interface designs for a module before choosing one.             |
+| `tdd`                  | Runs a failing-test-first loop.                                                  |
+| `diagnosing-bugs`      | Finds the cause of hard bugs and performance regressions from evidence.          |
+| `triage-sentry`        | Investigates a Sentry issue or triages a project's issues.                       |
+| `upgrade-deps`         | Upgrades a pnpm project's dependencies, Node.js, pnpm and GitHub Actions.        |
+| `code-review`          | Reviews a change for spec, correctness and standards across several models.      |
+| `pull-requests`        | Opens pull requests and writes their titles, descriptions and review labels.     |
+| `before-and-after`     | Adds screenshots or recordings to a pull request description.                    |
+| `babysit-pr`           | Watches a pull request's CI, reviews and merge conflicts, and fixes what it can. |
+| `full-send`            | Takes a task through to a ready pull request with passing checks.                |
+| `pull-request-reviews` | Reviews someone else's pull request and drafts or posts one comment.             |
+| `show-me`              | Explains code and code changes, with a diagram when one helps.                   |
+| `writing`              | Drafts, edits and reviews prose other people will read.                          |
+| `technical-writing`    | Writes developer docs, READMEs, commit messages, skills and agent instructions.  |
+| `ux`                   | Designs, builds and reviews user-facing interfaces.                              |
+| `html-report`          | Builds compact HTML reports and shows them in T3 Code.                           |
+| `homelab`              | Reaches my machines and self-hosted services. Personal, so skip it.              |
 
 ## Requirements
 
