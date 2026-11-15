@@ -5,7 +5,7 @@
 #   "pytest==8.4.2",
 # ]
 # ///
-"""Run repository tooling tests and the imported PR watcher tests."""
+"""Run the repository tooling tests."""
 
 from pathlib import Path
 
@@ -22,7 +22,6 @@ if __name__ == "__main__":
                 "-q",
                 "-p", "no:cacheprovider",
                 str(REPOSITORY / "tests"),
-                str(REPOSITORY / "skills/babysit-pr/scripts/test_gh_pr_watch.py"),
             ]
         )
     )

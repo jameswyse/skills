@@ -1,6 +1,6 @@
 ---
 name: open-pr
-description: Use when creating or opening a pull request, or drafting, writing, or updating a pull request's title, description, or Airteam review labels.
+description: Use when creating or opening a pull request, drafting, writing, or updating a pull request's title, description, or Airteam review labels, or adding screenshots or recordings to one.
 ---
 
 # Pull requests
@@ -22,7 +22,7 @@ Commit only the task's changes. When the current branch is the default branch, c
 
 ## Workflow
 
-For a request only to label a pull request, run steps 1, 2, and 5, then apply the labels as step 5's reference describes and report them.
+For a request only to label a pull request, run steps 1, 2, and 5, then apply the labels as step 5's reference describes and report them. For a request only to add screenshots or recordings, run steps 1 and 6, publishing as [Visual evidence](references/visual-evidence.md) describes, and report the result.
 
 1. **Find the pull request.** Run `gh pr view --json url,number,title,body,state,baseRefName,headRefName` on the current branch. When none exists, inspect `git status --short --branch` and the branch's commits against its base. Ask the user to choose only when the current branch has no relevant work and the target is unclear. For a stack of dependent branches, use "gh-stack".
 2. **Gather only the context the description needs.**
@@ -33,12 +33,12 @@ For a request only to label a pull request, run steps 1, 2, and 5, then apply th
 3. **Write the title.** Follow the repository's convention, such as Conventional Commits. Name the change in the common terms a contributor scanning the pull request list would recognise, not the activity or a label from the conversation: "Lock prices before saving orders", not "Order fixes" or "Apply option B to the checkout flow". Keep it clear, concise, and under 72 characters.
 4. **Write the body** with [the description template](references/description-template.md). When the repository has its own template, keep its headings, checklists, and required fields, and fill them with this skill's content where each fits.
 5. **Choose review labels.** When the base repository's owner is `airteamaus`, follow [Airteam review labels](references/airteam-review-labels.md).
-6. **Add visual evidence for interface changes.** Use "before-and-after" when it is available and screenshots or recordings exist. Otherwise state in the description that no visual evidence is attached.
+6. **Add visual evidence for interface changes.** Follow [Visual evidence](references/visual-evidence.md) to capture and place screenshots or recordings, or state in the description that no visual evidence is attached.
 7. **Review before creating.** Before creating a pull request, when the global instructions' rule requires "code-review", review the draft and the diff together. If no review has covered the final diff, run "code-review" against the base branch with the drafted title, body, and review labels with their reasons in its spec, through its repeat rounds. If one has, run only its Spec axis on the drafted title, body, and review labels with their reasons against the diff, and update the draft to match its findings. In either case, add the run report to the draft, with a Spec-only run as its own round.
 8. **Publish when authorised.** Every new pull request opens ready for review unless the user asked for a draft. Write the body to a file in the temporary directory, then publish it:
-   - For a new pull request, run `gh pr create --base <base> --title <title> --body-file <file>`. Add `--draft` only when the user asked for a draft.
+   - For a new pull request, run `gh pr create --base <base> --title <title> --body-file <file>`. Add `--draft` only when the user asked for a draft, and an `--attach` flag for each capture from step 6.
    - For a stack, open its pull requests with `gh stack submit --auto --open` from "gh-stack" instead of `gh pr create`. `--open` marks every pull request in the stack ready for review, including existing drafts. When the user asked for a draft of any pull request in the stack, in this task or an earlier one, omit `--open`, which creates the new pull requests as drafts. Set each title and body with `gh pr edit <url>`. After a submit without `--open`, run `gh pr ready <url>` on each new pull request the user did not ask to keep as a draft.
-   - For an existing pull request, run `gh pr edit <url> --title <title> --body-file <file>`. Keep content the description does not own, such as author notes, media, checklists, linked issues, and bot sections.
+   - For an existing pull request, run `gh pr edit <url> --title <title> --body-file <file>`, with an `--attach` flag for each new capture. Keep content the description does not own, such as author notes, media, checklists, linked issues, and bot sections.
 
    Apply the review labels from step 5 as its reference describes. Confirm each pull request with `gh pr view <url> --json url,title,body,labels`. Bot review applies to a new pull request on github.com that needed "code-review". Follow [Bot review](references/bot-review.md) once it is open.
 9. **Report.** Give the pull request link, title, and review labels, two or three sentences on the change and its notes, and any authorised step that did not happen, such as an unpushed branch. Paste the full body only when the request was to draft a description without publishing it.

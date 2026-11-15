@@ -4,7 +4,7 @@
 
 - Python 3 for `sync-skills` and `setup-external-skills`.
 - [uv](https://docs.astral.sh/uv/) for `validate-skills`, `test-skills` and `eval-skills`, which run on Python 3.11 or newer.
-- Node.js and npx for `setup-external-skills` and the `before-and-after` tests.
+- Node.js and npx for `setup-external-skills`.
 - The `claude` and `codex` CLIs, signed in, for `eval-skills`.
 
 ## Layout
@@ -47,7 +47,7 @@ scripts/validate-skills [skill-name ...]
 scripts/test-skills
 ```
 
-`validate-skills` checks Agent Skills fields and the supported Claude Code extensions. `test-skills` runs the repository tooling tests and the `babysit-pr` watcher tests. Both use isolated `uv` environments. The watcher tests never contact GitHub.
+`validate-skills` checks Agent Skills fields and the supported Claude Code extensions. `test-skills` runs the repository tooling tests. Both use isolated `uv` environments.
 
 `disable-model-invocation: true` is a Claude Code extension. Strict Agent Skills tools may reject it.
 
