@@ -5,272 +5,120 @@ description: Use when asked to upgrade all dependencies of a pnpm project, inclu
 
 # Upgrade dependencies
 
-Upgrade the complete pnpm project to the newest compatible stable dependency set. Call the Skill
-tool for "engineering". Treat repository instructions, the workspace definition, the manifests,
-and the lockfile as the sources of truth.
+Upgrade the whole pnpm project to the newest compatible stable dependency set. The repository's instructions, workspace definition, manifests, and lockfile are the sources of truth. The request authorises the local changes the upgrade needs. It doesn't authorise a commit, push, publication, deployment, or unrelated cleanup.
 
-The request authorises local changes required to complete the upgrade. It does not authorise a
-commit, push, publication, deployment, or unrelated cleanup.
+## Done when
 
-## Completion criteria
-
-Finish only when all of these conditions hold:
-
-- Node.js and pnpm run the latest release of their current major lines, and every source that
-  names either version agrees.
+- Node.js and pnpm run the latest release of their current major lines, and every source that names either version agrees.
 - The root project and every package selected by `pnpm-workspace.yaml` have been inventoried.
-- Every outdated dependency and GitHub Action is updated to its resolved target, has a verified
-  compatibility hold, or is a release that appeared or became eligible after the targets were
-  resolved.
-- Every audit finding is fixed. A locally patched and verified advisory may be ignored only as
-  described below.
-- The dependency-policy entries affected by the new graph are current and no proven-stale entries
-  remain.
-- Every repository-provided full verification command passes. If none exists, all available format,
-  lint, typecheck, build, and test checks pass.
-- The "code-review" skill has reviewed the complete change, every actionable finding has been fixed,
-  and the affected checks have been repeated.
-- The final outdated scan, available peer check, frozen-lockfile install, and audit pass. If the
-  environment prevents a required check, report the run as blocked instead of complete.
+- Every outdated dependency and GitHub Action is at its resolved target, under a verified compatibility hold, or a release that appeared or became eligible after the targets were resolved.
+- Every audit finding is fixed, development ones included.
+- The dependency-policy entries the new graph affects are current, with no proven-stale entry left.
+- The repository's full verification command passes. Without one, every available format, lint, typecheck, build, and test check passes.
+- "code-review" has reviewed the complete change, and its actionable findings are fixed and rechecked.
+- The final outdated scan, peer check, frozen-lockfile install, and audit pass.
 
-## 1. Establish the scope
+When the environment prevents a required check, or an advisory has no safe fix, report the run as blocked instead of complete.
 
-1. Read the applicable repository instructions and inspect the working tree. Preserve every
-   unrelated staged, unstaged, and untracked change.
-2. When the current branch tracks an upstream, fetch it. If the branch is behind, fast-forward it
-   with `git merge --ff-only` before changing anything. If it has diverged or the fast-forward
-   fails, report that and continue on the local branch.
-3. Confirm that the repository uses pnpm. If it uses Yarn or npm, ask once whether to migrate it to
-   pnpm first. If the user agrees, follow [Migrate to pnpm](references/pnpm-migration.md) before
-   continuing. Otherwise stop.
-4. Run from the workspace root. Use the `packages` selection in `pnpm-workspace.yaml`. Do not scan
-   arbitrary nested `package.json` files. Account for the root separately instead of assuming that
-   one recursive command included it.
-5. Inspect the command help and current official documentation for the pnpm version you will run
-   before relying on version-specific flags or configuration fields.
-6. Resolve and install under the committed workspace policy. Do not bypass registry routing, trust
-   policy, package selection, patches, release age, or build policy to make an update pass.
-7. Record the repository's canonical focused checks and full verification command. Inspect its
-   changeset or release-note policy for published workspace packages.
-8. Keep logs, scratch output, and report files in one run directory under `$TMPDIR`. Remove it
-   after delivering the report.
+## 1. Prepare
+
+- Preserve every unrelated staged, unstaged, and untracked change.
+- Check the command help and current documentation for the pnpm version you will run before relying on version-specific flags or fields.
+- When the branch tracks an upstream, fetch it and fast-forward with `git merge --ff-only` before changing anything. If it has diverged or the fast-forward fails, report that and continue on the local branch.
+- If the repository uses Yarn or npm, ask once whether to migrate it to pnpm first. If the user agrees, follow [Migrate to pnpm](references/pnpm-migration.md) before continuing. Otherwise stop.
+- Work on the packages `pnpm-workspace.yaml` selects, not arbitrary nested `package.json` files, and account for the root separately.
+- Resolve and install under the committed workspace policy. Never bypass registry routing, trust policy, package selection, patches, release age, or build policy to make an update pass.
+- Keep logs and scratch output in one run directory under `$TMPDIR`, and remove it after delivering the report.
 
 ## 2. Update Node.js and pnpm
 
-Before the dependency inventory, compare the pinned Node.js and pnpm versions with current stable
-releases from official sources. Update each to the latest release in its current major line without
-asking, then activate both so the inventory, lockfile, and checks run under the new versions. Read
-[Node.js and pnpm toolchain](references/runtime-toolchain.md) before changing any pin.
+Before the inventory, update each to the latest release in its current major line without asking, and activate both so the inventory, lockfile, and checks run under them. Read [Node.js and pnpm toolchain](references/runtime-toolchain.md) before changing a pin. Adopt a new major only when the user asked for it or approves it. Otherwise report the available major and its support status.
 
-Adopt a new Node.js or pnpm major only when the user requested it or approves it. Otherwise report
-the available major and its support status.
+## 3. Inventory and resolve targets once
 
-## 3. Inventory before changing
+Inventory every manifest dependency field, catalog, alias, Git or tarball dependency, patch, and workspace protocol, every policy entry (`overrides`, `packageExtensions`, `peerDependencyRules`, `update.ignoreDeps`, audit and release-age exceptions, build permissions, and the Dependabot or Renovate holds that mirror them), outdated direct and transitive resolutions including stable majors, vulnerabilities at the lowest audit severity, and GitHub Actions in workflows, reusable workflows, and composite actions. A non-zero exit for outdated dependencies is data, not a failure. Record registry errors and unresolved private dependencies as coverage gaps.
 
-Build one inventory that covers:
-
-- Every manifest dependency field in the root and selected workspace packages.
-- Catalogs, aliases, Git dependencies, tarball dependencies, patches, and workspace protocols.
-- `overrides`, `packageExtensions`, `peerDependencyRules`, `update.ignoreDeps`, audit exceptions,
-  release-age exceptions, and dependency build permissions.
-- Outdated direct and transitive resolutions, including stable major releases.
-- Known vulnerabilities at the lowest audit severity.
-- GitHub Actions in workflows, reusable workflows, and composite actions.
-- Existing Dependabot or Renovate holds that correspond to dependency policy.
-
-Use machine-readable output where the installed pnpm version supports it. Treat non-zero
-"outdated dependencies found" exits as data, not command failures. Record registry errors and
-unresolved private dependencies as coverage gaps.
-
-Resolve every upgrade target once per run, including GitHub Actions. This inventory and the
-toolchain versions chosen in step 2 set the targets, and step 4's transitive refresh finalises them
-before the first full verification. Keep that set for the rest of the run. In later steps, "latest"
-means the resolved target, and a release that appears or becomes eligible afterwards waits for the
-next run.
+Resolve every target once per run, GitHub Actions included. This inventory and the step 2 versions set the targets, and step 4's transitive refresh finalises them before the first full verification. After that, "latest" means the resolved target. A release that appears or becomes eligible later waits for the next run and is reported.
 
 ## 4. Upgrade the compatible set
 
-Target the latest stable releases, including major versions. Respect intentional prerelease pins
-and non-registry sources unless the repository evidence shows that they should move.
+Target the latest stable releases, majors included. Leave intentional prerelease pins and non-registry sources alone unless repository evidence shows they should move.
 
-- Upgrade related package families together. Derive each family from peer ranges, release notes,
-  and the dependency graph instead of a hard-coded package list.
-- Preserve exact pins, range operators, aliases, catalogs, and workspace protocols unless the
-  migration requires a different declaration.
-- Keep shared versions in an existing catalog. Move a version into the catalog when several
-  workspace packages need it aligned and the repository already uses catalogs for that purpose.
+- Upgrade related package families together, derived from peer ranges, release notes, and the dependency graph.
+- Preserve exact pins, range operators, aliases, catalogs, and workspace protocols unless the migration needs a different declaration. Keep shared versions in an existing catalog, and move one in when several packages need it aligned.
 - Prefer updating the responsible direct dependency over forcing a transitive child.
-- Read official migration guidance for each major upgrade. Apply required source, configuration,
-  generated-file, and durable-test changes.
-- Treat upgrade failures as migration evidence. Diagnose and fix the incompatibility at its source
-  before introducing a hold.
-- Fix what the upgrade causes or exposes as part of the same change: configuration keys for removed
-  or renamed tool options, dependencies the new versions make unused, new deprecation warnings, and
-  new lint or type warnings. Remove a dependency only when usage and verification prove that the
-  removal is safe. Report anything that needs more than a local fix.
+- Read the official migration guidance for each major and apply the changes it requires. A failure is migration evidence, so fix the incompatibility at its source before introducing a hold.
+- Fix what the upgrade causes or exposes in the same change: renamed or removed configuration keys, dependencies made unused, and new deprecation, lint, or type warnings. Remove a dependency only when usage and verification prove it safe.
+- Stop and ask only when the newest release needs a product, public-interface, deployment, or architecture decision outside maintenance work.
 
-Review the diff after each updater command and revert changes the upgrade did not need:
+After each updater command, revert what the upgrade didn't need:
 
-- Catalog entries or manifest ranges moved for a package in `update.ignoreDeps` or under a hold.
-- Range operators changed against the repository's existing style or `savePrefix`.
-- Companion ranges loosened, such as an `@types/node` range that leaves the runtime's major line.
+- catalog entries or ranges moved for a package in `update.ignoreDeps` or under a hold;
+- range operators changed against the repository's style or `savePrefix`;
+- companion ranges loosened, such as an `@types/node` range that leaves the runtime's major line;
 - GitHub Action refs switched between tags and commit SHAs, or version comments duplicated.
 
-Treat type packages as companions, not independent targets:
+Type packages are companions, not targets. Keep `@types/*` on the runtime package's API line, with an application's `@types/node` on its deployed Node.js major and a published library's on its minimum supported one, and drop a type package the runtime package now replaces. Don't narrow `peerDependencies` to the installed version. Update the development dependency that exercises the peer, verify the supported range, and widen or move it only when the package truly supports it.
 
-- Match a companion `@types/*` package to the runtime package and its supported API line.
-- Remove a companion type package when the runtime package now supplies the required types.
-- For an application, keep `@types/node` on the deployed Node.js major and update it to the latest
-  release in that line.
-- For a published library, align `@types/node` with the minimum supported Node.js runtime so newer
-  APIs cannot enter by accident.
+Finish the graph before the first full verification: `pnpm update -r`, `pnpm dedupe`, then `pnpm dedupe --check`.
 
-Treat `peerDependencies` as compatibility declarations. Do not narrow them to the newly installed
-version. Update the development dependency that exercises the peer, verify the supported range,
-and widen or move the peer range only when the package can truthfully support it.
+## 5. Compatibility holds
 
-If the newest release requires a product, public-interface, deployment, or architecture decision
-outside the requested maintenance work, stop and ask. Otherwise complete the source migration.
+Hold a package only after its latest release has failed a relevant build, test, runtime check, or documented compatibility requirement.
 
-Finish the graph before the first full verification, so that run covers the final lockfile.
-Refresh transitive resolutions within their declared ranges with `pnpm update -r`, run
-`pnpm dedupe`, and confirm that `pnpm dedupe --check` passes.
+- Pin the narrowest working version, and scope every ignore, peer rule, and override to the incompatible package or parent-child edge. Update parent-version selectors when the parent moves.
+- Record the reason and removal condition in the commit message and final report, not in a code comment.
+- Re-evaluate every existing hold and local patch on each run against current release notes and a retest of the latest release. Don't carry one forward from earlier reports, notes, or commit messages.
+- Don't hide a peer warning until the installed combination is verified, and don't use an override to conceal an incompatible major.
 
-## 5. Handle compatibility holds
+## 6. Release-age exceptions
 
-Use a hold only after the latest release has failed a relevant build, test, runtime check, or
-documented compatibility requirement.
+Never reduce, remove, or bypass `minimumReleaseAge`. Select the newest release that satisfies it, and report a newer one that is still too young with the date it becomes eligible. Don't wait for it. List these in the first progress update after the inventory, so the user can ask for an exception before verification starts.
 
-- Pin the narrowest working version.
-- Scope `update.ignoreDeps`, `peerDependencyRules`, `overrides`, and dependency-bot ignores to the
-  actual incompatible package or parent-child edge.
-- Record the reason and removal condition in the commit message and final report, not in a code
-  comment.
-- Re-evaluate every existing hold and local patch during each run. Check current upstream release
-  notes and compatibility documentation, then retest against the latest release. Do not carry a
-  hold forward from earlier reports, run notes, or commit messages. Remove it as soon as a
-  compatible release passes verification.
-- Update parent-version selectors when their parent package moves.
+Add an exact `package@version` entry to `minimumReleaseAgeExclude` without asking when a too-young release fixes an audit finding, unblocks other upgrades, or lets you remove an override, patch, hold, or other policy entry. Prefer this to an override or local patch. Include the platform-specific and companion packages that release requires and nothing else, never a pattern or an unversioned name. Apply the same test to exclusions a mutating audit fix adds.
 
-Do not hide a peer warning until the installed combination has been verified. Do not use an
-override to conceal an incompatible major version.
+Remove an exact exclusion once the new lockfile proves no selected package resolves it, or its version is older than the threshold. Use `minimumReleaseAgeExcludePrune` when the pnpm version supports it and one lockfile covers the workspace. Keep intentional package patterns.
 
-## 6. Use release-age exceptions
+## 7. Audit findings
 
-Preserve `minimumReleaseAge` exactly. Never reduce, remove, or temporarily bypass it. By default,
-select the newest release that satisfies it, and report a newer release that is still too young with
-the date it becomes eligible. Do not wait for a release to age. List these releases in the first
-progress update after the inventory, so the user can request an exception before verification
-starts.
+Run the full audit at the lowest severity, plus a production-only audit for reporting. Fix each finding with the first of these that works: upgrade or remove the vulnerable direct dependency, upgrade the parent that brings in a vulnerable transitive one, update the lockfile resolution when the declared ranges already admit a fix, add the narrowest compatible override when no installable ancestor admits the fix, apply a local patch from a verified upstream fix when no installable fixed release exists, or replace the dependency when nothing else gives a safe graph. When the fixed release in the first three is too young, add its release-age exception instead of moving on to an override.
 
-Add an exact `package@version` entry to `minimumReleaseAgeExclude` without asking when a release
-younger than the threshold:
+An audit ignore is valid only when a committed local patch contains the verified fix and the scanner can't recognise patched contents. Map the advisory to the patch, add a focused regression test when the behaviour has a practical local seam, and remove both once an upstream fix is installable. Never ignore an advisory because it is development-only or unreachable, and treat an audit registry error as an incomplete audit.
 
-- fixes an audit finding; or
-- unblocks other upgrades, or lets you remove an override, patch, hold, or other policy entry.
+## 8. Dependency policy
 
-In these cases, prefer the exception to an override or local patch. Include the platform-specific
-and companion packages that the release requires, and nothing else. Never add a package pattern or
-an unversioned name. Inspect any exclusions that a mutating audit fix adds, and keep only those that
-this section allows.
+Review every policy entry the new graph affects. Use the field names the pinned pnpm version supports. Remove an entry only when the resolved graph and verification prove it stale, and drop a security override once upstream ranges resolve a fixed release. Keep Dependabot or Renovate rules consistent with the active holds, and leave their schedules, groups, and version strategy alone.
 
-Use `minimumReleaseAgeExcludePrune` when the pnpm version supports it and a shared lockfile covers
-the whole workspace. Otherwise remove stale exact exclusions only after the new lockfile proves that
-no selected workspace package resolves them. Also remove an exact exclusion whose version is now
-older than the threshold, because it no longer changes resolution. Keep intentional package
-patterns.
+A new dependency lifecycle script is an execution-permission boundary. Inspect the exact package, version, source, and script, and ask before granting a build permission the existing policy doesn't already cover for that package. A denied build can be recorded without running it when the dependency works without the script.
 
-## 7. Clear every audit finding
+## 9. GitHub Actions
 
-Run the full dependency audit at the lowest severity, plus a production-only audit for reporting.
-Fix development findings as well as production findings.
-
-Use this order:
-
-1. Upgrade or remove the vulnerable direct dependency.
-2. Upgrade the direct parent that brings in a vulnerable transitive dependency.
-3. Update the transitive lockfile resolution when its declared ranges already admit a fix.
-4. Add the narrowest compatible override when no installable ancestor admits the fix.
-5. Apply a local patch from a verified upstream fix when no installable fixed release exists.
-6. Replace the dependency when none of the earlier options can produce a safe graph.
-
-When a fixed release in the first three options is younger than the release-age threshold, add its
-exception as described above instead of moving to an override or patch.
-
-An audit ignore is valid only when a committed local patch contains the verified advisory fix and
-the scanner cannot recognise patched package contents. Map the advisory to that patch and add a
-focused regression test when the behaviour has a practical local seam. Remove both the patch and
-the ignore when an upstream fixed release becomes installable.
-
-Never ignore an unfixed advisory merely because it is development-only or unreachable in the
-current application. If no safe fix exists, report the run as blocked instead of claiming success.
-Treat an audit registry error as an incomplete audit.
-
-## 8. Reconcile dependency policy
-
-Review every dependency-management entry affected by the new graph. This includes catalogs,
-overrides, patches, package extensions, peer rules, update ignores, audit ignores, release-age
-exclusions, and build permissions.
-
-- Use the field names supported by the project's pinned pnpm version. Migrate deprecated fields
-  only when the target pnpm version supports their replacements.
-- Remove an entry only when the resolved graph and relevant verification prove it stale.
-- Keep security overrides narrow and remove them when upstream ranges resolve a fixed release.
-- Keep Dependabot or Renovate rules consistent with the active holds. Remove stale bot ignores.
-- Preserve dependency-bot schedules, groups, and global version strategy unless the user asks to
-  change the maintenance policy.
-- Do not rewrite unrelated workspace settings as part of dependency maintenance.
-
-Treat new dependency lifecycle scripts as an execution-permission boundary. Inspect the exact
-package, version, source, and script before changing `allowBuilds` or an equivalent field. Ask before
-granting a new build permission unless the existing repository policy already covers that exact
-package. A denied build may be recorded without executing it when the dependency works without the
-script.
-
-## 9. Update GitHub Actions
-
-Update every external action used by workflows, reusable workflows, and composite actions. Use
-pnpm's GitHub Actions support when the pinned version provides it. Otherwise resolve releases from
-the action's official repository.
-
-Preserve the repository's tag or commit-SHA policy. Report private or enterprise-hosted actions whose
-refs cannot be resolved. Keep the `github-actions` section of Dependabot or Renovate current when one
-exists.
+Update every external action in workflows, reusable workflows, and composite actions, through pnpm's GitHub Actions support when the pinned version has it, otherwise from each action's official repository. Preserve the repository's tag or commit-SHA policy, report private or enterprise-hosted actions whose refs can't be resolved, and keep the bots' `github-actions` section current.
 
 ## 10. Verify and review
 
-Run focused checks after risky compatibility groups so a failure remains attributable. Then follow
-the repository's documented finish order. If the repository defines no order, use this sequence:
+Run focused checks after risky compatibility groups so a failure stays attributable. Then follow the repository's documented finish order, or this one:
 
-1. Run the affected focused checks.
-2. Run a frozen-lockfile install and the available peer check.
-3. Run the repository's canonical full verification command, including production builds and full
-   tests when that command provides them.
-4. Use the "code-review" skill against the complete working-tree change. Fix every actionable finding.
-5. After review fixes, repeat checks whose inputs changed or whose results are stale. Repeat the full
-   verification command when repository policy requires it, the dependency graph changed, or the
-   remaining uncertainty spans the project. Reuse successful results for unchanged inputs.
-6. Run `git diff --check`, the recursive outdated scan with GitHub Actions, the full audit, and the
-   production audit. Report releases newer than the resolved targets instead of upgrading them.
-7. Fetch the upstream again and report any commits that landed during the run.
+1. The affected focused checks.
+2. A frozen-lockfile install and the available peer check.
+3. The full verification command, including production builds and full tests when it provides them.
+4. "code-review" against the complete working-tree change, fixing every actionable finding.
+5. After review fixes, the checks whose inputs changed. Repeat full verification when repository policy requires it, the graph changed, or the uncertainty spans the project.
+6. `git diff --check`, the recursive outdated scan with GitHub Actions, the full audit, and the production audit. Report releases newer than the resolved targets instead of upgrading them.
+7. Fetch the upstream again and report commits that landed during the run.
 
-Create a changeset or release note only when the repository requires one for the changed dependency
-or peer declaration.
+Create a changeset or release note only when the repository requires one for the changed dependency or peer declaration.
 
-## 11. Report the result
+## 11. Report
 
-Lead with the outcome: complete or blocked, the headline upgrades and security fixes, and whether
-the changes are uncommitted. Put every release-age exception directly after that summary, with its
-`package@version`, reason, and the date it ages past the threshold. Then name:
+Lead with the outcome: complete or blocked, the headline upgrades and security fixes, and whether the changes are uncommitted. Put every release-age exception straight after that, with its `package@version`, reason, and the date it ages past the threshold. Then name:
 
-- The upgraded dependency families, with old and new versions, and their source migrations.
-- Applied Node.js and pnpm updates, the files that name them, and available majors not adopted.
-- Every retained hold, its evidence, and its removal condition.
-- Overrides, patches, audit ignores, and build permissions, including those removed.
-- GitHub Actions changes and unresolved private actions.
-- The exact verification commands, their results, and any platform or environment not covered.
-- Every intentionally remaining outdated item or blocker, including releases deferred to the next run.
+- the upgraded families with old and new versions, and their source migrations;
+- Node.js and pnpm updates, the files that name them, and majors not adopted;
+- every retained hold with its evidence and removal condition;
+- overrides, patches, audit ignores, and build permissions, including those removed;
+- GitHub Actions changes and unresolved private actions;
+- the exact verification commands, their results, and any platform or environment not covered;
+- every remaining outdated item or blocker, including releases deferred to the next run.
 
-When T3 Code's `html_render` tool is available, use the "html-report" skill to show the report
-inline, filling in the template in [HTML report](references/html-report.md). Otherwise give the
-report as Markdown in the final reply.
+When T3 Code's `html_render` tool is available, show the report inline with the "html-report" skill and the template in [HTML report](references/html-report.md). Otherwise give it as Markdown in the final reply.
