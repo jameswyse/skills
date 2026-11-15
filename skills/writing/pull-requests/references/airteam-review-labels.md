@@ -24,7 +24,7 @@ These baseline labels apply to every Airteam repository. Each entry gives the la
 
 ### Repository labels
 
-A repository can define review labels for its own risks, such as `multi-tenancy` in `airteamaus/dms-be`. List them with `gh api --paginate repos/<owner>/<repo>/labels --jq '.[] | [.name, .description] | @tsv'`. Outside the baseline, a label is a review label only when its description begins with "Adds", "Affects", "Changes", or "Needs". Its description is its definition. Read it as the harm a mistake in that area could cause, such as breaking a client for an API label. Ignore every other label, such as GitHub's defaults, Dependabot's ecosystem labels like `javascript`, and status labels like `WIP` or `Deploy`.
+A repository can define review labels for its own risks, such as `multi-tenancy` in a multi-tenant backend. List them with `gh api --paginate repos/<owner>/<repo>/labels --jq '.[] | [.name, .description] | @tsv'`. Outside the baseline, a label is a review label only when its description begins with "Adds", "Affects", "Changes", or "Needs". Its description is its definition. Read it as the harm a mistake in that area could cause, such as breaking a client for an API label. Ignore every other label, such as GitHub's defaults, Dependabot's ecosystem labels like `javascript`, and status labels like `WIP` or `Deploy`.
 
 When the same risk keeps recurring in a repository's pull requests and no label covers it, propose a repository label in the report with a name, colour, and description that begins with one of those words. Create it only after the user approves. When a second repository needs the same label, propose adding it to this baseline instead.
 
@@ -38,21 +38,21 @@ When the same risk keeps recurring in a repository's pull requests and no label 
 
 Keep each label's reason for the review step and the report. Don't add a labels section to the body.
 
-These labels from the `airteamaus/dms-be` stack this guidance was calibrated on show where the line falls. `api`, `integrations`, and `multi-tenancy` are that repository's own labels, so apply them only where a repository defines them.
+These labels from the backend stack this guidance was calibrated on show where the line falls. `api`, `integrations`, and `multi-tenancy` are that repository's own labels, so apply them only where a repository defines them.
 
-| Change                                                                                       | Labels                             |
-| -------------------------------------------------------------------------------------------- | ---------------------------------- |
-| Split a 2,000-line data module by concept, leaving the GraphQL schema identical              | None                               |
-| Replace five lodash helpers with native JavaScript                                           | None                               |
-| Upgrade dependencies to fix `pnpm audit` findings                                            | `dependencies`                     |
-| Upgrade the HTTP client that sends E5 attachment uploads                                     | `integrations`                     |
-| Replace the clients that sign in to ElastiCache and call Avant, keeping their behaviour      | `integrations`                     |
-| Replace the PostgreSQL query client, losing automatic retries after deadlocks                | `database`                         |
-| Remove development dependencies from production Docker images                                | `aws`                              |
-| Add developer commands that copy a fund's Sanity content into its database tables            | `multi-tenancy`                    |
-| Add member lookup queries whose Cognito calls need an IAM permission from a `dms-aws` change | `security`, `deploy order`         |
-| Route content reads through a new data source, changing some responses and quick quotes      | `pricing`, `api`                   |
-| Add a staff API, off by default, that saves a fund's content and its files in S3             | `security`, `aws`, `multi-tenancy` |
+| Change                                                                                                     | Labels                             |
+| ---------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| Split a 2,000-line data module by concept, leaving the GraphQL schema identical                            | None                               |
+| Replace five lodash helpers with native JavaScript                                                         | None                               |
+| Upgrade dependencies to fix `pnpm audit` findings                                                          | `dependencies`                     |
+| Upgrade the HTTP client that uploads attachments to a partner API                                          | `integrations`                     |
+| Replace the clients that sign in to the cache and call a payment provider, keeping their behaviour         | `integrations`                     |
+| Replace the PostgreSQL query client, losing automatic retries after deadlocks                              | `database`                         |
+| Remove development dependencies from production Docker images                                              | `aws`                              |
+| Add developer commands that copy a tenant's CMS content into its database tables                           | `multi-tenancy`                    |
+| Add user lookup queries whose identity-provider calls need an IAM permission from an infrastructure change | `security`, `deploy order`         |
+| Route content reads through a new data source, changing some responses and quotes                          | `pricing`, `api`                   |
+| Add a staff API, off by default, that saves a tenant's content and its files in S3                         | `security`, `aws`, `multi-tenancy` |
 
 ## Stacks
 
