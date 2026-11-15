@@ -4,3 +4,10 @@ Copyright 2025 OpenAI
 This project includes code derived from [Ratatui](https://github.com/ratatui/ratatui), licensed under the MIT license.
 Copyright (c) 2016-2022 Florian Dehau
 Copyright (c) 2023-2025 The Ratatui Developers
+
+Modifications
+James Wyse modified this skill from the upstream version at
+https://github.com/openai/codex/tree/a8c36ca6d265800c1b2c67d19d3583e23dee8382/.codex/skills/babysit-pr
+The following files were changed: SKILL.md, agents/openai.yaml,
+scripts/gh_pr_watch.py and scripts/test_gh_pr_watch.py. The upstream
+references/ files were folded into SKILL.md or removed.

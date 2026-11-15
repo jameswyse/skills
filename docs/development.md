@@ -1,5 +1,12 @@
 # Development
 
+## Prerequisites
+
+- Python 3 for `sync-skills` and `setup-external-skills`.
+- [uv](https://docs.astral.sh/uv/) for `validate-skills`, `test-skills` and `eval-skills`, which run on Python 3.11 or newer.
+- Node.js and npx for `setup-external-skills` and the `before-and-after` tests.
+- The `claude` and `codex` CLIs, signed in, for `eval-skills`.
+
 ## Layout
 
 - `skills/<group>/<skill-name>` holds each skill. Groups are for people. Installed skills are flat.
@@ -79,4 +86,4 @@ The script reaches machines through the homelab repository's `scripts/fleet`, re
 
 ## Archive a skill
 
-Move its paths under `archive/` with `git mv`, such as `skills/engineering/tdd` to `archive/skills/engineering/tdd` and its test to `archive/tests/`. Reverse the move to restore it. Run `scripts/sync-skills` either way.
+Move its paths under `archive/` with `git mv`, such as `skills/engineering/tdd` to `archive/skills/engineering/tdd` and its test to `archive/tests/`. Reverse the move to restore it. Run `scripts/sync-skills` either way. Relative links in an archived skill point to where it lives once restored, so they only resolve after the move back.

@@ -8,7 +8,7 @@ My skills for software engineering, UX, writing and homelab access. They follow 
 npx skills@latest add jameswyse/skills --global --agent claude-code --agent codex --skill '*' --yes
 ```
 
-This installs to `~/.agents/skills`, which Codex, Cursor and Grok Build read, and links each skill into `~/.claude/skills` for Claude Code. Replace `'*'` with one or more skill names to install fewer. Several skills rely on the global instructions in [`global/AGENTS.md`](global/AGENTS.md). Use it as `~/.codex/AGENTS.md` in Codex, and import it from `~/.claude/CLAUDE.md` in Claude Code. For other agents, add it to their global rules.
+This installs to `~/.agents/skills`, which Codex, Cursor and Grok Build read, and links each skill into `~/.claude/skills` for Claude Code. Replace `'*'` with one or more skill names to install fewer. Several skills rely on the global instructions in [`global/AGENTS.md`](global/AGENTS.md). They describe me and my machines, so copy the rules you want into your own `~/.codex/AGENTS.md` for Codex, `~/.claude/CLAUDE.md` for Claude Code, or another agent's global rules.
 
 ## Use
 
@@ -53,9 +53,9 @@ This repository's `code-review` replaces Claude Code's bundled `/code-review`. U
 
 ### Productivity
 
-| Skill     | What it does                                        |
-| --------- | --------------------------------------------------- |
-| `homelab` | Reaches my other machines and self-hosted services. |
+| Skill     | What it does                                                        |
+| --------- | ------------------------------------------------------------------- |
+| `homelab` | Reaches my machines and self-hosted services. Personal, so skip it. |
 
 ## Requirements
 
@@ -63,9 +63,10 @@ This repository's `code-review` replaces Claude Code's bundled `/code-review`. U
 - `before-and-after` needs [agent-browser](https://github.com/vercel-labs/agent-browser) for captures.
 - `triage-sentry` works best with the [Sentry CLI](https://cli.sentry.dev/).
 - `ux` and `writing` hand some work to the optional skills in [`external-skills.json`](external-skills.json).
+- `code-review` and `engineering` delegate to other models through T3 Code when it's available, and use the current agent's subagents otherwise.
 
 ## Development
 
 See [docs/development.md](docs/development.md) for local linking, validation, tests, evals and fleet updates.
 
-Credits: [`babysit-pr`](https://github.com/openai/codex/tree/a8c36ca6d265800c1b2c67d19d3583e23dee8382/.codex/skills/babysit-pr) from OpenAI Codex (Apache-2.0), [`before-and-after`](https://github.com/vercel-labs/before-and-after/tree/2880b6799dd9000e65cc476d066abcbb48bce94e/skill) from Vercel Labs (PolyForm Shield 1.0.0) and [`show-me`](https://github.com/humanlayer/skills/blob/main/plugins/show-me/skills/show-me/SKILL.md) from HumanLayer (MIT), each modified and keeping its licence, plus ideas from [`mattpocock/skills`](https://github.com/mattpocock/skills), [`poteto/noodle`](https://github.com/poteto/noodle), [`dmmulroy/skills`](https://github.com/dmmulroy/skills) and others.
+Licensed [MIT](LICENSE), except the imported skills [`babysit-pr`](https://github.com/openai/codex/tree/a8c36ca6d265800c1b2c67d19d3583e23dee8382/.codex/skills/babysit-pr) from OpenAI Codex (Apache-2.0), [`before-and-after`](https://github.com/vercel-labs/before-and-after/tree/2880b6799dd9000e65cc476d066abcbb48bce94e/skill) from Vercel Labs (PolyForm Shield 1.0.0) and [`show-me`](https://github.com/humanlayer/skills/blob/main/plugins/show-me/skills/show-me/SKILL.md) from HumanLayer (MIT), each modified and keeping its own licence. Ideas also come from [`mattpocock/skills`](https://github.com/mattpocock/skills), [`poteto/noodle`](https://github.com/poteto/noodle), [`dmmulroy/skills`](https://github.com/dmmulroy/skills) and others.
