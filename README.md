@@ -5,10 +5,8 @@ My skills for software engineering, UX, writing and homelab access. They follow 
 ## Install
 
 ```sh
-npx skills@latest add jameswyse/skills --global --agent claude-code --agent codex --skill '*' --yes
+npx skills@latest add jameswyse/skills
 ```
-
-This installs to `~/.agents/skills`, which Codex, Cursor and Grok Build read, and links each skill into `~/.claude/skills` for Claude Code. Replace `'*'` with one or more skill names to install fewer. Several skills rely on the global instructions in [`global/AGENTS.md`](global/AGENTS.md). They describe me and my machines, so copy the rules you want into your own `~/.codex/AGENTS.md` for Codex, `~/.claude/CLAUDE.md` for Claude Code, or another agent's global rules.
 
 ## Use
 
@@ -43,10 +41,22 @@ This repository's `code-review` replaces Claude Code's bundled `/code-review`. U
 - `triage-sentry` works best with the [Sentry CLI](https://cli.sentry.dev/).
 - `ux` and `writing` hand some work to the optional skills in [`external-skills.json`](external-skills.json).
 - `code-review` and `engineering` delegate to other models through T3 Code when it's available, and use the current agent's subagents otherwise.
+- Several skills rely on rules in [`global/AGENTS.md`](global/AGENTS.md), which describes me and my machines. Copy the rules you want into your agent's global instructions.
 
 ## Development
 
-See [docs/development.md](docs/development.md) for local linking, validation, tests, evals and fleet updates.
+| Command                               | What it does                                                                                                                   |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `scripts/sync-skills`                 | Links every skill and the global instructions into `~/.agents`, `~/.claude` and the Codex homes, so edits apply straight away. |
+| `scripts/validate-skills [skill ...]` | Checks each skill's frontmatter against the Agent Skills specification and Claude Code's extensions.                           |
+| `scripts/test-skills`                 | Runs the repository's tooling tests.                                                                                           |
+| `scripts/eval-skills [skill ...]`     | Probes skills on Opus and Sol with no skill text, the committed text and the working tree's text, and reports regressions.     |
+| `scripts/setup-external-skills`       | Installs and updates the skills in `external-skills.json`, and removes ones it no longer lists.                                |
+| `scripts/update-fleet-skills`         | Rolls the pushed commit out to my machines.                                                                                    |
+
+[`external-skills.json`](external-skills.json) lists the third-party skills every machine installs, keyed by their `npx skills` source. Add or remove a name there, then run `scripts/setup-external-skills`.
+
+See [docs/development.md](docs/development.md) for details.
 
 ## Licence
 
