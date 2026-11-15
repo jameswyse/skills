@@ -20,7 +20,7 @@ A request to watch authorises reading and reporting. Fixing code, pushing, rerun
 Keep one watcher per pull request, and never loop inside a command.
 
 - **In T3 Code**, handle the current state first, then call `watch_pull_request` and end the turn with a short update saying watching continues. T3 wakes the thread on new checks, reviews, comments, and conflicts. Treat each wake as a prompt to take a fresh snapshot, not as a verdict. When a wake needs no action, end the turn without a message. Call `unwatch_pull_request` before stopping or handing back while the pull request is open. A delegated child never watches, because its parent owns the pull request.
-- **Elsewhere**, wait five minutes between snapshots, through the harness's scheduled wake-up or `sleep 300`. Run the wait in the background when its exit wakes you, and in the foreground when nothing would. After a snapshot that needs no action, start the next wait.
+- **Elsewhere**, wait five minutes between snapshots, through the session's scheduled wake-up or `sleep 300`. Run the wait in the background when its exit wakes you, and in the foreground when nothing would. After a snapshot that needs no action, start the next wait.
 
 ## Snapshot
 

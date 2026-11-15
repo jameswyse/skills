@@ -39,6 +39,6 @@ Keep small, coherent changes local. Delegate only independent investigations, di
 
 ## Finish with evidence
 
-Prove the changed behaviour on the real artefact: run the changed path and read its actual output. A build, a cached copy, or a self-report isn't proof. Remove state, branches, and paths the finished design no longer needs, run the repository's required checks, and inspect the diff. State any path you couldn't exercise and why.
+Prove the changed behaviour on the real artefact: run the changed path and read its actual output. A build, a cached copy, or a self-report isn't proof. For an interface change, run the app and look at the changed screen, because passing tests with mocks don't show that the experience works. Remove state, branches, and paths the finished design no longer needs, run the repository's required checks, and inspect the diff. State any path you couldn't exercise and why.
 
 Then follow the repository's review requirements and run "code-review" as the global rule requires. Fix the actionable findings within the authorised change, rerun the checks they affect, and report the rest.

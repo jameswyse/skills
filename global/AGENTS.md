@@ -34,7 +34,7 @@ Assume I wasn't watching while you worked. Finish with an account of the origina
 
 ## Posting on my behalf
 
-When you post a comment, reply, or message for me on GitHub, Jira, Slack, Sentry, or another shared platform, start it with a note naming your model, such as "🤖 Claude Opus 5.5 responding on behalf of James". Format the note with the platform's callout, such as a GitHub `> [!NOTE]` alert or a Jira info panel. On a platform without one, such as Slack, start the post with only "🤖". This applies only to posts you write as me, not to documents, copy, or other writing I ask for.
+When you post a comment, reply, or message for me on GitHub, Jira, Slack, Sentry, or another shared platform, start it with a note naming your model, such as "🤖 Claude Opus 5.5 responding on behalf of James". Format the note with the platform's callout, such as a GitHub `> [!NOTE]` alert or a Jira info panel. On a platform without one, such as Slack, start the post with only "🤖". This applies only to posts you write as me, not to documents, copy, or other writing I ask for. After the note, lead with the conclusion, cite the code, check, or output it rests on, separate facts from judgement, and leave out thanks and status narration.
 
 ## My machines
 

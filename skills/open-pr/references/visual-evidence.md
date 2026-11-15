@@ -34,4 +34,4 @@ gh pr edit <number> --body-file <tmpdir>/body.md \
 
 `gh pr create` takes the same `--attach` flags. GitHub uploads each file and rewrites its local reference to the hosted asset.
 
-Then read the body back with `gh pr view <number> --json body` and confirm no local paths remain. When an upload fails, `gh` still updates the pull request with the files that succeeded and exits non-zero, so rerun the whole command with every `--attach` flag.
+Before publishing, check every capture, including any the user supplied, for secrets and private details. Then read the body back with `gh pr view <number> --json body` and confirm no local paths remain. When an upload fails, `gh` still updates the pull request with the files that succeeded and exits non-zero, so rerun the whole command with every `--attach` flag.

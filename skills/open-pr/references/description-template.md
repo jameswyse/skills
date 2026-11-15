@@ -2,7 +2,7 @@
 
 ## Why the change
 
-{One or two concise sentences, preferably one, explaining the problem this pull request solves and what becomes possible after it ships.}
+{One or two concise sentences, preferably one, explaining the problem this pull request solves and what becomes possible after it ships. Lead with the problem as the user saw it, not a list of what changed. Good: "Saved orders could show a different price from checkout, because the price was looked up again on save. Orders now keep the price the customer saw." Bad: "Moved the price lookup from `saveOrder` into `checkout`, added `lockedPrice`, and updated three callers."}
 
 ## Change outline
 

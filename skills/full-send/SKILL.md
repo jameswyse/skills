@@ -15,16 +15,19 @@ Invoking this skill authorises, for the current task:
 - everything a request to create a pull request authorises under "open-pr", including its bot review, and marking a draft pull request ready;
 - under "babysit-pr", fixing valid review feedback within the request and CI failures the branch caused, pushing those fixes, rerunning failed checks within its retry budget, requesting bot reviews, updating the description to match, and replying to and resolving review-bot threads.
 
-It doesn't authorise merging, force-pushing, production changes, or replying to a human reviewer.
+It doesn't authorise merging, force-pushing, production changes, or replying to a human reviewer. Because it never merges, it authorises turning off auto-merge.
 
 ## Decide or ask
 
-Decide everything yourself except the cases below, which replace the engineering skill's pause rule for this task. Ask only in these cases, as soon as one arises, and carry on with whatever doesn't depend on the answer:
+Decide everything yourself except the cases below, which replace the engineering skill's pause rule for this task. Ask only in these cases, after finishing whatever doesn't depend on the answer:
 
 - the request can't be delivered as written, such as conflicting requirements, evidence that the requested approach fails, or a Spec finding that "code-review" leaves to the user;
 - neither the request nor the codebase settles a choice about product behaviour, a public interface, stored data, dependencies, or infrastructure, and a wrong guess would mean rework after review;
 - the work needs a one-way door the authority above doesn't cover;
-- missing access, or a check failure the branch didn't cause, still blocks progress after the retries "babysit-pr" allows.
+- missing access, or a check failure the branch didn't cause, still blocks progress after the retries "babysit-pr" allows;
+- the pull request is in a merge queue.
+
+Ask with the session's question tool, such as `AskUserQuestion` in Claude Code or `request_user_input` in Codex, because a question in an ordinary message leaves the thread looking finished. The tool holds the turn until the user answers, which is why the independent work comes first. Put the blocker, the pull request link when there is one, and the options in the question, with your recommended option first. Without a question tool, or when it returns no answer, leave any pull request open and lead the final account with the question.
 
 ## Other issues
 
@@ -33,6 +36,8 @@ Keep the branch to the request. When you find an issue outside it, such as a pre
 List these under "Other issues" in the final account with the fix you recommend, and offer to fix them on this branch or in a separate T3 thread launched with `t3_thread_launch` in a new worktree from the default branch. Without T3, offer a separate branch.
 
 ## Workflow
+
+When a pull request already exists at the start, once you open one, and before each push, check its auto-merge and merge queue state with `gh api graphql -F owner=<owner> -F repo=<repo> -F number=<number> -f query='query($owner: String!, $repo: String!, $number: Int!) { repository(owner: $owner, name: $repo) { pullRequest(number: $number) { isInMergeQueue autoMergeRequest { enabledAt } } } }'`. Turn auto-merge off with `gh pr merge --disable-auto <url>` and report it. A pull request in a merge queue is a case to ask about.
 
 1. **Implement** with "engineering" and the skills it routes to, and verify the change as it requires.
 2. **Review** with "code-review" through its repeat rounds.
