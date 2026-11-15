@@ -1,0 +1,4 @@
+autoInstallPeers: false
+peerDependencyRules:
+  ignoreMissing:
+    - eslint

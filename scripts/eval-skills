@@ -15,6 +15,7 @@ import shutil
 import subprocess
 import tempfile
 import threading
+import time
 import tomllib
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
@@ -31,6 +32,8 @@ SUBJECT_EFFORT = "high"
 WORD_LIMITS = {"decision": 150, "plan": 300}
 TEXT_TIMEOUT_SECONDS = 600
 LIVE_TIMEOUT_SECONDS = 2400
+CHECK_TIMEOUT_SECONDS = 600
+MAX_CHECK_CHARACTERS = 4000
 LIVE_CLAUDE_TOOLS = ["Read", "Edit", "Write", "Glob", "Grep", "Bash"]
 MAX_DIFF_CHARACTERS = 30000
 CACHE_LOCKS: dict[Path, threading.Lock] = {}
@@ -163,14 +166,19 @@ def export_skills(arm: str, base: str, destination: Path) -> None:
 
 
 def live_prompt(probe: Probe, skills_root: Path) -> str:
-    skill_directory = skills_root / "skills" / probe.skill
+    exported_skills = skills_root / "skills"
+    entrypoints = [f"{probe.skill}/SKILL.md", *[path for path in probe.include if path.endswith("/SKILL.md")]]
+    loaded = [
+        f'<file path="{exported_skills / path}">\n{(exported_skills / path).read_text().strip()}\n</file>'
+        for path in entrypoints
+        if (exported_skills / path).is_file()
+    ]
     return "\n\n".join(
         [
-            f'The "{probe.skill.rsplit("/", 1)[-1]}" skill is loaded. Its base directory is'
-            f" {skill_directory}, and other skills it names live beside it under"
-            f" {skills_root / 'skills'}. Read linked files from there when the skill tells you to."
-            " Use only these copies, not any installed skill.",
-            f'<file path="SKILL.md">\n{(skill_directory / "SKILL.md").read_text().strip()}\n</file>',
+            f"These skills are loaded from {exported_skills}, and other skills they name live beside"
+            " them there. Read linked files from there when a skill tells you to. Use only these"
+            " copies, not any installed skill.",
+            *loaded,
             probe.prompt,
         ]
     )
@@ -303,12 +311,25 @@ def answer_live_probe(cell: Cell, base: str, out: Path) -> dict:
             start = subprocess.run(
                 ["git", "rev-parse", "HEAD"], cwd=repository_copy, check=True, capture_output=True, text=True
             ).stdout.strip()
+            started = time.monotonic()
             result = run_model(cell.model, prompt, repository_copy, [skills_root])
+            seconds = round(time.monotonic() - started)
             subprocess.run(["git", "add", "-A"], cwd=repository_copy, check=True)
             changes = subprocess.run(
                 ["git", "diff", "--cached", start], cwd=repository_copy, check=True, capture_output=True, text=True
             ).stdout
-            return {**result, "changes": changes[:MAX_DIFF_CHARACTERS]}
+            outcome = {**result, "seconds": seconds, "changes": changes[:MAX_DIFF_CHARACTERS]}
+            check = EVALS / "fixtures" / cell.probe.fixture / "check.sh"
+            if check.is_file():
+                checked = subprocess.run(
+                    ["bash", str(check)],
+                    cwd=repository_copy,
+                    capture_output=True,
+                    text=True,
+                    timeout=CHECK_TIMEOUT_SECONDS,
+                )
+                outcome["check"] = (checked.stdout + checked.stderr)[-MAX_CHECK_CHARACTERS:]
+            return outcome
 
         key_material = "\n".join(["live", subject_identity(cell.model), str(cell.run), stable_prompt, inputs_digest])
         return cached(out / "answers", key_material, compute)
@@ -318,6 +339,8 @@ def judge(cell: Cell, result: dict, out: Path) -> dict:
     evidence = f"<answer>\n{result['answer']}\n</answer>"
     if "changes" in result:
         evidence += f"\n\n<changes-the-agent-made>\n{result['changes'] or '(none)'}\n</changes-the-agent-made>"
+    if "check" in result:
+        evidence += f"\n\n<checks-run-on-the-result>\n{result['check']}\n</checks-run-on-the-result>"
     prompt = "\n\n".join(
         [
             "You are grading one answer from a coding agent against fixed criteria. Judge only"

@@ -1,0 +1,42 @@
+skill = "engineering/engineering"
+include = ["engineering/typescript/SKILL.md"]
+
+[[live]]
+id = "live-accounts-lint-configured"
+fixture = "lint-configured"
+prompt = '''
+Add `fetchAccount(baseUrl, id)` under `src/accounts/`. It requests `GET {baseUrl}/accounts/{id}`, which responds with JSON such as `{"id":"a1","email":"ada@example.com","plan":"trial","trialEndsAt":"2026-12-01"}`. `plan` is `free`, `trial` or `pro`, and `trialEndsAt` is present only for a trial. Return the account, and log when the request fails.
+
+Also add `planLabel(account)`, which returns `Free`, `Pro`, or `Trial until 2026-12-01`. Cover both with tests.
+'''
+expect = '''
+Score: count how many of these six hold in the code the agent left behind.
+1. The JSON body is validated into the account type where it is fetched, field by field or with a schema, instead of being cast or trusted, such as with `as Account` or `any`.
+2. A non-OK HTTP status is handled before the body is used.
+3. The failure is logged through `src/logging/logger.ts`, not through `console`.
+4. The account type is a discriminated union in which only the trial variant has `trialEndsAt`.
+5. `planLabel` handles the three plans exhaustively, so that adding a plan would be a type error.
+6. The tests exercise `fetchAccount` without module mocking, for example by passing a fetch function in or by using a local server, and assert the values it returns.
+Pass: the score is at least 5, the checks show typecheck and tests passing, and the checks show no suppression directives.
+Fail: anything else.
+'''
+
+[[live]]
+id = "live-accounts-lint-absent"
+fixture = "lint-absent"
+prompt = '''
+Add `fetchAccount(baseUrl, id)` under `src/accounts/`. It requests `GET {baseUrl}/accounts/{id}`, which responds with JSON such as `{"id":"a1","email":"ada@example.com","plan":"trial","trialEndsAt":"2026-12-01"}`. `plan` is `free`, `trial` or `pro`, and `trialEndsAt` is present only for a trial. Return the account, and log when the request fails.
+
+Also add `planLabel(account)`, which returns `Free`, `Pro`, or `Trial until 2026-12-01`. Cover both with tests.
+'''
+expect = '''
+Score: count how many of these six hold in the code the agent left behind.
+1. The JSON body is validated into the account type where it is fetched, field by field or with a schema, instead of being cast or trusted, such as with `as Account` or `any`.
+2. A non-OK HTTP status is handled before the body is used.
+3. The failure is logged through `src/logging/logger.ts`, not through `console`.
+4. The account type is a discriminated union in which only the trial variant has `trialEndsAt`.
+5. `planLabel` handles the three plans exhaustively, so that adding a plan would be a type error.
+6. The tests exercise `fetchAccount` without module mocking, for example by passing a fetch function in or by using a local server, and assert the values it returns.
+Pass: the score is at least 5, the checks show typecheck and tests passing, and the checks show no suppression directives.
+Fail: anything else.
+'''
