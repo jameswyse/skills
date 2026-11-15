@@ -17,7 +17,7 @@ Run `python3 <skill-dir>/scripts/review_scope.py`, with `--base <ref>` when the 
 
 Keep secrets and raw sensitive data away from reviewers. Redact them in `scope.diff` and review those hunks yourself.
 
-**Spec.** For a working-tree review the user's request is the spec. Otherwise find it in order from issue references in commit messages, a path the user supplied, then a matching Markdown file under `docs/` or `specs/`. When the review runs before creating a pull request, add the drafted title and description, so every claim they make is a requirement. Write the spec to `<packet>/spec.md`. With no spec, skip the Spec axis and report "no spec available".
+**Spec.** The spec is what was asked for, combined from every source that exists: the user's request in this conversation, each ticket or issue that the request, the branch name, or a commit message references, which you look up, and a path the user supplied. Fall back to a matching Markdown file under `docs/` or `specs/` only when none of those exists. When the review runs before creating a pull request, add the drafted title and description, so every claim they make is a requirement. Write the spec to `<packet>/spec.md`. With no spec, skip the Spec axis and report "no spec available".
 
 **Standards sources.** The repository's rule files come first and override everything below. The "engineering" skill's rules are the baseline. Then add what the diff touches:
 
@@ -47,7 +47,7 @@ Delegate every review, whatever its size.
 The routing table in the engineering [Cross-provider delegation](../engineering/references/cross-provider-delegation.md) reference names the models. In round one, Spec and Correctness each get two reviewers, one per model family, and Standards gets one.
 
 - **Call rules.** Send one `delegate_task` per axis and model with `role: "review"`, all in the same step, including the one for the session's own provider, following that reference's Delegate section.
-- **Replacement rule.** When the T3 tools are absent, a provider can't run a child task, the catalogue lacks a model, or a call fails, run the missing reviewers as native subagents without the parent's history. A replaced Claude reviewer runs on the other Claude model when the tool can select it and it didn't just fail. Every other replacement runs on the session's model.
+- **Replacement rule.** When the T3 tools are absent, a provider can't run a child task, the catalogue lacks a model, or a call fails, run the missing reviewers as native subagents without the parent's history. A replaced Claude reviewer runs on the other Claude model when the tool can select it and it didn't just fail. Every other replacement runs on the session's model. A replacement must be a model that isn't already reviewing that axis. When none is available, run the axis with one reviewer and say so in the run report.
 - **No delegation at all.** Review the axes yourself, one at a time, with separate notes, and say in the report that the review ran without delegation and why.
 - **Codex CLI.** When `codex` is installed, also run it in the background in every mode, as an extra reviewer whose findings go to whichever axis they belong to:
 
@@ -95,8 +95,8 @@ Then weigh each verified finding. For Correctness, judge how likely the trigger 
 Every other verified finding is actionable, apart from a Spec finding left for the user to decide. Give each actionable finding a priority:
 
 - `P0`: a security issue, data loss, data corruption, or outage that normal use can reach.
-- `P1`: any other wrong behaviour or missed requirement in real use.
-- `P2`: a problem with limited or rare effect, or a maintenance cost worth fixing.
+- `P1`: any other wrong behaviour or missed requirement that ordinary use reaches.
+- `P2`: wrong behaviour that only rare or unusual use reaches, or a maintenance cost worth fixing.
 - `P3`: wording, naming, formatting, and other changes with no behavioural or requirement effect.
 
 Ask a contrarian to argue back each rejected finding that would be `P0` or `P1` if it were real, and each accepted risk involving security, data loss, or data corruption, as the [Cross-provider delegation](../engineering/references/cross-provider-delegation.md#contrarian) reference describes. Skip duplicates and items the evidence plainly refutes.

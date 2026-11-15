@@ -42,7 +42,7 @@ Resolve every target once per run, GitHub Actions included. This inventory and t
 
 ## 4. Upgrade the compatible set
 
-Target the latest stable releases, majors included. Leave intentional prerelease pins and non-registry sources alone unless repository evidence shows they should move.
+Target the latest stable releases, majors included. Dependency majors need no approval, unlike the Node.js and pnpm majors in step 2. Leave intentional prerelease pins and non-registry sources alone unless repository evidence shows they should move.
 
 - Upgrade related package families together, derived from peer ranges, release notes, and the dependency graph.
 - Preserve exact pins, range operators, aliases, catalogs, and workspace protocols unless the migration needs a different declaration. Keep shared versions in an existing catalog, and move one in when several packages need it aligned.
@@ -73,7 +73,7 @@ Hold a package only after its latest release has failed a relevant build, test, 
 
 ## 6. Release-age exceptions
 
-Never reduce, remove, or bypass `minimumReleaseAge`. Select the newest release that satisfies it, and report a newer one that is still too young with the date it becomes eligible. Don't wait for it. List these in the first progress update after the inventory, so the user can ask for an exception before verification starts.
+Never reduce, remove, or bypass `minimumReleaseAge`. Select the newest release that satisfies it, and report a newer one that is still too young with the date it becomes eligible. Don't wait for it. List these in the first progress update after the inventory, without pausing, so the user can ask for an exception before verification starts.
 
 Add an exact `package@version` entry to `minimumReleaseAgeExclude` without asking when a too-young release fixes an audit finding, unblocks other upgrades, or lets you remove an override, patch, hold, or other policy entry. Prefer this to an override or local patch. Include the platform-specific and companion packages that release requires and nothing else, never a pattern or an unversioned name. Apply the same test to exclusions a mutating audit fix adds.
 

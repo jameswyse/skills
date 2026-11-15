@@ -35,7 +35,7 @@ Treat the child's report as leads under the calling skill's verification rules.
 
 ## Fall back
 
-Use the caller's same-provider path when the T3 tools are absent, the target provider reports `canRunCrossProviderChildTask: false`, its catalogue lacks the target family, or the delegation fails. Report the provider and model that did the work, or the reason for the fallback.
+Use the caller's same-provider path, which is a native subagent on the session's provider or your own work when there is none, when the T3 tools are absent, the target provider reports `canRunCrossProviderChildTask: false`, its catalogue lacks the target family, or the delegation fails. Report the provider and model that did the work, or the reason for the fallback. This fallback is a standing instruction from the user, so it isn't the unasked switch that T3 Code's own rules forbid.
 
 ## Advisor
 

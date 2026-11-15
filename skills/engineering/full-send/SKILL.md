@@ -19,7 +19,7 @@ It doesn't authorise merging, force-pushing, production changes, or replying to 
 
 ## Decide or stop
 
-Decide everything yourself except the cases below, which replace the engineering skill's pause rule for this task. Stop and ask only when:
+Decide everything yourself except the cases below, which replace the engineering skill's pause rule for this task. Ask only in these cases, as soon as one arises, and carry on with whatever doesn't depend on the answer:
 
 - the request can't be delivered as written, such as conflicting requirements, evidence that the requested approach fails, or a Spec finding that "code-review" leaves to the user;
 - neither the request nor the codebase settles a choice about product behaviour, a public interface, stored data, dependencies, or infrastructure, and a wrong guess would mean rework after review;

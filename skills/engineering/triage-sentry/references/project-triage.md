@@ -6,7 +6,7 @@
 2. Otherwise let the CLI auto-detect a candidate, check it with a benign read, and ask the user to confirm it before collecting issues.
 3. If auto-detection is missing, ambiguous, or wrong, ask for the Sentry organisation and project. Don't guess from a DSN, repository name, or an unrelated project.
 
-When the target wasn't already known, ask whether to save the confirmed one, without blocking read-only triage. If the user agrees, add or update one entry:
+When the target wasn't already known, ask whether to save the confirmed one, without blocking read-only triage. Single-issue triage never offers this. If the user agrees, add or update one entry:
 
 ```markdown
 ## Sentry

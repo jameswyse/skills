@@ -137,6 +137,26 @@ You are adding a retry to `src/sync/pushChanges.ts` in a service that ships to p
 Write the line that records the retry.
 '''
 expect = '''
-Pass: calls the repository's logger with fields, such as `logger.warn("push retry", { attempt, changeId })`.
+Pass: calls the repository's logger, such as `logger.warn("push retry", { attempt, changeId })`. An empty fields object still passes.
 Fail: uses `console.log`, `console.warn` or another console method.
+'''
+
+[[probe]]
+id = "existing-discriminant-kept"
+kind = "decision"
+prompt = '''
+Refactor this type so invalid combinations can't be represented. Show only the new type.
+
+```ts
+interface Invoice {
+  status: "draft" | "sent" | "paid";
+  sentAt?: Date;
+  paidAt?: Date;
+  paymentReference?: string;
+}
+```
+'''
+expect = '''
+Pass: a discriminated union that discriminates on the existing `status` field, with `sentAt` on the sent and paid variants as fits and `paidAt` and `paymentReference` only on the paid variant.
+Fail: adds a separate `kind` field beside or in place of `status`; keeps the optional fields on one shape.
 '''

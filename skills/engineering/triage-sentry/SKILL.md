@@ -55,6 +55,6 @@ Don't recommend suppression because an issue is low frequency, old, hard to repr
 
 Return a Markdown report with the exact target, a stable report ID, the collection time, scope, retention or access gaps, and the number of issues reviewed, highest impact first. For one issue, give the supplied identifier and the verified numeric ID and short key, status, impact signals, evidence, likely cause with confidence, and recommended action, with no category sections or inventory table.
 
-Add a numbered plan that separates Sentry changes, settings or SDK changes, and code fixes, with exact targets and transitions, including `no action`. Ask for approval of specific action numbers or a named batch only for actions that aren't already authorised.
+Add a numbered plan that separates Sentry changes, settings or SDK changes, and code fixes, with exact targets and transitions, including `no action`. Ask for approval of specific action numbers or a named batch only for actions that aren't already authorised. A loose approval, such as "go ahead with the Sentry changes", covers that group of the plan and nothing in the others.
 
 A read-only request ends with the evidence and plan. When actions are authorised, read [Approved actions](references/approved-actions.md) before the first mutation.

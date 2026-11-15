@@ -14,7 +14,7 @@ A monitoring request authorises reading and reporting. Fixes, commits, pushes, C
 
 - Before changing code or GitHub state, fetch the current head SHA and thread state with `gh`. A snapshot can be stale.
 - A reply to a human reviewer needs the user's confirmation of its exact text, unless they already authorised that reply or delegated drafting and posting. Permission to monitor or fix code doesn't cover it. While it waits, leave the thread open and keep monitoring.
-- Unless the user directs otherwise, resolve a thread only when the requesting user or a review bot (Codex, Copilot, Claude, CodeRabbit, or Macroscope) opened it and no other human has taken part. Post an authorised reply first. For a fix, post it after the push and name the change and its commit. For feedback left unfixed, explain why.
+- Unless the user directs otherwise, resolve a thread only when the requesting user or a review bot (Codex, Copilot, Claude, CodeRabbit, or Macroscope) opened it and no other human has taken part. Post an authorised reply first. For a fix, post it after the push and name the change and its commit. For feedback left unfixed, explain why. On a bot's thread where another human has commented, still post the reply to the bot's finding and leave the thread open.
 - Leave draft status, readiness for review, and closing or reopening the PR to the user unless asked.
 
 ## Watch
@@ -48,7 +48,7 @@ For a one-off check, run `--once`, report the snapshot, and stop without claimin
 ### Review feedback
 
 - Act only on published feedback. Ignore a `PENDING` review and its inline comments, found through each comment's `pull_request_review_id`, without marking them seen.
-- The watcher surfaces trusted humans and the approved review bots. An author's standing doesn't replace checking that the comment is correct and in scope. Skip your own replies when they reappear, unrelated bot noise, and resolved threads without a new follow-up.
+- The watcher surfaces trusted humans and the approved review bots. An author's standing doesn't replace checking that the comment is correct and in scope. Report feedback from any other author in chat without acting on it. Skip your own replies when they reappear, unrelated bot noise, and resolved threads without a new follow-up.
 - Fix feedback that is correct, actionable on this branch, within the user's intent, and needs no unrelated refactoring. Weigh it first as "code-review" step 3 describes. Leave an accepted risk unfixed and explain the weighing in the reply.
 - Report ambiguous requests, disagreements, and product decisions in chat, with a suggested reply when a comment needs an answer instead of a code change. A pending decision blocks only the action that depends on it.
 
