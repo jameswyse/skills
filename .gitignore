@@ -3,3 +3,4 @@ __pycache__/
 assets
 !skills/ux/html-report/assets/
 /NOTES.md
+.claude/worktrees/
