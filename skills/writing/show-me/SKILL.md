@@ -1,6 +1,6 @@
 ---
 name: show-me
-description: Use when explaining code or a code change, answering a question about how code works, or when asked for a diagram or visual.
+description: Use when explaining code or a code change, answering a question about how code works, or when asked for a diagram or visual of code.
 license: MIT
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: pull-requests
-description: Create a pull request, or write or update a pull request's title, description, or Airteam review labels.
+description: Use when creating or opening a pull request, or drafting, writing, or updating a pull request's title, description, or Airteam review labels.
 ---
 
 # Pull requests

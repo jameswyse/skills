@@ -1,6 +1,6 @@
 ---
 name: technical-writing
-description: Use when writing or reviewing developer documentation, a README, an ADR or runbook, a commit message or release note, a skill, or agent instructions such as AGENTS.md.
+description: Use when writing or reviewing developer documentation, a README, an ADR or runbook, a commit message or release note, a skill, or agent instructions such as AGENTS.md. For a pull request's title or description, use pull-requests.
 ---
 
 # Technical writing

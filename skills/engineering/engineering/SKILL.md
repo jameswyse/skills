@@ -1,6 +1,6 @@
 ---
 name: engineering
-description: Implement, debug, design, or review software and tooling. Skip simple code explanations, lookups, and routine Git operations.
+description: Use when implementing, debugging, designing, or reviewing software or tooling. Skip simple code explanations, lookups, and routine Git operations.
 ---
 
 # Engineering

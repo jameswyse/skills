@@ -1,6 +1,6 @@
 ---
 name: writing
-description: Draft or edit prose other people will read, such as documents, reports, emails, messages, and comments on pull requests, issues or tickets, or review prose against my preferences.
+description: Use when drafting, editing, or reviewing prose other people will read, such as documents, reports, emails, messages, and comments on pull requests, issues or tickets.
 ---
 
 # Writing
