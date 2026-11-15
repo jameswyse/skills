@@ -1,12 +1,12 @@
 # Project-wide Sentry triage
 
-In project-wide mode, treat the target as known only when the user supplied it or the project-level `AGENTS.md` or `CLAUDE.md` records it. Resolve the Sentry target in this order:
+## Resolve the project
 
-1. Use an explicit `org/project` from the user's request or the project-level agent instructions that govern the current directory.
-2. Otherwise, let the CLI auto-detect a candidate and check it with a benign read. Ask the user to confirm the candidate before collecting issues.
-3. If auto-detection is missing, ambiguous, or wrong, ask the user for the Sentry organisation and project. Do not guess from a DSN, repository name, or an unrelated project.
+1. Use an explicit `org/project` from the user's request or from the project-level `AGENTS.md` or `CLAUDE.md` that governs the current directory.
+2. Otherwise let the CLI auto-detect a candidate, check it with a benign read, and ask the user to confirm it before collecting issues.
+3. If auto-detection is missing, ambiguous, or wrong, ask for the Sentry organisation and project. Don't guess from a DSN, repository name, or an unrelated project.
 
-Whenever a project-wide target was not already known, ask whether to save the confirmed target in the project-level agent instructions. If they agree, add or update one concise entry under a `## Sentry` heading:
+When the target wasn't already known, ask whether to save the confirmed one, without blocking read-only triage. If the user agrees, add or update one entry:
 
 ```markdown
 ## Sentry
@@ -14,16 +14,14 @@ Whenever a project-wide target was not already known, ask whether to save the co
 - Default project: `org/project`
 ```
 
-If the repository root's `CLAUDE.md` imports `AGENTS.md`, save the entry in `AGENTS.md`. Otherwise, use the repository-root instruction file loaded by the current agent. If both files exist without an import and neither owns the Sentry entry, ask the user which file should own it. Never use a user-global file. Preserve existing instructions and avoid duplicate headings or entries. Asking to save the target does not block read-only triage.
+Save it in `AGENTS.md` when the repository root's `CLAUDE.md` imports it, otherwise in the repository-root instruction file the current agent loads. If both files exist without an import and neither owns the entry, ask which should. Never use a user-global file. Preserve the existing instructions and avoid duplicate headings or entries.
 
 ## Collect the complete project
 
-The default triage scope is every issue visible to the authenticated user across the project's retained history, including unresolved, resolved, and archived or ignored issues. State the visible statuses and any Sentry retention or permission limit in the report.
+The scope is every issue visible to the authenticated user across the project's retained history, including unresolved, resolved, and archived or ignored issues. Fetch a fresh inventory with a time range broad enough to escape the CLI's default 90-day window. Query each status explicitly when the default list omits historical or archived issues, follow pagination to the end of each query, and deduplicate by numeric issue ID. One page, one status, or the requested page limit isn't the project.
 
-Fetch a fresh inventory with a time range broad enough to avoid the CLI's default 90-day window. Enumerate every issue status through explicit status queries or the API when the default list omits historical or archived issues. Follow pagination to exhaustion for each query, then deduplicate by numeric issue ID. Do not treat one page, one status, or the requested page limit as the complete project.
-
-For a large project-wide inventory, triage in bounded batches while maintaining one compact, deduplicated ledger for the complete project. After each batch, retain only the report fields, classification, evidence summary, confidence, and proposed action. Discard raw event output. If a temporary ledger is needed, keep it outside the repository, exclude sensitive payloads, and remove that exact file after the final report. Batching must not omit issues or turn one project-wide approval plan into unrelated partial reports.
+For a large project, triage in bounded batches while keeping one compact, deduplicated ledger of report fields, classification, evidence summary, confidence, and proposed action. Discard raw event output. Keep a temporary ledger outside the repository, without sensitive payloads, and remove it after the final report. Batching must not drop issues or split one approval plan into partial reports.
 
 ## Project report
 
-Return category sections covering every inventoried issue, an inventory table with one row per issue, and a numbered action plan. Include each issue's short ID and link, impact signals, evidence, likely cause with confidence, and recommended action. For a large project, keep routine notes to one table row and reserve longer analysis for high-impact or uncertain issues. Account for every issue and disclose retention, status, pagination, or permission gaps.
+Return category sections covering every inventoried issue, an inventory table with one row per issue, and a numbered action plan. Give each issue's short ID and link, impact signals, evidence, likely cause with confidence, and recommended action. For a large project, keep routine notes to one table row and save longer analysis for high-impact or uncertain issues. State the statuses covered and any retention, pagination, or permission gap.
