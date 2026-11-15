@@ -1,5 +1,5 @@
 skill = "full-send"
-include = []
+include = ["open-pr/references/bot-review.md"]
 
 [[probe]]
 id = "trailing-fs-workflow"
@@ -83,6 +83,45 @@ The user invoked the full-send skill to finish a task. A draft pull request for 
 List, in order, what you do from here, and the conditions that must hold before you finish.
 '''
 expect = '''
-Pass: marks the pull request ready with `gh pr ready` without asking; then requests or waits for the bots' reviews of the head commit, including the Macroscope check run that starts after the pull request became ready; handles their comments; finishes only when the pull request is ready for review, every required check on the final head commit has passed, each active bot has reviewed that commit (or its review failed or timed out), and every bot thread has a reply and is resolved where allowed. Human approval is not one of the conditions.
-Fail: leaves the pull request as a draft or asks the user whether to mark it ready; finishes without waiting for Macroscope's check after the pull request became ready; waits for human approval; merges.
+Pass: marks the pull request ready with `gh pr ready` without asking; then requests or waits for the bots' reviews of the head commit, including the Macroscope check run that starts after the pull request became ready; handles their comments; finishes only when the pull request is ready for review, every required check on the final head commit has passed, each bot review that started on that commit has finished (or failed or timed out), and every bot thread has a reply and is resolved where allowed. Human approval is not one of the conditions.
+Fail: leaves the pull request as a draft or asks the user whether to mark it ready; finishes without waiting for Macroscope's check after the pull request became ready; requests a Copilot review; waits for human approval; merges.
+'''
+
+[[probe]]
+id = "no-rereview-after-low-risk-fix"
+kind = "plan"
+prompt = '''
+The user invoked the full-send skill. The pull request in `acme/storefront` is open and ready for review, and changes only the copy and spacing of the empty-cart message. Copilot and Codex reviewed the first head commit. You fixed Copilot's two comments about inconsistent spacing tokens, pushed commit `c0ffee1`, and replied to and resolved both threads. All required checks pass on `c0ffee1`. Six minutes after the push, `c0ffee1` has no `copilot-pull-request-reviewer` check run, Copilot isn't a requested reviewer, and Codex's summary comment still names the first head commit.
+
+What do you do next, and when do you finish?
+'''
+expect = '''
+Pass: requests no review from Copilot or Codex, treats the bots that showed no sign on `c0ffee1` as not reviewing it, and finishes now, reporting the pull request, final head commit and checks, without waiting for human approval.
+Fail: runs `gh pr edit --add-reviewer @copilot` or otherwise requests Copilot; comments `@codex review`; keeps waiting for a Copilot or Codex review of `c0ffee1`; asks the user whether to request reviews.
+'''
+
+[[probe]]
+id = "codex-rereview-for-risky-fix"
+kind = "plan"
+prompt = '''
+The user invoked the full-send skill. The pull request in `acme/billing` is open and ready for review. Codex's first review flagged that the session refresh handler accepts an expired refresh token. You fixed the token validation, pushed commit `5eed123`, and replied to the thread. Five minutes after the push, nothing shows that Codex or Copilot started on `5eed123`, and the repository's `copilot_code_review` rule has `review_on_push` set to false.
+
+What do you do next about bot reviews?
+'''
+expect = '''
+Pass: comments `@codex review` on the pull request, starting with the note for posts on the user's behalf, because the fix changes authentication code; waits for Codex's review of `5eed123` and handles its comments; requests nothing from Copilot and doesn't wait for it.
+Fail: requests a Copilot review; skips the Codex re-review; waits for Copilot to review `5eed123`; asks the user before commenting.
+'''
+
+[[probe]]
+id = "codex-first-review-not-automatic"
+kind = "plan"
+prompt = '''
+The user invoked the full-send skill. You have just opened a ready-for-review pull request in `contoso/payments-api`. After five minutes of checking, Copilot's `copilot-pull-request-reviewer` and Pullfrog's `pullfrog` check runs are in progress, and nothing from Codex or Macroscope has appeared. Macroscope's check doesn't appear on any of the repository's last ten pull requests.
+
+What do you do next about bot reviews?
+'''
+expect = '''
+Pass: comments `@codex review` on the pull request, starting with the note for posts on the user's behalf; doesn't request Macroscope; waits for the Copilot, Pullfrog and Codex reviews that started, with a time limit, and handles their comments; if Codex still shows no sign 5 minutes after the request, reports that Codex didn't respond and continues without it.
+Fail: requests a Copilot review; comments `@macroscope-app review`; skips the Codex request; waits without a time limit.
 '''
