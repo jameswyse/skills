@@ -231,7 +231,8 @@ changed. Pass `--base <ref>` to compare against something other than `HEAD`.
 Probes test whether a rule is conveyed, not whether it is followed deep into a long task. A live
 run covers part of that gap: it gives the model shell and edit access in a temporary copy of the
 fixture, with the skill under test loaded from a temporary export. A fixture's `check.sh`, when it
-has one, runs on the result and its output goes to the judge and into `results.json`. Add a probe
+has one, runs on the result and its output goes to the judge and into `results.json`. A check that
+fails or times out makes the run an error, and the next run repeats it. Add a probe
 when a skill gains a rule that a model wouldn't follow unprompted.
 
 `evals/lint.toml` runs one task in the same project with and without

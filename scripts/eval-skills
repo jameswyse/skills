@@ -12,6 +12,7 @@ import hashlib
 import json
 import os
 import shutil
+import signal
 import subprocess
 import tempfile
 import threading
@@ -171,7 +172,6 @@ def live_prompt(probe: Probe, skills_root: Path) -> str:
     loaded = [
         f'<file path="{exported_skills / path}">\n{(exported_skills / path).read_text().strip()}\n</file>'
         for path in entrypoints
-        if (exported_skills / path).is_file()
     ]
     return "\n\n".join(
         [
@@ -294,6 +294,26 @@ def directory_digest(directory: Path) -> str:
     return digest.hexdigest()
 
 
+def run_check(check: Path, repository_copy: Path) -> str:
+    process = subprocess.Popen(
+        ["bash", str(check)],
+        cwd=repository_copy,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        start_new_session=True,
+    )
+    try:
+        output, errors = process.communicate(timeout=CHECK_TIMEOUT_SECONDS)
+    except subprocess.TimeoutExpired:
+        os.killpg(process.pid, signal.SIGKILL)
+        process.communicate()
+        raise RuntimeError(f"{check} timed out after {CHECK_TIMEOUT_SECONDS} seconds") from None
+    if process.returncode != 0:
+        raise RuntimeError(f"{check} failed: {(output + errors)[-400:]}")
+    return output[-MAX_CHECK_CHARACTERS:]
+
+
 def answer_live_probe(cell: Cell, base: str, out: Path) -> dict:
     with tempfile.TemporaryDirectory() as scratch:
         skills_root = Path(scratch) / "skills-under-test"
@@ -302,7 +322,7 @@ def answer_live_probe(cell: Cell, base: str, out: Path) -> dict:
         prompt = live_prompt(cell.probe, skills_root)
         stable_prompt = prompt.replace(str(skills_root), "<skills>")
         inputs_digest = "\n".join(
-            [directory_digest(skills_root / "skills"), directory_digest(EVALS / "fixtures" / cell.probe.fixture)]
+            [directory_digest(skills_root / "skills"), directory_digest(EVALS / "fixtures")]
         )
 
         def compute() -> dict:
@@ -321,14 +341,7 @@ def answer_live_probe(cell: Cell, base: str, out: Path) -> dict:
             outcome = {**result, "seconds": seconds, "changes": changes[:MAX_DIFF_CHARACTERS]}
             check = EVALS / "fixtures" / cell.probe.fixture / "check.sh"
             if check.is_file():
-                checked = subprocess.run(
-                    ["bash", str(check)],
-                    cwd=repository_copy,
-                    capture_output=True,
-                    text=True,
-                    timeout=CHECK_TIMEOUT_SECONDS,
-                )
-                outcome["check"] = (checked.stdout + checked.stderr)[-MAX_CHECK_CHARACTERS:]
+                outcome["check"] = run_check(check, repository_copy)
             return outcome
 
         key_material = "\n".join(["live", subject_identity(cell.model), str(cell.run), stable_prompt, inputs_digest])
