@@ -230,8 +230,15 @@ changed. Pass `--base <ref>` to compare against something other than `HEAD`.
 
 Probes test whether a rule is conveyed, not whether it is followed deep into a long task. A live
 run covers part of that gap: it gives the model shell and edit access in a temporary copy of the
-fixture, with the skill under test loaded from a temporary export. Add a probe when a skill gains a
-rule that a model wouldn't follow unprompted.
+fixture, with the skill under test loaded from a temporary export. A fixture's `check.sh`, when it
+has one, runs on the result and its output goes to the judge and into `results.json`. Add a probe
+when a skill gains a rule that a model wouldn't follow unprompted.
+
+`evals/lint.toml` runs one task in the same project with and without
+[`@jameswyse/oxc-config`](https://github.com/jameswyse/oxc-config), and lints both results with it.
+Remove a rule the linter enforces from the working tree and run
+`scripts/eval-skills lint --kinds live --arms before,after --runs 3` to see whether the rule still
+changes the result in either project.
 
 In Claude Code, run `/skills` to confirm discovery. This repository's `code-review` skill overrides
 Claude Code's bundled `/code-review`; use Claude's `/review` alias when you want the bundled review.
