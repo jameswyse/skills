@@ -1,6 +1,6 @@
 ---
 name: upgrade-deps
-description: Upgrade every dependency, the Node.js and pnpm toolchain, and GitHub Actions when a comprehensive dependency upgrade is requested.
+description: Use when asked to upgrade all dependencies of a pnpm project, including the Node.js and pnpm toolchain and GitHub Actions. Not for bumping one package.
 ---
 
 # Upgrade dependencies

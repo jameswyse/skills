@@ -1,6 +1,6 @@
 ---
 name: pull-request-reviews
-description: Review another author's pull request and post or draft its review comment.
+description: Use when asked to review someone else's pull request, or to draft or post a review comment on one. For the user's own change, use code-review.
 ---
 
 # Pull request reviews

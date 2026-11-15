@@ -1,6 +1,6 @@
 ---
 name: improve-organisation
-description: Audit repository structure, file naming, and ownership when explicitly requested.
+description: Audit repository structure, file naming, and ownership.
 disable-model-invocation: true
 ---
 

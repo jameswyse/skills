@@ -1,6 +1,6 @@
 ---
 name: show-me
-description: Explain code visually when requested or when a diagram clarifies structure, flow, or a change.
+description: Use when explaining code or a code change, answering a question about how code works, or when asked for a diagram or visual.
 license: MIT
 ---
 

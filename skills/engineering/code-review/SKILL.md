@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: Review a branch, PR, working-tree diff, or changes since a fixed point against standards, the request, and correctness, or calibrate reviews against bot comments on past PRs.
+description: Use to review a code change before reporting it complete or opening a pull request, when asked to review a branch, PR, or diff, or to calibrate reviews against bot comments on past PRs.
 ---
 
 # Three-axis code review

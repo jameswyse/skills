@@ -1,6 +1,6 @@
 ---
 name: html-report
-description: Build and deliver an HTML report, or deliver another generated HTML file.
+description: Use when a skill or the user asks for an HTML report, or when you have generated any HTML file the user should view.
 ---
 
 # HTML report

@@ -1,6 +1,6 @@
 ---
 name: improve-testing
-description: Audit test value, behavioural guarantees, and test tooling when a testing review is explicitly requested.
+description: Audit test value, behavioural guarantees, and test tooling.
 disable-model-invocation: true
 ---
 

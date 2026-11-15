@@ -1,6 +1,6 @@
 ---
 name: typescript
-description: Apply TypeScript guidance when changing or reviewing types and implementation. Skip routine code lookups.
+description: Use when writing, changing, or reviewing TypeScript code. Skip read-only lookups.
 ---
 
 # TypeScript

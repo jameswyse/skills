@@ -1,6 +1,6 @@
 ---
 name: improve-performance
-description: Measure and improve a selected critical path when performance optimisation is explicitly requested.
+description: Measure and improve the performance of a selected critical path.
 disable-model-invocation: true
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: improve-architecture
-description: Audit module depth and architectural seams when requested, across the codebase or a named area.
+description: Audit module depth and architectural seams across the codebase or a named area.
 disable-model-invocation: true
 ---
 

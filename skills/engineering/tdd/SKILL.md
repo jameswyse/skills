@@ -1,6 +1,6 @@
 ---
 name: tdd
-description: Use for explicit TDD requests or an authorised bug fix with a clear, cheap regression-test path.
+description: Use for explicit TDD requests or a bug fix with a clear, cheap regression-test path.
 ---
 
 # TDD bug fix

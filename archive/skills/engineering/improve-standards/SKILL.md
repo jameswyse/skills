@@ -1,6 +1,6 @@
 ---
 name: improve-standards
-description: Audit a codebase or named area against repository and engineering standards when requested.
+description: Audit a codebase or named area against repository and engineering standards.
 disable-model-invocation: true
 ---
 

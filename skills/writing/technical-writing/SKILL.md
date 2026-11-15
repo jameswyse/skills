@@ -1,6 +1,6 @@
 ---
 name: technical-writing
-description: Write or review developer documentation, commit messages, skills, and agent instructions.
+description: Use when writing or reviewing developer documentation, a README, an ADR or runbook, a commit message or release note, a skill, or agent instructions such as AGENTS.md.
 ---
 
 # Technical writing

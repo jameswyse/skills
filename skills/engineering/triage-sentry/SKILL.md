@@ -1,6 +1,6 @@
 ---
 name: triage-sentry
-description: Triage a supplied Sentry issue or a project, then carry out only authorised actions.
+description: Use when given a Sentry issue URL, ID, or short key to investigate, or asked to triage a Sentry project's issues.
 ---
 
 # Triage Sentry issues

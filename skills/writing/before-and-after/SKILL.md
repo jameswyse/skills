@@ -1,6 +1,6 @@
 ---
 name: before-and-after
-description: Add existing screenshots or screen recordings to a GitHub pull request as a before/after or preview block. Use when a PR needs visual media attached to its description. Browser navigation and capture belong to agent-browser.
+description: Use when a pull request needs screenshots or screen recordings added to its description as a before/after or preview block. Load it before capturing them with agent-browser.
 ---
 
 # Add visual media to a PR

@@ -1,6 +1,6 @@
 ---
 name: diagnosing-production-incidents
-description: Diagnose an urgent live production incident when explicitly invoked. Ordinary production bugs use diagnosing-bugs.
+description: Diagnose an urgent live production incident. Ordinary production bugs use diagnosing-bugs.
 disable-model-invocation: true
 ---
 

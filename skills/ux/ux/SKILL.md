@@ -1,6 +1,6 @@
 ---
 name: ux
-description: Design, implement, or review interfaces and motion. Excludes software architecture and data models.
+description: Use when designing, building, or reviewing a user-facing interface, including interaction, visual design, accessibility, interface copy, and motion.
 ---
 
 # UX

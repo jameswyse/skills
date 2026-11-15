@@ -1,6 +1,6 @@
 ---
 name: diagnosing-bugs
-description: Diagnose hard bugs and performance regressions from symptoms, reproduction, and evidence.
+description: Use when a bug's cause isn't clear from the code, a first fix didn't work, a failure is intermittent, or performance has regressed.
 ---
 
 # Diagnosing bugs

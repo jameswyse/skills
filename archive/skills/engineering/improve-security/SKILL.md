@@ -1,6 +1,6 @@
 ---
 name: improve-security
-description: Review trust boundaries and credible security risks when a focused security assessment is explicitly requested.
+description: Review trust boundaries and credible security risks in a focused security assessment.
 disable-model-invocation: true
 ---
 
