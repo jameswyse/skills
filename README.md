@@ -1,6 +1,6 @@
 # Agent Skills
 
-My skills for software engineering, UX, writing and homelab access. They follow the [Agent Skills specification](https://agentskills.io/specification) and work in Claude Code and Codex.
+My skills for software engineering, UX, writing and homelab access. They follow the [Agent Skills specification](https://agentskills.io/specification). I use them in Claude Code, Codex, Cursor and Grok Build.
 
 ## Install
 
@@ -8,11 +8,11 @@ My skills for software engineering, UX, writing and homelab access. They follow 
 npx skills@latest add jameswyse/skills --global --agent claude-code --agent codex --skill '*' --yes
 ```
 
-Replace `'*'` with one or more skill names to install fewer. Several skills rely on the global instructions in [`global/AGENTS.md`](global/AGENTS.md). Use it as `~/.codex/AGENTS.md` in Codex, and import it from `~/.claude/CLAUDE.md` in Claude Code.
+This installs to `~/.agents/skills`, which Codex, Cursor and Grok Build read, and links each skill into `~/.claude/skills` for Claude Code. Replace `'*'` with one or more skill names to install fewer. Several skills rely on the global instructions in [`global/AGENTS.md`](global/AGENTS.md). Use it as `~/.codex/AGENTS.md` in Codex, and import it from `~/.claude/CLAUDE.md` in Claude Code. For other agents, add it to their global rules.
 
 ## Use
 
-Agents load a skill on their own when the task matches its description. To load one yourself, type `/skill-name` in Claude Code or `$skill-name` in Codex. `design-it-twice` loads only when you invoke it.
+Agents load a skill on their own when the task matches its description. To load one yourself, type `$skill-name` in Codex or `/skill-name` in Claude Code and Cursor. `design-it-twice` loads only when you invoke it.
 
 This repository's `code-review` replaces Claude Code's bundled `/code-review`. Use `/review` for the bundled one.
 
