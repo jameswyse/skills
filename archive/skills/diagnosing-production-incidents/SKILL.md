@@ -1,6 +1,6 @@
 ---
 name: diagnosing-production-incidents
-description: Diagnose an urgent live production incident. Ordinary production bugs use diagnosing-bugs.
+description: Diagnose an urgent live production incident. Ordinary production bugs use debugging.
 disable-model-invocation: true
 ---
 
@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Use this skill only when the user invokes it explicitly. The invocation means the user has classified the problem as an urgent production incident. Do not invent an organisation-specific severity.
 
-This skill owns the incident workflow. Use the "engineering" skill. Do not run the "diagnosing-bugs" skill alongside it. Diagnose the incident, describe urgent mitigation options, and stop before any fix, rollback, deployment, configuration change, restart, scaling action, feature-flag change, or external communication unless the user's authorisation covers that action. Carry forward exact action and environment approvals already given in the task.
+This skill owns the incident workflow. Use the "engineering" skill. Do not run the "debugging" skill alongside it. Diagnose the incident, describe urgent mitigation options, and stop before any fix, rollback, deployment, configuration change, restart, scaling action, feature-flag change, or external communication unless the user's authorisation covers that action. Carry forward exact action and environment approvals already given in the task.
 
 Keep the default investigation operationally read-only. Querying approved evidence sources, inspecting code and configuration, and creating authorised local temporary diagnostics are allowed. Production instrumentation is a separate change with a separate approval gate.
 

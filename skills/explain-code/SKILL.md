@@ -1,5 +1,5 @@
 ---
-name: show-me
+name: explain-code
 description: Use when explaining code or a code change, answering a question about how code works, or when asked for a diagram or visual of code.
 license: MIT
 ---
@@ -76,7 +76,7 @@ For a file-layout change:
 ```diff
  src/
  ├── commands/
-+│   └── show-me.ts       # expands the slash command
++│   └── explain.ts       # expands the slash command
  ├── sessions/
 -└── transport.ts
 +└── transport/
@@ -117,7 +117,7 @@ function expandSkill(command: string): string {
 }
 ```
 
-- For a visual UI, layout, state comparison, or concept too dense for Mermaid, write one focused HTML file, a diagram, an infographic, or a short slide deck, whichever fits the point. Match the product's colors, type, spacing, and components; use real labels and data; support desktop and mobile. Write it to `<tmpdir>/show-me-{description}.html` and check it once with `html_preview` at `390` pixels wide when that tool is available, then deliver it as the "html-report" skill describes: inline or attached in T3 Code, otherwise as its absolute path. Never open it in a browser, because I read from another machine.
+- For a visual UI, layout, state comparison, or concept too dense for Mermaid, write one focused HTML file, a diagram, an infographic, or a short slide deck, whichever fits the point. Match the product's colors, type, spacing, and components; use real labels and data; support desktop and mobile. Write it to `<tmpdir>/explain-code-{description}.html` and check it once with `html_preview` at `390` pixels wide when that tool is available, then deliver it as the "html-report" skill describes: inline or attached in T3 Code, otherwise as its absolute path. Never open it in a browser, because I read from another machine.
 
 ### guidance
 

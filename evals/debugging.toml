@@ -1,4 +1,4 @@
-skill = "diagnosing-bugs"
+skill = "debugging"
 include = []
 
 [[probe]]

@@ -31,7 +31,7 @@ A named smell is a lead. Report it only with its concrete cost in the scoped dif
 
 ## Another author's change
 
-To review someone else's pull request and post or draft a comment on it, use "pull-request-reviews", which calls this skill.
+To review someone else's pull request and post or draft a comment on it, use "review-pr", which calls this skill.
 
 When the change isn't the user's, use another-author mode, where the user's personal rules don't apply. Delegated reviewers load the user's global instructions, so state this mode at the top of every reviewer's manifest and in the verifier's and contrarian's briefs, and apply it to your own verification:
 

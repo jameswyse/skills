@@ -51,7 +51,7 @@ Source: Kohl, The Global English Style Guide (SAS Press). Guideline text fetched
 
 ## Voice and repo specifics
 
-- The global writing rules and the writing skill own the catalogue of slop patterns: AI vocabulary, filler, hedging, and formatting tells.
+- The global writing rules and the writing skill's prose preferences own the catalogue of slop patterns: AI vocabulary, filler, hedging, and formatting tells.
 - PR descriptions and commit messages are writing too. Every layer except Diátaxis applies to them.
 - Product UI strings are not documentation. Use your product's copy guidelines for those.
 - For Markdown files committed to the repository, put one space inside each table pipe. Pad every cell and separator so the column boundaries align in plain text.
@@ -67,11 +67,11 @@ After:
 
 > `budget.mjs` reads the committed budget from `budget.json` and counts the files that import protos. If the count exceeds the budget, CI fails. Run `budget.mjs --write` only to lower the budget.
 
-The fixes, by layer: "configuration is performed" becomes "`budget.mjs` reads", so someone does something (Google). "Ratchet" goes away. The script's real filename does the naming (jargon rule). The five-noun string breaks up into plain clauses (Global English). The writing skill deletes the hedge "note that it's important to remember". The failure condition moves ahead of the step it explains (STE). The buried "should only be done when lowering" becomes a command with "only" next to its verb (STE). "If exceeded" gets a subject: the count (Global English).
+The fixes, by layer: "configuration is performed" becomes "`budget.mjs` reads", so someone does something (Google). "Ratchet" goes away. The script's real filename does the naming (jargon rule). The five-noun string breaks up into plain clauses (Global English). The prose preferences delete the hedge "note that it's important to remember". The failure condition moves ahead of the step it explains (STE). The buried "should only be done when lowering" becomes a command with "only" next to its verb (STE). "If exceeded" gets a subject: the count (Global English).
 
 ## Review checklist
 
-Apply to any prose this skill covers. Item 1 applies only to developer document sets:
+Apply to developer prose. Item 1 applies only to developer document sets:
 
 1. For developer document sets, does each document have a clear purpose and links to related modes?
 2. Is every instruction written as a command, with its condition in front?

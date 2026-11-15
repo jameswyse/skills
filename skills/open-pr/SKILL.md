@@ -1,11 +1,11 @@
 ---
-name: pull-requests
+name: open-pr
 description: Use when creating or opening a pull request, or drafting, writing, or updating a pull request's title, description, or Airteam review labels.
 ---
 
 # Pull requests
 
-Write a pull request that lets the project's other contributors understand why the change exists and the shape of the implementation before they open the diff. Use "writing" for the prose and "show-me" for the change outline.
+Write a pull request that lets the project's other contributors understand why the change exists and the shape of the implementation before they open the diff. Use "writing" for the prose and "explain-code" for the change outline.
 
 Those contributors did not see the conversation that produced the change. Use the terms the codebase, tickets, and team already use. Leave out anything that only makes sense with that conversation, such as labels or shorthand coined during the work, options or attempts that were discussed, and the user's instructions.
 
@@ -48,7 +48,7 @@ For a request only to label a pull request, run steps 1, 2, and 5, then apply th
 Write as one person explaining the change to another. Use plain, specific language without jargon or slang.
 
 - **Why the change.** One or two concise sentences: the problem this solves and what becomes possible after it ships. Prefer one.
-- **Change outline.** A compact structural view of the implementation, not prose and not a file-by-file changelog. Build it from the "show-me" views as GitHub Markdown: fenced code blocks, `diff` blocks, and `mermaid` diagrams. A pull request body cannot hold an HTML file, so skip show-me's HTML option.
+- **Change outline.** A compact structural view of the implementation, not prose and not a file-by-file changelog. Build it from the "explain-code" views as GitHub Markdown: fenced code blocks, `diff` blocks, and `mermaid` diagrams. A pull request body cannot hold an HTML file, so skip explain-code's HTML option.
 - **Notes.** One to three bullets for reviewer warnings, migrations, compatibility constraints, deliberate omissions, or surprising decisions. Each bullet must make sense to a contributor reading only the pull request. Write `- None.` when there are none.
 - **Verification.** The checks that confirmed the change, with their results. Leave out checks that did not run. Leave out external or private references, such as links only the author can open, local paths, and the names of models or agents that helped.
 - **Review report.** When "code-review" ran on the change, put its run report, covering every round, in a collapsed block after the verification. For a stack, put it on each layer that review covered. When updating a description, keep its run report, and add the rounds of any review this task ran with an updated outcome line.

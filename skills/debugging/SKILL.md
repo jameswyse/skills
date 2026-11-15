@@ -1,9 +1,9 @@
 ---
-name: diagnosing-bugs
+name: debugging
 description: Use when a bug's cause isn't clear from the code, a first fix didn't work, a failure is intermittent, or performance has regressed.
 ---
 
-# Diagnosing bugs
+# Debugging
 
 A diagnosis-only, debugging-only, or explanation request authorises no fix and no lasting repository change. Work from existing commands, runtime inspection, and throwaway files in the operating system's temporary directory, and get authority before adding repository instrumentation or touching production. A request that includes a fix carries through the fix and its verification. Redact secrets in commands, output, and captures.
 

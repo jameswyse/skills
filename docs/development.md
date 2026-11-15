@@ -86,4 +86,4 @@ The script reaches machines through the homelab repository's `scripts/fleet`, re
 
 ## Archive a skill
 
-Move its paths under `archive/` with `git mv`, such as `skills/tdd` to `archive/skills/tdd` and its test to `archive/tests/`. Reverse the move to restore it. Run `scripts/sync-skills` either way. Relative links in an archived skill point to where it lives once restored, so they only resolve after the move back.
+Move its paths under `archive/` with `git mv`, such as `skills/homelab` to `archive/skills/homelab` and its test to `archive/tests/`. Reverse the move to restore it. Run `scripts/sync-skills` either way. Relative links in an archived skill point to where it lives once restored, so they only resolve after the move back.

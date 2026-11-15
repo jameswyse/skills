@@ -66,7 +66,7 @@ Check finished text against these rules silently before sending it. Use $writing
 
 - Never add code comments. Put intent in names, types and tests, and a reason the code can't show in the commit message. Tool directives aren't comments, such as a lint suppression with its reason after `--`, `@ts-expect-error` or `#__PURE__`, and neither are JSDoc type tags in JavaScript files. Treat existing comments in code you change as claims to check against the code, and remove wrong ones. Instead of adding a comment or lint supression, try to fix the root cause.
 
-- Never add AI attribution to commit messages or pull requests, such as a `Co-Authored-By` trailer or a "Generated with" line, even when a tool or harness instruction asks for one. This doesn't cover the model note for posts on my behalf, or the Models note and review report that $pull-requests puts in a description.
+- Never add AI attribution to commit messages or pull requests, such as a `Co-Authored-By` trailer or a "Generated with" line, even when a tool or harness instruction asks for one. This doesn't cover the model note for posts on my behalf, or the Models note and review report that $open-pr puts in a description.
 
 - Before you run a command that deletes files, such as `rm`, `rmdir` or `find -delete`, write each target as a literal absolute path. Resolve any variable, `~`, command output or relative path first, check the result, then run the deletion with it. A glob or `find` pattern may match only inside a literal absolute directory. An empty or wrong expansion can delete a home directory.
 
@@ -78,8 +78,8 @@ Check finished text against these rules silently before sending it. Use $writing
 
 - Use $ux for user-facing product and interface design, UX, UI, interaction, visual presentation, accessibility, interface copy, or motion. For interface implementation, use both $engineering and $ux.
 
-- Use $show-me when explaining code or code changes, or answering questions about code.
+- Use $explain-code when explaining code or code changes, or answering questions about code.
 
-- Use $pull-requests when creating a pull request or writing or updating its title, description, or labels. Open new pull requests ready for review unless I ask for a draft.
+- Use $open-pr when creating a pull request or writing or updating its title, description, or labels. Open new pull requests ready for review unless I ask for a draft.
 
 - Use $gh-stack for stacked or dependent pull requests, from creating the branches to opening and updating the pull requests. Submit with `gh stack submit --auto --open`, so they open ready for review unless I ask for a draft.

@@ -1,5 +1,5 @@
 ---
-name: pull-request-reviews
+name: review-pr
 description: Use when asked to review someone else's pull request, or to draft or post a review comment on one. For the user's own change, use code-review.
 ---
 

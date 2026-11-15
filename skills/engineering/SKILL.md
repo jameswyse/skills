@@ -1,11 +1,11 @@
 ---
 name: engineering
-description: Use when implementing, debugging, designing, or reviewing software or tooling. Skip simple code explanations, lookups, and routine Git operations.
+description: Use when implementing, debugging, designing, or reviewing software or tooling, including TDD and test-first bug fixes. Skip simple code explanations, lookups, and routine Git operations.
 ---
 
 # Engineering
 
-Repository conventions and the user's task govern the work. For interface implementation also use "ux", for TypeScript "typescript", and for hard bugs and performance regressions "diagnosing-bugs". Before a substantial architecture, state, schema, module-boundary, or test-seam decision, read [Design](references/design.md).
+Repository conventions and the user's task govern the work. For interface implementation also use "ux", for TypeScript "typescript", and for hard bugs and performance regressions "debugging". Before a substantial architecture, state, schema, module-boundary, or test-seam decision, read [Design](references/design.md).
 
 ## Rules
 
@@ -22,6 +22,16 @@ Repository conventions and the user's task govern the work. For interface implem
 ## Fix at the source
 
 Fix the cause where invalid state enters. Correct the authoritative type, structure, or configuration instead of adding a downstream guard that silences the failure, and make the consumer, test, type, configuration, or fixture changes the fix needs instead of a workaround that keeps the diff narrow. Fix minor instances of the same pattern and report larger ones. Pause only when the fix exceeds your authority or opens a decision about public interfaces, data, dependencies, infrastructure, or product behaviour.
+
+## Test-first bug fixes
+
+When the user asks for TDD, or a bug fix has a clear, cheap regression-test path, write the smallest test that would have caught the bug before fixing it. Put it at the closest existing test seam for the broken path, and make it encode the intended behaviour, not the current implementation. Read the code-review [Testing](../code-review/references/testing.md) reference first.
+
+1. Run the test before fixing and confirm it fails for the intended reason. If it passes or fails for another reason, correct the test first.
+2. Make the smallest production change that fixes the behaviour, then rerun the test and the adjacent checks.
+3. When the fix covers several behaviours, work in vertical slices: one failing test, the code that makes it pass, then the next.
+
+When a failing test would need broad harness setup, brittle mocks, slow end-to-end infrastructure, production-only state, or large fixture churn, say why before fixing and use the closest executable check instead, such as a targeted script or a scripted reproduction. Don't build test infrastructure for a small fix. Report the failing-before check and the failure it produced, the passing-after run, and any check you used instead of a test and why.
 
 ## Delegate
 

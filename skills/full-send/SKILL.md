@@ -12,7 +12,7 @@ Take the request through implementation and review to a pull request that is rea
 Invoking this skill authorises, for the current task:
 
 - implementing the request and fixing actionable "code-review" findings within it;
-- everything a request to create a pull request authorises under "pull-requests", including its bot review, and marking a draft pull request ready;
+- everything a request to create a pull request authorises under "open-pr", including its bot review, and marking a draft pull request ready;
 - under "babysit-pr", fixing valid review feedback within the request and CI failures the branch caused, pushing those fixes, rerunning failed checks within its retry budget, requesting bot reviews, updating the description to match, and replying to and resolving review-bot threads.
 
 It doesn't authorise merging, force-pushing, production changes, or replying to a human reviewer.
@@ -36,7 +36,7 @@ List these under "Other issues" in the final account with the fix you recommend,
 
 1. **Implement** with "engineering" and the skills it routes to, and verify the change as it requires.
 2. **Review** with "code-review" through its repeat rounds.
-3. **Open the pull request** with "pull-requests", which commits, pushes, and runs its bot review. When a pull request was a draft before publishing and still is, mark it ready with `gh pr ready <url>`.
+3. **Open the pull request** with "open-pr", which commits, pushes, and runs its bot review. When a pull request was a draft before publishing and still is, mark it ready with `gh pr ready <url>`.
 4. **Watch** with "babysit-pr". After each push, or when resuming a pull request whose head commit an active bot hasn't reviewed, request and wait for the active bots' reviews with steps 1 and 2 of the bot review, and handle their comments as its step 3 describes. When step 3 above made a draft ready, Macroscope checks it again if it is active, so use the bot review's step 2 to wait for its check run on the head commit that started after the pull request became ready. A round is one push of fixes for bot findings. After three rounds in this step, stop fixing bot findings, reply to each remaining thread that it is listed as an other issue, and list them there.
 5. **Finish** when all of these hold, even on the first snapshot:
    - the pull request is open and ready for review;

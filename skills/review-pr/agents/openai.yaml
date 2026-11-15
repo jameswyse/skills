@@ -1,5 +1,5 @@
 interface:
-  display_name: "Pull Request Reviews"
+  display_name: "Review PR"
   short_description: "Review another author's pull request and draft or post one comment"
 policy:
   allow_implicit_invocation: true
