@@ -5,13 +5,11 @@ description: Use for explicit TDD requests or a bug fix with a clear, cheap regr
 
 # TDD bug fix
 
-Make the broken behaviour executable before changing production code: a focused regression test that fails before the fix and passes after it. Use the "engineering" skill, and read the code-review [Testing](../code-review/references/testing.md) reference before writing the test.
+Write the smallest regression test that would have caught the bug, at the closest existing test seam for the broken path. It encodes the intended behaviour, not the current implementation, fails before the fix, and passes after it. Read the code-review [Testing](../code-review/references/testing.md) reference first.
 
-1. Write the smallest test that would have caught the bug, at the closest existing test seam for that path. It encodes the intended behaviour, not the current implementation.
-2. Run it before fixing and confirm it fails for the intended reason. If it passes or fails for another reason, correct the test first.
-3. Make the smallest production change that fixes the behaviour, then rerun the test and the adjacent checks.
-
-When the fix covers several behaviours, work in vertical slices: one failing test, the code that makes it pass, then the next. Writing every test first commits to imagined behaviour before the implementation teaches you anything.
+1. Run the test before fixing and confirm it fails for the intended reason. If it passes or fails for another reason, correct the test first.
+2. Make the smallest production change that fixes the behaviour, then rerun the test and the adjacent checks.
+3. When the fix covers several behaviours, work in vertical slices: one failing test, the code that makes it pass, then the next.
 
 When a failing test would need broad harness setup, brittle mocks, slow end-to-end infrastructure, production-only state, or large fixture churn, say why before fixing and use the closest executable check instead, such as a targeted script or a scripted reproduction. Don't build test infrastructure for a small fix.
 

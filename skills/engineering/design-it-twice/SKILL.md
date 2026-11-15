@@ -6,66 +6,41 @@ disable-model-invocation: true
 
 # Design it twice
 
-Ousterhout calls this "Design It Twice" because the first interface is unlikely to be the best. Compare genuinely different designs before committing to one.
+The first interface is unlikely to be the best, so compare genuinely different designs for the chosen module before committing to one. Read the engineering [Design](../engineering/references/design.md) reference first, and use the repository's documented domain vocabulary.
 
-Use the "engineering" skill. Read its [Design](../engineering/references/design.md) reference before framing the alternatives. Use the repository's documented domain vocabulary when it exists.
-
-Do not change production code while comparing designs. If the user also requested implementation, finish the comparison and recommendation first.
+Change no production code while comparing, even when the same request asks for implementation. Finish the comparison and recommendation first, then continue with the recommended design when it fits the established constraints and authority.
 
 ## Establish the problem
 
-Start only when the module and design problem are chosen. Read the current interface, callers, implementation, tests, and governing documentation until these facts are clear:
+Start only when the module and the design problem are chosen. Read the current interface, callers, implementation, tests, and governing documentation until you can state:
 
-- The behaviour and constraints every design must preserve.
-- The decisions the module should hide.
-- The dependencies and their deep-module categories.
-- The callers and tests that will cross the seam.
-- The current problems the new interface must solve.
+- the behaviour and constraints every design must preserve;
+- the decisions the module should hide;
+- its dependencies and their categories from the Design reference;
+- the callers and tests that will cross the seam;
+- the problems the new interface must solve.
 
-Explain this problem space to the user. Include a small illustrative type or code sketch when it makes the constraints concrete. The sketch must frame the information involved without proposing the winning interface.
+Explain this problem space to the user, with a small type or code sketch when it makes the constraints concrete. The sketch frames the information involved without proposing the winning interface.
 
 ## Produce independent designs
 
-Follow the engineering skill's delegation rules. This workflow requests independent design work within the user's scope when delegation is available and permitted. Start with two distinct designs for a straightforward decision. Add another only when a meaningful trade-off remains unexplored or the user requests more alternatives.
+Start with two designs for a straightforward decision. Add another only when a meaningful trade-off remains unexplored or the user asks. Give each designer the same factual brief, a different constraint, and a fresh context when the tool supports one, with no sight of another design or the answer you expect. Designers read the code and change nothing.
 
-When delegating, give each subagent the same factual technical brief and a different design constraint. Use fresh contexts when supported. Do not show them another design or the expected recommendation. Each subagent reads the code but changes nothing.
-
-Alternate designs between providers when T3's orchestration tools allow it, so the designs differ by model as well as by constraint. Give the first design to a native subagent on the session's model. Send the second through the engineering [Cross-provider delegation](../engineering/references/cross-provider-delegation.md) reference with `role: "design"`, and alternate any further designs. When a cross-provider design falls back, produce that design on the session's provider. Name each design's provider when presenting them.
-
-When delegation is unavailable or restricted, develop the alternatives sequentially and disclose that they were not independently generated. Do not stop merely because subagents are unavailable.
+Alternate the designs between providers when T3's orchestration tools allow it, so they differ by model as well as by constraint. Give the first to a native subagent on the session's model, send the second through the engineering [Cross-provider delegation](../engineering/references/cross-provider-delegation.md) reference with `role: "design"`, and keep alternating. When a cross-provider design falls back, produce it on the session's provider. Name each design's provider when presenting it. Without delegation, develop the alternatives yourself in sequence and say that they weren't generated independently.
 
 Use these constraints unless the problem calls for a stronger distinction:
 
-1. Minimise the interface. Aim for one to three entry points and maximise the behaviour behind each entry point.
+1. Minimise the interface. Aim for one to three entry points and put as much behaviour as possible behind each.
 2. Maximise supported variation and extension without moving implementation decisions into callers.
 3. Optimise for the most common caller so the default case is trivial.
-4. When remote or external dependencies matter, design around necessary ports and adapters.
+4. When remote or external dependencies matter, design around the necessary ports and adapters.
 
-Require each design to provide:
-
-1. The interface, including types, methods, parameters, invariants, ordering, and error modes.
-2. A usage example for a representative caller.
-3. The behaviour and decisions hidden inside the implementation.
-4. The dependency and adapter strategy.
-5. The testing strategy through the interface.
-6. The trade-offs, including where depth or locality remains weak.
-
-Reject superficial variations. The designs must differ in where the seam sits, what callers know, how state or operations are represented, or which decisions the module owns.
+Each design gives its interface, with types, invariants, ordering, and error modes, a usage example for a representative caller, what it hides, its dependency and adapter strategy, how it is tested through the interface, and its trade-offs, including where depth or locality stays weak. Reject designs that don't differ in where the seam sits, what callers know, how state or operations are represented, or which decisions the module owns.
 
 ## Compare and recommend
 
-Present each design separately before comparing them. Use the same criteria for every design:
+Present each design, then compare them on the same criteria: interface size and caller knowledge, depth, locality of decisions and change, seam placement and dependency handling, testability through the interface, fit with current requirements and likely change, and total complexity across the affected system.
 
-- Interface size and caller knowledge.
-- Depth.
-- Locality of decisions and change.
-- Seam placement and dependency handling.
-- Testability through the interface.
-- Fit with current requirements and likely change.
-- Total complexity across the affected system.
+Unless the choice is clear and cheap to undo, ask a contrarian to argue against your pick, as the [Cross-provider delegation](../engineering/references/cross-provider-delegation.md#contrarian) reference describes. Give it the problem space, each design's interface, usage example, and main trade-offs, and your comparison.
 
-Choose the strongest design. Unless the choice is clear and cheap to undo, ask a contrarian to argue against it, as the engineering [Cross-provider delegation](../engineering/references/cross-provider-delegation.md#contrarian) reference describes. Give it the problem space, each design's interface, usage example, and main trade-offs, and your comparison.
-
-Recommend the strongest design and explain why it wins. Propose a hybrid when it combines compatible strengths without widening the interface or preserving two competing paths. Do not stop at a menu of options.
-
-If implementation was already requested, continue with the recommended design when it fits the established constraints and authority. Ask only about unresolved decisions that would change the outcome or exceed that authority.
+Recommend one design and say why it wins. Propose a hybrid when it combines compatible strengths without widening the interface or keeping two competing paths. Don't stop at a menu of options. Ask only about unresolved decisions that would change the outcome or exceed your authority.

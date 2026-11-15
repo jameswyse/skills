@@ -1,6 +1,6 @@
 ---
 name: full-send
-description: Take a task through to a ready pull request with passing checks and resolved bot comments when the user asks to full-send it, says "full send", or ends the prompt with the word "FS".
+description: Use when the user says "full send" or ends a prompt with the word "FS".
 ---
 
 # Full send
@@ -19,7 +19,7 @@ It doesn't authorise merging, force-pushing, production changes, or replying to 
 
 ## Decide or stop
 
-These conditions replace the engineering skill's pause rule for this task. Decide everything else yourself. Stop and ask only when:
+Decide everything yourself except the cases below, which replace the engineering skill's pause rule for this task. Stop and ask only when:
 
 - the request can't be delivered as written, such as conflicting requirements, evidence that the requested approach fails, or a Spec finding that "code-review" leaves to the user;
 - neither the request nor the codebase settles a choice about product behaviour, a public interface, stored data, dependencies, or infrastructure, and a wrong guess would mean rework after review;
@@ -30,18 +30,18 @@ These conditions replace the engineering skill's pause rule for this task. Decid
 
 Keep the branch to the request. When you find an issue outside it, such as a pre-existing bug, a "code-review" finding beyond the request, review feedback asking for more scope, or a bot finding left after the round limit, note it with its evidence and continue. Fix it on the branch only when the request needs the fix. This replaces the engineering skill's rule to fix minor instances of the same pattern.
 
-In the final account, list these under "Other issues" with the fix you recommend. Then offer to fix them on this branch or in a separate T3 thread launched with `t3_thread_launch` in a new worktree from the default branch. Without T3, offer a separate branch instead. Skip the list and the offer when there are none.
+List these under "Other issues" in the final account with the fix you recommend, and offer to fix them on this branch or in a separate T3 thread launched with `t3_thread_launch` in a new worktree from the default branch. Without T3, offer a separate branch.
 
 ## Workflow
 
 1. **Implement** with "engineering" and the skills it routes to, and verify the change as it requires.
 2. **Review** with "code-review" through its repeat rounds.
 3. **Open the pull request** with "pull-requests", which commits, pushes, and runs its bot review. When a pull request was a draft before publishing and still is, mark it ready with `gh pr ready <url>`.
-4. **Watch** with "babysit-pr". After each push, or when resuming a pull request whose head commit an active bot hasn't reviewed, request and wait for the active bots' reviews with steps 1 and 2 of the bot review. When a pull request that was a draft became ready in step 3, Macroscope checks it again if it is active. Use step 2 to wait for its check run on the head commit that started after the pull request became ready. Handle the bots' comments as the bot review's step 3 describes. A round is one push of fixes for bot findings. After three rounds in this step, stop fixing bot findings and list the rest as other issues.
+4. **Watch** with "babysit-pr". After each push, or when resuming a pull request whose head commit an active bot hasn't reviewed, request and wait for the active bots' reviews with steps 1 and 2 of the bot review, and handle their comments as its step 3 describes. When step 3 above made a draft ready, Macroscope checks it again if it is active, so use the bot review's step 2 to wait for its check run on the head commit that started after the pull request became ready. A round is one push of fixes for bot findings. After three rounds in this step, stop fixing bot findings, reply to each remaining thread that it is listed as an other issue, and list them there.
 5. **Finish** when all of these hold, even on the first snapshot:
    - the pull request is open and ready for review;
    - every required check on the final head commit has passed, and no check has failed;
    - every active review bot has reviewed the final head commit, including Macroscope's check of a draft that became ready, unless its review request or review failed or timed out;
    - every review-bot thread has a reply and is resolved where the "babysit-pr" thread rules allow.
 
-   These conditions replace the stopping conditions in "babysit-pr". Human approval isn't one of them. Once they hold, stop the watcher or T3 watch as "babysit-pr" describes. Include the pull request link, final head commit, check results, any checks still pending, and any drafted human replies in the final account.
+   These conditions replace the stopping conditions in "babysit-pr", and human approval isn't one of them. Once they hold, stop the watcher or T3 watch as "babysit-pr" describes. Include the pull request link, final head commit, check results, any checks still pending, and any drafted human replies in the final account.
