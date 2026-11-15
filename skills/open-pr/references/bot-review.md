@@ -1,7 +1,6 @@
 # Bot review
 
-Use after creating a pull request whose change needed "code-review". The repository's review bots
-review it, and this loop handles their comments. For a stack, work from the bottom layer up, and restart the loop for higher layers whenever a
+Handle the repository's review bots with the loop below. For a stack, work from the bottom layer up, and restart the loop for higher layers whenever a
 fix to a lower layer changes their head commits.
 
 ## Review bots

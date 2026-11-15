@@ -1,6 +1,6 @@
 # Calibration
 
-Use when asked to calibrate reviews against bot comments. The goal is a pull request that bot
+The goal is a pull request that bot
 reviewers have nothing to say about. Every inline bot comment on a reviewed pull request is a
 candidate miss.
 

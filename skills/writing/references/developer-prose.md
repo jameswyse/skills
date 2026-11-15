@@ -1,7 +1,5 @@
 # Developer prose editing
 
-Use for substantial developer prose or a detailed clarity review. Agent instructions use [their own guidance](agent-instructions.md).
-
 ## Write sentences to the reader (Google developer style)
 
 - Talk to the reader as "you", in the present tense. "Will" only for things that genuinely happen later.

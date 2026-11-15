@@ -1,7 +1,5 @@
 # Developer document structure
 
-Use this reference when choosing or revising the structure of documentation, READMEs, RFCs, ADRs, or runbooks.
-
 ## Pick the mode first (Diátaxis)
 
 One document, one mode. Two questions pick it: does the content inform action (doing) or understanding (thinking), and does it serve learning or work?

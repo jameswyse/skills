@@ -1,7 +1,5 @@
 # Skill mechanics
 
-This is the skill-specific branch of [Agent instructions](agent-instructions.md). It covers frontmatter, invocation choice, and router skills. The universal writing guidance remains in [Agent instructions](agent-instructions.md).
-
 ## Invocation
 
 Two choices trade the two loads:

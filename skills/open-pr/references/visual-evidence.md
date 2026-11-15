@@ -1,7 +1,5 @@
 # Visual evidence
 
-Use when a pull request changes an interface, to show reviewers what changed before they open the diff.
-
 ## Capture
 
 Use the browser tool available in the session, such as agent-browser or the T3 Code preview tools, and follow its own instructions. Without one, use screenshots the user supplied, or state in the description that no visual evidence is attached.

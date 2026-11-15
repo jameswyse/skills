@@ -5,9 +5,7 @@ description: Use when drafting, editing, or reviewing prose other people will re
 
 # Writing
 
-My global instructions hold the baseline writing rules, including the banned wording. They are installed as `~/.agents/AGENTS.md` from `global/AGENTS.md` in the skills repository. This skill adds guidance for drafting and editing prose other people will read. Skills that own a document type, such as open-pr, govern its structure and domain requirements, and these prose rules still apply to the text they produce. Existing source style alone isn't a reason to keep a pattern in newly written prose.
-
-For user-facing interface copy, use "better-writing" when available. For a pull request's title or description, use "open-pr". Ordinary chat doesn't need this skill.
+Skills that own a document type, such as open-pr, govern its structure and domain requirements, and these prose rules still apply to the text they produce. For user-facing interface copy, use "better-writing" when available. Existing source style alone isn't a reason to keep a pattern in newly written prose.
 
 ## Write naturally
 
@@ -28,7 +26,7 @@ For Markdown committed to a repository, put one space inside each table pipe and
 
 ## Choose the relevant guidance
 
-Load a reference only when the task needs it. A short comment, commit message, or release note needs none.
+Read each reference whose condition applies before drafting. A short comment, commit message, or release note needs none.
 
 - For substantial drafting, an explicit prose edit, or a recurring wording problem, read the relevant sections of [Editing examples](references/editing.md).
 - For skills, `AGENTS.md`, `CLAUDE.md`, and linked agent instructions, read [Agent instructions](references/agent-instructions.md). For a skill, also read [Skill mechanics](references/skill-mechanics.md). Skip Document structure and Developer prose editing for these artefacts.

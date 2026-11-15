@@ -1,7 +1,7 @@
 # Missed findings
 
 Patterns that bot reviewers caught after this review passed a change, most frequent first. Check
-each one against the scope. [Calibration](calibration.md) maintains this list.
+each one against the scope.
 
 - **Context scoping.** Trace tenant, site, account, and role restrictions through every query, cache
   key, and destructive operation. Check that configured roles apply everywhere they affect access or

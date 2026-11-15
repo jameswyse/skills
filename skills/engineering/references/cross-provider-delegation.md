@@ -1,6 +1,6 @@
 # Cross-provider delegation
 
-Use when a skill or the global instructions send work to another model through T3 Code's orchestration tools. The caller decides whether the work goes cross-provider. This reference picks the provider, model, and effort, and covers the call, the fallback, the Fable advisor, and the contrarian check.
+The caller decides whether the work goes cross-provider. This reference picks the provider, model, and effort.
 
 ## Route the work
 

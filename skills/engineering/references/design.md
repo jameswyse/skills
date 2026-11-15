@@ -1,7 +1,5 @@
 # Design
 
-Use before a substantial architecture, state, schema, or module-boundary decision, and when judging module depth, placing a seam, choosing adapters, or deciding where tests should observe behaviour.
-
 ## Redesign from the requirement
 
 When a new requirement challenges the current design, design as if the requirement had existed from the start. Keep constraints that still matter, not structure that merely exists. Describe the core types and data shapes the requirement calls for, trace how each caller reads and changes them, then find the smallest coherent migration. The result expresses the requirement through its types, state ownership, and interfaces, not through caller coordination or a special-case layer. State the chosen foundation, the rejected alternatives, and the implementation sequence.

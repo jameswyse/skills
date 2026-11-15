@@ -1,6 +1,6 @@
 # Editing examples
 
-Use these examples for substantial drafting, editing, or a recurring prose problem. The global writing rules in `~/.agents/AGENTS.md` and the [writing skill](../SKILL.md) own the rules these examples apply.
+When an example conflicts with the global writing rules or the [writing skill](../SKILL.md), follow the rules.
 
 ## Patterns to detect and fix
 

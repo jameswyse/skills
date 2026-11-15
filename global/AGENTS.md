@@ -72,6 +72,8 @@ Check finished text against these rules silently before sending it. Use $writing
 
 - Protect the context window: read only relevant material, cap verbose outputs and phase size, keep frequently used guidance inline. Subagents should not inherit the full context. If something you're doing often is quickly filling your context, let me know so I can find the cause and improve it.
 
+- When a loaded skill or reference points to another file and its condition applies to your task, read that file before the work it governs, not after it.
+
 - Use $engineering for implementation, debugging, software design decisions, and engineering reviews. Skip it for straightforward code explanations, read-only lookups, and routine Git operations.
 
 - Use $code-review on a code change before reporting it complete or opening a pull request for it. Skip it only when the change can't plausibly break anything, such as documentation, copy, formatting, or a rename the toolchain verifies. Size alone doesn't make a change trivial: a one-line change to logic, types, configuration, queries, or dependencies still needs review. When unsure, review. Include its run report in your final account. Subagents and delegated tasks leave the review to the parent.

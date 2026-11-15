@@ -1,8 +1,6 @@
 # Agent instructions
 
-This reference covers any document an agent consumes, including a skill, an `AGENTS.md` or `CLAUDE.md` file, and a document reached by a pointer. Packaging differs, but the writing does not. Describe the required outcome, authority, and completion evidence. Prescribe a fixed process only when the sequence prevents a concrete failure.
-
-When the document you're writing is a skill, read [`skill-mechanics.md`](skill-mechanics.md) for frontmatter, invocation choice, and router skills.
+Describe the required outcome, authority, and completion evidence. Prescribe a fixed process only when the sequence prevents a concrete failure.
 
 ## Context pointers
 
@@ -13,6 +11,8 @@ A pointer does two jobs. It states what the material is and lists the **branches
 - **Front-load the task.** State the action and condition before implementation detail.
 - **One trigger per branch.** Synonyms that rename a single branch are one branch written twice. Collapse them and keep only genuinely distinct branches.
 - **Cut identity the body already carries.**
+
+The pointer carries the condition, so a disclosed reference starts with its content. Don't open it by restating when to read it or listing what it covers. The agent reads it only after the pointer fires, and its headings already show its contents.
 
 ## The two loads
 
