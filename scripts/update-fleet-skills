@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import os
 import re
+import shlex
 import socket
 import subprocess
 import sys
@@ -14,6 +15,7 @@ from pathlib import Path
 
 REPOSITORY = Path(__file__).resolve().parents[1]
 FLEET = ("epicdev", "studio", "mini", "macbookpro")
+REMOTE_CHECKOUT_UNDER_HOME = "Projects/skills"
 HOMELAB = Path(
     os.environ.get("HOMELAB_DIR", str(Path.home() / "Projects" / "homelab"))
 )
@@ -31,7 +33,8 @@ REMOTE_SCRIPT = """
 set -eu
 expected=$1
 branch=$2
-cd "$HOME/Projects/skills"
+checkout_under_home=$3
+cd "$HOME/$checkout_under_home"
 current=$(git symbolic-ref --short -q HEAD || true)
 if [ "$current" != "$branch" ]; then
     echo "error: checkout is on '${current:-detached HEAD}', expected '$branch'" >&2
@@ -194,7 +197,9 @@ def main() -> int:
                 "-o", "BatchMode=yes",
                 "-o", "ConnectTimeout=10",
                 host,
-                "sh", "-s", "--", commit, branch,
+                shlex.join(
+                    ("sh", "-s", "--", commit, branch, REMOTE_CHECKOUT_UNDER_HOME)
+                ),
             ],
             REMOTE_SCRIPT,
         )

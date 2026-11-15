@@ -220,12 +220,18 @@ The script exits with status 2 before contacting the fleet when this checkout ha
 changes, unpushed commits, or upstream commits it has not pulled. Otherwise it validates the skills,
 runs `scripts/setup-external-skills` and `scripts/sync-skills` locally, then connects to each
 other machine in its fleet list through the homelab repository's `scripts/fleet`. On each machine
-it fast-forwards `~/Projects/skills` to the validated commit, sets up the external skills and runs
+it fast-forwards its checkout, `~/Projects/skills` by default, to the validated commit, sets up the external skills and runs
 the sync script. External setup runs first so that a skill moved from `external-skills.json` into
 this repository is uninstalled before the sync script links the repository copy. A machine with local changes, commits, or a different branch is reported as failed
 and left unchanged. Successful steps print only changes, conflicts and summaries; a failed step
 prints its full output. The script reads the homelab checkout from `~/Projects/homelab` unless
 `HOMELAB_DIR` is set.
+
+To roll out to your own machines, edit `FLEET` and `REMOTE_CHECKOUT_UNDER_HOME` at the top of the
+script. `FLEET` lists each machine's lowercase short hostname, which must also be a name the fleet
+command can connect to. `REMOTE_CHECKOUT_UNDER_HOME` is where each machine keeps this repository,
+relative to its home directory. The Codex homes that receive `AGENTS.md` are
+`CODEX_HOMES_UNDER_HOME` at the top of `scripts/sync-skills`.
 
 ## Credits
 

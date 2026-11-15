@@ -1,6 +1,6 @@
 ---
 name: homelab
-description: Reach James's other computers or self-hosted services, such as SSH or file transfer to epicdev, studio, mini, or macbookpro, or Proxmox, TrueNAS, DNS, UniFi, or media-server operations.
+description: Use when a task needs another of the user's machines or a self-hosted service, such as SSH or file transfer to a fleet machine, or Proxmox, TrueNAS, DNS, UniFi, or media-server operations.
 ---
 
 # Homelab access

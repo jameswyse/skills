@@ -36,6 +36,10 @@ Assume I wasn't watching while you worked. Finish with an account of the origina
 
 When you post a comment, reply, or message for me on GitHub, Jira, Slack, Sentry, or another shared platform, start it with a note naming your model, such as "🤖 Claude Opus 5.5 responding on behalf of James". Format the note with the platform's callout, such as a GitHub `> [!NOTE]` alert or a Jira info panel. On a platform without one, such as Slack, start the post with only "🤖". This applies only to posts you write as me, not to documents, copy, or other writing I ask for.
 
+## My machines
+
+I work across four machines on my LAN. EpicDev is a Linux VM, and Studio, Mini and MacBook Pro are Macs. The homelab fleet knows them as `epicdev`, `studio`, `mini` and `macbookpro`. When I name one, or a task needs another machine or one of my self-hosted services, use $homelab to reach it.
+
 ## T3 Code
 
 I usually use T3 Code from another machine on my LAN, so links you send me must open from there. Use the host's LAN hostname or IP instead of `localhost`, and bind dev servers to an interface other machines can reach.
