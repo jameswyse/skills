@@ -1,7 +1,5 @@
 # Agent Skills
 
-My skills for software engineering, UX, writing and homelab access. They follow the [Agent Skills specification](https://agentskills.io/specification). I use them in Claude Code, Codex, Cursor and Grok Build.
-
 ## Install
 
 ```sh
