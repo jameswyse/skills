@@ -1,0 +1,142 @@
+skill = "engineering/typescript"
+include = []
+
+[[probe]]
+id = "variants-kind-union"
+kind = "decision"
+prompt = '''
+Refactor this type so invalid combinations can't be represented. Show only the new type.
+
+```ts
+interface Upload {
+  done: boolean;
+  failed: boolean;
+  url?: string;
+  error?: string;
+  progress?: number;
+}
+```
+'''
+expect = '''
+Pass: a discriminated union whose discriminant property is named `kind`, with a variant for each state, such as uploading with `progress`, done with `url`, and failed with `error`.
+Fail: keeps booleans with optional fields; uses a discriminant with another name, such as `status`, `type` or `state`.
+'''
+
+[[probe]]
+id = "branded-ids"
+kind = "decision"
+prompt = '''
+Callers keep passing an organisation ID where `grantAccess(userId: string, orgId: string)` expects a user ID. Both are UUID strings.
+
+Write the types, and whatever creates their values, so the compiler catches the mix-up.
+'''
+expect = '''
+Pass: brands of the form `string & { readonly __brand: "UserId" }`, and the same for `OrgId`, with values created only by a function that validates its input, such as checking the UUID format, before returning the branded type.
+Fail: plain `type UserId = string` aliases; wrapper classes or objects; a `unique symbol` brand; branded values created by a bare `as UserId` cast with no validating function.
+'''
+
+[[probe]]
+id = "exhaustive-switch"
+kind = "decision"
+prompt = '''
+```ts
+type Shape =
+  | { kind: "circle"; radius: number }
+  | { kind: "square"; side: number };
+```
+
+Write `function area(shape: Shape): number` so that adding a third variant to `Shape` fails to compile until `area` handles it.
+'''
+expect = '''
+Pass: a `switch (shape.kind)` whose `default` arm is `const _exhaustive: never = shape;` followed by `return _exhaustive;`.
+Fail: an `assertNever` or `assertUnreachable` helper; a `throw` in the default arm in place of returning the `never` value; `satisfies never`; no default arm.
+'''
+
+[[probe]]
+id = "non-empty-only-where-forced"
+kind = "decision"
+prompt = '''
+```ts
+function total(prices: number[]): number {
+  return prices.reduce((sum, price) => sum + price, 0);
+}
+
+function primary(emails: string[]): string {
+  return emails[0]!;
+}
+```
+
+A reviewer suggests typing both parameters as non-empty tuples, `[number, ...number[]]` and `[string, ...string[]]`. Show the two signatures you end up with, and say why.
+'''
+expect = '''
+Pass: `primary` takes `[string, ...string[]]` and loses the `!`; `total` keeps `number[]`, because every operation on it already works for an empty array.
+Fail: changes both parameters; changes neither; keeps the `!`.
+'''
+
+[[probe]]
+id = "satisfies-over-as"
+kind = "decision"
+prompt = '''
+```ts
+const routes = {
+  home: "/",
+  user: "/users/:id",
+} as Record<string, string>;
+```
+
+We want the compiler to check that every value is a string, while `routes.home` and `routes.user` stay known keys and `routes.typo` is an error. Rewrite the declaration.
+'''
+expect = '''
+Pass: the object literal followed by `satisfies Record<string, string>`, with or without `as const`.
+Fail: keeps `as Record<string, string>`; uses a `: Record<string, string>` annotation.
+'''
+
+[[probe]]
+id = "options-object"
+kind = "decision"
+prompt = '''
+Add a function that creates a calendar event from a title, a start time, an end time and an optional location. It is called from form handlers, not from a hot path.
+
+Write the signature and one example call.
+'''
+expect = '''
+Pass: a single options-object parameter, such as `createEvent({ title, start, end, location })`, with a named or inline object type.
+Fail: positional parameters, such as `createEvent(title, start, end, location?)`.
+'''
+
+[[probe]]
+id = "strict-flags-new-project"
+kind = "decision"
+prompt = '''
+You are setting up `tsconfig.json` for a brand-new TypeScript service. List the type-checking strictness options you turn on in `compilerOptions`.
+'''
+expect = '''
+Pass: includes all five of `strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `noImplicitOverride` and `noFallthroughCasesInSwitch`. Others may be added.
+Fail: any of the five is missing.
+'''
+
+[[probe]]
+id = "derive-types-before-parallel-shape"
+kind = "decision"
+prompt = '''
+An existing module exports `async function loadAccount(id: string): Promise<{ id: string; email: string; plan: "free" | "pro"; createdAt: Date }>`. You are adding a `renderBadge` function elsewhere that takes just the account's `email` and `plan`.
+
+Write the parameter type for `renderBadge`.
+'''
+expect = '''
+Pass: derives the type from the existing function or its return type, such as `Pick<Awaited<ReturnType<typeof loadAccount>>, "email" | "plan">`, or first names the account type and then uses `Pick` on it.
+Fail: declares a fresh parallel shape such as `{ email: string; plan: "free" | "pro" }` with no derivation.
+'''
+
+[[probe]]
+id = "structured-logger-in-shipped-code"
+kind = "decision"
+prompt = '''
+You are adding a retry to `src/sync/pushChanges.ts` in a service that ships to production. The repository has `src/logging/logger.ts`, which exports a `logger` with `info`, `warn` and `error` methods that take a message and a fields object. You want a record each time a push is retried.
+
+Write the line that records the retry.
+'''
+expect = '''
+Pass: calls the repository's logger with fields, such as `logger.warn("push retry", { attempt, changeId })`.
+Fail: uses `console.log`, `console.warn` or another console method.
+'''

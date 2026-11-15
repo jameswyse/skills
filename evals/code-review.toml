@@ -1,0 +1,375 @@
+skill = "engineering/code-review"
+include = [
+  "engineering/engineering/references/cross-provider-delegation.md",
+  "engineering/engineering/references/design.md",
+]
+
+[[probe]]
+id = "scope-dirty-tree-untracked"
+kind = "decision"
+prompt = '''
+You have finished a change and are about to review it before reporting it complete. The user gave no ref to compare against. Nothing is committed on top of `main`. `git status --short` shows:
+
+ M src/orders/intake.ts
+ M src/orders/intake.test.ts
+?? src/orders/intakeLimits.ts
+?? scripts/backfill-limits.ts
+
+What exactly makes up the review scope, and how do you capture it?
+'''
+expect = '''
+Pass: the scope covers the tracked changes relative to HEAD (`git diff HEAD`, or a snapshot that includes staged and unstaged changes) and the complete contents of both untracked files.
+Fail: leaves out the untracked files, captures only unstaged changes with a bare `git diff`, or reviews a branch diff against `main` that would miss the uncommitted work.
+'''
+
+[[probe]]
+id = "scope-ambiguous-base"
+kind = "decision"
+prompt = '''
+The user says "review this branch". The working tree is clean and the branch has six commits. `gh pr view` reports that no pull request exists for it. The repository has two remotes, and each has a HEAD ref: `refs/remotes/origin/HEAD` points at `origin/main` and `refs/remotes/upstream/HEAD` points at `upstream/develop`. The user named no ref.
+
+What do you do next?
+'''
+expect = '''
+Pass: asks the user for the ref or base to review against before reviewing, because no unambiguous base exists.
+Fail: picks `origin/main` or `upstream/develop` and starts the review, even with a stated assumption.
+'''
+
+[[probe]]
+id = "scope-empty-diff"
+kind = "decision"
+prompt = '''
+The user says "review everything since `release-2026-11`". `git rev-parse release-2026-11` resolves to a commit. `git diff release-2026-11...HEAD` prints nothing, `git log release-2026-11..HEAD --oneline` prints nothing, and `git status --short` is empty.
+
+What do you do next?
+'''
+expect = '''
+Pass: reports that there are no changes to review and stops.
+Fail: starts reviewers anyway, picks a different base, or reviews the repository as a whole.
+'''
+
+[[probe]]
+id = "spec-none-available"
+kind = "decision"
+prompt = '''
+The user says "review my branch against origin/main". The ref verifies and the working tree is clean. The branch has three commits: "refactor order intake", "tidy imports", and "rename helper". None mentions an issue. The user supplied no document, the repository has no `docs/` or `specs/` directory, and no pull request is being drafted.
+
+Which review axes run, and what do you report about the others?
+'''
+expect = '''
+Pass: Standards and Correctness run. The Spec axis is skipped and the review reports "no spec available" (or equivalent wording that no spec exists).
+Fail: invents a spec from the commit messages or the diff and runs a Spec review, or drops Spec without saying so.
+'''
+
+[[probe]]
+id = "spec-drafted-description-claim"
+kind = "decision"
+prompt = '''
+You implemented issue #212, "Retry failed uploads", and are reviewing the change before opening its pull request. Your drafted description says "Failed uploads are retried up to three times with backoff." The code retries once, immediately. The issue doesn't say how many retries it wants. A reviewer points out the mismatch.
+
+Is this a finding? If so, under which axis, and what do you do about it?
+'''
+expect = '''
+Pass: yes, a Spec finding. The drafted title and description are part of the spec, so each claim is a requirement. It is resolved by changing the code or the description so they agree.
+Fail: dismisses it because the issue is satisfied, or treats it as a wording nit outside the review.
+'''
+
+[[probe]]
+id = "round-one-reviewers"
+kind = "plan"
+prompt = '''
+You're in a T3 Code thread reviewing your own finished change. The scope is already captured: a branch diff against `origin/main`, and issue #412 is the spec. The `codex` shell command is not installed. `orchestrator_capabilities` returned:
+
+inheritedProviderInstanceId: claudeAgent
+inheritedModel: claude-opus-5-5
+providers:
+- codex: canRunCrossProviderChildTask true; models gpt-6-sol, gpt-6.1-sol; options: reasoningEffort (low | medium | high)
+- claudeAgent: canRunCrossProviderChildTask true; models claude-sonnet-5-5, claude-opus-5-5, claude-fable-5-2; options: effort (low | medium | high)
+- cursor: canRunCrossProviderChildTask true; models grok-4.7; options: reasoning_effort (low | medium | high), fastMode (true | false)
+
+List the reviewer calls for round one, without executing them. For each, give the tool, provider, model, role, mode, and options, and say how you issue them. Leave out the task prompt text.
+'''
+expect = '''
+Pass: five `delegate_task` calls. Standards runs once, on codex gpt-6.1-sol. Spec runs on codex gpt-6.1-sol and on claudeAgent claude-fable-5-2. Correctness runs on the same two. Every call has role "review", mode "async", and effort high set explicitly through `target.options` (`reasoningEffort` for codex, `effort` for Claude). All calls are issued in the same step.
+Fail: Standards on two models, claude-opus-5-5 or gpt-6-sol used as a reviewer, the Fable reviewer left out or run as a native subagent because it shares the session's provider, mode "wait" or calls issued one after another, or effort left unset.
+'''
+
+[[probe]]
+id = "replace-unavailable-provider"
+kind = "decision"
+prompt = '''
+You're in a T3 Code thread on claudeAgent with claude-opus-5-5, starting round one of a review of your own change. A spec exists. `orchestrator_capabilities` reports codex with `canRunCrossProviderChildTask: false`. claudeAgent can run child tasks and lists claude-fable-5-2. You also have a native subagent tool that can start a subagent with a fresh context.
+
+Who reviews each axis in round one, and what do you say about it in the review?
+'''
+expect = '''
+Pass: the three reviews that would have run on Sol (Standards, Spec, Correctness) still run, each replaced by a native subagent on the session's model with no parent history. The Fable reviewers for Spec and Correctness still run. The review names the provider and model behind each reviewer and gives the reason for the replacement.
+Fail: drops the Sol reviews or the Standards axis, stops to ask the user, reviews every axis sequentially in the primary agent, or replaces reviewers without reporting it.
+'''
+
+[[probe]]
+id = "verifier-single-call"
+kind = "decision"
+prompt = '''
+You're in a T3 Code thread on claudeAgent. Round one's reviewers have all reported, with eleven candidate findings between them. `delegate_task` works, and codex lists gpt-6.1-sol and can run child tasks.
+
+What is your next step?
+'''
+expect = '''
+Pass: sends all eleven candidates in one `delegate_task` to the newest Sol on codex at high effort, asking it to reproduce or refute each against the checkout with read-only commands and to report evidence and a verdict (likelihood, harm, and fix complexity may also be requested). Its report is evidence, and the primary agent still verifies each candidate itself.
+Fail: one call per finding, a Claude or Grok verifier, treating the verifier's verdicts as final, or going straight to presenting or fixing the candidates.
+'''
+
+[[probe]]
+id = "later-round-reviewers"
+kind = "decision"
+prompt = '''
+Round one of your review ended with two actionable findings: a P1 under Correctness and a P2 under Standards. The task authorised fixing findings. You fixed both and reran the affected checks. The environment is unchanged from round one: T3 tools work, codex and claudeAgent can both run child tasks, cursor lists Grok, and the `codex` command is installed.
+
+What review happens now, and who runs it?
+'''
+expect = '''
+Pass: a narrower second round on the fixes. One reviewer per applicable axis, on Sol only, receives the fix diff, the full current diff for context, and the earlier findings with their outcomes. No second-family (Fable or Opus) reviewer, no Codex CLI review, no verifier, and no contrarian.
+Fail: no further review, or a repeat of the full round-one set of reviewers.
+'''
+
+[[probe]]
+id = "p3-only-stops"
+kind = "decision"
+prompt = '''
+Round one of your review produced two actionable findings, both P3: a misleading local variable name and an unsorted import list. The task authorised fixing findings, and you fixed both.
+
+What happens next?
+'''
+expect = '''
+Pass: the review stops. `P3` fixes need no further round. It presents the result and ends with the run report.
+Fail: runs another review round on the fixes.
+'''
+
+[[probe]]
+id = "third-round-cap"
+kind = "decision"
+prompt = '''
+You are in the third round of reviewing your own change. Rounds one and two each led to fixes. The round-three Correctness reviewer reports a defect, and you verify it as a real P1. The task authorised fixing findings.
+
+What do you do?
+'''
+expect = '''
+Pass: fixes the P1, runs no fourth round, and reports that this fix had no independent review.
+Fail: starts a fourth round, or leaves the P1 unfixed for the user.
+'''
+
+[[probe]]
+id = "accepted-risk-rare-trigger"
+kind = "decision"
+prompt = '''
+A Correctness reviewer reports, and you verify, that double-clicking "Export" within about 30 ms starts two identical CSV downloads. The smallest fix is an in-flight request tracker shared by the button, the export hook, and the download service. The task authorised fixing findings.
+
+How do you handle this finding?
+'''
+expect = '''
+Pass: reports it as an accepted risk, with the reasoning about likelihood, harm, and fix complexity, and does not fix it.
+Fail: builds the in-flight tracker, lists it as an actionable finding to fix, or leaves it out of the review.
+'''
+
+[[probe]]
+id = "spec-finding-disproportionate"
+kind = "decision"
+prompt = '''
+Issue #77 is the spec for your change, and one of its requirements reads "the export includes archived projects". Your change exports active projects only. Including archived ones needs a new query path over cold-storage tables and a reindex, which is several times the size of the rest of the change. The task authorised fixing findings, and two other findings are waiting to be fixed.
+
+How do you handle the archived-projects gap?
+'''
+expect = '''
+Pass: reports it under Spec as a decision for the user, not as an accepted risk, and carries on fixing the other findings while it waits.
+Fail: files it as an accepted risk, drops it, decides alone to leave it out without flagging a decision, or builds the cold-storage query path without asking.
+'''
+
+[[probe]]
+id = "priority-labels"
+kind = "decision"
+prompt = '''
+You have verified four actionable findings:
+
+A. Any signed-in user can read another tenant's invoices by changing the `tenantId` query parameter on the list endpoint.
+B. Page two of the customer list repeats the last row of page one, for every user.
+C. A helper duplicates twelve lines that already exist in a sibling module.
+D. A local variable is named `data2`.
+
+Give each one its priority label.
+'''
+expect = '''
+Pass: A is P0, B is P1, C is P2, D is P3.
+Fail: any other labelling scheme (such as critical/high/medium/low or blocker/should/nit), or a different mapping.
+'''
+
+[[probe]]
+id = "item-ids-and-sections"
+kind = "decision"
+prompt = '''
+Verification of your review left four items:
+
+- A Parallel Path smell, reported by GPT-6.1-Sol, actionable, P2.
+- Padded input passing a minimum-length check, reported by GPT-6.1-Sol and Claude Fable 5.2, actionable, P1.
+- A requirement from the issue whose fix is disproportionate, left for the user.
+- A rare duplicate download, reported by the Codex CLI, which you weighed and won't fix.
+
+Show the headings and the first line of each item as you would present them.
+'''
+expect = '''
+Pass: separate `## Standards`, `## Spec`, `## Correctness`, and `## Accepted risks` headings. The two actionable items carry `F` IDs with the priority in brackets and their reviewers, such as `F1 [P2] GPT-6.1-Sol` and `F2 [P1] GPT-6.1-Sol, Claude Fable 5.2`. The user decision is `Q1` and the accepted risk is `R1`. Findings stay under their own axis.
+Fail: one list ranked across axes, a different ID scheme, or item lines without the reviewers.
+'''
+
+[[probe]]
+id = "contrarian-selection"
+kind = "decision"
+prompt = '''
+You're in a T3 Code thread on claudeAgent. cursor lists grok-4.7 and can run child tasks. After verifying and weighing a review's candidates you have:
+
+1. A rejected candidate, "the tenant filter is missing on the delete endpoint". You rejected it because you believe middleware always injects the filter. If it were real it would be P0.
+2. A rejected candidate about a function name. If it were real it would be P3.
+3. An accepted risk: a crash between two writes can leave an orphaned upload record that later deletes the wrong file. You judged it very unlikely.
+4. An accepted risk: a tooltip flickers on rapid hover.
+
+Which of these get challenged, by whom, and in how many calls?
+'''
+expect = '''
+Pass: items 1 and 3 go to a contrarian, Grok on cursor, both in a single call. Items 2 and 4 are not sent.
+Fail: sends all four or none, uses Sol or a Claude model as the contrarian, or makes a separate call for each item.
+'''
+
+[[probe]]
+id = "another-author-personal-rules"
+kind = "decision"
+prompt = '''
+The user asks you to review a colleague's pull request in their team's repository and draft a review comment. The diff adds explanatory `//` comments above several new functions, and each matches what its function does. The repository's rule files say nothing about comments, and the neighbouring files carry comments in the same style.
+
+Do the added comments go into the review as findings?
+'''
+expect = '''
+Pass: no. The user's personal rules, including the ban on code comments, don't apply to another author's change. The standards come from the repository's rule files and the conventions in the touched files and their neighbours. Only a comment that contradicts the code would be reportable.
+Fail: reports the comments as violations or asks for them to be removed.
+'''
+
+[[probe]]
+id = "smell-symptom-guard"
+kind = "decision"
+prompt = '''
+You're reviewing the Standards axis of your own change. One hunk in `ui/InvoiceSummary.tsx` adds:
+
+    if (!invoice.totals) return null;
+
+The commit message says it "fixes the crash when totals are missing". `Invoice.totals` is typed as non-optional and is filled by `toInvoice()` in `api/mappers.ts`, which the diff doesn't touch. You have traced the crash: `toInvoice()` leaves `totals` undefined when the API response omits the field.
+
+What, if anything, do you report for this hunk?
+'''
+expect = '''
+Pass: a finding that names the smell "Symptom Guard", quotes or cites the hunk, states the concrete cost (the invalid state is silenced while the type still claims `totals` is present), and gives the smallest response, which is preventing the state where it enters in the mapper or type.
+Fail: reports nothing, approves the guard, or describes the problem without naming Symptom Guard.
+'''
+
+[[probe]]
+id = "test-smell-tautological-oracle"
+kind = "decision"
+prompt = '''
+You're reviewing a change whose scope includes this new test:
+
+    it("totals the cart", () => {
+      const items = [{ price: 19.99, qty: 3 }, { price: 5, qty: 2 }];
+      const expected = items.reduce((sum, i) => sum + i.price * i.qty, 0).toFixed(2);
+      expect(formatTotal(items)).toBe(expected);
+    });
+
+`formatTotal` is implemented with the same `reduce` and `toFixed(2)`.
+
+What, if anything, do you report for this test?
+'''
+expect = '''
+Pass: a finding that names the test smell "Tautological oracle", because the expected value comes from the implementation's own algorithm, and asks for an independent expected value such as the literal "69.97".
+Fail: reports nothing, or describes the problem without naming the Tautological oracle smell.
+'''
+
+[[probe]]
+id = "naming-suffix-and-reexport"
+kind = "decision"
+prompt = '''
+You're reviewing a change to an application (not a published package). It adds two files:
+
+- `src/quotes/quotePolicy.ts`, which exports `isQuoteEligible(quote)` and its thresholds.
+- `src/quotes/index.ts`, whose only line is `export * from "./quotePolicy";`. Callers import from `src/quotes`.
+
+"Policy" isn't a term the business or the codebase uses elsewhere.
+
+What, if anything, do you report about these two files?
+'''
+expect = '''
+Pass: flags both. `quotePolicy.ts` uses `Policy` as a generic suffix and should be named after its specific concept, such as `quoteEligibility.ts`. The re-export-only `index.ts` should go, with callers importing directly from the module that owns the code.
+Fail: accepts both files, or flags only one of them.
+'''
+
+[[probe]]
+id = "run-report-table"
+kind = "plan"
+prompt = '''
+Your review ran two rounds. Reported and verified counts were:
+
+- Round 1, GPT-6.1-Sol: Standards 3 reported and 1 verified, Spec 2 and 0, Correctness 4 and 3.
+- Round 1, Claude Fable 5.2: Spec 1 and 0, Correctness 4 and 2. It did not review Standards.
+- Round 1, Codex CLI: Standards 0 and 0, Spec 0 and 0, Correctness 2 and 1.
+- Round 2, GPT-6.1-Sol: Correctness 1 and 0. It reviewed no other axis.
+
+The verifier, GPT-6.1-Sol, confirmed 6 candidates and refuted 9. The contrarian, Grok 4.7, reversed one rejection. Actionable findings: Standards 1, Spec 0, Correctness 3. The worst was a P1, an unlocked price being saved. One accepted risk.
+
+Write the section that ends the review.
+'''
+expect = '''
+Pass: a Markdown table with the columns Round, Reviewer, Standards, Spec, and Correctness, with one row per reviewer per round (four rows), cells written as reported / verified such as `3 / 1`, and `-` for an axis a reviewer didn't review. One line of outcomes follows it: the verifier's confirmed and refuted counts, the contrarian's result, actionable counts per axis, the worst priority, and the accepted-risk count.
+Fail: prose only, one row per finding, extra columns such as duration or tokens, or verified counts left out.
+'''
+
+[[probe]]
+id = "calibration-classification"
+kind = "decision"
+prompt = '''
+You're calibrating your reviews against bot comments on last month's merged pull requests. Two inline Copilot comments are in front of you:
+
+1. It correctly points out that two workers polling in the same millisecond can both claim one job, which rebuilds an email digest twice. The rebuild is idempotent, and preventing the double claim would need a claim lock.
+2. "Consider adding a JSDoc comment here." This is the fifth comment of this kind in the month.
+
+How do you classify each, and what follows from each classification?
+'''
+expect = '''
+Pass: the first is an accepted risk, real but something the review's weighing would leave unfixed, so it isn't a miss and changes neither the miss rate nor the checklist. The second is noise, and because it recurs the recommendation is to tune the bot, such as through Copilot's repository instructions, instead of changing the review.
+Fail: counts the first as a miss, or changes the review or its checklist in response to the second.
+'''
+
+[[probe]]
+id = "final-pass"
+kind = "decision"
+prompt = '''
+Every candidate finding from your review's reviewers has been verified and weighed, and the contrarian has replied. Nothing is waiting on another agent.
+
+What do you do between now and sending the review?
+'''
+expect = '''
+Pass: makes one final pass of its own over the complete scope for high-risk correctness or security issues the reviewers missed, then presents the findings by axis and ends with the run report.
+Fail: presents the findings without a pass of its own over the scope.
+'''
+
+[[live]]
+id = "live-review-planted-defects"
+fixture = "invites-branch"
+prompt = '''
+Review the `feature/invites` branch against `main` and report the review. Subagents, delegation tools, and the `codex` command are unavailable in this environment, and nothing may be posted or fixed.
+'''
+expect = '''
+Score: count how many of these five planted problems the review reports as findings.
+1. The membership and pending-invite checks in `inviteMember` compare the raw email, so a padded or differently cased address bypasses `already-member` or `already-invited`.
+2. `revokeInvite` never checks that the invite belongs to the team the actor administers, so an admin of one team can revoke another team's invite.
+3. The limit of 5 pending invites per team (`invite-limit`) is not implemented.
+4. `acceptInvite` throws for an expired invite instead of returning `{ ok: false, reason: "expired" }`, against the spec and the repository's AGENTS.md rule.
+5. The expiry test derives its boundary from the implementation's `INVITE_LIFETIME_MS` constant, or asserts the throw, instead of the spec's 7 days and `expired` result.
+Pass: the score is at least 4, the findings sit under separate Standards, Spec, and Correctness headings with IDs such as F1 and priorities such as P1, the review ends with a run report or a statement of how the review was run, and the agent changed no files.
+Fail: a score of 3 or less; findings merged into one list without the three axes; any change to the repository.
+'''

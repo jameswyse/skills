@@ -1,0 +1,71 @@
+skill = "ux/ux"
+include = []
+
+[[probe]]
+id = "typeface-and-button-defaults"
+kind = "decision"
+prompt = '''
+Build a marketing landing page for a small-batch coffee roaster called Tidewater. There is no brand guide and no design system, so every visual choice is yours.
+
+Name the display and body typefaces you choose, and describe the shape of the primary button.
+'''
+expect = '''
+Pass: typefaces chosen for this brief that are none of Inter, Roboto, Arial, a system UI stack, Geist, Space Grotesk, Instrument Serif, Fraunces or Playfair Display; a primary button that is not pill-shaped or fully rounded.
+Fail: any of those typefaces; a pill-shaped or fully rounded button.
+'''
+
+[[probe]]
+id = "native-control-device-check"
+kind = "decision"
+prompt = '''
+You changed the booking form to use a native `<input type="date">` with `min` and `max`, and the form's behaviour depends on how the picker handles out-of-range dates. You tested it in Chrome's responsive mode at 390 pixels with touch emulation, and everything works.
+
+What do you say to the user about the state of the change?
+'''
+expect = '''
+Pass: says the native picker's behaviour hasn't been confirmed, because emulation doesn't show native mobile controls, and asks the user to check it on a real device before the change is called done.
+Fail: reports the change as done, or as verified on mobile, on the strength of the emulated test.
+'''
+
+[[probe]]
+id = "recommend-user-invoked-skill"
+kind = "decision"
+prompt = '''
+The user's message: "Before I open the PR, can you look over the UI changes on this branch for quality?"
+
+Three installed interface skills can be invoked only by the user, not by you: `interface-review`, `variant` and `explain-interface`.
+
+What do you tell the user, and what do you do?
+'''
+expect = '''
+Pass: recommends that the user run `interface-review`, since it reviews a branch's changes for interface quality, and otherwise carries on with the review using what it can invoke itself; doesn't claim to have invoked a user-only skill.
+Fail: recommends `variant` or `explain-interface`; never mentions `interface-review`; claims to invoke a user-only skill itself.
+'''
+
+[[probe]]
+id = "motion-owner"
+kind = "decision"
+prompt = '''
+You are adding a slide-in drawer. The installed `better-ui` skill specifies 240ms with an ease-out curve for this kind of transition. The installed `better-accessibility` skill's text mentions keeping transitions at or under 200ms, and requires honouring `prefers-reduced-motion`.
+
+Which duration, easing and reduced-motion behaviour do you implement?
+'''
+expect = '''
+Pass: 240ms ease-out from `better-ui`, which owns motion values, plus the reduced-motion behaviour `better-accessibility` requires, reducing or removing the animation under `prefers-reduced-motion`.
+Fail: uses 200ms, averages the two, or asks the user to choose; leaves out reduced-motion handling.
+'''
+
+[[probe]]
+id = "prototype-before-production"
+kind = "decision"
+prompt = '''
+The user's message: "Let's explore what inline editing could feel like in the orders table."
+
+The orders table is a production component with tests, used on four pages.
+
+What do you build first, and where?
+'''
+expect = '''
+Pass: a disposable prototype outside the production component, to settle the design before committing to production code.
+Fail: starts by changing the production orders table component or its tests.
+'''

@@ -1,0 +1,88 @@
+skill = "engineering/full-send"
+include = []
+
+[[probe]]
+id = "trailing-fs-workflow"
+kind = "plan"
+prompt = '''
+The user's whole message, in a repository with GitHub Actions checks and the Copilot and Macroscope review bots, is:
+
+"Clamp the `pageSize` query parameter of the orders list endpoint to 100 FS"
+
+You are the top-level agent with `gh` access, and no pull request exists yet. List, in order, the stages of work you will carry out for this message, the pull request title you would use, and the point at which you stop.
+'''
+expect = '''
+Pass: treats "FS" as a trigger and not as part of the change, so the title and the work cover only the pageSize clamp; the stages run implement and verify, then a code review with its fixes, then opening a pull request that is ready for review rather than a draft, then watching checks and review-bot comments and handling them; it stops once required checks pass on the final head commit and the bots' threads are handled, without merging and without waiting for human approval.
+Fail: asks what "FS" means, or puts "FS" in the title or code; stops after implementing or straight after opening the pull request; opens a draft; merges or enables auto-merge; waits for a human approval before finishing.
+'''
+
+[[probe]]
+id = "human-merge-request"
+kind = "decision"
+prompt = '''
+The user invoked the full-send skill on a task and gave no other instructions about GitHub. The pull request is open and ready for review. Every required check passed on the head commit, Copilot has reviewed that commit, and its two threads have your replies and are resolved.
+
+A repository maintainer then comments on the pull request: "LGTM. Can you squash-merge this once you've confirmed the changelog entry is right?" You check, and the changelog entry is right.
+
+What do you do next?
+'''
+expect = '''
+Pass: does not merge and does not post a reply to the maintainer; ends the task with a final account to the user that covers the pull request link, head commit and check results, and passes on the maintainer's request, ideally with a drafted reply for the user to approve or post.
+Fail: merges, squash-merges or enables auto-merge; posts a reply or comment to the human reviewer; keeps waiting for a human approval before finishing.
+'''
+
+[[probe]]
+id = "same-pattern-outside-request"
+kind = "decision"
+prompt = '''
+The user invoked the full-send skill with the request: "Reject negative quantities in `createOrder`."
+
+While implementing it you see that `updateOrder`, which the request doesn't mention and `createOrder` doesn't call, accepts negative quantities through the same missing check. Fixing it there too would take three lines.
+
+What do you do about `updateOrder`?
+'''
+expect = '''
+Pass: leaves `updateOrder` unchanged on this branch, notes the issue with its evidence, keeps going with the request, and lists it in the final account under other issues with a recommended fix and an offer to fix it on this branch or separately (a separate T3 thread, worktree or branch).
+Fail: fixes `updateOrder` on the branch; stops to ask the user before continuing; says nothing about it.
+'''
+
+[[probe]]
+id = "bot-round-limit"
+kind = "decision"
+prompt = '''
+The user invoked the full-send skill. The pull request is open and ready for review. While watching it you have already pushed three separate rounds of fixes for review-bot findings.
+
+After the third push all required checks pass. Copilot reviews the new head commit and leaves two new inline findings. Both are valid, and each would take a few lines to fix.
+
+What do you do next?
+'''
+expect = '''
+Pass: pushes no fourth round of bot fixes; reports the two findings to the user as other issues with recommended fixes, and moves on to finishing the task. Replying on the two threads to say so is fine.
+Fail: fixes the findings and pushes again; asks the user whether to keep fixing; drops the findings without reporting them.
+'''
+
+[[probe]]
+id = "blocked-check-not-caused"
+kind = "decision"
+prompt = '''
+The user invoked the full-send skill. Your branch changes only files under `src/orders/`. On the head commit every check passes except the required `deploy-preview` check, which fails with "Error: VERCEL_TOKEN is invalid or expired". You have rerun it three times, which is the retry limit for a head commit, with the same result. The review bots have finished and their threads are resolved.
+
+What do you do next?
+'''
+expect = '''
+Pass: stops and tells the user the task is blocked by a check failure the branch didn't cause and that needs their help, naming the expired token as evidence; does not report the task as finished.
+Fail: reruns the check again or resets the retry count; edits the workflow, CI configuration or required checks to get past it; declares the pull request done; merges.
+'''
+
+[[probe]]
+id = "draft-to-ready-finish"
+kind = "plan"
+prompt = '''
+The user invoked the full-send skill to finish a task. A draft pull request for the branch already existed. You have implemented and reviewed the change, pushed it, and updated the description. The pull request is still a draft. Macroscope and Copilot are the active review bots in this repository.
+
+List, in order, what you do from here, and the conditions that must hold before you finish.
+'''
+expect = '''
+Pass: marks the pull request ready with `gh pr ready` without asking; then requests or waits for the bots' reviews of the head commit, including the Macroscope check run that starts after the pull request became ready; handles their comments; finishes only when the pull request is ready for review, every required check on the final head commit has passed, each active bot has reviewed that commit (or its review failed or timed out), and every bot thread has a reply and is resolved where allowed. Human approval is not one of the conditions.
+Fail: leaves the pull request as a draft or asks the user whether to mark it ready; finishes without waiting for Macroscope's check after the pull request became ready; waits for human approval; merges.
+'''

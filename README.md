@@ -100,7 +100,7 @@ from the current branch.
 
 The skill watches review feedback, CI, and mergeability until the PR closes or needs your input.
 In T3 Code it hands wake-ups to T3's PR watching instead of running a long-lived watcher. Fixes, pushes, retries, and GitHub comments stay within the authority you give for that task.
-The watcher, reference notes, and tests live in
+The watcher and its tests live in
 [`skills/engineering/babysit-pr`](skills/engineering/babysit-pr).
 
 ## Optional external skills
@@ -203,6 +203,35 @@ scripts/validate-skills writing technical-writing
 
 The command supplies its pinned PyYAML dependency through an isolated `uv` environment. It does
 not require Codex, modify Homebrew Python, or require an activated virtual environment.
+
+### Check a skill edit against both models
+
+`evals/` holds probes for the engineering and UX skills: short scenarios with one correct course of
+action under the skill, plus a few fixture repositories under `evals/fixtures` for live runs.
+`scripts/eval-skills` sends each probe to Opus and Sol through the `claude` and `codex` CLIs in
+three arms and has a judge mark the answers:
+
+- `none` gives the model no skill text, only the global instructions.
+- `before` injects the skill's text from the base ref.
+- `after` injects the working tree's text.
+
+```sh
+scripts/eval-skills code-review babysit-pr
+scripts/eval-skills --kinds live --arms before,after engineering
+scripts/eval-skills --audit code-review
+```
+
+An edit holds when `after` passes every probe that `before` passes, on both models. A probe that
+`none` passes on both models marks a rule the models follow unprompted, which is a candidate to
+delete. A probe that `before` fails marks text that isn't working. The summary lists all three.
+`--audit` asks each model which requirements the working tree dropped from the base ref. Answers
+are cached under `$TMPDIR/skill-evals` by prompt, so a rerun only calls the models for text that
+changed. Pass `--base <ref>` to compare against something other than `HEAD`.
+
+Probes test whether a rule is conveyed, not whether it is followed deep into a long task. A live
+run covers part of that gap: it gives the model shell and edit access in a temporary copy of the
+fixture, with the skill under test loaded from a temporary export. Add a probe when a skill gains a
+rule that a model wouldn't follow unprompted.
 
 In Claude Code, run `/skills` to confirm discovery. This repository's `code-review` skill overrides
 Claude Code's bundled `/code-review`; use Claude's `/review` alias when you want the bundled review.

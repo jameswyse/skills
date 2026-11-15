@@ -1,0 +1,492 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.11"
+# dependencies = []
+# ///
+"""Probe how Opus and Sol behave with no skill text, the base ref's text, and the working tree's text."""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+import shutil
+import subprocess
+import tempfile
+import threading
+import tomllib
+from concurrent.futures import ThreadPoolExecutor
+from dataclasses import dataclass
+from pathlib import Path
+
+
+REPOSITORY = Path(__file__).resolve().parents[1]
+EVALS = REPOSITORY / "evals"
+ARMS = ("none", "before", "after")
+MODELS = {"opus": "claude-opus-5-5", "sol": "gpt-6.1-sol"}
+JUDGE_MODEL = "claude-opus-5-5"
+JUDGE_EFFORT = "medium"
+SUBJECT_EFFORT = "high"
+WORD_LIMITS = {"decision": 150, "plan": 300}
+TEXT_TIMEOUT_SECONDS = 600
+LIVE_TIMEOUT_SECONDS = 2400
+LIVE_CLAUDE_TOOLS = ["Read", "Edit", "Write", "Glob", "Grep", "Bash"]
+MAX_DIFF_CHARACTERS = 30000
+CACHE_LOCKS: dict[Path, threading.Lock] = {}
+CACHE_LOCKS_GUARD = threading.Lock()
+
+
+@dataclass(frozen=True)
+class Probe:
+    skill: str
+    include: tuple[str, ...]
+    id: str
+    kind: str
+    prompt: str
+    expect: str
+    fixture: str | None
+
+
+@dataclass(frozen=True)
+class Cell:
+    probe: Probe
+    arm: str
+    model: str
+    run: int
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("skills", nargs="*", help="Probe files to run, by name. Defaults to all.")
+    parser.add_argument("--base", default="HEAD", help="Git ref that holds the 'before' text.")
+    parser.add_argument("--arms", default=",".join(ARMS))
+    parser.add_argument("--models", default=",".join(MODELS))
+    parser.add_argument("--kinds", default="decision,plan", help="Add 'live' for fixture runs.")
+    parser.add_argument("--probe", action="append", default=[], help="Run only this probe ID.")
+    parser.add_argument("--runs", type=int, default=1)
+    parser.add_argument("--jobs", type=int, default=8)
+    parser.add_argument(
+        "--out",
+        type=Path,
+        default=Path(os.environ.get("TMPDIR", "/tmp")) / "skill-evals",
+        help="Directory for cached answers and the summary.",
+    )
+    parser.add_argument(
+        "--audit",
+        action="store_true",
+        help="Ask each model which requirements the working tree dropped, instead of running probes.",
+    )
+    return parser.parse_args()
+
+
+def load_probes(names: list[str], kinds: set[str], only: set[str]) -> list[Probe]:
+    paths = [EVALS / f"{name}.toml" for name in names] if names else sorted(EVALS.glob("*.toml"))
+    probes = []
+    for path in paths:
+        document = tomllib.loads(path.read_text())
+        include = tuple(document.get("include", []))
+        for entry in document.get("probe", []) + document.get("live", []):
+            kind = entry.get("kind", "live" if "fixture" in entry else "decision")
+            if (kind == "live") != ("fixture" in entry):
+                raise SystemExit(f"{path.name}: probe {entry['id']} must have a fixture exactly when it is live")
+            if kind not in kinds or (only and entry["id"] not in only):
+                continue
+            probes.append(
+                Probe(
+                    skill=document["skill"],
+                    include=include,
+                    id=entry["id"],
+                    kind=kind,
+                    prompt=entry["prompt"].strip(),
+                    expect=entry["expect"].strip(),
+                    fixture=entry.get("fixture"),
+                )
+            )
+    return probes
+
+
+def git(*arguments: str) -> str:
+    return subprocess.run(
+        ["git", "-C", str(REPOSITORY), *arguments], check=True, capture_output=True, text=True
+    ).stdout
+
+
+def skill_files(arm: str, skill: str, include: tuple[str, ...], base: str) -> list[tuple[str, str]]:
+    if arm == "none":
+        return []
+    skill_root = f"skills/{skill}"
+    if arm == "before":
+        listed = git("ls-tree", "-r", "--name-only", base, "--", skill_root).split("\n")
+        tracked = set(git("ls-tree", "-r", "--name-only", base, "--", "skills").split("\n"))
+        paths = [path for path in listed if path.endswith(".md")]
+        paths += [f"skills/{path}" for path in include if f"skills/{path}" in tracked]
+        return [(path, git("show", f"{base}:{path}")) for path in order_entrypoint_first(paths)]
+    paths = [str(path.relative_to(REPOSITORY)) for path in (REPOSITORY / skill_root).rglob("*.md")]
+    paths += [f"skills/{path}" for path in include if (REPOSITORY / "skills" / path).is_file()]
+    return [(path, (REPOSITORY / path).read_text()) for path in order_entrypoint_first(paths)]
+
+
+def order_entrypoint_first(paths: list[str]) -> list[str]:
+    return sorted(set(paths), key=lambda path: (not path.endswith("/SKILL.md"), path))
+
+
+def render_files(files: list[tuple[str, str]]) -> str:
+    return "\n\n".join(f'<file path="{path}">\n{text.strip()}\n</file>' for path, text in files)
+
+
+def text_prompt(probe: Probe, files: list[tuple[str, str]]) -> str:
+    parts = ["You are a coding agent partway through a task for the user."]
+    if files:
+        skill_name = probe.skill.rsplit("/", 1)[-1]
+        parts.append(
+            f'The "{skill_name}" skill is loaded. Its files, and the files it links to, follow.\n\n'
+            + render_files(files)
+        )
+    parts.append(f"Scenario:\n\n{probe.prompt}")
+    parts.append(
+        f"Answer in at most {WORD_LIMITS[probe.kind]} words. Say exactly what you do, and why in a"
+        " sentence. You have no tools in this conversation, so answer from the instructions you"
+        " already have without running commands or reading files."
+    )
+    return "\n\n".join(parts)
+
+
+def export_skills(arm: str, base: str, destination: Path) -> None:
+    if arm == "before":
+        archive = subprocess.run(
+            ["git", "-C", str(REPOSITORY), "archive", base, "skills"], check=True, capture_output=True
+        ).stdout
+        subprocess.run(["tar", "-x", "-C", str(destination)], input=archive, check=True)
+    else:
+        shutil.copytree(REPOSITORY / "skills", destination / "skills")
+
+
+def live_prompt(probe: Probe, skills_root: Path) -> str:
+    skill_directory = skills_root / "skills" / probe.skill
+    return "\n\n".join(
+        [
+            f'The "{probe.skill.rsplit("/", 1)[-1]}" skill is loaded. Its base directory is'
+            f" {skill_directory}, and other skills it names live beside it under"
+            f" {skills_root / 'skills'}. Read linked files from there when the skill tells you to."
+            " Use only these copies, not any installed skill.",
+            f'<file path="SKILL.md">\n{(skill_directory / "SKILL.md").read_text().strip()}\n</file>',
+            probe.prompt,
+        ]
+    )
+
+
+def run_claude(
+    prompt: str, working_directory: Path, model: str, effort: str, live_directories: list[Path]
+) -> dict:
+    command = [
+        "claude", "-p", "--model", model, "--effort", effort,
+        "--disable-slash-commands", "--no-session-persistence", "--strict-mcp-config",
+    ]
+    if live_directories:
+        command += ["--permission-mode", "acceptEdits", "--allowedTools", *LIVE_CLAUDE_TOOLS]
+        for directory in live_directories:
+            command += ["--add-dir", str(directory)]
+    else:
+        command += ["--tools", ""]
+    completed = subprocess.run(
+        command,
+        input=prompt,
+        cwd=working_directory,
+        capture_output=True,
+        text=True,
+        timeout=LIVE_TIMEOUT_SECONDS if live_directories else TEXT_TIMEOUT_SECONDS,
+    )
+    if completed.returncode != 0:
+        raise RuntimeError(f"claude exited {completed.returncode}: {completed.stderr[-500:]}")
+    return {"answer": completed.stdout.strip(), "used_tools": bool(live_directories)}
+
+
+def run_codex(prompt: str, working_directory: Path, model: str, live: bool) -> dict:
+    command = [
+        "codex", "exec", "-m", model, "-c", f'model_reasoning_effort="{SUBJECT_EFFORT}"',
+        "--sandbox", "workspace-write" if live else "read-only",
+        "--skip-git-repo-check", "--ephemeral", "--json", "-C", str(working_directory), "-",
+    ]
+    completed = subprocess.run(
+        command,
+        input=prompt,
+        capture_output=True,
+        text=True,
+        timeout=LIVE_TIMEOUT_SECONDS if live else TEXT_TIMEOUT_SECONDS,
+    )
+    messages = []
+    used_tools = False
+    for line in completed.stdout.splitlines():
+        if not line.startswith("{"):
+            continue
+        item = json.loads(line).get("item")
+        if not item:
+            continue
+        if item.get("type") == "agent_message":
+            messages.append(item.get("text", ""))
+        elif item.get("type") != "reasoning":
+            used_tools = True
+    if completed.returncode != 0 or not messages:
+        raise RuntimeError(f"codex exited {completed.returncode}: {completed.stderr[-500:]}")
+    return {"answer": messages[-1].strip(), "used_tools": used_tools}
+
+
+def run_model(model_key: str, prompt: str, working_directory: Path, live_directories: list[Path]) -> dict:
+    if model_key == "opus":
+        return run_claude(prompt, working_directory, MODELS[model_key], SUBJECT_EFFORT, live_directories)
+    return run_codex(prompt, working_directory, MODELS[model_key], bool(live_directories))
+
+
+def cached(directory: Path, key_material: str, compute) -> dict:
+    directory.mkdir(parents=True, exist_ok=True)
+    path = directory / f"{hashlib.sha256(key_material.encode()).hexdigest()}.json"
+    with CACHE_LOCKS_GUARD:
+        lock = CACHE_LOCKS.setdefault(path, threading.Lock())
+    with lock:
+        if path.exists():
+            return json.loads(path.read_text())
+        result = compute()
+        path.write_text(json.dumps(result, indent=2))
+        return result
+
+
+def subject_identity(model_key: str) -> str:
+    return f"{MODELS[model_key]} at {SUBJECT_EFFORT} effort"
+
+
+def answer_text_probe(cell: Cell, base: str, out: Path) -> dict:
+    prompt = text_prompt(cell.probe, skill_files(cell.arm, cell.probe.skill, cell.probe.include, base))
+
+    def compute() -> dict:
+        with tempfile.TemporaryDirectory() as empty:
+            return run_model(cell.model, prompt, Path(empty), [])
+
+    return cached(out / "answers", f"{subject_identity(cell.model)}\n{cell.run}\n{prompt}", compute)
+
+
+def prepare_fixture(fixture: str, repository_copy: Path) -> None:
+    source = EVALS / "fixtures" / fixture
+    shutil.copytree(source / "repo", repository_copy)
+    subprocess.run(["bash", str(source / "setup.sh")], cwd=repository_copy, check=True, capture_output=True)
+
+
+def directory_digest(directory: Path) -> str:
+    digest = hashlib.sha256()
+    for parent, child_directories, names in os.walk(directory):
+        child_directories.sort()
+        for name in sorted([*child_directories, *names]):
+            path = Path(parent) / name
+            if path.is_symlink():
+                digest.update(f"{path.relative_to(directory)} -> {os.readlink(path)}".encode())
+            elif path.is_file():
+                digest.update(str(path.relative_to(directory)).encode())
+                with path.open("rb") as file:
+                    digest.update(hashlib.file_digest(file, "sha256").digest())
+    return digest.hexdigest()
+
+
+def answer_live_probe(cell: Cell, base: str, out: Path) -> dict:
+    with tempfile.TemporaryDirectory() as scratch:
+        skills_root = Path(scratch) / "skills-under-test"
+        skills_root.mkdir()
+        export_skills(cell.arm, base, skills_root)
+        prompt = live_prompt(cell.probe, skills_root)
+        stable_prompt = prompt.replace(str(skills_root), "<skills>")
+        inputs_digest = "\n".join(
+            [directory_digest(skills_root / "skills"), directory_digest(EVALS / "fixtures" / cell.probe.fixture)]
+        )
+
+        def compute() -> dict:
+            repository_copy = Path(scratch) / "repo"
+            prepare_fixture(cell.probe.fixture, repository_copy)
+            start = subprocess.run(
+                ["git", "rev-parse", "HEAD"], cwd=repository_copy, check=True, capture_output=True, text=True
+            ).stdout.strip()
+            result = run_model(cell.model, prompt, repository_copy, [skills_root])
+            subprocess.run(["git", "add", "-A"], cwd=repository_copy, check=True)
+            changes = subprocess.run(
+                ["git", "diff", "--cached", start], cwd=repository_copy, check=True, capture_output=True, text=True
+            ).stdout
+            return {**result, "changes": changes[:MAX_DIFF_CHARACTERS]}
+
+        key_material = "\n".join(["live", subject_identity(cell.model), str(cell.run), stable_prompt, inputs_digest])
+        return cached(out / "answers", key_material, compute)
+
+
+def judge(cell: Cell, result: dict, out: Path) -> dict:
+    evidence = f"<answer>\n{result['answer']}\n</answer>"
+    if "changes" in result:
+        evidence += f"\n\n<changes-the-agent-made>\n{result['changes'] or '(none)'}\n</changes-the-agent-made>"
+    prompt = "\n\n".join(
+        [
+            "You are grading one answer from a coding agent against fixed criteria. Judge only"
+            " against the criteria. Do not reward length, caution, or extra detail, and do not"
+            " penalise wording that differs from the criteria when the action is the same. Judge"
+            " what the agent does or commits to doing. An action it only proposes for the user to"
+            " approve is not an action taken.",
+            f"<scenario>\n{cell.probe.prompt}\n</scenario>",
+            f"<criteria>\n{cell.probe.expect}\n</criteria>",
+            evidence,
+            'Reply with one line of JSON and nothing else: {"pass": true or false, "score": a'
+            " number when the criteria ask for a score, otherwise null, \"reason\": \"under 30"
+            ' words"}',
+        ]
+    )
+
+    def compute() -> dict:
+        with tempfile.TemporaryDirectory() as empty:
+            raw = run_claude(prompt, Path(empty), JUDGE_MODEL, JUDGE_EFFORT, [])["answer"]
+        verdict = json.loads(raw[raw.index("{") : raw.rindex("}") + 1])
+        if not isinstance(verdict.get("pass"), bool):
+            raise ValueError(f"the judge gave no pass verdict: {raw[:200]}")
+        return verdict
+
+    return cached(out / "judgements", f"{JUDGE_MODEL} at {JUDGE_EFFORT} effort\n{prompt}", compute)
+
+
+def evaluate(cell: Cell, base: str, out: Path) -> dict:
+    record = {
+        "skill": cell.probe.skill,
+        "probe": cell.probe.id,
+        "kind": cell.probe.kind,
+        "arm": cell.arm,
+        "model": cell.model,
+        "run": cell.run,
+    }
+    try:
+        answer = answer_live_probe if cell.probe.kind == "live" else answer_text_probe
+        result = answer(cell, base, out)
+        if cell.probe.kind != "live" and result["used_tools"]:
+            return {**record, "error": "the model used tools on a text probe", **result}
+        return {**record, **result, **judge(cell, result, out)}
+    except (RuntimeError, OSError, subprocess.SubprocessError, ValueError, KeyError) as error:
+        return {**record, "error": str(error)[:500]}
+
+
+def majority(records: list[dict]) -> str:
+    if not records:
+        return "·"
+    if any("error" in record for record in records):
+        return "error"
+    passes = sum(1 for record in records if record["pass"])
+    scores = [record["score"] for record in records if record.get("score") is not None]
+    mark = "pass" if passes * 2 > len(records) else "FAIL"
+    if scores:
+        mark += f" ({sum(scores) / len(scores):g})"
+    return mark
+
+
+def summarize(records: list[dict], arms: list[str], models: list[str]) -> str:
+    columns = [(arm, model) for arm in arms for model in models]
+    grid: dict[tuple[str, str], dict[tuple[str, str], list[dict]]] = {}
+    for record in records:
+        row = grid.setdefault((record["skill"], record["probe"]), {})
+        row.setdefault((record["arm"], record["model"]), []).append(record)
+
+    lines = ["| Skill | Probe | " + " | ".join(f"{arm} {model}" for arm, model in columns) + " |"]
+    lines.append("| --- | --- | " + " | ".join("---" for _ in columns) + " |")
+    marks = {key: {column: majority(row.get(column, [])) for column in columns} for key, row in grid.items()}
+    for (skill, probe), row in sorted(marks.items()):
+        lines.append(f"| {skill} | {probe} | " + " | ".join(row[column] for column in columns) + " |")
+
+    def passed(row: dict, arm: str, model: str) -> bool | None:
+        mark = row.get((arm, model), "·")
+        return None if mark in ("·", "error") else mark.startswith("pass")
+
+    totals = [
+        f"{arm} {model}: {sum(1 for row in marks.values() if passed(row, arm, model))}"
+        f"/{sum(1 for row in marks.values() if passed(row, arm, model) is not None)}"
+        for arm, model in columns
+    ]
+    groups = {
+        "Regressions, where before passes and after fails": lambda row, model: (
+            passed(row, "before", model) is True and passed(row, "after", model) is False
+        ),
+        "Before fails, so the current text is not working": lambda row, model: (
+            passed(row, "before", model) is False
+        ),
+        "No skill passes, so the rule is a candidate no-op": lambda row, model: (
+            passed(row, "none", model) is True
+        ),
+    }
+    lines += ["", "Passes: " + ", ".join(totals), ""]
+    for title, matches in groups.items():
+        hits = [
+            f"{skill}/{probe} ({', '.join(model for model in models if matches(row, model))})"
+            for (skill, probe), row in sorted(marks.items())
+            if any(matches(row, model) for model in models)
+        ]
+        lines += [f"{title}: {len(hits)}", *[f"- {hit}" for hit in hits], ""]
+    return "\n".join(lines)
+
+
+def audit(skills: list[str], models: list[str], base: str, out: Path) -> None:
+    documents = [tomllib.loads(path.read_text()) for path in sorted(EVALS.glob("*.toml"))]
+    targets = [document for document in documents if not skills or document["skill"].rsplit("/", 1)[-1] in skills]
+
+    def ask(target: dict, model: str) -> tuple[str, str, str]:
+        before = render_files(skill_files("before", target["skill"], (), base))
+        after = render_files(skill_files("after", target["skill"], (), base))
+        prompt = "\n\n".join(
+            [
+                "An agent skill was edited to make it shorter. Compare the two versions as an agent"
+                " that must act on them.",
+                f"<before>\n{before}\n</before>",
+                f"<after>\n{after}\n</after>",
+                "List every requirement, prohibition, condition, or decision rule that BEFORE gives an"
+                " agent and AFTER drops, weakens, or changes. Quote the BEFORE sentence for each and"
+                " say in one line what an agent would now do differently. Ignore wording, order,"
+                " rationale, history, and file layout. Ignore anything an agent in your position does"
+                " without being told, and say so in one closing line that lists what you skipped for"
+                " that reason. Most important first. If nothing was lost, say so.",
+            ]
+        )
+        with tempfile.TemporaryDirectory() as empty:
+            try:
+                return target["skill"], model, run_model(model, prompt, Path(empty), [])["answer"]
+            except (RuntimeError, subprocess.SubprocessError) as error:
+                return target["skill"], model, f"error: {error}"
+
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        futures = [pool.submit(ask, target, model) for target in targets for model in models]
+    for future in futures:
+        skill, model, answer = future.result()
+        path = out / "audit" / f"{skill.rsplit('/', 1)[-1]}.{model}.md"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(answer + "\n")
+        print(f"wrote {path}")
+
+
+def main() -> int:
+    arguments = parse_args()
+    arms = arguments.arms.split(",")
+    models = arguments.models.split(",")
+    out = arguments.out
+    out.mkdir(parents=True, exist_ok=True)
+    if arguments.audit:
+        audit(arguments.skills, models, arguments.base, out)
+        return 0
+
+    probes = load_probes(arguments.skills, set(arguments.kinds.split(",")), set(arguments.probe))
+    cells = [
+        Cell(probe, arm, model, run)
+        for probe in probes
+        for arm in arms
+        for model in models
+        for run in range(arguments.runs)
+        if not (probe.kind == "live" and arm == "none")
+    ]
+    with ThreadPoolExecutor(max_workers=arguments.jobs) as pool:
+        records = list(pool.map(lambda cell: evaluate(cell, arguments.base, out), cells))
+
+    (out / "results.json").write_text(json.dumps(records, indent=2))
+    summary = summarize(records, arms, models)
+    (out / "summary.md").write_text(summary + "\n")
+    print(summary)
+    print(f"\nDetails: {out / 'results.json'}")
+    return 1 if any("error" in record for record in records) else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

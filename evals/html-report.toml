@@ -1,0 +1,90 @@
+skill = "ux/html-report"
+include = []
+
+[[probe]]
+id = "order-and-caps"
+kind = "decision"
+prompt = '''
+You finished an architecture review of `acme-web` that produced seven ranked candidates, two follow-ups for other skills, and a list of the checks you ran.
+
+Outline the HTML report: its sections in order, and how the seven candidates are presented.
+'''
+expect = '''
+Pass: the header first; then a summary of one or two sentences that names the first thing to do, with up to four counts; then the ranked items, with the first actionable one marked `Start here`, at most five shown as cards and the remaining two as table rows; then secondary sections such as the follow-ups; "How this was checked" last.
+Fail: all seven candidates as cards; a separate top-recommendation section that repeats the first item; methodology or checks before the findings; a health score or metric card.
+'''
+
+[[probe]]
+id = "cut-list"
+kind = "decision"
+prompt = '''
+Draft notes for an HTML report on a code review:
+
+(a) "Searched 214 files with ripgrep and opened 38 of them."
+(b) "Overall health score: 72/100."
+(c) "Order intake repeats the same five-step sequence in five handlers."
+(d) "Consolidating it will make the code cleaner and more maintainable."
+(e) A "Security" section whose only content is "None found."
+(f) "No changes were made to the billing module."
+
+Which of these go into the report?
+'''
+expect = '''
+Pass: only (c).
+Fail: keeps any of (a), (b), (d), (e) or (f).
+'''
+
+[[probe]]
+id = "build-and-render-inline"
+kind = "plan"
+prompt = '''
+You have written the body of an architecture review for `acme-web` as an HTML fragment at `$TMPDIR/architecture-review-20261115.body.html`. You are in a T3 Code thread, and the `html_render` tool is available.
+
+List the commands and tool calls you make, in order, to build and deliver the report, and say what your final reply contains.
+'''
+expect = '''
+Pass: runs the skill's `scripts/build_report.py` with `--inline`, `--title`, `--input` and `--output` to wrap the fragment in the shared stylesheet; then calls `html_render` with the built document and a height of 2000 before the final reply; does not also attach the file; the reply adds only what the page doesn't say and doesn't announce the page.
+Fail: writes a full HTML document or its own styles by hand; leaves out `--inline`; opens the file with a browser or launcher; attaches the report as well as rendering it; restates the report in the reply.
+'''
+
+[[probe]]
+id = "attach-when-no-render"
+kind = "plan"
+prompt = '''
+You built an HTML report at `/tmp/standards-review-20261115.html` with the build script, which printed its `path`, `name`, `mimeType` and `sizeBytes`. You are in a T3 Code thread on a Linux desktop. `html_render` is not available. `t3_attachment_prepare_upload` and `t3_thread_send_attachments` are available, `T3CODE_PORT` is set, and `xdg-open` is installed.
+
+List the calls and commands you make, in order, to get the report to the user, and say what your reply contains.
+'''
+expect = '''
+Pass: calls `t3_attachment_prepare_upload` with type `file` and the printed name, mimeType and sizeBytes; POSTs the file's bytes to the returned relative URL on `http://127.0.0.1:$T3CODE_PORT`, such as with `curl --fail --data-binary @<path> -H 'Content-Type: text/html'`; calls `t3_thread_send_attachments` with the returned attachment ID and the same metadata, leaving out `threadId`; the reply mentions the attachment and the report's absolute path.
+Fail: runs `xdg-open` or any browser launcher; gives only a path without attaching; passes a `threadId`; starts a web server.
+'''
+
+[[probe]]
+id = "escape-untrusted-text"
+kind = "decision"
+prompt = '''
+A report item's Files field must list a repository file literally named `<img src=x onerror=alert(1)>.ts`, and its Evidence field must quote this line of command output: `<b>FAILED</b> 3 tests & 1 suite`.
+
+Write the two `<dd>` elements.
+'''
+expect = '''
+Pass: both values are HTML-escaped, so the markup contains `&lt;img src=x onerror=alert(1)&gt;.ts` and `&lt;b&gt;FAILED&lt;/b&gt; 3 tests &amp; 1 suite` as text.
+Fail: either value inserted as raw HTML; the file name altered or dropped instead of escaped.
+'''
+
+[[probe]]
+id = "tone-meaning"
+kind = "decision"
+prompt = '''
+A report uses four tone classes on badges and callouts: `accent`, `good`, `warn` and `risk`. Assign one to each of these:
+
+(1) the proposal callout of the top recommendation, a refactor with no defect behind it;
+(2) a regression you measured at +800 ms;
+(3) a README section that contradicts the code;
+(4) `pnpm verify` passing.
+'''
+expect = '''
+Pass: (1) accent, (2) risk, (3) warn, (4) good.
+Fail: `risk` or `warn` on the proposal in (1); any other mismatch.
+'''

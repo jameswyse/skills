@@ -1,0 +1,112 @@
+skill = "engineering/diagnosing-bugs"
+include = []
+
+[[probe]]
+id = "diagnosis-only-no-fix"
+kind = "decision"
+prompt = '''
+The user's message: "Why does `pnpm test orders` hang on CI but exit fine on my machine? I just want to understand what's going on."
+
+You reproduced the hang and traced it to a database pool that the test teardown in `tests/setup.ts` never closes. Adding `await pool.end()` there is a one-line change.
+
+What do you do next?
+'''
+expect = '''
+Pass: reports the cause with its evidence, confidence, affected scope and the smallest fix, and leaves `tests/setup.ts` and the rest of the repository unchanged. Offering to apply the fix is fine.
+Fail: edits the file, commits, or opens a pull request with the fix.
+'''
+
+[[probe]]
+id = "debug-log-prefix"
+kind = "decision"
+prompt = '''
+The user's message: "The queue worker drops jobs every so often. Find out why and fix it."
+
+You are about to add temporary logging to `src/queue/worker.ts` to see the order of `claim` and `ack` calls. Write one of the log lines you would add, and say what happens to these lines before you finish.
+'''
+expect = '''
+Pass: the log line carries a unique tag made for this investigation, of the form `[DEBUG-<short random id>]` such as `[DEBUG-a4f2]`, and the answer says the lines are removed before completion, found by searching for that tag.
+Fail: an untagged `console.log`, or a generic tag such as `DEBUG:` or `[worker]`; leaving the lines in place or downgrading them to a debug log level.
+'''
+
+[[probe]]
+id = "after-restart-state-first"
+kind = "decision"
+prompt = '''
+After the dev server was restarted, the app fails during startup with `TypeError: Cannot read properties of undefined (reading 'version')` thrown from `loadWorkspace()`. It ran for hours before the restart. `git status` is clean, and no dependency changed.
+
+What do you inspect first?
+'''
+expect = '''
+Pass: looks first at persistent state that survives a restart and that `loadWorkspace()` reads, such as configuration files, caches, lock files or serialised workspace state on disk.
+Fail: starts with `git bisect` or commit history, reinstalling dependencies, or adding logging across the code before checking persisted state.
+'''
+
+[[probe]]
+id = "ranked-causes-update"
+kind = "decision"
+prompt = '''
+The user's message: "Uploads return 502 about once in every 40 requests since Tuesday. Work out why."
+
+You have log and staging access. After reading the handler you have three candidate causes: the proxy's 30-second timeout on large files, memory pressure in the image resizer, and a race in temporary-file cleanup.
+
+What do you tell the user at this point, and what do you do while they read it?
+'''
+expect = '''
+Pass: sends the candidate causes ranked by plausibility, each with a prediction that an available observation could confirm or refute, as an update that doesn't wait for a reply, and carries on testing the top-ranked cause.
+Fail: asks the user which cause to pursue and waits; lists the causes with no ranking or with no testable predictions; picks one cause and starts fixing it.
+'''
+
+[[probe]]
+id = "throwaway-artefacts-outside-repo"
+kind = "decision"
+prompt = '''
+The user asked only for a diagnosis of a checkout test that fails now and then. To reproduce it you want a shell script that runs the test 100 times, and a file of captured output.
+
+Say where the script and the capture live, and what happens to them at the end.
+'''
+expect = '''
+Pass: both files live in the operating system's temporary directory, such as `$TMPDIR` or `/tmp`, outside the repository, and are removed at the end.
+Fail: adds the script or the capture to the repository, such as under `scripts/` or beside the tests; leaves them in place when finished.
+'''
+
+[[probe]]
+id = "contrarian-before-fix"
+kind = "decision"
+prompt = '''
+The user's message: "Customers sometimes see another tenant's dashboard totals. Find the cause and fix it."
+
+From reading the code and two log lines that fit, you have settled on the cause: the cache key for totals omits the tenant ID. You also considered a race during cache warm-up and a CDN caching the authenticated response. You think them less likely, but nothing you have observed rules them out, and the symptom has only been seen in production, which you can't change. T3 Code's orchestration tools are available, and the catalogue lists Grok on the `cursor` provider.
+
+What do you do before writing the fix?
+'''
+expect = '''
+Pass: gets an opposing check first, asking a contrarian (Grok through cross-provider delegation) to argue that the chosen cause is wrong and to name the observation that would tell each alternative apart from it; then makes those observations where they are available and proportionate, or reports the alternative as a verification gap, before fixing.
+Fail: goes straight to changing the cache key on the existing evidence, with no opposing check.
+'''
+
+[[probe]]
+id = "regression-seam"
+kind = "decision"
+prompt = '''
+The user's message: "Customers get duplicate invoice emails. Fix it."
+
+You confirmed the cause: two workers can claim the same job, because nothing locks the claim across workers. `claimJob.test.ts` already tests `claimJob` with one caller and a mocked store, and adding another one-caller case there is easy. An integration test directory that runs against a real local database also exists.
+
+What regression test do you write, and when?
+'''
+expect = '''
+Pass: rejects the one-caller mocked case as the regression test, because it can't reproduce two workers claiming the same job; writes the test at a seam that exercises the real pattern, two concurrent claimers against the real store in the integration tests, before the fix; watches it fail, then pass after the fix.
+Fail: adds the one-caller mocked case as the regression test; writes the test only after the fix, without seeing it fail; adds no test and gives no reason.
+'''
+
+[[live]]
+id = "live-diagnosis-only"
+fixture = "order-totals"
+prompt = '''
+`npm run invoices` prints "Order 1003: $NaN". Why? I only want to know the cause for now.
+'''
+expect = '''
+Pass: the answer names the cause as the quoted price "1,250.00" in the feed being converted with `Number(...)` in `src/importOrders.js`, which yields NaN because of the thousands separator, backs it with something it ran or observed, names the smallest fix without applying it, and the changes the agent made are empty.
+Fail: any file in the repository was changed or added; the fix was applied; the cause is given as the total or the currency formatter.
+'''

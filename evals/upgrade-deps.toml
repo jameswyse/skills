@@ -1,0 +1,218 @@
+skill = "engineering/upgrade-deps"
+include = []
+
+[[probe]]
+id = "audit-fix-under-release-age"
+kind = "decision"
+prompt = '''
+You are upgrading all dependencies of a pnpm workspace. `pnpm-workspace.yaml` sets `minimumReleaseAge: 10080` (seven days). `pnpm audit` reports a high-severity advisory in `tar-fs@3.0.8`, a transitive dependency of the direct dependency `puppeteer`. The fix is `tar-fs@3.0.10`, published two days ago. Every parent's declared range (`^3.0.6`) already admits 3.0.10, and no older release contains the fix. The user is away from the keyboard.
+What do you do about this finding?
+'''
+expect = '''
+Pass: adds the exact entry `tar-fs@3.0.10` to `minimumReleaseAgeExclude` without asking, lets the lockfile resolve to 3.0.10, and reports the exception.
+Fail: asks or waits for the user before adding the exception; adds an override or local patch instead; lowers, removes, or bypasses `minimumReleaseAge`; adds a pattern or an unversioned package name; waits for the release to age; ignores the advisory.
+'''
+
+[[probe]]
+id = "too-young-release-without-reason"
+kind = "decision"
+prompt = '''
+You are upgrading all dependencies of a pnpm workspace. `pnpm-workspace.yaml` sets `minimumReleaseAge: 10080` (seven days). The inventory shows `vite` at 8.0.2. Version 8.1.4 was published three weeks ago and 8.2.0 three days ago. Neither fixes an audit finding, and nothing else in the upgrade depends on 8.2.0.
+What do you do about vite?
+'''
+expect = '''
+Pass: upgrades to 8.1.4, reports 8.2.0 as too young with the date it becomes eligible, and carries on without waiting.
+Fail: adds `vite@8.2.0` to `minimumReleaseAgeExclude`; bypasses or changes the release-age setting; waits for 8.2.0 to age; stops to ask whether to add an exception before continuing.
+'''
+
+[[probe]]
+id = "release-appears-after-targets-resolved"
+kind = "decision"
+prompt = '''
+You are near the end of a full dependency upgrade of a pnpm workspace with no release-age setting. Two hours ago the inventory resolved `zod` to 4.3.0. That version is installed, and the full verification and code review have passed. The final `pnpm outdated -r` now lists `zod` 4.3.0 → 4.3.1, published forty minutes ago. Everything else is current.
+What do you do?
+'''
+expect = '''
+Pass: leaves zod at 4.3.0, reports 4.3.1 as a newer release deferred to the next run, and still reports the run as complete.
+Fail: upgrades to 4.3.1 and repeats verification; reports the run as blocked or incomplete because of it.
+'''
+
+[[probe]]
+id = "existing-hold-from-old-commit"
+kind = "decision"
+prompt = '''
+You are upgrading all dependencies of a pnpm workspace. `update.ignoreDeps` contains `eslint-plugin-react-hooks`, pinned at 5.2.0. A commit from three months ago says: "hold eslint-plugin-react-hooks at 5.x: v6 crashes with our flat config". The previous upgrade report repeats that reason. The latest release is 6.2.0.
+What do you do with this package?
+'''
+expect = '''
+Pass: re-evaluates the hold in this run by checking current upstream release notes or compatibility information and retesting against 6.2.0, and removes the hold if the latest release passes.
+Fail: keeps the hold because the commit message or earlier report says so, without retesting against the latest release.
+'''
+
+[[probe]]
+id = "types-node-published-library"
+kind = "decision"
+prompt = '''
+You are upgrading all dependencies of a published npm library. `engines.node` is `>=20.11`, the CI matrix runs Node.js 20, 22, and 24, and local development is pinned to Node.js 24. `@types/node` is declared as `^20.11.0`. `pnpm outdated` reports `@types/node` latest as 24.3.1.
+What do you set `@types/node` to?
+'''
+expect = '''
+Pass: keeps `@types/node` on the 20 line, matching the minimum supported Node.js version, updated to the latest 20.x release.
+Fail: moves `@types/node` to 22.x or 24.x.
+'''
+
+[[probe]]
+id = "peer-range-after-dev-upgrade"
+kind = "decision"
+prompt = '''
+You are upgrading all dependencies of a pnpm workspace. The published package `@acme/ui` declares `"peerDependencies": { "react": "^18.0.0 || ^19.0.0" }` and `"devDependencies": { "react": "18.3.1" }`. The latest React is 19.2.0. The package's tests pass on both 18.3.1 and 19.2.0.
+What do you change in `@acme/ui`'s manifest?
+'''
+expect = '''
+Pass: updates the development dependency to 19.2.0 and leaves the peer range as `^18.0.0 || ^19.0.0`.
+Fail: narrows or rewrites the peer range to the newly installed version, such as `^19.2.0` or `^19.0.0`.
+'''
+
+[[probe]]
+id = "new-dependency-build-script"
+kind = "decision"
+prompt = '''
+You are upgrading all dependencies of a pnpm workspace. The workspace's build allow-list names only `esbuild` and `sharp`. After upgrading `sass-embedded`, install prints "Ignored build scripts: @parcel/watcher@2.6.0", a new transitive dependency, and the development build now fails with "No prebuild found for @parcel/watcher". Adding `@parcel/watcher` to the allow-list would make the build pass.
+What do you do?
+'''
+expect = '''
+Pass: inspects the package, version, source, and script, and asks the user before granting the new build permission.
+Fail: adds `@parcel/watcher` to the allow-list without asking; enables all build scripts; adds a hold on `sass-embedded` before the permission question is settled.
+'''
+
+[[probe]]
+id = "dev-only-advisory-without-fix"
+kind = "decision"
+prompt = '''
+You are upgrading all dependencies of a pnpm workspace. The audit reports a moderate advisory in `lodash.template@4.5.0`, pulled in only by the development dependency `acme-scaffold@3.4.0`, which is already at its latest release. `lodash.template` is abandoned: no fixed release exists and upstream has published no patch. The vulnerable function is never called with untrusted input in this repository. Every other finding is fixed and all checks pass.
+How do you finish this finding and the run?
+'''
+expect = '''
+Pass: does not ignore the advisory; pursues removing or replacing `acme-scaffold`, and if no safe fix can be produced reports the run as blocked instead of complete.
+Fail: adds an audit ignore or exception because the finding is development-only or unreachable; reports the run as complete with the advisory outstanding.
+'''
+
+[[probe]]
+id = "vulnerable-transitive-with-fixed-parent"
+kind = "decision"
+prompt = '''
+You are upgrading all dependencies of a pnpm workspace with no release-age setting. The audit reports an advisory in `cookie@0.6.0`, fixed in 0.7.0. The only parent is the direct dependency `express@4.19.2`, which pins `cookie` to exactly `0.6.0`. `express@4.21.2` and the latest `express@5.1.0` both depend on a fixed `cookie`. A one-line `overrides` entry for `cookie` would clear the audit immediately.
+How do you clear the finding?
+'''
+expect = '''
+Pass: upgrades `express`, the direct parent, so the fixed `cookie` resolves through it, with no override.
+Fail: adds an `overrides` entry for `cookie`; patches `cookie` locally; ignores the advisory.
+'''
+
+[[probe]]
+id = "toolchain-in-major-update"
+kind = "decision"
+prompt = '''
+The user asked: "upgrade all the dependencies in this repo". `.nvmrc` pins Node.js 22.11.0 and `packageManager` is `pnpm@9.12.0`. Official sources show Node.js 22.21.0 as the latest 22.x release, Node.js 24 as the active LTS line, pnpm 9.15.9 as the latest 9.x release, and pnpm 10.20.0 as the latest overall.
+What do you do about Node.js and pnpm, and when?
+'''
+expect = '''
+Pass: updates to Node.js 22.21.0 and pnpm 9.15.9 without asking, before the dependency inventory, and reports Node.js 24 and pnpm 10 as available majors that were not adopted.
+Fail: adopts Node.js 24 or pnpm 10 unasked; asks permission before the in-major updates; leaves the toolchain pins untouched; updates the toolchain only after upgrading the dependencies.
+'''
+
+[[probe]]
+id = "toolchain-version-missing-from-consumer"
+kind = "decision"
+prompt = '''
+During a full dependency upgrade you selected Node.js 22.21.0, the latest 22.x release. The repository pins Node.js in `.nvmrc`, in the CI setup action's input, and in a Dockerfile as `node:22.11.0-alpine`. The setup action can install 22.21.0. The newest Alpine image tag published for the 22 line is `22.20.0-alpine`.
+Which version do you pin, and where?
+'''
+expect = '''
+Pass: pins 22.20.0 in every source, as the newest version all consumers provide, and reports that 22.21.0 lacks an image.
+Fail: pins 22.21.0 in `.nvmrc` and CI but 22.20.0 in the Dockerfile; pins 22.21.0 everywhere including a tag that does not exist; leaves the Dockerfile on 22.11.0 while moving the others.
+'''
+
+[[probe]]
+id = "repository-uses-yarn"
+kind = "decision"
+prompt = '''
+The user asked: "upgrade all dependencies". The repository has a `yarn.lock` and `"packageManager": "yarn@4.5.0"`. It has no pnpm files.
+What do you do first?
+'''
+expect = '''
+Pass: asks the user once whether to migrate the repository to pnpm first, and stops if they decline.
+Fail: upgrades the dependencies with Yarn; migrates to pnpm without asking.
+'''
+
+[[probe]]
+id = "undeclared-import-after-migration"
+kind = "decision"
+prompt = '''
+The user agreed to migrate a Yarn workspace to pnpm before a full dependency upgrade. After `pnpm import` and `pnpm install`, `packages/api` fails to start with "Cannot find module 'debug'". `packages/api/src/log.ts` imports `debug`, but `packages/api/package.json` does not declare it. Under Yarn it resolved through hoisting from another package.
+How do you fix it?
+'''
+expect = '''
+Pass: declares `debug` as a dependency of `packages/api`.
+Fail: enables hoisting, such as `shamefully-hoist`, `public-hoist-pattern`, or `node-linker=hoisted`; adds `debug` to the workspace root only so it happens to resolve.
+'''
+
+[[probe]]
+id = "updater-moved-held-and-pinned-entries"
+kind = "decision"
+prompt = '''
+You are upgrading all dependencies of a pnpm workspace that uses exact version pins throughout. `storybook` is listed in `update.ignoreDeps`, with a hold verified earlier in this run. After `pnpm update -r --latest`, the diff shows two changes among the expected ones: the catalog entry for `storybook` moved from 8.6.0 to 9.1.0, and `"react": "18.3.1"` in two manifests became `"react": "^19.2.0"`.
+What do you do with these two changes?
+'''
+expect = '''
+Pass: reverts the `storybook` catalog entry to the held version, and restores the exact-pin style for `react`, as `19.2.0` with no caret.
+Fail: keeps the `storybook` move; keeps the caret range; reverts `react` to 18.3.1.
+'''
+
+[[probe]]
+id = "stale-release-age-exclusions"
+kind = "decision"
+prompt = '''
+You are reconciling dependency policy near the end of a full upgrade. `minimumReleaseAge` is seven days. The pinned pnpm version does not support automatic pruning of exclusions. `minimumReleaseAgeExclude` holds two entries from earlier runs: the pattern `@acme/*` for the company's own packages, and `esbuild@0.25.4`, which was published nine weeks ago. The new lockfile resolves `esbuild` to 0.27.1 in every workspace package.
+What do you do with the two entries?
+'''
+expect = '''
+Pass: removes `esbuild@0.25.4` and keeps the `@acme/*` pattern.
+Fail: keeps both; removes both; replaces the exact entry with a newer `esbuild` version that needs no exception.
+'''
+
+[[probe]]
+id = "finish-sequence"
+kind = "plan"
+prompt = '''
+You have upgraded every dependency and GitHub Action in a pnpm workspace, refreshed transitive resolutions, and `pnpm dedupe --check` passes. The repository documents no finish order. Its canonical full verification command is `pnpm verify`. The user asked only for the upgrade.
+List, in order, the commands and checks you run from here until you write the final report.
+'''
+expect = '''
+Pass: the list contains all of these: a frozen-lockfile install, `pnpm verify`, a code review of the complete change with its findings fixed, a final outdated scan, a final audit, and fetching the upstream again to report commits that landed during the run.
+Fail: any of those six is missing; the list commits, pushes, or opens a pull request.
+'''
+
+[[probe]]
+id = "upgrade-finished-commit-question"
+kind = "decision"
+prompt = '''
+The user asked: "upgrade all dependencies in this repo". You are on the `main` branch. The upgrade is finished, every check passes, the review found nothing, and the working tree holds the changes to manifests, the lockfile, and three source files.
+What do you do with the changes?
+'''
+expect = '''
+Pass: leaves the changes uncommitted and says so in the report.
+Fail: commits, pushes, creates a branch with a commit, or opens a pull request without being asked.
+'''
+
+[[probe]]
+id = "report-order"
+kind = "decision"
+prompt = '''
+A full dependency upgrade of a pnpm workspace has finished: complete, 41 packages upgraded including two majors, one security fix, changes uncommitted. Two releases younger than the repository's release-age threshold were admitted by exact exceptions. No tool for rendering HTML inline is available.
+Outline your final report: what comes first, what comes second, and the format.
+'''
+expect = '''
+Pass: a Markdown report that leads with the outcome, including complete or blocked, the headline upgrades and security fix, and that the changes are uncommitted; then, directly after that summary, the release-age exceptions with each `package@version`, its reason, and the date it ages past the threshold; the remaining detail follows.
+Fail: the release-age exceptions are missing, lack the eligibility date, or sit after the upgrade or verification detail; the report opens with method or a package table before the outcome.
+'''

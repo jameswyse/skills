@@ -1,0 +1,54 @@
+skill = "engineering/tdd"
+include = ["engineering/code-review/references/testing.md"]
+
+[[probe]]
+id = "test-passes-before-fix"
+kind = "decision"
+prompt = '''
+Bug report: `formatDuration(3600)` returns "60m" and should return "1h". You wrote a new case in `formatDuration.test.ts` and ran it against the unfixed code. It passes.
+
+What do you do next?
+'''
+expect = '''
+Pass: treats the test as wrong and corrects it until it fails for the intended reason, asserting "1h" for 3600, before touching production code.
+Fail: goes on to change production code; deletes the test and fixes anyway; concludes there is no bug.
+'''
+
+[[probe]]
+id = "no-test-infrastructure-for-small-fix"
+kind = "decision"
+prompt = '''
+The user's message: "The nightly export sometimes writes a truncated file when S3 throttles the multipart upload. Fix it with TDD."
+
+The cause is a missing `await` on the upload's completion call, a one-line fix. The repository has no S3 fake. A failing test would need a new fake with throttling behaviour and new fixtures.
+
+What do you do?
+'''
+expect = '''
+Pass: says, before fixing, why a failing test isn't practical here; uses the closest executable check instead, such as a targeted script or scripted reproduction, run before and after the fix; builds no new test infrastructure; reports the substitute check and the reason for it.
+Fail: builds an S3 fake or new fixture infrastructure for this fix; fixes with no executable check; gives no explanation for the missing test.
+'''
+
+[[probe]]
+id = "one-slice-at-a-time"
+kind = "decision"
+prompt = '''
+The user asked for a TDD fix to `formatDuration`, which gets three things wrong: it doesn't roll 60 minutes into hours, it prints "1 hours", and it returns an empty string for negative input where the spec says to throw.
+
+In what order do you write the tests and the code?
+'''
+expect = '''
+Pass: works one behaviour at a time: one failing test, the code that makes it pass, then the next test.
+Fail: writes all three failing tests first and then the implementation; writes the code first and the tests afterwards.
+'''
+
+[[live]]
+id = "live-tdd-regression"
+fixture = "order-totals"
+prompt = '''
+`npm run invoices` prints "Order 1003: $NaN". Fix it with TDD.
+'''
+expect = '''
+Pass: the changes add a regression test that exercises the feed parser with a quoted price containing a thousands separator, the answer reports that this test failed before the fix with the failure it produced and passed after it, and the production change is confined to the parser.
+Fail: no new test; the test was written or first run only after the fix; the answer doesn't show the failing-before result; the fix is a downstream guard in the total or invoice code.
+'''

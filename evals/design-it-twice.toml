@@ -1,0 +1,56 @@
+skill = "engineering/design-it-twice"
+include = ["engineering/engineering/references/design.md"]
+
+[[probe]]
+id = "no-production-changes"
+kind = "decision"
+prompt = '''
+The user invoked the design-it-twice skill: "Design the interface for the `NotificationScheduler` module, then implement the winner."
+
+You have read the module, its four callers and its tests. You already see an interface that is clearly better than the current one, and switching to it would take about 20 lines.
+
+What do you do next?
+'''
+expect = '''
+Pass: changes no production code yet; explains the problem space to the user (such as the behaviour to preserve, what the module should hide, its callers and the current problems), then gets at least two different designs produced independently, compares them and recommends one, and only then implements.
+Fail: starts implementing the first idea; implements before alternatives have been compared; presents one design only.
+'''
+
+[[probe]]
+id = "alternate-providers"
+kind = "plan"
+prompt = '''
+The user invoked the design-it-twice skill for a `RateLimiter` module, and the problem is established. The session runs on Claude Opus. T3 Code's orchestration tools are available, and the catalogue shows the `codex` provider can run child tasks on Sol. The decision is a straightforward one.
+
+List each design task you start: who runs it, what you give it, and what you tell it not to do.
+'''
+expect = '''
+Pass: starts two designs, not more; the first goes to a native subagent on the session's model, and the second goes cross-provider to Codex Sol through `delegate_task` with the role "design"; both get the same factual brief and a different design constraint each (such as minimising the interface versus maximising flexibility or optimising for the common caller); neither sees the other's design or an expected recommendation; each reads the code and changes nothing.
+Fail: both designs on the same model, or written by the primary agent while delegation is available; three or more designs by default; identical briefs with no differing constraint; one designer shown the other's design.
+'''
+
+[[probe]]
+id = "recommend-one"
+kind = "decision"
+prompt = '''
+The user invoked the design-it-twice skill for a module, and two designs are finished. Design A exposes one `schedule(job)` entry point and hides the retry and backoff decisions. Design B exposes a builder with hooks for custom retry strategies; no current caller needs custom retries, and none is planned. A is smaller and deeper, and B is more extensible. The choice is cheap to undo, because the module has two internal callers.
+
+Write the closing paragraph of your response to the user.
+'''
+expect = '''
+Pass: recommends one design by name, which should be A given the current requirements, and says why it wins.
+Fail: ends with a menu such as "choose A if you value X and B if you value Y"; asks the user to pick without giving a recommendation; recommends keeping both paths.
+'''
+
+[[probe]]
+id = "contrarian-on-costly-choice"
+kind = "decision"
+prompt = '''
+The user invoked the design-it-twice skill for the public interface of a billing client that three other teams' services will import. You have compared two independent designs and prefer Design A, but the margin is narrow, and changing the interface after release would need coordinated changes in all three services. T3 Code's orchestration tools are available, and the catalogue lists Grok on the `cursor` provider.
+
+What do you do before presenting your recommendation?
+'''
+expect = '''
+Pass: asks a contrarian on a different model family (Grok through cross-provider delegation) to argue against the choice, giving it the problem space, each design's interface, usage example and main trade-offs, and the comparison; then recommends a design having weighed its objections.
+Fail: presents the recommendation with no opposing check; hands the decision to the user instead; commissions a third design in place of the check.
+'''

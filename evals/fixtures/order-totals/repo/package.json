@@ -1,0 +1,9 @@
+{
+  "name": "order-totals",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "invoices": "node src/printInvoices.js data/feed.csv"
+  }
+}
