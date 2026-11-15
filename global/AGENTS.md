@@ -38,7 +38,11 @@ When you post a comment, reply, or message for me on GitHub, Jira, Slack, Sentry
 
 ## My machines
 
-I work across four machines on my LAN. EpicDev is a Linux VM, and Studio, Mini and MacBook Pro are Macs. The homelab fleet knows them as `epicdev`, `studio`, `mini` and `macbookpro`. When I name one, or a task needs another machine or one of my self-hosted services, use $homelab to reach it.
+My main workstations and coding environments are the Linux VM EpicDev and three Macs: Studio, Mini and MacBook Pro. The homelab fleet knows them as `epicdev`, `studio`, `mini` and `macbookpro`. I have many other machines and services, and my homelab repository documents most of them. To reach any of these machines or services, use $homelab.
+
+## Executor
+
+My agents connect to Executor, an MCP server that exposes many of my services and accounts as tools. Search it before concluding that you lack a tool or access for a task. Its Boat app creates short-lived cloud sandboxes on boat.dev. Use one for throwaway tests, such as anything that needs a clean machine or is risky to run on this one. Ask before copying work code, secrets or private data into one.
 
 ## T3 Code
 
