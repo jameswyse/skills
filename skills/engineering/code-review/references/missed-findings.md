@@ -8,7 +8,8 @@ each one against the scope. [Calibration](calibration.md) maintains this list.
   classification.
 - **Claims the code doesn't keep.** A pull request description, docstring, error message, or name
   promises behaviour, such as once-only execution, immutable URLs, retries, preserved exclusions, or
-  parity with the code it replaces, that only some paths implement.
+  parity with the code it replaces, that only some paths implement. In a stacked pull request, the
+  description must not claim behaviour that a later layer delivers.
 - **References across edits and races.** Trace references through rename, delete, restore, and
   concurrent writes. Handle a record that disappears between the initial read and the write that
   depends on it.
@@ -24,13 +25,15 @@ each one against the scope. [Calibration](calibration.md) maintains this list.
   exemptions suppress real violations or flag unrelated code.
 - **Absence and shape.** Treat sparse arrays, omitted fields, nulls, and empty collections as
   distinct. A transformation must keep metadata and must not turn "absent" or "matches nobody" into
-  a value with a different meaning.
+  a value with a different meaning. Lookups built from a parent's optional members, such as a clone
+  without a main working tree, must still cover every record the view shows.
 - **The consuming parser's rules.** Validate against how the browser, HTML parser, URL normaliser,
   or query language will interpret the value, not against suspicious source strings. Follow HTML
   form ownership through the `form` attribute and submitter overrides such as `formmethod`.
 - **Lifecycle transitions.** Exercise repeated attempts, failed optimistic saves, external updates,
   reconnects, and calendar rollover. State set by an earlier attempt must update on the next one,
-  a rejected save must restore the persisted value, counters keep their intended expiry, and date
+  a rejected save must restore the persisted value, an explicit request to show an item must
+  override saved view state that hides it, counters keep their intended expiry, and date
   calculations use one timezone.
 - **Parallel producers and consumers.** A changed format, tool, or dependency must agree with every
   other producer and reader, including Dockerfiles, CI workflows, scripts, fixtures, alternate entry
