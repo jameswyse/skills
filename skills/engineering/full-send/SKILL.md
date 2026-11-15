@@ -17,7 +17,7 @@ Invoking this skill authorises, for the current task:
 
 It doesn't authorise merging, force-pushing, production changes, or replying to a human reviewer.
 
-## Decide or stop
+## Decide or ask
 
 Decide everything yourself except the cases below, which replace the engineering skill's pause rule for this task. Ask only in these cases, as soon as one arises, and carry on with whatever doesn't depend on the answer:
 

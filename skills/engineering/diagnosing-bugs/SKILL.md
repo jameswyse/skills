@@ -14,7 +14,7 @@ A diagnosis-only, debugging-only, or explanation request authorises no fix and n
 - Minimise a failing reproduction one cut at a time, rerunning after each, until further cuts won't change the diagnosis. Keep the original scenario for final verification.
 - When reproduction isn't practical, state the missing access, inputs, or setup cost and continue from source, traces, configuration, and history. Ask only for evidence that would change the diagnosis. Never report an unexecuted reproduction or an inferred fix as verified.
 - Rank the plausible causes, each with a prediction an available observation could test, and share the ranking as a non-blocking update so the user can correct assumptions.
-- Give any diagnostic logs you add, which in diagnosis-only work needs authority first, a unique prefix such as `[DEBUG-a4f2]`, and remove them before finishing.
+- Give diagnostic logs you add a unique prefix such as `[DEBUG-a4f2]`, and remove them before finishing. In diagnosis-only work, get authority before adding them.
 - When something fails after a restart, inspect persistent state first, such as configuration files, caches, lock files, and serialised state.
 - For a performance regression, measure the workload before choosing an optimisation.
 

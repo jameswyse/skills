@@ -17,7 +17,7 @@ Run `python3 <skill-dir>/scripts/review_scope.py`, with `--base <ref>` when the 
 
 Keep secrets and raw sensitive data away from reviewers. Redact them in `scope.diff` and review those hunks yourself.
 
-**Spec.** The spec is what was asked for, combined from every source that exists: the user's request in this conversation, each ticket or issue that the request, the branch name, or a commit message references, which you look up, and a path the user supplied. Fall back to a matching Markdown file under `docs/` or `specs/` only when none of those exists. When the review runs before creating a pull request, add the drafted title and description, so every claim they make is a requirement. Write the spec to `<packet>/spec.md`. With no spec, skip the Spec axis and report "no spec available".
+**Spec.** The spec is what the change was asked to do, combined from every source that exists: the user's request for the change in this conversation, each ticket or issue that the request, the branch name, or a commit message references, which you look up, and a path the user supplied. A request only to review the change isn't a spec. Fall back to a matching Markdown file under `docs/` or `specs/` only when none of those exists. When the review runs before creating a pull request, add the drafted title and description, so every claim they make is a requirement. Write the spec to `<packet>/spec.md`. With no spec, skip the Spec axis and report "no spec available".
 
 **Standards sources.** The repository's rule files come first and override everything below. The "engineering" skill's rules are the baseline. Then add what the diff touches:
 
@@ -36,7 +36,7 @@ To review someone else's pull request and post or draft a comment on it, use "pu
 When the change isn't the user's, use another-author mode, where the user's personal rules don't apply. Delegated reviewers load the user's global instructions, so state this mode at the top of every reviewer's manifest and in the verifier's and contrarian's briefs, and apply it to your own verification:
 
 - Standards sources are the repository's rule files and the conventions in the touched files and their neighbours. The engineering baseline and named smells are reportable only when the repository's own code or rules support them.
-- The linked ticket or issue holds the requirements, and the pull request's title and body are the author's claims to check against the change. Without a ticket or issue, the title and body are the spec.
+- The spec comes from the pull request instead of this conversation. The linked ticket or issue holds the requirements, and the pull request's title and body are the author's claims to check against the change. Without a ticket or issue, the title and body are the spec.
 
 ## 2. Run the reviewers
 
