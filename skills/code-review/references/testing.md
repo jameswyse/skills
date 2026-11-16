@@ -28,7 +28,8 @@ A smell is a lead, not an automatic rewrite.
 
 - **Implementation-coupled test.** Calls private methods, asserts helper calls, or checks behaviour through generated types, file layout, CSS classes, database state, or another side channel.
 - **Private mock.** A mock or spy exposes internal collaborators, call order, or call counts. Put doubles at real external seams.
-- **Tautological oracle.** The expected value comes from the implementation's algorithm.
+- **Tautological oracle.** The expected value comes from the implementation's algorithm, or the test asserts that a fake returns what the test configured it to return.
+- **Unreachable assertion.** Assertions run only inside a loop, callback, or branch that may run zero times, so the test passes without checking anything.
 - **Frozen configuration.** Treats one valid configuration, content value, message, or order as the only valid result.
 - **Static-proof test.** Repeats a guarantee the type system or static analysis already enforces.
 - **Timing-dependent test.** Relies on real time, arbitrary delays, shared state, or uncontrolled scheduling.

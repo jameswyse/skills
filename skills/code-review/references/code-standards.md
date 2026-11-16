@@ -17,12 +17,16 @@ Code is cheap for an agent to write and costly for a person to maintain. The sim
 - Derive types from protocol, OpenAPI, GraphQL, and database schemas instead of maintaining parallel shapes.
 - Return an expected failure, such as invalid input, a missing record, a conflict, or an unavailable dependency, in the type when the caller must branch on it, using the repository's result representation or the smallest discriminated union, without adding a result library in an unrelated change. Throw for a defect or impossible state.
 - Catch a third-party exception inside the adapter that owns the dependency and translate it there, keeping the original as `cause`.
+- Check an HTTP response's status before decoding its body as the success type, and read each body once.
 - Keep business logic in pure functions and the framework shell thin. For module depth and seam placement, use the engineering [Design](../../engineering/references/design.md) reference.
 
 ## Reliable operations
 
 - A state-changing operation must converge however many times it runs and wherever it resumes. Every retried mutation needs a concrete idempotency mechanism, such as an idempotency key, unique constraint, or guarded state transition.
 - Don't hold a database transaction open across a network call.
+- A write that depends on an earlier read of the same record needs a conditional update, upsert, row lock, or unique constraint, because another writer can change the record between the read and the write.
+- Bound every retry by attempts, elapsed time, or a timeout, and retry only failures that a later attempt can fix. Bound concurrency when the number of items comes from input or stored data, such as files, rows, or accounts.
+- Create a cache once, when its owner is built, not inside a function that runs on every call. Use the platform's cache before hand-building one from a map, timestamps, and timers.
 - Parse configuration at startup and pass typed values inward, with no import-time I/O outside a true entrypoint.
 - When concurrent actors share mutable state, first ask whether they need the same object. Give independent facts separate files or keys and merge them where they're read. Two workers writing different fields of one `state.json` still share state, and an instruction to take turns isn't concurrency control. Enforce a real shared invariant with a lock, a single writer, or compare-and-swap.
 - A change that introduces a new internal interface migrates its callers and deletes the old path in the same change. Keep both only for external backward compatibility, and give a temporary adapter a stated reason and end point.
@@ -34,6 +38,7 @@ Every smell finding is a labelled judgement call. Report one only with its concr
 
 - **Code Comment.** The change adds a comment the global no-comments rule forbids, or keeps one in touched code that restates or contradicts the code. For another author's change, report only a comment that contradicts the code, unless the repository's rules or conventions forbid comments.
 - **Symptom Guard.** A null check, fallback, or catch silences invalid state instead of preventing it where it enters.
+- **Mysterious Name.** A function or value name, such as `handle`, `process`, or `getData`, doesn't say what it does, what it returns, or which effects it has, so readers must open it to find out.
 - **Parallel Path.** An old and new way to do the same thing coexist without a compatibility requirement.
 - **Speculative Generality.** Abstraction, parameters, or hooks for needs nobody asked for.
 - **Ternaryception.** A ternary nested inside a ternary that's already nested.
