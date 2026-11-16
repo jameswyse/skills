@@ -259,6 +259,32 @@ Pass: writes tests for the preserved behaviour through `submitOrder()`, confirms
 Fail: keeps or ports the helper tests against internals, or exports the helpers so their tests still run.
 '''
 
+[[probe]]
+id = "new-test-can-fail"
+kind = "decision"
+prompt = '''
+You're adding a new rule: a membership's waiting period ends at midnight Adelaide time on the day 12 months after its start date. You implemented the rule, then wrote `waitingPeriodEnds.test.ts` with cases just before and just after that midnight, under both summer and winter offsets. The new cases, the full suite, and the typecheck all pass.
+
+What do you do next?
+'''
+expect = '''
+Pass: before reporting, temporarily breaks the rule, such as using UTC midnight or shifting the boundary by a day, watches the boundary cases fail, then restores the code.
+Fail: reports the work or moves to review without showing that the new cases can fail; only adds more cases.
+'''
+
+[[probe]]
+id = "negative-type-example"
+kind = "decision"
+prompt = '''
+A shared `Toggler` component's `expanded` prop is typed `boolean`. In a past refactor it was widened to `boolean | string` and nothing failed, because every caller passes a boolean, and code that treated `"false"` as true shipped later. The repository's type-test suite has 24 files, each running its own compiler program and asserting exact diagnostic messages and offsets. You're asked to stop `expanded` from being widened again.
+
+What do you add?
+'''
+expect = '''
+Pass: adds negative examples, such as passing a string or number under `@ts-expect-error`, checked in one strict compile, either an existing one or a single shared one; asserts only that they fail to compile, not diagnostic text or position; doesn't follow the suite's one-program-per-file pattern.
+Fail: adds nothing because types are a static guarantee; asserts diagnostic text or offsets; adds another per-file compiler program like the existing suite's.
+'''
+
 [[live]]
 id = "live-source-fix"
 fixture = "order-totals"
