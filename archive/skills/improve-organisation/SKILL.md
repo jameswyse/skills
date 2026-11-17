@@ -34,7 +34,7 @@ Start from entrypoints and the tree, not from a symbol search result. For each m
 
 Follow evidence from paths, imports, exports, callers, tests, stories, styles, fixtures, documentation, and change history. Look for:
 
-- one capability scattered across unrelated technical directories;
+- one capability scattered across unrelated technical directories, which shows up in Git history as files in different directories that repeatedly change in the same commits;
 - shared directories containing code with one real owner;
 - vague names that do not predict contents or responsibility, including `*Contract` or `*Policy` files whose real contents are types, constants, schemas, configuration, or flags, and catch-all directories whose children have clearer owners;
 - sibling modules that express the same pattern with inconsistent names;

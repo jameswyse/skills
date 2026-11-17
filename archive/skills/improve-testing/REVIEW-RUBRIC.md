@@ -59,7 +59,7 @@ Supported reasons include:
 - the test protects a superseded behaviour or implementation path;
 - a static type or analyser already provides the whole guarantee, with no distinct runtime behaviour;
 - the oracle repeats the implementation and therefore cannot detect a wrong result;
-- the assertion proves only that a file, export, call, or mock interaction exists;
+- the assertion proves only that a file, export, call, or mock interaction exists, or that removed code stays gone;
 - the test is permanently skipped, cannot collect, or cannot reach its claimed assertion;
 - demonstrated flakiness, runtime, fixture churn, or diagnostic noise outweighs its non-unique signal.
 
@@ -76,6 +76,8 @@ Use the smell names from the engineering skill's Testing reference where they fi
 - `Static-proof test`
 - `Timing-dependent test`
 - `Edit-proof test`
+- `Duplicate guard`
+- `Test-only hook`
 
 Also report these concrete weaknesses when present:
 

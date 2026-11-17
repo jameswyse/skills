@@ -17,7 +17,7 @@ Do not calculate an architecture-health score. If no candidate qualifies, say so
 - **Badges.** Strength: `Strong` as `good`, `Worth exploring` as `warn`, `Speculative` as neutral. One dependency tag as neutral: `In-process`, `Local-substitutable`, `Remote and owned`, or `External and unowned`.
 - **Proposal callout.** What the module absorbs and what callers stop knowing. Two or three bullets.
 - **Fields.**
-  - `Evidence`: the caller coordination, leaked knowledge, change pain, defects, or test gap that qualified it. Counts and similar shapes are supporting evidence only.
+  - `Evidence`: the caller coordination, leaked knowledge, special cases, change pain, defects, or test gap that qualified it. Counts and similar shapes are supporting evidence only.
   - `Wins`: at most three bullets naming locality, depth, interface reduction, or a testing gain.
   - `Files`: exact files, modules, and symbols.
 - **Conflict.** When the candidate contradicts an ADR or documented rule, add a `.callout.warn` titled with the document, stating the rule and why the evidence justifies reconsidering it.

@@ -38,7 +38,7 @@ Use a narrower scope only when the user explicitly requests one:
 - If the user asks to review recent changes or commits, inspect the requested history and the affected paths.
 - If the user names a repository area, module, subsystem, or problem, inspect that area and the callers or dependencies needed to judge it.
 
-Whole-codebase scope does not require equal inspection depth. Use Git history, recurring defects, test gaps, operational pain, and documented follow-ups to prioritise deep inspection and rank candidates. These signals guide attention but do not exclude quieter areas that have strong current evidence. Do not let the current issue or working tree define the bounds of an unqualified review. Inspect the working tree to preserve unrelated work and describe the reviewed state.
+Whole-codebase scope does not require equal inspection depth. Use Git history, especially files that repeatedly change in the same commits and how often each area changes, recurring defects, test gaps, operational pain, and documented follow-ups to prioritise deep inspection and rank candidates. These signals guide attention but do not exclude quieter areas that have strong current evidence. Do not let the current issue or working tree define the bounds of an unqualified review. Inspect the working tree to preserve unrelated work and describe the reviewed state.
 
 Read the project's instructions, documentation, architecture guidance, ADRs, and domain glossary before exploring the code.
 
@@ -46,7 +46,7 @@ Read the project's instructions, documentation, architecture guidance, ADRs, and
 
 Start with a fresh discovery pass. If prior architecture reports or recent review findings are available, treat their candidates as leads rather than the current frontier. After fresh discovery, compare each prior `Strong` or `Worth exploring` candidate with the current code. Mark it as resolved, retained, or rejected, and cite the evidence for that judgement.
 
-For a whole-codebase review, partition exploration into coherent areas such as product domains, platform code, integrations, authoring tools, and shared packages. When delegation is available and authorised, give separate explorers non-overlapping areas. Otherwise inspect one area at a time and record its verdict before moving on. Independently verify the strongest candidates and their callers before ranking them.
+For a whole-codebase review, partition exploration into coherent areas such as product domains, platform code, integrations, authoring tools, and shared packages. When delegation is available and authorised, give separate explorers non-overlapping areas. Otherwise inspect one area at a time and record its verdict before moving on. To reason across areas at once, script a skeleton that keeps signatures and drops function bodies, and an import graph you rerun as candidates firm up. Independently verify the strongest candidates and their callers before ranking them.
 
 Follow evidence from names, imports, callers, tests, configuration, documentation, and change history. Note where understanding becomes difficult:
 
@@ -54,11 +54,13 @@ Follow evidence from names, imports, callers, tests, configuration, documentatio
 - Where are modules **shallow**, with an interface nearly as complex as the implementation?
 - Where have pure functions been extracted only for testability while the real bugs remain in caller coordination with no **locality**?
 - Where do tightly-coupled modules leak across their seams?
+- Where do special cases cluster around one concept?
+- Where does stable code import something more volatile?
 - Which parts of the codebase are untested, or hard to test through their current interface?
 
 Apply this qualification gate to each proposed deepening:
 
-1. **Current evidence.** Show repeated caller decisions, ordering, validation, recovery, leaked implementation knowledge, coordination defects, or tests that reproduce caller coordination. File counts and similar shapes are supporting evidence only.
+1. **Current evidence.** Show repeated caller decisions, ordering, validation, recovery, leaked implementation knowledge, clustered special cases, coordination defects, or tests that reproduce caller coordination. File counts and similar shapes are supporting evidence only.
 2. **Current structure test.** For an existing module, apply the deletion test to that module. For a missing owner, trace the required decisions and ordering across current callers. Show that the same knowledge is repeated or changes together. Do not pass a candidate by inventing a module and then observing that deleting it would restore today's duplication.
 3. **Interface reduction.** Name the facts, states, ordering rules, or failure handling that callers would stop knowing, without designing a signature. Confirm that the proposal reduces total interface knowledge rather than moving it.
 4. **Stable ownership.** Show that the proposed module owns one coherent body of domain or application knowledge. Treat repetition-only schema or configuration consolidation as an observation unless the repeated code changes together because it represents one decision.
@@ -66,9 +68,9 @@ Apply this qualification gate to each proposed deepening:
 
 Reject a candidate that does not pass the gate. Do not fill a candidate quota.
 
-Group or explicitly compare candidates that would own overlapping decisions. Do not present competing owners for the same coordination unless choosing between them is the useful question.
+Look for the one owner behind several problems, and list each candidate with every problem and special case it would remove. Group or explicitly compare candidates that would own overlapping decisions. Do not present competing owners for the same coordination unless choosing between them is the useful question.
 
-Rank the remaining candidates by observed maintenance pain, caller knowledge removed, user or operational impact, improvement to the test surface, net complexity reduction, confidence, and implementation risk. Use qualitative evidence rather than a numeric architecture score. A `Strong` candidate has direct evidence of current coordination and a credible owner. Use `Worth exploring` when important evidence or the owner remains uncertain. Use `Speculative` only when the uncertainty itself is useful to show, and never let it displace a qualified candidate.
+Rank the remaining candidates by observed maintenance pain, caller knowledge and special cases removed, user or operational impact, improvement to the test surface, net complexity reduction, confidence, and implementation risk. Use qualitative evidence rather than a numeric architecture score. A `Strong` candidate has direct evidence of current coordination and a credible owner. Use `Worth exploring` when important evidence or the owner remains uncertain. Use `Speculative` only when the uncertainty itself is useful to show, and never let it displace a qualified candidate.
 
 ### 3. Present candidates as an HTML report
 
@@ -80,7 +82,7 @@ Keep proposed module interface design out of the discovery report. After a revie
 
 ### 4. Resolve decisions
 
-For a selected candidate, resolve constraints, dependencies, module ownership, seam contents, and surviving tests from repository evidence. When the user requests an interview or consequential dependent decisions remain, ask about them one at a time with your recommendation, and wait for each answer. When those decisions are already settled, proceed with the authorised design or implementation without requiring a new interview.
+For a selected candidate, resolve constraints, dependencies, module ownership, seam contents, and surviving tests from repository evidence. When the user requests an interview or consequential dependent decisions remain, ask about them one at a time with your recommendation, and wait for each answer. When those decisions are already settled, proceed with the authorised design or implementation without requiring a new interview. After implementing, confirm that the special cases and imports the candidate named are gone, rerun the import graph for the affected areas, and report any that remain.
 
 After the user confirms a decision, record it only when the request covers documentation changes. A discussion-only decision does not itself authorise file changes. During authorised implementation, update affected documentation when needed to keep the change coherent; do not request the same authority again.
 
