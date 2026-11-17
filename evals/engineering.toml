@@ -247,6 +247,24 @@ Fail: adopts the exported port with an in-memory adapter.
 '''
 
 [[probe]]
+id = "special-cases-one-owner"
+kind = "decision"
+prompt = '''
+A new requirement says cancelling an order must release its reserved stock. Reading the cancellation code, you find:
+
+- `checkout/cancel.ts` has `if (order.status === "pending_payment")` that skips the refund call.
+- `stock/reserve.ts` takes a `skipRelease` parameter that only `admin/forceCancel.ts` passes.
+- `notifications/send.ts` catches and ignores an error when the order is cancelled mid-send.
+- `webhooks/stripe.ts` sleeps two seconds before reading the order "so cancellation has finished".
+
+How do you approach the requirement?
+'''
+expect = '''
+Pass: reads these as special cases that share a missing owner for the cancellation lifecycle, and proposes one change, such as a cancellation module or explicit order state transitions that own the refund, stock release, notification, and completion signal, which removes several of them while adding the requirement.
+Fail: adds stock release as another branch or parameter, or patches each special case separately with no shared change.
+'''
+
+[[probe]]
 id = "tests-after-deepening"
 kind = "decision"
 prompt = '''

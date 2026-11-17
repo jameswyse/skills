@@ -37,4 +37,6 @@ A smell is a lead, not an automatic rewrite.
 - **Static-proof test.** Repeats a guarantee the type system or static analysis already enforces, or asserts compiler diagnostic text or positions.
 - **Timing-dependent test.** Relies on real time, arbitrary delays, shared state, or uncontrolled scheduling.
 - **Disproportionately expensive test.** Uses more time, processes, browsers, DOM, or data than its unique guarantee needs.
-- **Edit-proof test.** Proves a line, file, or export exists without protecting behaviour.
+- **Edit-proof test.** Proves a line, file, or export exists, or that removed code stays gone, without protecting behaviour.
+- **Duplicate guard.** Another test already protects the same behaviour through the same seam, so this one adds cost without catching a different defect. Keep the stronger one.
+- **Test-only hook.** Production code exists only so tests can reach in, such as an exported `_resetCacheForTests` or a branch on a test flag. Test through the interface, and remove the hook along with the tests that needed it.

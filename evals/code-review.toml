@@ -291,6 +291,50 @@ Fail: reports nothing, or describes the problem without naming the Tautological 
 '''
 
 [[probe]]
+id = "test-smell-test-only-hook"
+kind = "decision"
+prompt = '''
+You're reviewing a change whose scope adds this to `src/session/cache.ts`:
+
+    export function _resetCacheForTests() { cache.clear(); }
+
+and this test in `src/session/cache.test.ts`:
+
+    beforeEach(() => _resetCacheForTests());
+    it("returns the stored session", async () => {
+      await saveSession(alice);
+      expect(await loadSession(alice.id)).toEqual(alice);
+    });
+
+Nothing outside tests calls `_resetCacheForTests`. `cache` is a module-level `Map`.
+
+What, if anything, do you report?
+'''
+expect = '''
+Pass: a finding that names the test smell "Test-only hook", because production code exists only so tests can reach in, and asks to remove the export and isolate tests through the interface, such as by constructing a fresh cache or session store per test.
+Fail: reports nothing, or describes the problem without naming the Test-only hook smell.
+'''
+
+[[probe]]
+id = "test-smell-duplicate-guard"
+kind = "decision"
+prompt = '''
+You're reviewing a change whose scope adds this test to `cart/total.test.ts`:
+
+    it("adds tax to the total", () => {
+      expect(cartTotal([book], { tax: 0.1 })).toBe(11);
+    });
+
+`checkout/checkout.test.ts` already has `it("totals with tax", () => expect(cartTotal([book], { tax: 0.1 })).toBe(11))`, and nothing else differs between them.
+
+What, if anything, do you report for the new test?
+'''
+expect = '''
+Pass: a finding that names the test smell "Duplicate guard", because the existing test already protects the same behaviour through the same seam, and asks to drop one of them.
+Fail: reports nothing, or describes the problem without naming the Duplicate guard smell.
+'''
+
+[[probe]]
 id = "naming-suffix-and-reexport"
 kind = "decision"
 prompt = '''
