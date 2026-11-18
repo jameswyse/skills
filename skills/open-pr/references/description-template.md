@@ -6,7 +6,7 @@
 
 ## Change outline
 
-{Use the smallest combination of the following explain-code views that explains the implementation. Prefer `diff` blocks for changes to existing shapes and complete blocks for mostly new shapes. Do not include headings for views that are not relevant.}
+{Use the smallest combination of the following views that explains the implementation: blocks for shapes in the code and bullets for behaviour. Do not include headings for views that are not relevant.}
 
 {...short description...}
 
@@ -22,9 +22,11 @@
 
 {...short description...}
 
-```diff
-{Show concise pseudocode for the changed behaviour.}
+```diff|text
+{Show concise pseudocode for changed logic with branches or ordering.}
 ```
+
+- {Show behaviour that reads as a sentence, one bullet per behaviour, led by the area it affects, with identifiers in backticks.}
 
 {...short description...}
 
@@ -44,7 +46,7 @@
 {Show changed call trees, call stacks, control flow, or data flow.}
 ```
 
-{Tell the story in the order that makes it easiest to understand. It may make sense to show files first, or to establish a data structure, SQL table, or API endpoint first. All views and subheadings are optional. Use only the views that help explain the pull request, and name or order them based on the change rather than a fixed template. Write as one person would write to another. Use `diff` for a focused change to an existing shape. Show the complete target shape in a language-specific or `text` block when it is new, high level, or clearer without diff notation.}
+{Tell the story in the order that makes it easiest to understand. It may make sense to show files first, or to establish a data structure, SQL table, or API endpoint first. All views and subheadings are optional. Use only the views that help explain the pull request, and name or order them based on the change rather than a fixed template. Write as one person would write to another.}
 
 ## Notes
 
