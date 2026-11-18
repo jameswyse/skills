@@ -105,7 +105,7 @@ Ask a contrarian to argue back each rejected finding that would be `P0` or `P1` 
 
 Make one final pass over the whole scope yourself for high-risk correctness or security issues the reviewers missed.
 
-Present actionable findings and Spec decisions in your own words under `## Standards`, `## Spec`, and `## Correctness`, and accepted risks under `## Accepted risks`. Merge duplicates within an axis. Number the items in the order presented: `F1` for an actionable finding, `Q1` for a Spec decision, `R1` for an accepted risk. A later round keeps an item's ID and continues after the highest number used. Start each item with its ID, its priority when it has one, and every reviewer that reported it, such as `F1 [P1] GPT-6.1-Sol, Codex CLI`. Use "Primary" for your own final pass.
+Present actionable findings and Spec decisions in your own words under `## Standards`, `## Spec`, and `## Correctness`, and accepted risks under `## Accepted risks`. Merge duplicates within an axis. Number the items in the order presented: `F1` for an actionable finding, `Q1` for a Spec decision, `R1` for an accepted risk. A later round keeps an item's ID and continues after the highest number used. Start each item with its ID, its priority when it has one, and every reviewer that reported it, such as `F1 [P1] GPT-6.2-Astra, Codex CLI`. Use "Primary" for your own final pass.
 
 End with the run report.
 
@@ -126,13 +126,14 @@ Keep a ledger from the first reviewer onwards: each candidate finding with its a
 ```markdown
 | Round | Reviewer         | Standards | Spec  | Correctness |
 | ----- | ---------------- | --------- | ----- | ----------- |
-| 1     | GPT-6.1-Sol      | 3 / 1     | 2 / 0 | 4 / 3       |
+| 1     | GPT-6.2-Sol      | 3 / 1     | 2 / 0 | -           |
+| 1     | GPT-6.2-Astra    | -         | -     | 4 / 3       |
 | 1     | Claude Fable 5.2 | -         | 1 / 0 | 4 / 2       |
 | 1     | Codex CLI        | 0 / 0     | 0 / 0 | 2 / 1       |
-| 2     | GPT-6.1-Sol      | -         | -     | 1 / 0       |
+| 2     | GPT-6.2-Sol      | -         | -     | 1 / 0       |
 | Bot 1 | Copilot          | 1 / 0     | 0 / 0 | 2 / 1       |
 
-Cells show reported / verified. Verifier GPT-6.1-Sol confirmed 6 and refuted 9. Contrarian Grok 4.7
+Cells show reported / verified. Verifier GPT-6.2-Sol confirmed 6 and refuted 9. Contrarian Grok 4.7
 reversed 1 rejection. Actionable: Standards 1, Spec 0, Correctness 3. Worst: P1, unlocked price
 saved. Accepted risks 1.
 ```

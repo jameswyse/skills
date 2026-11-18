@@ -6,16 +6,17 @@ The caller decides whether the work goes cross-provider. This reference picks th
 
 Read the session's provider and model from `orchestrator_capabilities` (`inheritedProviderInstanceId` and `inheritedModel`), not from your own model name, unless the T3 tools are absent.
 
-| Work                                                                     | Provider                       | Model                                                                     | Effort        |
-| ------------------------------------------------------------------------ | ------------------------------ | ------------------------------------------------------------------------- | ------------- |
-| Taste subagents: code, architecture, and UI                              | Same provider, native subagent | Newest Opus                                                               | High          |
-| An advisor on a plan or decision in a complex or large task              | Same provider, native subagent | Newest Fable                                                              | High          |
-| Investigations: non-trivial debugging, computer use, and visual checks   | `codex`                        | Newest listed Sol                                                         | High          |
-| A skill's cross-provider step from a `claudeAgent` Fable or Opus session | `codex`                        | Newest listed Sol                                                         | High          |
-| A skill's cross-provider step from a `codex` Astra or Sol session        | `claudeAgent`                  | Newest listed Opus                                                        | High          |
-| First-round code review, Spec and Correctness axes                       | `codex` and `claudeAgent`      | Newest listed Sol, plus Fable from an Opus session or Opus from any other | High          |
-| First-round Standards review, verifier, and later rounds                 | `codex`                        | Newest listed Sol                                                         | High          |
-| A contrarian check                                                       | `cursor`                       | Newest listed Grok                                                        | High, Fast on |
+| Work                                                                     | Provider                                    | Model                                                                       | Effort        |
+| ------------------------------------------------------------------------ | ------------------------------------------- | --------------------------------------------------------------------------- | ------------- |
+| Taste subagents: code, architecture, and UI                              | Same provider, native subagent              | Newest Opus                                                                 | High          |
+| Advisors on a plan or decision in a complex or large task                | Same provider, native subagent, and `codex` | Newest Fable, and newest listed Astra                                       | High          |
+| Investigations: non-trivial debugging, computer use, and visual checks   | `codex`                                     | Newest listed Sol                                                           | High          |
+| A skill's cross-provider step from a `claudeAgent` Fable or Opus session | `codex`                                     | Newest listed Sol                                                           | High          |
+| A skill's cross-provider step from a `codex` Astra or Sol session        | `claudeAgent`                               | Newest listed Opus                                                          | High          |
+| First-round code review, Spec axis                                       | `codex` and `claudeAgent`                   | Newest listed Sol, plus Fable from an Opus session or Opus from any other   | High          |
+| First-round code review, Correctness axis                                | `codex` and `claudeAgent`                   | Newest listed Astra, plus Fable from an Opus session or Opus from any other | High          |
+| First-round Standards review, verifier, and later rounds                 | `codex`                                     | Newest listed Sol                                                           | High          |
+| A contrarian check                                                       | `cursor`                                    | Newest listed Grok                                                          | High, Fast on |
 
 - Pick the highest-versioned model of that family from the provider's `models` list, not a remembered ID.
 - Set the effort explicitly through `target.options`, using the option ID the catalogue advertises for that model, such as `reasoningEffort` for Codex or `effort` for Claude. T3's default effort is unreliable.
@@ -37,12 +38,12 @@ Treat the child's report as leads under the calling skill's verification rules.
 
 Use the caller's same-provider path, which is a native subagent on the session's provider or your own work when there is none, when the T3 tools are absent, the target provider reports `canRunCrossProviderChildTask: false`, its catalogue lacks the target family, or the delegation fails. Report the provider and model that did the work, or the reason for the fallback. This fallback is a standing instruction from the user, so it isn't the unasked switch that T3 Code's own rules forbid.
 
-## Advisor
+## Advisors
 
-Use when the global instructions ask for a Fable advisor. They decide when to ask.
+Use when the global instructions ask for advisors. They decide when to ask.
 
-- Delegate as above with `role: "review"`, read-only. Give it the goal and constraints, your draft plan or the decision with your leaning, the alternatives you rejected and why, and the relevant paths. Ask for the biggest risks, a simpler approach if one exists, and its recommendation with reasons, and to say your approach holds instead of inventing changes. On a repeat consult, add its earlier advice and what has changed.
-- Skip the advisor, and report why, when you're a delegated task or subagent, the session already runs on Fable, the catalogue lacks Fable, or the call fails. Never substitute another model.
+- Send Fable and Astra the same brief in the same step, delegating as above with `role: "review"`, read-only. Give them the goal and constraints, your draft plan or the decision with your leaning, the alternatives you rejected and why, and the relevant paths. Ask each for the biggest risks, a simpler approach if one exists, and its recommendation with reasons, and to say your approach holds instead of inventing changes. On a repeat consult, add each advisor's earlier advice and what has changed.
+- Skip both, and report why, when you're a delegated task or subagent. Skip one, and report why, when the catalogue lacks its model or its call fails. Never substitute another model.
 
 ## Contrarian
 

@@ -83,15 +83,15 @@ You're in a T3 Code thread reviewing your own finished change. The scope is alre
 inheritedProviderInstanceId: claudeAgent
 inheritedModel: claude-opus-5-5
 providers:
-- codex: canRunCrossProviderChildTask true; models gpt-6-sol, gpt-6.1-sol; options: reasoningEffort (low | medium | high)
+- codex: canRunCrossProviderChildTask true; models gpt-6-sol, gpt-6.1-sol, gpt-6-astra, gpt-6.1-astra; options: reasoningEffort (low | medium | high)
 - claudeAgent: canRunCrossProviderChildTask true; models claude-sonnet-5-5, claude-opus-5-5, claude-fable-5-2; options: effort (low | medium | high)
 - cursor: canRunCrossProviderChildTask true; models grok-4.7; options: reasoning_effort (low | medium | high), fastMode (true | false)
 
 List the reviewer calls for round one, without executing them. For each, give the tool, provider, model, role, mode, and options, and say how you issue them. Leave out the task prompt text.
 '''
 expect = '''
-Pass: five `delegate_task` calls. Standards runs once, on codex gpt-6.1-sol. Spec runs on codex gpt-6.1-sol and on claudeAgent claude-fable-5-2. Correctness runs on the same two. Every call has role "review", mode "async", and effort high set explicitly through `target.options` (`reasoningEffort` for codex, `effort` for Claude). All calls are issued in the same step.
-Fail: Standards on two models, claude-opus-5-5 or gpt-6-sol used as a reviewer, the Fable reviewer left out or run as a native subagent because it shares the session's provider, mode "wait" or calls issued one after another, or effort left unset.
+Pass: five `delegate_task` calls. Standards runs once, on codex gpt-6.1-sol. Spec runs on codex gpt-6.1-sol and on claudeAgent claude-fable-5-2. Correctness runs on codex gpt-6.1-astra and on claudeAgent claude-fable-5-2. Every call has role "review", mode "async", and effort high set explicitly through `target.options` (`reasoningEffort` for codex, `effort` for Claude). All calls are issued in the same step.
+Fail: Standards on two models, Correctness on Sol, Astra on Standards or Spec, claude-opus-5-5, gpt-6-sol, or gpt-6-astra used as a reviewer, the Fable reviewer left out or run as a native subagent because it shares the session's provider, mode "wait" or calls issued one after another, or effort left unset.
 '''
 
 [[probe]]
@@ -103,8 +103,8 @@ You're in a T3 Code thread on claudeAgent with claude-opus-5-5, starting round o
 Who reviews each axis in round one, and what do you say about it in the review?
 '''
 expect = '''
-Pass: the three reviews that would have run on Sol (Standards, Spec, Correctness) still run, each replaced by a native subagent on the session's model with no parent history. The Fable reviewers for Spec and Correctness still run. The review names the provider and model behind each reviewer and gives the reason for the replacement.
-Fail: drops the Sol reviews or the Standards axis, stops to ask the user, reviews every axis sequentially in the primary agent, or replaces reviewers without reporting it.
+Pass: the three reviews that would have run on codex (Sol on Standards and Spec, Astra on Correctness) still run, each replaced by a native subagent on the session's model with no parent history. The Fable reviewers for Spec and Correctness still run. The review names the provider and model behind each reviewer and gives the reason for the replacement.
+Fail: drops the codex reviews or the Standards axis, stops to ask the user, reviews every axis sequentially in the primary agent, or replaces reviewers without reporting it.
 '''
 
 [[probe]]
