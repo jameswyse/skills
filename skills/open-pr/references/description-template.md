@@ -26,7 +26,7 @@
 {Show concise pseudocode for changed logic with branches or ordering.}
 ```
 
-- {Show behaviour that reads as a sentence, one bullet per behaviour, led by the area it affects, with identifiers in backticks.}
+- {Show behaviour that reads as a sentence, one bullet per behaviour, with the area it affects as the sentence's subject and identifiers in backticks.}
 
 {...short description...}
 
