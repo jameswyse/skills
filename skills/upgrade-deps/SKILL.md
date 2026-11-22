@@ -17,6 +17,7 @@ Upgrade the whole pnpm project to the newest compatible stable dependency set. T
 - The repository's full verification command passes. Without one, every available format, lint, typecheck, build, and test check passes.
 - "code-review" has reviewed the complete change, and its actionable findings are fixed and rechecked.
 - The final outdated scan, peer check, frozen-lockfile install, and audit pass.
+- The step 11 report has been delivered in its required form, for a blocked run too.
 
 When the environment prevents a required check, or an advisory has no safe fix, report the run as blocked instead of complete.
 

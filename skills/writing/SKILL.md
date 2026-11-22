@@ -29,7 +29,7 @@ For Markdown committed to a repository, put one space inside each table pipe and
 Read each reference whose condition applies before drafting. A short comment, commit message, or release note needs none.
 
 - For substantial drafting, an explicit prose edit, or a recurring wording problem, read the relevant sections of [Editing examples](references/editing.md).
-- For skills, `AGENTS.md`, `CLAUDE.md`, and linked agent instructions, read [Agent instructions](references/agent-instructions.md). For a skill, also read [Skill mechanics](references/skill-mechanics.md). Skip Document structure and Developer prose editing for these artefacts.
+- For skills, `AGENTS.md`, `CLAUDE.md`, and linked agent instructions, read [Agent instructions](references/agent-instructions.md). When creating a skill, changing its description, invocation, or the skills a router names, or splitting or merging skills, also read [Skill mechanics](references/skill-mechanics.md). Skip Document structure and Developer prose editing for these artefacts.
 - For documentation, READMEs, RFCs, ADRs, or runbooks whose structure needs work, read [Document structure](references/document-structure.md).
 - For substantial developer prose or a detailed clarity review, read [Developer prose editing](references/developer-prose.md).
 

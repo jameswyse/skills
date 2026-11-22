@@ -4,6 +4,8 @@ description: Use when explaining code or a code change, answering a question abo
 license: MIT
 ---
 
+Before answering how code behaves, read the code that decides the answer, following the path across module, service, and repository boundaries until you reach it. When part of the answer rests on a schema, name, type, or documentation instead of code you read, say which part and where the trace stopped.
+
 Use a visual when the user requests one or it clarifies code structure, flow, or a change. For a simple fact, lookup, or change best explained in a sentence, answer in prose and stop. Loading this skill does not require a diagram or HTML file.
 
 When a visual helps, skip the preamble and pick the smallest view that makes the key point clear.

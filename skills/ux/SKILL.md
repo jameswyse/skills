@@ -20,7 +20,7 @@ The product is the experience. When implementation convenience conflicts with us
 
 - For a generated HTML report, use "html-report".
 - Three interface skills are user-invoked, so you can only recommend them, and only when one is installed and fits the request: `interface-review` reviews uncommitted changes, a branch, a commit range, or a pull request for interface quality. `variant` builds several genuinely different versions of one piece of UI behind a picker. `explain-interface` explains how a live interface or named visual effect was built, or reconstructs it from a screenshot.
-- Give each design decision one owner. `better-ui` owns motion values and behaviour, `better-accessibility` owns reduced-motion requirements, and `better-writing` owns interface copy.
+- Give each design decision one owner, and load that skill before the edit it governs. Before writing or changing any user-facing text, load `better-writing`. Before changing a transition, animation, icon, or surface detail such as alignment, radius, or shadow, load `better-ui`, which owns motion values and behaviour. Before changing focus, keyboard behaviour, a transition, or an animation, load `better-accessibility`, which owns reduced-motion requirements.
 
 ## Avoid generated-page defaults
 
