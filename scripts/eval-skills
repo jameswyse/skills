@@ -25,6 +25,7 @@ from pathlib import Path
 
 REPOSITORY = Path(__file__).resolve().parents[1]
 EVALS = REPOSITORY / "evals"
+REGRESSIONS = "Regressions, where before passes and after fails"
 ARMS = ("none", "before", "after")
 MODELS = {"opus": "claude-opus-5-5", "sol": "gpt-6.1-sol"}
 JUDGE_MODEL = "claude-opus-5-5"
@@ -418,7 +419,7 @@ def majority(records: list[dict]) -> str:
     return mark
 
 
-def summarize(records: list[dict], arms: list[str], models: list[str]) -> str:
+def summarize(records: list[dict], arms: list[str], models: list[str]) -> tuple[str, int]:
     columns = [(arm, model) for arm in arms for model in models]
     grid: dict[tuple[str, str], dict[tuple[str, str], list[dict]]] = {}
     for record in records:
@@ -440,10 +441,11 @@ def summarize(records: list[dict], arms: list[str], models: list[str]) -> str:
         f"/{sum(1 for row in marks.values() if passed(row, arm, model) is not None)}"
         for arm, model in columns
     ]
+    def regressed(row: dict, model: str) -> bool:
+        return passed(row, "before", model) is True and passed(row, "after", model) is False
+
     groups = {
-        "Regressions, where before passes and after fails": lambda row, model: (
-            passed(row, "before", model) is True and passed(row, "after", model) is False
-        ),
+        REGRESSIONS: regressed,
         "Before fails, so the current text is not working": lambda row, model: (
             passed(row, "before", model) is False
         ),
@@ -451,15 +453,18 @@ def summarize(records: list[dict], arms: list[str], models: list[str]) -> str:
             passed(row, "none", model) is True
         ),
     }
-    lines += ["", "Passes: " + ", ".join(totals), ""]
-    for title, matches in groups.items():
-        hits = [
+    hits = {
+        title: [
             f"{skill}/{probe} ({', '.join(model for model in models if matches(row, model))})"
             for (skill, probe), row in sorted(marks.items())
             if any(matches(row, model) for model in models)
         ]
-        lines += [f"{title}: {len(hits)}", *[f"- {hit}" for hit in hits], ""]
-    return "\n".join(lines)
+        for title, matches in groups.items()
+    }
+    lines += ["", "Passes: " + ", ".join(totals), ""]
+    for title, found in hits.items():
+        lines += [f"{title}: {len(found)}", *[f"- {hit}" for hit in found], ""]
+    return "\n".join(lines), len(hits[REGRESSIONS])
 
 
 def audit(skills: list[str], models: list[str], base: str, out: Path) -> None:
@@ -518,15 +523,19 @@ def main() -> int:
         for run in range(arguments.runs)
         if not (probe.kind == "live" and arm == "none")
     ]
+    if not cells:
+        raise SystemExit(
+            "The selection schedules no runs. Check the probe file names, the bare --probe IDs, --kinds, --arms, and --runs."
+        )
     with ThreadPoolExecutor(max_workers=arguments.jobs) as pool:
         records = list(pool.map(lambda cell: evaluate(cell, arguments.base, out), cells))
 
     (out / "results.json").write_text(json.dumps(records, indent=2))
-    summary = summarize(records, arms, models)
+    summary, regressions = summarize(records, arms, models)
     (out / "summary.md").write_text(summary + "\n")
     print(summary)
     print(f"\nDetails: {out / 'results.json'}")
-    return 1 if any("error" in record for record in records) else 0
+    return 1 if regressions or any("error" in record for record in records) else 0
 
 
 if __name__ == "__main__":
