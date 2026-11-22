@@ -22,8 +22,5 @@
   ],
   "kitlangton/skills": [
     "effect"
-  ],
-  "vercel-labs/agent-skills": [
-    "vercel-react-best-practices"
   ]
 }
