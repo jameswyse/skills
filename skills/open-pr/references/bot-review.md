@@ -10,7 +10,7 @@ Read the signs on the head commit with:
 ```bash
 gh api --paginate repos/{owner}/{repo}/commits/<head-sha>/check-runs --jq '.check_runs[] | [.name, .status, .conclusion, .started_at, .output.title] | @tsv'
 gh api repos/{owner}/{repo}/commits/<head-sha>/status --jq '.statuses[] | [.context, .state, .created_at] | @tsv'
-gh api --paginate repos/{owner}/{repo}/issues/<number>/comments --jq '.[] | select(.user.login | endswith("[bot]")) | [.user.login, .updated_at, .body[0:600]] | @tsv'
+gh api --paginate repos/{owner}/{repo}/issues/<number>/comments --jq '.[] | select(.user.login | endswith("[bot]")) | [.id, .user.login, .updated_at, .body[0:600]] | @tsv'
 ```
 
 Post every review request as a pull request comment, following the global rule for posting on the
@@ -41,9 +41,16 @@ a request brings no sign within 5 minutes, report that Codex didn't respond and 
 it.
 
 Codex has started when its summary comment's `codex-review-state` shows `code_review` with the
-commit as `commit_sha`. It has finished when that `status` is `completed`, with findings as review
-comments and a `+1` reaction on the pull request when it has none. A `failed` status, such as for a
-usage limit, means the review failed.
+commit as `commit_sha`. The state can list other reviews of the commit, such as `security_review`.
+Codex has finished when every review listed for the commit has `status` `completed`, with findings
+as review comments and a `+1` reaction on the pull request when it has none. A `failed` status, such
+as for a usage limit, means that review failed. The listing command above truncates comment bodies,
+so read the whole summary comment by its ID with
+`gh api repos/{owner}/{repo}/issues/comments/<comment-id> --jq .body`. The security review can post
+findings there under "Security findings" instead of inline. When the summary's `security_review`
+names the head commit as `commit_sha`, treat each one as a comment in the loop's step 3, and reply
+to it in one pull request comment that lists each finding with its fixing commit or the reason it
+was rejected or accepted as a risk.
 
 ### Macroscope
 
@@ -97,4 +104,5 @@ or findings.
 5. **Finish.** Confirm the head commit is still the one the loop last checked, and return to step 1
    if it changed. Add each reviewing bot to the description's models note as a reviewer. When a
    review request fails, a started review fails or times out, or the third round still needed
-   fixes, report why.
+   fixes, report why. When a pushed fix changed behaviour and no bot started on the new head
+   commit, report that the fix had no independent review.
