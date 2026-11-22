@@ -29,7 +29,8 @@ Read the session's provider and model from `orchestrator_capabilities` (`inherit
 - Give each call a distinct `clientRequestId`, stable across retries of that call, and a `role` that matches the work.
 - Set `interactionMode` to `default` and `runtimeMode` to `inherit`. Never request a broader runtime mode, even when it would spare the child approval prompts.
 - The child gets only the task prompt, in the parent's checkout. Write it to stand alone: the objective, the context and paths, a done condition, and the report you expect as plain text in its final message. For an investigation, ask for what it observed, without fixes.
-- For read-only work, say that the child must not modify files, run formatters, create commits, or change Git state.
+- For read-only work, say that the child must not modify files, run formatters, create commits, fetch, or change Git state, even when its checkout's instructions say to at the start of a task.
+- Put these rules, the no-delegation rule below, and the skills the child must load for its own work in the task prompt itself, before any brief, packet, or manifest path. A child may follow its checkout's start-of-task instructions before it opens a file the prompt points to.
 - In every prompt, say that the child must not start agents or subagents, delegate, or apply this routing itself. It loads the same skills, so it would otherwise delegate back.
 
 Treat the child's report as leads under the calling skill's verification rules.

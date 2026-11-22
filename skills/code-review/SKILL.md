@@ -63,7 +63,7 @@ The routing table in the engineering [Cross-provider delegation](../engineering/
 
 ### Brief each reviewer
 
-Give each reviewer a manifest: its axis, the packet path, the paths of its sources, the axis instruction, the priority definitions from step 3, and the reply format. Standards reads the standards sources, Spec reads `spec.md`, and Correctness reads [Missed findings](references/missed-findings.md). State that the reviewer covers only its axis, may read the checkout beyond the packet to trace what the change reaches, and must not modify files or Git state, recapture the scope, run this skill, or start agents.
+Give each reviewer a manifest: its axis, the packet path, the paths of its sources, the axis instruction, the priority definitions from step 3, and the reply format. Standards reads the standards sources, Spec reads `spec.md`, and Correctness reads [Missed findings](references/missed-findings.md). State that the reviewer covers only its axis, may read the checkout beyond the packet to trace what the change reaches, and must not modify files or Git state, recapture the scope, run this skill, or start agents. Put those prohibitions in the reviewer's task prompt itself, ahead of the manifest path, for a native subagent too.
 
 - **Standards.** Report every breach of a documented rule, citing the rule and its source, and every named smell from the Code standards and Testing references, quoting the hunk. Mark each as a documented breach or a judgement call. Repository rules override the baseline. Skip what tooling enforces.
 - **Spec.** Report missing or partial requirements, unrequested behaviour or scope creep, and requirements whose implementation looks wrong. Quote the spec line for each.
@@ -113,15 +113,15 @@ End with the run report.
 
 When the task authorises fixes, fix every actionable finding and rerun the checks the fixes affect. Keep going while a Spec decision waits for the user, and update a drafted pull request description to match the fixes. Stop when the round had no actionable finding above `P3`. `P3` fixes need no further round.
 
-Otherwise run `review_scope.py --packet <packet>`. It refreshes `scope.diff` and writes `fixes.diff` with only the changes since the previous round. Send one reviewer per applicable axis, on the later-round model from the routing table or its replacement under the replacement rule, `fixes.diff`, the full `scope.diff` for context, and the earlier findings with their outcomes: fixed, accepted as a risk, or rejected with a reason. Ask them to raise an accepted risk or rejected finding again only with new evidence. Later rounds skip the Codex CLI, the verifier, and the contrarian, so verify and weigh the findings yourself.
+Otherwise run `review_scope.py --packet <packet>`. It refreshes `scope.diff` and writes `fixes.diff` with only the changes since the previous round. Send each applicable axis to its own reviewer, never one reviewer for several axes, on the later-round model from the routing table or its replacement under the replacement rule. Give each reviewer `fixes.diff`, the full `scope.diff` for context, and the earlier findings with their outcomes: fixed, accepted as a risk, or rejected with a reason. Ask them to raise an accepted risk or rejected finding again only with new evidence. Later rounds skip the Codex CLI, the verifier, and the contrarian, so verify and weigh the findings yourself.
 
 After each round's fixes, cut any code the actionable findings don't need, such as extra guards, options, or helpers, and rerun the checks it affects. Never accept a finding just to end the loop. When you have rejected a finding twice and it is raised again, stop arguing it and report both sides as a decision for the user, numbered as a `Q` item under its axis.
 
-Run at most three rounds per task, counting every round even when the scope grows. If the third round still has actionable findings above `P3`, fix them and report that those fixes had no independent review. Delete the packet directory when the review ends.
+Run at most three rounds per review, counting every round even when the scope grows. A separate change later in the task, which the global rule says needs its own review, starts a new review at round one. If the third round still has actionable findings above `P3`, fix them and report that those fixes had no independent review. Delete the packet directory when the review ends.
 
 ## Run report
 
-Keep a ledger from the first reviewer onwards: each candidate finding with its axis, every reviewer that reported it, and its outcome. End the review with this table and one line of outcomes:
+Keep a ledger from the first reviewer onwards: each candidate finding with its axis, every reviewer that reported it, and its outcome. End the review with this table and one line of outcomes, and put both in your reply to the user, even when a pull request description also carries them:
 
 ```markdown
 | Round | Reviewer         | Standards | Spec  | Correctness |
