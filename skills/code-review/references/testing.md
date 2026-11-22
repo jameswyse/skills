@@ -4,16 +4,7 @@ Tests protect observable behaviour through the interfaces callers use, and survi
 
 ## Apply the test gate first
 
-Don't add a test because production code changed or coverage feels expected. Before adding one, complete this statement with concrete details:
-
-> This test fails when [observable runtime behaviour] breaks at [caller or user seam], and its
-> expected result comes from [independent requirement, specification, known result, or maintained fixture].
-
-Also name a plausible defect it would catch. If you can't, improve the design or don't add the test. A check for file contents, source shape, an export, a mocked helper call, a current snapshot, or a guarantee the type system already enforces doesn't count. Prefer no new test over one with a weak signal.
-
-The one type-level exception is a public type that ordinary callers would keep compiling against if it were weakened, such as a prop widened from `boolean` to `boolean | string`. Protect it with a few negative examples in one strict compile, and assert only that each example fails to compile, never the diagnostic text or position.
-
-Ask before encoding an unresolved choice that would set product policy or narrow supported behaviour.
+Every new test must pass the [test gate](../../engineering/SKILL.md#test-gate) in the "engineering" skill, including its one type-level exception.
 
 ## Design the test
 
