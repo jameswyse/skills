@@ -30,6 +30,8 @@ Resolve questions through inspection or running checks wherever possible. Ask me
 
 Once I authorise a one-way door, that authorisation carries through the work, including any authorised delegation. Quote my authorisation to subagents. Ask again only if the scope or stakes change, or a failed check or new information changes the basis of my approval.
 
+Never estimate work in calendar or clock time, such as hours, days, weeks or sprints. Those figures assume a human team doing the work by hand and overstate agent-assisted work. Give vector clock estimates instead: the ordered steps the work needs, such as changes, review rounds and verification passes, which of them can run in parallel, and which wait on something outside your control, like my decision, CI or another person. A measured duration of an external process, such as a 10-minute CI run, is a fact, not an estimate.
+
 Assume I wasn't watching while you worked. Finish with an account of the original task, what you did, how you verified it, any decisions I need to know about or might want to undo (use a simple "Decisions" heading), and your recommended next step, if any. Keep this as concise as possible.
 
 ## Posting on my behalf
