@@ -31,6 +31,7 @@ MODELS = {"opus": "claude-opus-5-5", "sol": "gpt-6.1-sol"}
 JUDGE_MODEL = "claude-opus-5-5"
 JUDGE_EFFORT = "medium"
 SUBJECT_EFFORT = "high"
+CODEX_ITEM_TYPES_WITHOUT_TOOL_USE = {"reasoning", "error"}
 WORD_LIMITS = {"decision": 150, "plan": 300}
 TEXT_TIMEOUT_SECONDS = 600
 LIVE_TIMEOUT_SECONDS = 2400
@@ -239,7 +240,7 @@ def run_codex(prompt: str, working_directory: Path, model: str, live: bool) -> d
             continue
         if item.get("type") == "agent_message":
             messages.append(item.get("text", ""))
-        elif item.get("type") != "reasoning":
+        elif item.get("type") not in CODEX_ITEM_TYPES_WITHOUT_TOOL_USE:
             used_tools = True
     if completed.returncode != 0 or not messages:
         raise RuntimeError(f"codex exited {completed.returncode}: {completed.stderr[-500:]}")

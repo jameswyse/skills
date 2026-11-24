@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import importlib.machinery
 import importlib.util
+import json
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -69,6 +71,47 @@ class EvalSkillsExitStatusTest(unittest.TestCase):
             self.run_main({}, "sample", "--probe", "sample/only-probe")
 
         self.assertNotEqual(raised.exception.code, 0)
+
+
+class RunCodexToolUseTest(unittest.TestCase):
+    def setUp(self) -> None:
+        self.eval_skills = load_eval_skills()
+
+    def run_codex(self, *events: dict) -> dict:
+        completed = subprocess.CompletedProcess(
+            args=["codex"],
+            returncode=0,
+            stdout="\n".join(json.dumps(event) for event in events),
+            stderr="",
+        )
+        with mock.patch.object(self.eval_skills.subprocess, "run", return_value=completed):
+            return self.eval_skills.run_codex("Question.", Path("."), "gpt-6.1-sol", live=False)
+
+    def test_feature_warning_is_not_tool_use(self) -> None:
+        result = self.run_codex(
+            {
+                "type": "item.completed",
+                "item": {
+                    "id": "item_0",
+                    "type": "error",
+                    "message": "Under-development features enabled: default_mode_request_user_input.",
+                },
+            },
+            {"type": "item.completed", "item": {"id": "item_1", "type": "agent_message", "text": "Answer."}},
+        )
+
+        self.assertEqual(result, {"answer": "Answer.", "used_tools": False})
+
+    def test_command_execution_is_tool_use(self) -> None:
+        result = self.run_codex(
+            {
+                "type": "item.completed",
+                "item": {"id": "item_0", "type": "command_execution", "command": "ls", "exit_code": 0},
+            },
+            {"type": "item.completed", "item": {"id": "item_1", "type": "agent_message", "text": "Answer."}},
+        )
+
+        self.assertEqual(result, {"answer": "Answer.", "used_tools": True})
 
 
 if __name__ == "__main__":
