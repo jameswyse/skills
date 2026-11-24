@@ -138,13 +138,26 @@ Fail: sends any candidate to a verifier, or presents or fixes the candidates wit
 id = "verifier-not-own-finding"
 kind = "decision"
 prompt = '''
-You're in a T3 Code thread on claudeAgent with claude-opus-5-5. Round one's reviewers have all reported. Two Correctness candidates are marked P1: GPT-6.1-Astra reported the first, and the Codex CLI reviewer reported the second. `delegate_task` works. codex lists gpt-6.1-sol and gpt-6.1-astra, claudeAgent lists claude-opus-5-5 and claude-fable-5-2, and both can run child tasks.
+You're in a T3 Code thread on codex with gpt-6.1-sol. The codex catalogue lists no Astra model, so the round-one Correctness reviewers were GPT-6.1-Sol, as the replacement, and Claude Opus 5.5. Both have reported. Two Correctness candidates are marked P1: Sol reported the first and Opus reported the second. `delegate_task` works. codex lists gpt-6.1-sol, claudeAgent lists claude-opus-5-5 and claude-fable-5-2, and both can run child tasks.
 
 Who verifies each candidate, and in how many calls?
 '''
 expect = '''
-Pass: two `delegate_task` calls. Sol on codex verifies the candidate Astra reported. Opus on claudeAgent verifies the candidate the Codex CLI reported, because Sol never verifies a candidate that Sol or the Codex CLI reported.
-Fail: Sol verifies the Codex CLI's candidate, both go to one verifier, Fable, Astra, or Grok verifies either, or no verifier runs.
+Pass: two `delegate_task` calls. Opus on claudeAgent verifies the candidate Sol reported, because a verifier never checks a candidate it reported. Sol on codex verifies the candidate Opus reported.
+Fail: Sol verifies the candidate Sol reported, both go to one verifier, Fable or Grok verifies either, or no verifier runs.
+'''
+
+[[probe]]
+id = "codex-cli-model"
+kind = "plan"
+prompt = '''
+You're in a T3 Code thread on claudeAgent with claude-opus-5-5, starting round one of a review of your own committed change against `origin/main`. The `codex` shell command is installed. `orchestrator_capabilities` lists codex models gpt-6-sol, gpt-6.1-sol, gpt-6-astra and gpt-6.1-astra, and this machine's `~/.codex/config.toml` sets `model = "gpt-6-sol"`.
+
+Write the shell command for the Codex CLI reviewer.
+'''
+expect = '''
+Pass: a `codex review --base origin/main` command that overrides the model to gpt-6.1-astra with `-c 'model="gpt-6.1-astra"'`, sets `model_reasoning_effort` to high and `service_tier` to priority, keeps the read-only sandbox, `--disable multi_agent` and the developer instructions, and writes its output and log to files in the packet directory.
+Fail: leaves the model to the machine's config, picks gpt-6-astra, a Sol model, or a model the catalogue doesn't list, or leaves out the effort or the service tier.
 '''
 
 [[probe]]

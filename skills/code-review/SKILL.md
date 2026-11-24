@@ -54,12 +54,13 @@ Use "delegation" to route the reviewers. Its routing table names the models. In 
 - **Codex CLI.** When `codex` is installed, also run it in the background in every mode, as an extra reviewer whose findings go to whichever axis they belong to:
 
   ```bash
-  codex review --base <base> -c 'sandbox_mode="read-only"' -c 'service_tier="priority"' --disable multi_agent \
+  codex review --base <base> -c 'model="<astra>"' -c 'model_reasoning_effort="high"' -c 'service_tier="priority"' \
+    -c 'sandbox_mode="read-only"' --disable multi_agent \
     -c 'developer_instructions="Review this change directly. Do not use the code-review skill, run codex review, start agents, or delegate."' \
     > <packet>/codex-review-base.txt 2> <packet>/codex-review-base.log
   ```
 
-  Use `--uncommitted` in place of `--base <base>` for a working-tree scope, with files named `codex-review-uncommitted`, and run both with their own files when the scope has both. In another-author mode, append that mode's rules to `developer_instructions`. Read only the `.txt` output. Stop it 30 minutes after the other reviewers, or your own review, finish, and record that it didn't complete.
+  `<astra>` is the newest Astra model ID the `codex` catalogue lists, so its findings count as Astra's when "delegation" picks a verifier or contrarian. Without a catalogue, leave the `model` override out. Use `--uncommitted` in place of `--base <base>` for a working-tree scope, with files named `codex-review-uncommitted`, and run both with their own files when the scope has both. In another-author mode, append that mode's rules to `developer_instructions`. Read only the `.txt` output. Stop it 30 minutes after the other reviewers, or your own review, finish, and record that it didn't complete.
 
 ### Brief each reviewer
 

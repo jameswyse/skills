@@ -20,7 +20,7 @@ Read the session's provider and model from `orchestrator_capabilities` (`inherit
 | First-round code review, Spec axis                                     | Sol, plus Fable from an Opus session or Opus from any other                              |
 | First-round code review, Correctness axis                              | Astra, plus Fable from an Opus session or Opus from any other                            |
 | First-round Standards review and later rounds                          | Sol                                                                                      |
-| Code review verifier                                                   | Sol, or Opus for a candidate that Sol or the Codex CLI reported                          |
+| Code review verifier                                                   | Sol, or Opus for a candidate Sol reported                                                |
 | A contrarian check                                                     | Grok, plus Astra from a `claudeAgent` session or Fable from a `codex` session            |
 
 Each model family has one provider and one set of options:
