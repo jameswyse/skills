@@ -78,7 +78,7 @@ Check finished text against these rules silently before sending it. Use $writing
 
 - Protect the context window: read only relevant material, cap verbose outputs and phase size, keep frequently used guidance inline. Subagents should not inherit the full context. If something you're doing often is quickly filling your context, let me know so I can find the cause and improve it.
 
-- When a loaded skill or reference points to another file and its condition applies to your task, read that file before the work it governs, not after it.
+- When a loaded skill or reference points to another file and its condition applies to your task, read that file before the work it governs, not after it. After the context is compacted or summarised, a file you read earlier counts as unread, because the summary doesn't carry its text. Read it again before the next piece of work it governs.
 
 - Use $engineering for implementation, debugging, software design decisions, and engineering reviews. Skip it for straightforward code explanations, read-only lookups, and routine Git operations.
 
