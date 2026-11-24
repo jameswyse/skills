@@ -112,13 +112,39 @@ Fail: drops the codex reviews or the Standards axis, stops to ask the user, revi
 id = "verifier-single-call"
 kind = "decision"
 prompt = '''
-You're in a T3 Code thread on claudeAgent. Round one's reviewers have all reported, with eleven candidate findings between them. `delegate_task` works, and codex lists gpt-6.1-sol and can run child tasks.
+You're in a T3 Code thread on claudeAgent with claude-opus-5-5. Round one's reviewers have all reported, with eleven candidate findings between them. Three are Correctness candidates their reviewers marked P1, two from GPT-6.1-Astra and one from Claude Fable 5.2. The other eight are Standards or Spec candidates, or Correctness candidates marked P2 or P3. `delegate_task` works, and codex lists gpt-6.1-sol and can run child tasks.
 
 What is your next step?
 '''
 expect = '''
-Pass: sends all eleven candidates in one `delegate_task` to the newest Sol on codex at high effort, asking it to reproduce or refute each against the checkout with read-only commands and to report evidence and a verdict (likelihood, harm, and fix complexity may also be requested). Its report is evidence, and the primary agent still verifies each candidate itself.
-Fail: one call per finding, a Claude or Grok verifier, treating the verifier's verdicts as final, or going straight to presenting or fixing the candidates.
+Pass: sends the three Correctness P1 candidates, and only those, in one `delegate_task` to the newest Sol on codex at high effort, asking it to reproduce or refute each against the checkout with read-only commands and to report evidence and a verdict (likelihood, harm, and fix complexity may also be requested). Its report is evidence, and the primary agent still verifies all eleven candidates itself.
+Fail: sends all eleven candidates to the verifier, one call per finding, a Claude or Grok verifier, treating the verifier's verdicts as final, or going straight to presenting or fixing the candidates.
+'''
+
+[[probe]]
+id = "verifier-none-qualify"
+kind = "decision"
+prompt = '''
+You're in a T3 Code thread on claudeAgent with claude-opus-5-5. Round one's reviewers have all reported, with six candidate findings between them: four under Standards, one under Spec marked P1, and one under Correctness marked P2. `delegate_task` works, and codex lists gpt-6.1-sol and can run child tasks.
+
+What is your next step?
+'''
+expect = '''
+Pass: starts no verifier, because no Correctness candidate is marked P0 or P1, and verifies each of the six candidates itself.
+Fail: sends any candidate to a verifier, or presents or fixes the candidates without verifying them itself.
+'''
+
+[[probe]]
+id = "verifier-not-own-finding"
+kind = "decision"
+prompt = '''
+You're in a T3 Code thread on claudeAgent with claude-opus-5-5. Round one's reviewers have all reported. Two Correctness candidates are marked P1: GPT-6.1-Astra reported the first, and the Codex CLI reviewer reported the second. `delegate_task` works. codex lists gpt-6.1-sol and gpt-6.1-astra, claudeAgent lists claude-opus-5-5 and claude-fable-5-2, and both can run child tasks.
+
+Who verifies each candidate, and in how many calls?
+'''
+expect = '''
+Pass: two `delegate_task` calls. Sol on codex verifies the candidate Astra reported. Opus on claudeAgent verifies the candidate the Codex CLI reported, because Sol never verifies a candidate that Sol or the Codex CLI reported.
+Fail: Sol verifies the Codex CLI's candidate, both go to one verifier, Fable, Astra, or Grok verifies either, or no verifier runs.
 '''
 
 [[probe]]

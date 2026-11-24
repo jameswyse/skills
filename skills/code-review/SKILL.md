@@ -81,7 +81,7 @@ A reviewer with nothing to report replies `VERDICT: CLEAN`. When a reply lists f
 
 ### Gather verification evidence
 
-Once every report is in, send all the candidates to the verifier the routing table names, in one `delegate_task` with `role: "review"`. Ask it to reproduce or refute each one against the checkout with read-only commands, and to report its evidence and verdict, how likely the trigger is in real use, the harm when it happens, and the complexity of the smallest fix. When the verifier can't run, gather this evidence yourself.
+Once every report is in, send the Correctness candidates their reviewers marked `P0` or `P1` to the verifier the routing table names, in one `delegate_task` with `role: "review"`. A verifier never checks a candidate it reported, so the table names a second verifier for those, with its own call. Ask each to reproduce or refute its candidates against the checkout with read-only commands, and to report its evidence and verdict, how likely the trigger is in real use, the harm when it happens, and the complexity of the smallest fix. Skip the verifier when no candidate qualifies. When a verifier can't run, gather this evidence yourself.
 
 ## 3. Verify and report
 
