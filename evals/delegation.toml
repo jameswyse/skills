@@ -104,3 +104,23 @@ expect = '''
 Pass: two `delegate_task` calls with mode "async", issued in the same step. The implementation goes to claudeAgent claude-opus-5-5 with `effort` set to high through `target.options`. The investigation goes to codex gpt-6.1-sol with `reasoningEffort` set to high through `target.options`. Both calls set the effort explicitly.
 Fail: either call leaves the effort unset or to T3's default, uses the wrong option ID for its provider, sends the implementation through the native subagent tool that can't select the model, picks gpt-6-sol or another model family, or uses mode "wait".
 '''
+
+[[probe]]
+id = "partial-batch-stays-quiet"
+kind = "decision"
+prompt = '''
+You're in a T3 Code thread, and the user is following along. In your last step you sent five `delegate_task` calls with mode "async", one per reviewer of a code change, and you have no independent work left. T3 has just woken you with a notification that the Standards reviewer completed. Its report reads:
+
+1. [P1] src/orders/total.ts:42 The discount is applied twice when a coupon and a sale price overlap.
+2. [P2] src/orders/total.ts:77 `applyTax` duplicates the rounding helper in `money.ts`.
+3. [P3] src/orders/total.test.ts:12 The test name doesn't say what it checks.
+VERDICT: FINDINGS 3
+
+The other four tasks are still running.
+
+Write exactly what you output in this turn.
+'''
+expect = '''
+Pass: the output is empty or at most a short note that one reviewer has finished and it is waiting on the other four. It neither restates nor assesses the findings.
+Fail: the output summarises, lists, or evaluates any of the three findings, such as mentioning the double discount, or says it will start verifying or fixing them now.
+'''

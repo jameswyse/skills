@@ -30,7 +30,8 @@ Read the session's provider and model from `orchestrator_capabilities` (`inherit
 
 ## Delegate
 
-- Call `delegate_task` once per independent piece of work with `mode: "async"`, all in the same step. `mode: "wait"` runs the children in series. Then finish any independent work and end the turn. Each completion arrives as a notification, and the calling skill continues once every task has completed or failed.
+- Call `delegate_task` once per independent piece of work with `mode: "async"`, all in the same step. `mode: "wait"` runs the children in series. Then finish any independent work and end the turn.
+- T3 wakes you on each completion. While other tasks from the same step are still running, end that turn without assessing or summarising the reports that have arrived. Weigh them together once every task has completed or failed, which is when the calling skill continues.
 - Give each call a distinct `clientRequestId`, stable across retries of that call, and a `role` that matches the work.
 - Set `interactionMode` to `default` and `runtimeMode` to `inherit`. Never request a broader runtime mode, even when it would spare the child approval prompts.
 - The child gets only the task prompt, in the parent's checkout. Write it to stand alone: the objective, the context and paths, a done condition, and the report you expect as plain text in its final message. For an investigation, ask for what it observed, without fixes.
