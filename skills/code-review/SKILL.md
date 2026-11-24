@@ -54,7 +54,7 @@ Use "delegation" to route the reviewers. Its routing table names the models. In 
 - **Codex CLI.** When `codex` is installed, also run it in the background in every mode, as an extra reviewer whose findings go to whichever axis they belong to:
 
   ```bash
-  codex review --base <base> -c 'sandbox_mode="read-only"' --disable multi_agent \
+  codex review --base <base> -c 'sandbox_mode="read-only"' -c 'service_tier="priority"' --disable multi_agent \
     -c 'developer_instructions="Review this change directly. Do not use the code-review skill, run codex review, start agents, or delegate."' \
     > <packet>/codex-review-base.txt 2> <packet>/codex-review-base.log
   ```
