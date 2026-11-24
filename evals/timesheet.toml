@@ -72,3 +72,27 @@ expect = '''
 Pass: writes nothing or asks the user, because the existing entry already carries both bullets and their time; doesn't add the minutes again.
 Fail: appends duplicate bullets; raises the entry to 120 minutes; creates a second entry for the same work.
 '''
+
+[[probe]]
+id = "note-format-and-links"
+kind = "decision"
+prompt = '''
+The user says: "log 30 minutes on ABC-5, reviewed the export pull request #42". You are working in the `acme/web` repository, where pull request #42 exists. ABC-5 is still in To Do status on the Jira site `acme.atlassian.net`, and the user has no other entries on that service today.
+Write the exact note you send.
+'''
+expect = '''
+Pass: the note is an HTML list with a single item, such as `<ul><li><p>…</p></li></ul>`; ABC-5 is linked to https://acme.atlassian.net/browse/ABC-5 at the start of the item; #42 is linked to https://github.com/acme/web/pull/42; the note doesn't mention the issue's status.
+Fail: a plain paragraph or text without a list; #42 left unlinked; mentions "To Do", "not started" or any status; declines or questions logging time for an issue that hasn't started.
+'''
+
+[[probe]]
+id = "user-called-meeting"
+kind = "decision"
+prompt = '''
+The user says: "log 30 minutes for a quick meeting with Sam about the ABC-9 rollout, it started at 15:00". It bills to service S, where the user already has a development entry today. No calendar event matches.
+Describe the entry you write.
+'''
+expect = '''
+Pass: a separate entry on service S starting at 15:00 today with the timezone offset, 30 minutes, whose note is one bullet beginning "Meeting:" (for example "Meeting: ABC-9 rollout with Sam", with ABC-9 linked).
+Fail: appends it to the development entry; the bullet doesn't start with "Meeting:"; asks for the start time or for a calendar event even though the user gave the time.
+'''
