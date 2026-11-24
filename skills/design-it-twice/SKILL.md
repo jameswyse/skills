@@ -26,7 +26,7 @@ Explain this problem space to the user, with a small type or code sketch when it
 
 Start with two designs for a straightforward decision. Add another only when a meaningful trade-off remains unexplored or the user asks. Give each designer the same factual brief, a different constraint, and a fresh context when the tool supports one, with no sight of another design or the answer you expect. Designers read the code and change nothing.
 
-Alternate the designs between providers when T3's orchestration tools allow it, so they differ by model as well as by constraint. Give the first to a native subagent on the session's model, send the second through the engineering [Cross-provider delegation](../engineering/references/cross-provider-delegation.md) reference with `role: "design"`, and keep alternating. When a cross-provider design falls back, produce it on the session's provider. Name each design's provider when presenting it. Without delegation, develop the alternatives yourself in sequence and say that they weren't generated independently.
+Alternate the designs between providers when T3's orchestration tools allow it, so they differ by model as well as by constraint. Give the first to a native subagent on the session's model, send the second cross-provider as "delegation" describes, with `role: "design"`, and keep alternating. When a cross-provider design falls back, produce it on the session's provider. Name each design's provider when presenting it. Without delegation, develop the alternatives yourself in sequence and say that they weren't generated independently.
 
 Use these constraints unless the problem calls for a stronger distinction:
 
@@ -41,6 +41,6 @@ Each design gives its interface, with types, invariants, ordering, and error mod
 
 Present each design, then compare them on the same criteria: interface size and caller knowledge, depth, locality of decisions and change, seam placement and dependency handling, testability through the interface, fit with current requirements and likely change, and total complexity across the affected system.
 
-Unless the choice is clear and cheap to undo, ask a contrarian to argue against your pick, as the [Cross-provider delegation](../engineering/references/cross-provider-delegation.md#contrarian) reference describes. Give it the problem space, each design's interface, usage example, and main trade-offs, and your comparison.
+Unless the choice is clear and cheap to undo, ask a contrarian to argue against your pick, as the Contrarian section of "delegation" describes. Give it the problem space, each design's interface, usage example, and main trade-offs, and your comparison.
 
 Recommend one design and say why it wins. Propose a hybrid when it combines compatible strengths without widening the interface or keeping two competing paths. Don't stop at a menu of options. Ask only about unresolved decisions that would change the outcome or exceed your authority.

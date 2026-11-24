@@ -2,7 +2,7 @@
 
 ## Challenge the cause
 
-Before fixing, ask a contrarian to argue that the cause you settled on is wrong, as the engineering [Cross-provider delegation](../../engineering/references/cross-provider-delegation.md#contrarian) reference describes. Skip this only when an observation you've already made rules out the alternatives, such as changing only the suspected cause and watching the symptom appear and disappear. Treat each alternative as a part of the judgement. Give it the symptom, the evidence, the alternatives you ruled out, and the affected paths, and ask for the observation that would tell each alternative apart from your cause. When the evidence can't rule out an alternative, make that observation if it's available and proportionate, or report the alternative as a verification gap. Then fix the cause the evidence supports, following the "engineering" skill's source-fix rules.
+Before fixing, ask a contrarian to argue that the cause you settled on is wrong, as the Contrarian section of "delegation" describes. Skip this only when an observation you've already made rules out the alternatives, such as changing only the suspected cause and watching the symptom appear and disappear. Treat each alternative as a part of the judgement. Give it the symptom, the evidence, the alternatives you ruled out, and the affected paths, and ask for the observation that would tell each alternative apart from your cause. When the evidence can't rule out an alternative, make that observation if it's available and proportionate, or report the alternative as a verification gap. Then fix the cause the evidence supports, following the "engineering" skill's source-fix rules.
 
 ## Add a regression test at the right seam
 

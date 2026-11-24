@@ -1,7 +1,7 @@
 skill = "code-review"
 include = [
   "engineering/SKILL.md",
-  "engineering/references/cross-provider-delegation.md",
+  "delegation/SKILL.md",
   "engineering/references/design.md",
 ]
 

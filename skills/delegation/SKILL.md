@@ -1,6 +1,11 @@
+---
+name: delegation
+description: Use before delegating work to another model or provider through T3's `delegate_task`, and when a skill or instruction asks for advisors or a contrarian check.
+---
+
 # Cross-provider delegation
 
-The caller decides whether the work goes cross-provider. This reference picks the provider, model, and effort.
+The caller decides whether the work goes cross-provider. This skill picks the provider, model, and effort.
 
 ## Route the work
 

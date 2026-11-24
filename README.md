@@ -19,6 +19,7 @@ This repository's `code-review` replaces Claude Code's bundled `/code-review`. U
 | `engineering`     | Sets the baseline for implementing, debugging, designing and verifying software, including test-first bug fixes. |
 | `typescript`      | Adds rules for TypeScript types and validation.                                                                  |
 | `design-it-twice` | Compares several interface designs for a module before choosing one.                                             |
+| `delegation`      | Picks the provider, model and effort for work handed to another model through T3 Code.                           |
 | `debugging`       | Finds the cause of hard bugs and performance regressions from evidence.                                          |
 | `triage-sentry`   | Investigates a Sentry issue or triages a project's issues.                                                       |
 | `upgrade-deps`    | Upgrades a pnpm project's dependencies, Node.js, pnpm and GitHub Actions.                                        |
@@ -40,7 +41,7 @@ This repository's `code-review` replaces Claude Code's bundled `/code-review`. U
 - `babysit-pr` and `open-pr` need an authenticated GitHub CLI. Attaching screenshots needs a version whose `gh pr edit` has `--attach`.
 - `triage-sentry` works best with the [Sentry CLI](https://cli.sentry.dev/).
 - `ux` and `writing` hand some work to the optional skills in [`external-skills.json`](external-skills.json).
-- `code-review` and `engineering` delegate to other models through T3 Code when it's available, and use the current agent's subagents otherwise.
+- `code-review`, `debugging` and `design-it-twice` hand work to other models as `delegation` describes, through T3 Code when it's available, and use the current agent's subagents otherwise.
 - Several skills rely on rules in [`global/AGENTS.md`](global/AGENTS.md), which describes me and my machines. Copy the rules you want into your agent's global instructions.
 
 ## Development
