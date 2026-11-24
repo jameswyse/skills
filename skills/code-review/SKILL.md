@@ -111,13 +111,18 @@ End with the run report.
 
 ## 4. Repeat after fixes
 
-When the task authorises fixes, fix every actionable finding and rerun the checks the fixes affect. Keep going while a Spec decision waits for the user, and update a drafted pull request description to match the fixes. Stop when the round had no actionable finding above `P3`. `P3` fixes need no further round.
+When the task authorises fixes, fix every actionable finding and rerun the checks the fixes affect. Keep going while a Spec decision waits for the user, and update a drafted pull request description to match the fixes. Then decide whether another round runs, up to three rounds per review, counting every round even when the scope grows:
 
-Otherwise run `review_scope.py --packet <packet>`. It refreshes `scope.diff` and writes `fixes.diff` with only the changes since the previous round. Send each applicable axis to its own reviewer, never one reviewer for several axes, on the later-round model from the routing table or its replacement under the replacement rule. Give each reviewer `fixes.diff`, the full `scope.diff` for context, and the earlier findings with their outcomes: fixed, accepted as a risk, or rejected with a reason. Ask them to raise an accepted risk or rejected finding again only with new evidence. Later rounds skip the Codex CLI, the verifier, and the contrarian, so verify and weigh the findings yourself.
+- Round two runs when round one had an actionable finding above `P3`.
+- Round three runs only when round two had an actionable `P0` or `P1`.
+
+`P3` fixes need no further round. When fixes for findings above `P3` get no further round, report that those fixes had no independent review.
+
+For a later round, run `review_scope.py --packet <packet>`. It refreshes `scope.diff` and writes `fixes.diff` with only the changes since the previous round. Send each applicable axis to its own reviewer, never one reviewer for several axes, on the later-round model from the routing table or its replacement under the replacement rule. Give each reviewer `fixes.diff`, the full `scope.diff` for context, and the earlier findings with their outcomes: fixed, accepted as a risk, or rejected with a reason. Ask them to check that each fix resolves its finding, to report defects in `fixes.diff`, to report anything outside `fixes.diff` only when it would be `P0` or `P1`, and to raise an accepted risk or rejected finding again only with new evidence. Later rounds skip the Codex CLI, the verifier, and the contrarian, so verify and weigh the findings yourself.
 
 After each round's fixes, cut any code the actionable findings don't need, such as extra guards, options, or helpers, and rerun the checks it affects. Never accept a finding just to end the loop. When you have rejected a finding twice and it is raised again, stop arguing it and report both sides as a decision for the user, numbered as a `Q` item under its axis.
 
-Run at most three rounds per review, counting every round even when the scope grows. A separate change later in the task, which the global rule says needs its own review, starts a new review at round one. If the third round still has actionable findings above `P3`, fix them and report that those fixes had no independent review. Delete the packet directory when the review ends.
+A separate change later in the task, which the global rule says needs its own review, starts a new review at round one. Delete the packet directory when the review ends.
 
 ## Run report
 

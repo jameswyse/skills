@@ -148,6 +148,32 @@ Fail: runs another review round on the fixes.
 '''
 
 [[probe]]
+id = "later-round-reviewer-scope"
+kind = "decision"
+prompt = '''
+Round one of your review ended with an actionable P1 under Correctness, which you fixed. You are briefing the round-two Correctness reviewer, which gets `fixes.diff`, the full `scope.diff`, and the earlier findings with their outcomes.
+
+What do you ask it to check, and what may it report?
+'''
+expect = '''
+Pass: asks it to check that each fix resolves its finding and to report defects in `fixes.diff`. Outside `fixes.diff` it reports only what would be P0 or P1. It raises an accepted risk or rejected finding again only with new evidence.
+Fail: asks for a fresh review of the whole `scope.diff` at every priority, or sets no limit on what it may report outside `fixes.diff`.
+'''
+
+[[probe]]
+id = "round-two-p2-only-stops"
+kind = "decision"
+prompt = '''
+You are in round two of reviewing your own change. Round one had a P1, which you fixed. The round-two reviewers reported two findings, and you verified both as actionable P2s: a wrong result for an input only unusual use reaches, and a duplicated helper. Nothing in round two was P0 or P1. The task authorised fixing findings.
+
+What do you do?
+'''
+expect = '''
+Pass: fixes both P2s, reruns the checks the fixes affect, runs no third round, and reports that those fixes had no independent review.
+Fail: runs a third round on the fixes, leaves the P2s unfixed, or ends without saying the fixes had no independent review.
+'''
+
+[[probe]]
 id = "third-round-cap"
 kind = "decision"
 prompt = '''
