@@ -1,0 +1,74 @@
+skill = "timesheet"
+include = []
+
+[[probe]]
+id = "ask-for-durations"
+kind = "decision"
+prompt = '''
+The user says: "log my time for today: worked on ABC-12 and ABC-15, and the dev standup". They gave no durations. Their work calendar has a 15-minute "Dev standup" event at 9:00 today. You can read and write their Productive time entries.
+What do you do next?
+'''
+expect = '''
+Pass: asks the user, in one question, how long they spent on ABC-12 and ABC-15, and takes the standup's start time and duration from the calendar event without asking.
+Fail: estimates or splits durations for ABC-12 or ABC-15 itself; writes entries before getting durations; asks separate questions per item; asks for the standup's time even though the calendar has it.
+'''
+
+[[probe]]
+id = "merge-into-existing-entry"
+kind = "decision"
+prompt = '''
+The user says: "log 45 minutes on ABC-12, reviewed the export pull request". ABC-12 bills to the "Software development" service in budget B. The user already has a 90-minute entry today on that same service whose note is a one-bullet HTML list about ABC-9.
+What do you write to Productive?
+'''
+expect = '''
+Pass: updates the existing entry rather than creating a second one: appends a bullet starting with ABC-12 linked to the Jira issue, and raises the time to 135 minutes. Reads the entry back afterwards.
+Fail: creates a separate 45-minute entry on the same service and day; replaces the ABC-9 bullet; leaves the time at 90 or sets it to 45.
+'''
+
+[[probe]]
+id = "meeting-own-entry"
+kind = "decision"
+prompt = '''
+The user says: "log the client scoping meeting this afternoon". The work calendar has "Client scoping" from 14:00 to 14:45 today, about work that bills to service S. The user already has an entry on service S today for development work.
+Describe the time entry you write.
+'''
+expect = '''
+Pass: creates a separate entry on service S with a started_at of 14:00 today including the timezone offset, 45 minutes, the calendar event's ID if the API offers a field for it, and a note that is one bullet reading "Meeting: Client scoping".
+Fail: appends the meeting to the existing development entry; omits the start time; asks the user for the time even though the calendar has it.
+'''
+
+[[probe]]
+id = "role-service-and-budget-choice"
+kind = "decision"
+prompt = '''
+The user, a Lead Developer, says: "log 2 hours on ABC-77". ABC-77's epic is the client's "Booking widget maintenance" work. In Productive, the "Booking widget maintenance" budget offers "Lead Developer", "Senior Developer" and "Project Management" services. A "Lead Developer" service with the same name also exists in three other budgets at different rates. The user's recent ABC-77 entries are on none of them.
+Which service do you use, and how do you identify it?
+'''
+expect = '''
+Pass: uses the "Lead Developer" service belonging to the "Booking widget maintenance" budget, identified by that budget's service ID rather than by name alone.
+Fail: picks "Senior Developer" or a generic service; picks a "Lead Developer" service by name without resolving the budget; asks the user even though the epic and budget match clearly.
+'''
+
+[[probe]]
+id = "ambiguous-budget"
+kind = "decision"
+prompt = '''
+The user says: "log an hour on the search improvements". There is no Jira key. Two open budgets for the same client could fit: a support retainer with "Continuous improvement" and a project budget with "Lead Developer". Recent entries for search work went to the retainer once and to the project budget once.
+What do you do?
+'''
+expect = '''
+Pass: asks the user which budget to use, giving a recommendation with its reason, before writing anything.
+Fail: picks one budget silently; writes to the "Lead Developer" service only because the user's role matches.
+'''
+
+[[probe]]
+id = "rerun-does-not-double-bill"
+kind = "decision"
+prompt = '''
+Earlier today you logged the user's work: the "Software development" entry for today now has a 60-minute note with bullets for ABC-12 and ABC-15. The user now says: "log my time for today: 30 minutes on ABC-12 and 30 on ABC-15", which matches the two bullets already there.
+What do you write to Productive?
+'''
+expect = '''
+Pass: writes nothing or asks the user, because the existing entry already carries both bullets and their time; doesn't add the minutes again.
+Fail: appends duplicate bullets; raises the entry to 120 minutes; creates a second entry for the same work.
+'''

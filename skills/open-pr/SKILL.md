@@ -14,6 +14,7 @@ Those contributors did not see the conversation that produced the change. Use th
 Committing, pushing, creating a pull request, and editing one change shared systems. Perform each only when the user authorised it for the current task.
 
 - A request to create or open a pull request authorises committing the task's changes, pushing the branch with an upstream, and creating the pull request with its review labels. It also authorises fixing actionable "code-review" findings in step 7, and the bot review in step 8, including starting bot reviews, fixing the code they flag, and replying to and resolving bot threads on that pull request.
+- A request to create or open a pull request for work tied to a Jira issue also authorises moving that issue to review in step 8.
 - A request to update or rewrite a description authorises editing that pull request's title, body, and review labels. A request to label a pull request authorises editing its review labels, but not its title or body.
 - Applying review labels also authorises creating a baseline label the repository lacks, exactly as [Airteam review labels](references/airteam-review-labels.md) defines it.
 - A request to draft or review a description authorises only the draft. Return it in the reply without publishing.
@@ -30,7 +31,7 @@ For a request only to label a pull request, run steps 1, 2, and 5, then apply th
    - The linked ticket, issue, or plan when one exists.
    - The repository's pull-request template, such as `.github/pull_request_template.md`, and the style of recent pull-request titles and commit messages.
    - The verification actually run for this change.
-3. **Write the title.** Follow the repository's convention, such as Conventional Commits. Name the change in the common terms a contributor scanning the pull request list would recognise, not the activity or a label from the conversation: "Lock prices before saving orders", not "Order fixes" or "Apply option B to the checkout flow". Keep it clear, concise, and under 72 characters.
+3. **Write the title.** Follow the repository's convention, such as Conventional Commits. Name the change in the common terms a contributor scanning the pull request list would recognise, not the activity or a label from the conversation: "Lock prices before saving orders", not "Order fixes" or "Apply option B to the checkout flow". Keep it clear, concise, and under 72 characters. For work tied to a Jira issue, prefix it with the key as "jira" describes.
 4. **Write the body** with [the description template](references/description-template.md). When the repository has its own template, keep its headings, checklists, and required fields, and fill them with this skill's content where each fits.
 5. **Choose review labels.** When the base repository's owner is `airteamaus`, follow [Airteam review labels](references/airteam-review-labels.md).
 6. **Add visual evidence for interface changes.** Follow [Visual evidence](references/visual-evidence.md) to capture and place screenshots or recordings, or state in the description that no visual evidence is attached.
@@ -40,7 +41,7 @@ For a request only to label a pull request, run steps 1, 2, and 5, then apply th
    - For a stack, open its pull requests with `gh stack submit --auto --open` from "gh-stack" instead of `gh pr create`. `--open` marks every pull request in the stack ready for review, including existing drafts. When the user asked for a draft of any pull request in the stack, in this task or an earlier one, omit `--open`, which creates the new pull requests as drafts. Set each title and body with `gh pr edit <url>`. After a submit without `--open`, run `gh pr ready <url>` on each new pull request the user did not ask to keep as a draft.
    - For an existing pull request, run `gh pr edit <url> --title <title> --body-file <file>`, with an `--attach` flag for each new capture. Keep content the description does not own, such as author notes, media, checklists, linked issues, and bot sections.
 
-   Apply the review labels from step 5 as its reference describes. Confirm each pull request with `gh pr view <url> --json url,title,body,labels`. Bot review applies to a new pull request on github.com that needed "code-review". Follow [Bot review](references/bot-review.md) once it is open.
+   Apply the review labels from step 5 as its reference describes. For a new pull request that is ready for review and tied to a Jira issue, move the issue to review as "jira" describes. Confirm each pull request with `gh pr view <url> --json url,title,body,labels`. Bot review applies to a new pull request on github.com that needed "code-review". Follow [Bot review](references/bot-review.md) once it is open.
 9. **Report.** Give the pull request link, title, and review labels, two or three sentences on the change and its notes, and any authorised step that did not happen, such as an unpushed branch. Paste the full body only when the request was to draft a description without publishing it.
 
 ## Write the description

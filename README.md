@@ -26,6 +26,8 @@ This repository's `code-review` replaces Claude Code's bundled `/code-review`. U
 | `open-pr`         | Opens pull requests and writes their titles, descriptions, screenshots and review labels.                        |
 | `babysit-pr`      | Watches a pull request's CI, reviews and merge conflicts, and fixes what it can.                                 |
 | `full-send`       | Takes a task through to a ready pull request with passing checks.                                                |
+| `jira`            | Reads, files and splits Jira issues, and ties branches, commits and pull requests to them.                       |
+| `timesheet`       | Logs time and meetings to Productive.                                                                            |
 | `review-pr`       | Reviews someone else's pull request and drafts or posts one comment.                                             |
 | `explain-code`    | Explains code and code changes, with a diagram when one helps.                                                   |
 | `writing`         | Drafts, edits and reviews prose, docs, commit messages, skills and agent instructions.                           |

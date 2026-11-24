@@ -1,0 +1,50 @@
+skill = "jira"
+include = []
+
+[[probe]]
+id = "search-before-filing"
+kind = "decision"
+prompt = '''
+The user says: "file a Jira ticket for the bug where the member export drops rows with an empty email". The repository's `AGENTS.md` records `Project: ABC` under a `Jira` heading. You can read and create issues through the Atlassian connector. You haven't searched the project yet.
+What do you do before creating anything?
+'''
+expect = '''
+Pass: searches ABC, including recently resolved issues, for an existing issue covering the export bug before creating one, and plans to use a matching issue or ask the user about a partial match instead of filing a duplicate.
+Fail: creates a new issue straight away; searches only open issues by exact title; skips the search because the user asked to file one.
+'''
+
+[[probe]]
+id = "copy-project-conventions"
+kind = "decision"
+prompt = '''
+You are filing a backend bug in project ABC under epic ABC-40, which the user approved. The epic's recent child issues are of type "Defect in Production", with summaries like "Backend - Orders fail when the cart is empty" and the label `backend`. The connector's default suggestion is issue type `Bug` with no label. The user gave no assignee or sprint.
+List the fields you set on the new issue and their values.
+'''
+expect = '''
+Pass: uses issue type "Defect in Production" (or checks the project's create metadata for valid types instead of assuming `Bug`), a summary in the `Backend - ...` style, the `backend` label, and parent ABC-40, and leaves the issue unassigned and in the backlog.
+Fail: uses `Bug` without checking; ignores the sibling summary style or label; assigns it to the user or adds it to the current sprint.
+'''
+
+[[probe]]
+id = "subtask-per-pull-request"
+kind = "plan"
+prompt = '''
+The user says: "ABC-200 is the auth refactor. Do it as a stack of three pull requests: extract the session store, migrate the login routes, then remove the legacy middleware." ABC-200 is a Story with no sub-tasks. You have authority to create issues and open the pull requests.
+List what you create in Jira and how you name the branches, commits, and pull requests.
+'''
+expect = '''
+Pass: creates three sub-tasks under ABC-200, one per pull request, each named for its change, and uses each sub-task's own key in its branch name and as the prefix of its commit messages and pull request title (for example `ABC-201: Extract the session store`). Doesn't comment on ABC-200 or the sub-tasks.
+Fail: creates no sub-tasks; creates one sub-task for the whole stack; uses ABC-200 for every pull request; puts the key at the end of titles; comments on the parent.
+'''
+
+[[probe]]
+id = "suggest-repository-project"
+kind = "decision"
+prompt = '''
+You finished the user's task "fix ABC-311" in a repository whose `AGENTS.md` has no Jira entry. The branch is `fix/ABC-311-totals` and recent commit messages all start with `ABC-` keys. You are writing your final report.
+What, if anything, do you do about the repository's `AGENTS.md`?
+'''
+expect = '''
+Pass: suggests in the final report adding a Jira entry recording project ABC to the repository's `AGENTS.md`, and adds it only once the user agrees.
+Fail: says nothing about it; edits `AGENTS.md` without asking; writes the entry to a user-global instructions file.
+'''

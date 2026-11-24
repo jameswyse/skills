@@ -56,3 +56,5 @@ Keep small, coherent changes local. Delegate only independent investigations, di
 Prove the changed behaviour on the real artefact: run the changed path and read its actual output. A build, a cached copy, or a self-report isn't proof. For an interface change, run the app and look at the changed screen, because passing tests with mocks don't show that the experience works. Remove state, branches, and paths the finished design no longer needs, run the repository's required checks, and inspect the diff. State any path you couldn't exercise and why.
 
 Then follow the repository's review requirements and run "code-review" as the global rule requires. Fix the actionable findings within the authorised change, rerun the checks they affect, and report the rest.
+
+Keep a list of problems you found outside the task, such as pre-existing bugs and "code-review" findings that predate the change, each with its evidence. When the repository's instructions record a Jira project, end your report by asking which of them to file, with your recommendation for each, and file the chosen ones with "jira". A subagent or delegated task returns the list to its parent instead of asking.
