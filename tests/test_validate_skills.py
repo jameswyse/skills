@@ -147,5 +147,34 @@ class ValidateSkillsTest(unittest.TestCase):
         self.assertEqual(result.returncode, 1)
         self.assertIn("unfinished TODO placeholder", result.stderr)
 
+    def write_skill_of_length(self, characters: int) -> None:
+        frontmatter = "---\nname: writing\ndescription: Test skill.\n---\n"
+        (self.skill / "SKILL.md").write_text(
+            frontmatter + "a" * (characters - len(frontmatter)),
+            encoding="utf-8",
+        )
+
+    def test_accepts_skill_file_at_the_character_limit(self) -> None:
+        self.write_skill_of_length(17_000)
+
+        result = self.run_validation("writing")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_rejects_skill_file_over_the_character_limit(self) -> None:
+        self.write_skill_of_length(17_001)
+
+        result = self.run_validation("writing")
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn(
+            "SKILL.md has 17,001 characters, over the 17,000-character limit",
+            result.stderr,
+        )
+        self.assertIn(
+            "first 5,000 tokens of an invoked skill after compaction", result.stderr
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

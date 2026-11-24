@@ -47,7 +47,7 @@ scripts/validate-skills [skill-name ...]
 scripts/test-skills
 ```
 
-`validate-skills` checks Agent Skills fields and the supported Claude Code extensions. `test-skills` runs the repository tooling tests. Both use isolated `uv` environments.
+`validate-skills` checks Agent Skills fields and the supported Claude Code extensions. It fails a `SKILL.md` over 17,000 characters, because Claude Code keeps only the first 5,000 tokens of an invoked skill after compaction. `test-skills` runs the repository tooling tests. Both use isolated `uv` environments.
 
 `disable-model-invocation: true` is a Claude Code extension. Strict Agent Skills tools may reject it.
 

@@ -20,6 +20,7 @@ REPOSITORY = Path(__file__).resolve().parents[1]
 SKILLS = REPOSITORY / "skills"
 SKILL_NAME = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 FRONTMATTER = re.compile(r"^---\n(.*?)\n---", re.DOTALL)
+MAX_SKILL_FILE_CHARACTERS = 17_000
 STANDARD_FIELDS = {
     "name",
     "description",
@@ -147,9 +148,16 @@ def validate_skill(skill: Path) -> list[str]:
     if not isinstance(frontmatter, dict):
         return ["Frontmatter must be a YAML mapping"]
 
-    problems: list[str] = []
     if not all(isinstance(field, str) for field in frontmatter):
         return ["Frontmatter field names must be strings"]
+
+    problems: list[str] = []
+    if len(content) > MAX_SKILL_FILE_CHARACTERS:
+        problems.append(
+            f"SKILL.md has {len(content):,} characters, over the "
+            f"{MAX_SKILL_FILE_CHARACTERS:,}-character limit. Claude Code keeps only "
+            "the first 5,000 tokens of an invoked skill after compaction"
+        )
 
     unexpected = sorted(set(frontmatter) - ALLOWED_FIELDS)
     if unexpected:

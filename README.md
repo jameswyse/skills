@@ -49,7 +49,7 @@ This repository's `code-review` replaces Claude Code's bundled `/code-review`. U
 | Command                               | What it does                                                                                                                   |
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | `scripts/sync-skills`                 | Links every skill and the global instructions into `~/.agents`, `~/.claude` and the Codex homes, so edits apply straight away. |
-| `scripts/validate-skills [skill ...]` | Checks each skill's frontmatter against the Agent Skills specification and Claude Code's extensions.                           |
+| `scripts/validate-skills [skill ...]` | Checks each skill's frontmatter against the Agent Skills specification and Claude Code's extensions, and its `SKILL.md` size.  |
 | `scripts/test-skills`                 | Runs the repository's tooling tests.                                                                                           |
 | `scripts/eval-skills [skill ...]`     | Probes skills on Opus and Sol with no skill text, the committed text and the working tree's text, and reports regressions.     |
 | `scripts/setup-external-skills`       | Installs and updates the skills in `external-skills.json`, and removes ones it no longer lists.                                |
