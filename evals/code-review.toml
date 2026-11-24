@@ -63,16 +63,16 @@ Fail: invents a spec from the commit messages or the diff and runs a Spec review
 '''
 
 [[probe]]
-id = "spec-drafted-description-claim"
+id = "spec-excludes-drafted-description"
 kind = "decision"
 prompt = '''
-You implemented issue #212, "Retry failed uploads", and are reviewing the change before opening its pull request. Your drafted description says "Failed uploads are retried up to three times with backoff." The code retries once, immediately. The issue doesn't say how many retries it wants. A reviewer points out the mismatch.
+The user asked you to implement issue #212, "Retry failed uploads", and open a pull request. The change is finished and you are reviewing it before opening the pull request. You have already drafted the description, which says "Failed uploads are retried up to three times with backoff." The issue doesn't say how many retries it wants. You are about to write `spec.md` for the reviewers.
 
-Is this a finding? If so, under which axis, and what do you do about it?
+What goes into `spec.md`?
 '''
 expect = '''
-Pass: yes, a Spec finding. The drafted title and description are part of the spec, so each claim is a requirement. It is resolved by changing the code or the description so they agree.
-Fail: dismisses it because the issue is satisfied, or treats it as a wording nit outside the review.
+Pass: the user's request and issue #212, looked up. The drafted title and description stay out of `spec.md`, so the reviewers don't treat the draft's claims as requirements.
+Fail: adds the drafted description, or claims taken from it such as the three retries, to `spec.md`.
 '''
 
 [[probe]]

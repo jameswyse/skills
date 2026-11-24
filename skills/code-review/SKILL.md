@@ -17,7 +17,7 @@ Run `python3 <skill-dir>/scripts/review_scope.py`, with `--base <ref>` when the 
 
 Keep secrets and raw sensitive data away from reviewers. Redact them in `scope.diff` and review those hunks yourself.
 
-**Spec.** The spec is what the change was asked to do, combined from every source that exists: the user's request for the change in this conversation, each ticket or issue that the request, the branch name, or a commit message references, which you look up, and a path the user supplied. A request only to review the change isn't a spec. Fall back to a matching Markdown file under `docs/` or `specs/` only when none of those exists. When the review runs before creating a pull request, add the drafted title and description, so every claim they make is a requirement. Write the spec to `<packet>/spec.md`. With no spec, skip the Spec axis and report "no spec available".
+**Spec.** The spec is what the change was asked to do, combined from every source that exists: the user's request for the change in this conversation, each ticket or issue that the request, the branch name, or a commit message references, which you look up, and a path the user supplied. A request only to review the change isn't a spec. Fall back to a matching Markdown file under `docs/` or `specs/` only when none of those exists. Write the spec to `<packet>/spec.md`. With no spec, skip the Spec axis and report "no spec available".
 
 **Standards sources.** The repository's rule files come first and override everything below. The "engineering" skill's rules are the baseline. Then add what the diff touches:
 
@@ -111,7 +111,7 @@ End with the run report.
 
 ## 4. Repeat after fixes
 
-When the task authorises fixes, fix every actionable finding and rerun the checks the fixes affect. Keep going while a Spec decision waits for the user, and update a drafted pull request description to match the fixes. Then decide whether another round runs, up to three rounds per review, counting every round even when the scope grows:
+When the task authorises fixes, fix every actionable finding and rerun the checks the fixes affect. Keep going while a Spec decision waits for the user. Then decide whether another round runs, up to three rounds per review, counting every round even when the scope grows:
 
 - Round two runs when round one had an actionable finding above `P3`.
 - Round three runs only when round two had an actionable `P0` or `P1`.

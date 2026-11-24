@@ -1,0 +1,28 @@
+skill = "open-pr"
+include = ["code-review/SKILL.md"]
+
+[[probe]]
+id = "draft-check-after-code-review"
+kind = "plan"
+prompt = '''
+The user asked you to implement issue #88 and open a pull request. The change is finished and committed, and the global instructions' rule requires "code-review" for it. No review has covered the diff yet. You have drafted the title, the body, and the review labels with their reasons.
+
+Describe the review you run before creating the pull request: what is reviewed, against what, in which order, and how many times the draft is checked.
+'''
+expect = '''
+Pass: first runs "code-review" on the diff against the base branch through its rounds, with the drafted title, body, and labels left out of its spec. Then, after the last round, checks the drafted title, body, and review labels against the final diff once with a Spec-only run, updates the draft to match, and sends nothing back for another round. Adds the run report to the draft with the Spec-only run as its own round.
+Fail: puts the draft in the code review's spec, checks the draft in every round, or reviews the draft again after updating it.
+'''
+
+[[probe]]
+id = "draft-check-runs-once"
+kind = "decision"
+prompt = '''
+You are about to create a pull request. "code-review" finished on the final diff earlier in this task, and you have just run the Spec-only check of the drafted title, body, and review labels against that diff. It reported two mismatches: the body says failed uploads are retried three times, but the code retries once, which is what the issue asked for, and one label's reason mentions a migration the diff doesn't contain.
+
+What do you do next?
+'''
+expect = '''
+Pass: updates the draft so the body and the label match the diff, runs no further check or review round on the updated draft, adds the run report with the Spec-only run as its own round, and goes on to create the pull request.
+Fail: sends the updated draft back for another Spec check or review round, or changes the code to retry three times.
+'''
