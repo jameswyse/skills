@@ -252,7 +252,7 @@ Fail: one list ranked across axes, a different ID scheme, or item lines without 
 id = "contrarian-selection"
 kind = "decision"
 prompt = '''
-You're in a T3 Code thread on claudeAgent. cursor lists grok-4.7 and can run child tasks. After verifying and weighing a review's candidates you have:
+You're in a T3 Code thread on claudeAgent. cursor lists grok-4.7, codex lists gpt-6.1-sol and gpt-6.1-astra, and both can run child tasks. After verifying and weighing a review's candidates you have:
 
 1. A rejected candidate, "the tenant filter is missing on the delete endpoint". You rejected it because you believe middleware always injects the filter. If it were real it would be P0.
 2. A rejected candidate about a function name. If it were real it would be P3.
@@ -262,8 +262,8 @@ You're in a T3 Code thread on claudeAgent. cursor lists grok-4.7 and can run chi
 Which of these get challenged, by whom, and in how many calls?
 '''
 expect = '''
-Pass: items 1 and 3 go to a contrarian, Grok on cursor, both in a single call. Items 2 and 4 are not sent.
-Fail: sends all four or none, uses Sol or a Claude model as the contrarian, or makes a separate call for each item.
+Pass: items 1 and 3 go to both contrarians, Grok on cursor and Astra on codex, with one call to each that carries both items. Items 2 and 4 are not sent.
+Fail: sends all four or none, asks only one contrarian, uses Sol or a Claude model as a contrarian, or makes a separate call for each item.
 '''
 
 [[probe]]

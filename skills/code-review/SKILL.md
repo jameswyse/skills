@@ -101,7 +101,7 @@ Every other verified finding is actionable, apart from a Spec finding left for t
 - `P2`: wrong behaviour that only rare or unusual use reaches, or a maintenance cost worth fixing.
 - `P3`: wording, naming, formatting, and other changes with no behavioural or requirement effect.
 
-Ask a contrarian to argue back each rejected finding that would be `P0` or `P1` if it were real, and each accepted risk involving security, data loss, or data corruption, as the Contrarian section of "delegation" describes. Skip duplicates and items the evidence plainly refutes.
+Ask the contrarians to argue back each rejected finding that would be `P0` or `P1` if it were real, and each accepted risk involving security, data loss, or data corruption, as the Contrarian section of "delegation" describes. Skip duplicates and items the evidence plainly refutes.
 
 Make one final pass over the whole scope yourself for high-risk correctness or security issues the reviewers missed.
 
@@ -138,15 +138,15 @@ Keep a ledger from the first reviewer onwards: each candidate finding with its a
 | 2     | GPT-6.2-Sol      | -         | -     | 1 / 0       |
 | Bot 1 | Copilot          | 1 / 0     | 0 / 0 | 2 / 1       |
 
-Cells show reported / verified. Verifier GPT-6.2-Sol confirmed 6 and refuted 9. Contrarian Grok 4.7
-reversed 1 rejection. Actionable: Standards 1, Spec 0, Correctness 3. Worst: P1, unlocked price
-saved. Accepted risks 1.
+Cells show reported / verified. Verifier GPT-6.2-Sol confirmed 6 and refuted 9. Contrarians Grok 4.7
+and GPT-6.2-Astra reversed 1 rejection. Actionable: Standards 1, Spec 0, Correctness 3. Worst: P1,
+unlocked price saved. Accepted risks 1.
 ```
 
 - One row per reviewer per round, with "-" for an axis it didn't review. "Primary" gets no row. Keep to these columns.
 - Verified counts the findings that survived as actionable or accepted risks. A finding several reviewers reported counts for each of them.
 - File findings from an all-axes reviewer, such as the Codex CLI or a review bot, under the axis each belongs to.
-- Name each reviewer by provider and model, with failures, timeouts, and replacements and their reasons in the reviewer cell, and say why the contrarian was skipped when it was.
+- Name each reviewer by provider and model, with failures, timeouts, and replacements and their reasons in the reviewer cell, and say why a contrarian was skipped when one was.
 - When this skill's verification weighs review-bot comments, such as in a bot review, record each bot's rounds as "Bot 1", "Bot 2", and so on.
 
 ## Calibrate against bot comments
