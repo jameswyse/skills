@@ -68,4 +68,5 @@ Use when a calling skill asks a contrarian to argue against a judgement you've m
 - Ask for the strongest evidence-based case against each part in at most three sentences, without restating the brief, and for "no real objection" where it finds none.
 - Skip one contrarian, and report why, when a Fall back condition applies to it or its call fails. The other's reply still counts.
 - Skip the whole check, and report why, when you're a delegated task or subagent, delegation is restricted, or the session already runs on Cursor.
+- A contrarian never argues an item it reported itself, such as a reviewer's own rejected finding. Send that item to whichever of Astra and Fable didn't report it and isn't the session's model, or to Grok alone when neither qualifies.
 - Never substitute another model for a contrarian that can't run.

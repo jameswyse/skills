@@ -100,6 +100,19 @@ Fail: only one contrarian, a Claude model or Sol as a contrarian, a separate cal
 '''
 
 [[probe]]
+id = "contrarian-never-own-item"
+kind = "decision"
+prompt = '''
+You're in a T3 Code thread on claudeAgent with claude-fable-5-2. A code review you're running asks the contrarians to argue two findings you rejected. GPT-6.1-Astra reported the first and GPT-6.1-Sol reported the second. cursor lists grok-4.7, codex lists gpt-6.1-sol and gpt-6.1-astra, claudeAgent lists claude-opus-5-5 and claude-fable-5-2, and all three can run child tasks.
+
+Which model argues which finding?
+'''
+expect = '''
+Pass: Grok argues both findings in one call. Astra argues only the second. The first goes to Grok alone, because Astra reported it and Fable is the session's own model.
+Fail: Astra argues the finding it reported, Fable or Opus argues either finding, or Sol argues either finding.
+'''
+
+[[probe]]
 id = "contrarian-call-fails"
 kind = "decision"
 prompt = '''

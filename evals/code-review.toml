@@ -252,18 +252,18 @@ Fail: one list ranked across axes, a different ID scheme, or item lines without 
 id = "contrarian-selection"
 kind = "decision"
 prompt = '''
-You're in a T3 Code thread on claudeAgent. cursor lists grok-4.7, codex lists gpt-6.1-sol and gpt-6.1-astra, and both can run child tasks. After verifying and weighing a review's candidates you have:
+You're in a T3 Code thread on claudeAgent with claude-opus-5-5. cursor lists grok-4.7, codex lists gpt-6.1-sol and gpt-6.1-astra, claudeAgent lists claude-opus-5-5 and claude-fable-5-2, and all three can run child tasks. After verifying and weighing a review's candidates you have:
 
-1. A rejected candidate, "the tenant filter is missing on the delete endpoint". You rejected it because you believe middleware always injects the filter. If it were real it would be P0.
+1. A rejected candidate, "the tenant filter is missing on the delete endpoint", which GPT-6.1-Astra reported. You rejected it because you believe middleware always injects the filter. If it were real it would be P0.
 2. A rejected candidate about a function name. If it were real it would be P3.
-3. An accepted risk: a crash between two writes can leave an orphaned upload record that later deletes the wrong file. You judged it very unlikely.
+3. An accepted risk, which GPT-6.1-Sol reported: a crash between two writes can leave an orphaned upload record that later deletes the wrong file. You judged it very unlikely.
 4. An accepted risk: a tooltip flickers on rapid hover.
 
 Which of these get challenged, by whom, and in how many calls?
 '''
 expect = '''
-Pass: items 1 and 3 go to both contrarians, Grok on cursor and Astra on codex, with one call to each that carries both items. Items 2 and 4 are not sent.
-Fail: sends all four or none, asks only one contrarian, uses Sol or a Claude model as a contrarian, or makes a separate call for each item.
+Pass: Grok on cursor gets items 1 and 3 in one call. Item 3 also goes to Astra on codex. Item 1 also goes to Fable on claudeAgent instead of Astra, because Astra reported it. Items 2 and 4 are not sent.
+Fail: sends all four or none, asks Astra to argue item 1, leaves item 1 or item 3 with Grok alone, uses Sol or Opus as a contrarian, or makes a separate Grok call for each item.
 '''
 
 [[probe]]
