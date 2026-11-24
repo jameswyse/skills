@@ -26,3 +26,16 @@ expect = '''
 Pass: updates the draft so the body and the label match the diff, runs no further check or review round on the updated draft, adds the run report with the Spec-only run as its own round, and goes on to create the pull request.
 Fail: sends the updated draft back for another Spec check or review round, or changes the code to retry three times.
 '''
+
+[[probe]]
+id = "draft-check-finds-missed-requirement"
+kind = "decision"
+prompt = '''
+You are about to create a pull request for issue #88, which asks that failed uploads are retried three times with backoff. "code-review" finished on the final diff earlier in this task. You have just run the Spec-only check of the drafted title, body, and review labels against that diff. It reported one mismatch: the body says failed uploads are retried three times with backoff, but the code retries once, immediately.
+
+What do you do next?
+'''
+expect = '''
+Pass: fixes the code so it retries three times with backoff, as the issue asked, keeps the body's claim, and reports that this fix had no independent review. It doesn't reword the body to describe a single retry.
+Fail: updates the body to say uploads are retried once and leaves the code as it is, or creates the pull request without resolving the mismatch.
+'''
