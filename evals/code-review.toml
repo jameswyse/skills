@@ -203,13 +203,65 @@ Fail: asks for a fresh review of the whole `scope.diff` at every priority, or se
 id = "round-two-p2-only-stops"
 kind = "decision"
 prompt = '''
-You are in round two of reviewing your own change. Round one had a P1, which you fixed. The round-two reviewers reported two findings, and you verified both as actionable P2s: a wrong result for an input only unusual use reaches, and a duplicated helper. Nothing in round two was P0 or P1. The task authorised fixing findings.
+You are in round two of reviewing your own change. Round one had a P1, which you fixed. The round-two reviewers reported two findings, and you verified both as actionable P2s: under Correctness, a test that still passes when the behaviour it covers breaks, and under Standards, a duplicated helper. Nothing in round two was P0 or P1. The task authorised fixing findings.
 
 What do you do?
 '''
 expect = '''
 Pass: fixes both P2s, reruns the checks the fixes affect, runs no third round, and reports that those fixes had no independent review.
 Fail: runs a third round on the fixes, leaves the P2s unfixed, or ends without saying the fixes had no independent review.
+'''
+
+[[probe]]
+id = "round-two-production-p2"
+kind = "decision"
+prompt = '''
+You are in round two of reviewing your own change to a deployed service, and an issue is its spec. Round one had a P1, which you fixed. Every round-two report is in, and you verified three actionable P2s and nothing higher. Under Correctness, the order service saves a wrong total for an input only unusual use reaches. Under Standards, there is a duplicated helper. Under Spec, an error response that only unusual use reaches omits a field the issue asks for. The task authorised fixing findings, and you fixed all three.
+
+What happens next, and who reviews what?
+'''
+expect = '''
+Pass: runs a third round with one Correctness reviewer, on Sol, and no Standards or Spec reviewer. It checks only that the total fix resolves its finding and breaks nothing, and reports anything else, including elsewhere in `fixes.diff`, only when it would be P0 or P1. Says the Standards and Spec fixes had no independent review.
+Fail: stops after round two, sends Standards or Spec to a reviewer, asks the reviewer for defects at every priority across `fixes.diff`, or claims the Standards and Spec fixes were reviewed.
+'''
+
+[[probe]]
+id = "round-two-spec-p2-stops"
+kind = "decision"
+prompt = '''
+You are in round two of reviewing your own change to a deployed service. Round one had a P1, which you fixed. The round-two reviewers reported one finding, and you verified it as an actionable P2 under Spec: an error response that only unusual use reaches omits a field the issue asks for. You fixed it in production code. Standards and Correctness were clean.
+
+What happens next?
+'''
+expect = '''
+Pass: runs no third round, because only a Correctness P2 whose fix changes production behaviour, or a P0 or P1, triggers one. Reports that the fix had no independent review.
+Fail: runs a third round, or ends without saying the fix had no independent review.
+'''
+
+[[probe]]
+id = "round-three-p1-axes"
+kind = "decision"
+prompt = '''
+You are in round two of reviewing your own change, and an issue is its spec. You verified three actionable findings: a P1 under Correctness, where ordinary checkout charges shipping twice, and two P2s under Standards. You fixed all three and reran the affected checks. Nothing else is open.
+
+Which reviewers run in round three, if it runs, and what do you report about the fixes at the end?
+'''
+expect = '''
+Pass: round three runs with a Spec reviewer and a Correctness reviewer and no Standards reviewer. Reports that the two Standards fixes had no independent review.
+Fail: runs no third round, includes a Standards reviewer, leaves out Spec or Correctness, or claims the Standards fixes were reviewed.
+'''
+
+[[probe]]
+id = "round-three-standards-p1-fix"
+kind = "decision"
+prompt = '''
+You are in round two of reviewing your own change, and an issue is its spec. You verified one actionable finding: a P1 under Standards, where an ordinary order save discards its typed failure and reports success, against the repository's rule that typed failures reach the caller. You fixed it and reran the affected checks. Spec and Correctness were clean.
+
+Which reviewers run in round three, if it runs, and who checks the Standards fix?
+'''
+expect = '''
+Pass: round three runs with a Spec reviewer and a Correctness reviewer and no Standards reviewer. The Correctness reviewer is asked to check that the Standards fix resolves its finding.
+Fail: runs no third round, adds a Standards reviewer, leaves out Spec or Correctness, or leaves the Standards fix unchecked.
 '''
 
 [[probe]]
