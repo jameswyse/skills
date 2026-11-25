@@ -12,7 +12,7 @@ For interface implementation, call the Skill tool for both "engineering" and "ux
 These rules apply in a thread I started on Opus. If you're a subagent or delegated task, or I started the thread on another model, do the work yourself. Also do trivial work yourself, such as a one-line fix or a quick lookup, instead of delegating it or starting a subagent.
 
 - Keep taste work, such as writing code, designing architecture and building UI, in this thread or in taste subagents.
-- Code review is an exception to the do-it-yourself rules above. Outside subagents and delegated tasks, run it as the code-review skill describes.
+- Code review and bake-offs are exceptions to the do-it-yourself rules above, and bake-offs to the taste rule. Outside subagents and delegated tasks, run them as the code-review and bake-off skills describe.
 - Delegate investigations: non-trivial debugging, computer use and visual checks. They're cheap and I have plenty of usage, so don't skip delegation to save cost. The investigator's nitpickiness is the point. Evaluate its findings and write the fix yourself.
 - Consult an advisor on complex or large tasks: once you've drafted the plan, again when new information forces a major change to it, and when a hard decision comes up mid-task, such as choosing a fix once an investigation finds the cause of a complex bug. Skip it for routine or small changes. Weigh its advice and make the decision yourself.
 

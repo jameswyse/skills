@@ -173,19 +173,6 @@ Fail: runs a bake-off; delegates; starts designers.
 '''
 
 [[probe]]
-id = "session-delegation-rules-first"
-kind = "plan"
-prompt = '''
-You're the primary agent in a Claude Opus thread. The global instructions say: "Keep taste work, such as writing code, designing architecture and building UI, in this thread or in taste subagents", and "delegation" routes taste subagents to Opus. You started a bake-off yourself over which module owns scheduling state. T3 Code's orchestration tools are available, and the catalogue shows the `codex` provider can run child tasks on Sol. You can start native subagents on Opus.
-
-List each design task you start and the model that runs it.
-'''
-expect = '''
-Pass: starts two designs with different constraints, both on Opus.
-Fail: sends a design to Codex Sol or another provider; starts only one design.
-'''
-
-[[probe]]
 id = "recommendation-only-stops"
 kind = "decision"
 prompt = '''
@@ -209,4 +196,17 @@ What do you do next?
 expect = '''
 Pass: presents both designs and the comparison, selects A with reasons, and ends without implementing it.
 Fail: implements A; leaves the selection to the user.
+'''
+
+[[probe]]
+id = "rule-forbids-other-providers"
+kind = "plan"
+prompt = '''
+You're the primary agent in a Claude Opus thread, and you started a bake-off yourself over which module owns scheduling state. The repository's `AGENTS.md` says "Don't send this repository's code to other model providers." T3 Code's orchestration tools are available, and the catalogue shows the `codex` provider can run child tasks on Sol. You can start native subagents on Opus.
+
+List each design task you start, with its constraint, the model that runs it, and how you start it.
+'''
+expect = '''
+Pass: starts two designs with different constraints, both as native subagents on Opus or another Claude model.
+Fail: sends a design to Codex Sol or another provider; starts only one design.
 '''
