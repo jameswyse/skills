@@ -89,4 +89,4 @@ After the user confirms a decision, record it only when the request covers docum
 - When a deepened module uses a concept missing from the repository's domain vocabulary, offer to add the term in the appropriate place.
 - When the conversation sharpens a vague term, offer to update the repository's domain vocabulary.
 - When the user rejects a candidate for a reason future reviews need, offer to record that reason in the documentation. Ask, _"Should I record this in the documentation so future architecture reviews do not suggest it again?"_ Skip temporary reasons such as "not worth it right now" and self-evident reasons.
-- When the candidate needs a new interface with several credible shapes, suggest that the user invoke "design-it-twice" to compare alternatives before converging.
+- When the candidate needs a new interface with several credible shapes, suggest that the user invoke "bake-off" to compare alternatives before converging.

@@ -1,11 +1,11 @@
-skill = "design-it-twice"
+skill = "bake-off"
 include = ["engineering/references/design.md"]
 
 [[probe]]
 id = "no-production-changes"
 kind = "decision"
 prompt = '''
-The user invoked the design-it-twice skill: "Design the interface for the `NotificationScheduler` module, then implement the winner."
+The user invoked the bake-off skill: "Design the interface for the `NotificationScheduler` module, then implement the winner."
 
 You have read the module, its four callers and its tests. You already see an interface that is clearly better than the current one, and switching to it would take about 20 lines.
 
@@ -20,7 +20,7 @@ Fail: starts implementing the first idea; implements before alternatives have be
 id = "alternate-providers"
 kind = "plan"
 prompt = '''
-The user invoked the design-it-twice skill for a `RateLimiter` module, and the problem is established. The session runs on Claude Opus. T3 Code's orchestration tools are available, and the catalogue shows the `codex` provider can run child tasks on Sol. The decision is a straightforward one.
+The user invoked the bake-off skill for a `RateLimiter` module, and the problem is established. The session runs on Claude Opus. T3 Code's orchestration tools are available, and the catalogue shows the `codex` provider can run child tasks on Sol. The decision is a straightforward one.
 
 List each design task you start: who runs it, what you give it, and what you tell it not to do.
 '''
@@ -33,7 +33,7 @@ Fail: both designs on the same model, or written by the primary agent while dele
 id = "recommend-one"
 kind = "decision"
 prompt = '''
-The user invoked the design-it-twice skill for a module, and two designs are finished. Design A exposes one `schedule(job)` entry point and hides the retry and backoff decisions. Design B exposes a builder with hooks for custom retry strategies; no current caller needs custom retries, and none is planned. A is smaller and deeper, and B is more extensible. The choice is cheap to undo, because the module has two internal callers.
+The user invoked the bake-off skill for a module, and two designs are finished. Design A exposes one `schedule(job)` entry point and hides the retry and backoff decisions. Design B exposes a builder with hooks for custom retry strategies; no current caller needs custom retries, and none is planned. A is smaller and deeper, and B is more extensible. The choice is cheap to undo, because the module has two internal callers.
 
 Write the closing paragraph of your response to the user.
 '''
@@ -46,7 +46,7 @@ Fail: ends with a menu such as "choose A if you value X and B if you value Y"; a
 id = "contrarian-on-costly-choice"
 kind = "decision"
 prompt = '''
-The user invoked the design-it-twice skill for the public interface of a billing client that three other teams' services will import. You have compared two independent designs and prefer Design A, but the margin is narrow, and changing the interface after release would need coordinated changes in all three services. T3 Code's orchestration tools are available, and the catalogue lists Grok on the `cursor` provider.
+The user invoked the bake-off skill for the public interface of a billing client that three other teams' services will import. You have compared two independent designs and prefer Design A, but the margin is narrow, and changing the interface after release would need coordinated changes in all three services. T3 Code's orchestration tools are available, and the catalogue lists Grok on the `cursor` provider.
 
 What do you do before presenting your recommendation?
 '''

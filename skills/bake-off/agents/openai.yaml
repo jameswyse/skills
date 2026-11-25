@@ -1,5 +1,5 @@
 interface:
-  display_name: "Design It Twice"
+  display_name: "Bake-off"
   short_description: "Compare alternative module interfaces"
 policy:
   allow_implicit_invocation: false

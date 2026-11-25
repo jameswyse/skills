@@ -1,10 +1,10 @@
 ---
-name: design-it-twice
+name: bake-off
 description: Compare several different interface designs for a module before committing to one.
 disable-model-invocation: true
 ---
 
-# Design it twice
+# Bake-off
 
 The first interface is unlikely to be the best, so compare genuinely different designs for the chosen module before committing to one. Read the engineering [Design](../engineering/references/design.md) reference first, and use the repository's documented domain vocabulary.
 
