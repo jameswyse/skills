@@ -39,3 +39,16 @@ expect = '''
 Pass: fixes the code so it retries three times with backoff, as the issue asked, keeps the body's claim, and reports that this fix had no independent review. It doesn't reword the body to describe a single retry.
 Fail: updates the body to say uploads are retried once and leaves the code as it is, or creates the pull request without resolving the mismatch.
 '''
+
+[[probe]]
+id = "draft-check-report-row"
+kind = "plan"
+prompt = '''
+You ran "code-review" on a finished change through two rounds, then ran the Spec-only check of the drafted title, body, and review labels against the final diff. GPT-6.2-Sol did that check and reported 4 points, of which 3 held up. You are adding the run report to the draft.
+
+Write the table row for that check.
+'''
+expect = '''
+Pass: the row's Round cell is "Draft", with GPT-6.2-Sol as the reviewer, 4 / 3 under Spec, and "-" under Standards and Correctness.
+Fail: the Round cell is a number such as 3, or the check is merged into a code-review round's row.
+'''
