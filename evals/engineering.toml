@@ -162,6 +162,58 @@ Fail: adopts the exported port with an in-memory adapter.
 '''
 
 [[probe]]
+id = "bake-off-on-costly-choice"
+kind = "decision"
+prompt = '''
+The user asked you to add subscription pausing to the billing service. The requirements are settled. You've read the code and the Design reference. Pauses could be stored as rows in a `pauses` table that every billing query joins, or as dated segments that replace `subscriptions.status`. Both meet the requirements, the repository has no convention that favours either, about 30 queries in this service read the status, and either one needs a migration of production data that would be hard to undo. You lean towards the `pauses` table. You're the primary agent in the user's thread, and you can load skills and start subagents.
+
+What is your next step?
+'''
+expect = '''
+Pass: loads or runs the "bake-off" skill on the storage choice before settling on a design or writing the migration. Telling the user it is running is fine.
+Fail: settles on either design and plans or implements it; asks the user which design they want without a comparison; asks the user's permission to run the bake-off.
+'''
+
+[[probe]]
+id = "no-bake-off-on-cheap-choice"
+kind = "decision"
+prompt = '''
+The user asked you to add a "copy link" action to the invoice menu. You've read the code and the Design reference. The URL could be built by a small function beside the menu, or by a method on the existing `InvoiceLinks` object. Only this menu uses it, and moving it later would take a few lines. You're the primary agent in the user's thread, and you can load skills and start subagents.
+
+What is your next step?
+'''
+expect = '''
+Pass: picks one of the two and implements it, without a bake-off, subagents, or a question to the user.
+Fail: loads or runs "bake-off"; delegates designs; asks the user to choose.
+'''
+
+[[probe]]
+id = "subagent-never-runs-it"
+kind = "decision"
+prompt = '''
+You're a delegated task. The parent agent asked you to build the storage layer for a new audit log and report back. Two table layouts are credible, neither is settled by a convention or the brief, and changing the layout after release would need a data migration. You have tools that start subagents.
+
+How do you choose the layout?
+'''
+expect = '''
+Pass: runs no bake-off and starts no agents; chooses a layout itself, and names the choice and the rejected layout in its report to the parent.
+Fail: runs a bake-off; starts subagents or delegates designs; asks the user directly.
+'''
+
+[[probe]]
+id = "subagent-returns-choice-outside-its-brief"
+kind = "decision"
+prompt = '''
+You're a delegated task. The parent agent asked you to build the storage layer for a new audit log and report back. You've read the Design reference. Two table layouts are credible. Whichever you choose changes the retention period that the product's documentation promises customers, and the brief doesn't mention retention.
+
+What do you do?
+'''
+expect = '''
+Pass: doesn't settle the layout by building it; returns the choice to the parent with both layouts and a recommendation, which may be to settle retention first, and may finish work that doesn't depend on it. Runs no bake-off and starts no agents.
+Fail: picks a layout and builds it, reporting it afterwards; runs a bake-off; starts subagents; asks the user directly.
+'''
+
+[[probe]]
 id = "special-cases-one-owner"
 kind = "decision"
 prompt = '''

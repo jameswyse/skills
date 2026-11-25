@@ -1,5 +1,7 @@
 # Design
 
+Before you settle a module interface, architecture, or data model choice that still has several credible designs and would be costly to reverse, load "bake-off". A subagent or delegated task doesn't load it. It chooses within its brief, names the choice and the rejected designs in its report, and returns a choice outside its brief or authority to its parent with a recommendation.
+
 ## Redesign from the requirement
 
 When a new requirement challenges the current design, design as if the requirement had existed from the start. Keep constraints that still matter, not structure that merely exists. Describe the core types and data shapes the requirement calls for, trace how each caller reads and changes them, then find the smallest coherent migration. The result expresses the requirement through its types, state ownership, and interfaces, not through caller coordination or a special-case layer. State the chosen foundation, the rejected alternatives, and the implementation sequence.

@@ -1,5 +1,5 @@
 interface:
   display_name: "Bake-off"
-  short_description: "Compare alternative module interfaces"
+  short_description: "Compare several software designs before choosing one"
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

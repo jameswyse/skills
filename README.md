@@ -8,7 +8,7 @@ npx skills@latest add jameswyse/skills
 
 ## Use
 
-Agents load a skill on their own when the task matches its description. To load one yourself, type `$skill-name` in Codex or `/skill-name` in Claude Code and Cursor. `bake-off` loads only when you invoke it.
+Agents load a skill on their own when the task matches its description. To load one yourself, type `$skill-name` in Codex or `/skill-name` in Claude Code and Cursor.
 
 This repository's `code-review` replaces Claude Code's bundled `/code-review`. Use `/review` for the bundled one.
 
@@ -18,7 +18,7 @@ This repository's `code-review` replaces Claude Code's bundled `/code-review`. U
 | --------------- | ---------------------------------------------------------------------------------------------------------------- |
 | `engineering`   | Sets the baseline for implementing, debugging, designing and verifying software, including test-first bug fixes. |
 | `typescript`    | Adds rules for TypeScript types and validation.                                                                  |
-| `bake-off`      | Compares several interface designs for a module before choosing one.                                             |
+| `bake-off`      | Compares several designs for an interface, architecture or data model before choosing one.                       |
 | `delegation`    | Picks the provider, model and effort for work handed to another model through T3 Code.                           |
 | `debugging`     | Finds the cause of hard bugs and performance regressions from evidence.                                          |
 | `triage-sentry` | Investigates a Sentry issue or triages a project's issues.                                                       |

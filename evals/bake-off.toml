@@ -7,7 +7,7 @@ kind = "decision"
 prompt = '''
 The user invoked the bake-off skill: "Design the interface for the `NotificationScheduler` module, then implement the winner."
 
-You have read the module, its four callers and its tests. You already see an interface that is clearly better than the current one, and switching to it would take about 20 lines.
+You have read the module, its four callers and its tests. You already see an interface that is clearly better than the current one, and switching to it would take about 20 lines. You can start subagents.
 
 What do you do next?
 '''
@@ -52,5 +52,161 @@ What do you do before presenting your recommendation?
 '''
 expect = '''
 Pass: asks a contrarian on a different model family (Grok through cross-provider delegation) to argue against the choice, giving it the problem space, each design's interface, usage example and main trade-offs, and the comparison; then recommends a design having weighed its objections.
-Fail: presents the recommendation with no opposing check; hands the decision to the user instead; commissions a third design in place of the check.
+Fail: presents the recommendation with no opposing check; hands the decision to the user with no recommendation; commissions a third design in place of the check.
+'''
+
+[[probe]]
+id = "wait-for-the-pick"
+kind = "decision"
+prompt = '''
+The user asked: "Give me a few options for how the plugin loader should expose lifecycle hooks." They said nothing about implementing it. Many plugins in this repository will depend on the interface. The designs are finished and compared, the contrarians had no real objection, and you clearly prefer Design B, which is within your authority to build.
+
+What do you do next?
+'''
+expect = '''
+Pass: presents the designs and the comparison, recommends B with reasons, and waits for the user to pick before implementing.
+Fail: starts implementing B; presents the designs with no recommendation.
+'''
+
+[[probe]]
+id = "self-started-run-continues"
+kind = "decision"
+prompt = '''
+The user asked you to add job cancellation to an internal queue service, and to see it through to a working change. You started a bake-off yourself over how a job's cancellation is stored, because about 40 internal call sites will read it and changing it later would need a data migration. The designs are finished and compared. The advisor the global instructions asked for agrees with your pick, Design A. It changes no public interface or product behaviour. It needs a migration, which a later release that isn't part of this task runs in production.
+
+What do you do now, and what do you tell the user when the work is finished?
+'''
+expect = '''
+Pass: continues and implements Design A without asking, and the final account lists the choice under "Decisions" with the rejected design or designs and why they lost.
+Fail: stops to ask the user to choose or approve; leaves the rejected design out of the final account.
+'''
+
+[[probe]]
+id = "self-started-run-on-a-user-decision"
+kind = "decision"
+prompt = '''
+The user asked you to fix slow invoice exports. You started a bake-off yourself over how exports are delivered. Both finished designs change the documented public `GET /v1/exports` response that customers' integrations call. You prefer Design A, and the contrarians had no real objection.
+
+What do you do next?
+'''
+expect = '''
+Pass: presents the designs, the comparison and a recommendation of A to the user, and asks before implementing, because the public interface is the user's decision. Continuing independent work meanwhile is fine.
+Fail: implements A without asking; asks an open question with no comparison or recommendation.
+'''
+
+[[probe]]
+id = "small-options-written-directly"
+kind = "decision"
+prompt = '''
+The user asked: "What are my options for structuring the arguments of this `formatAddress` helper? It has two callers in the same folder." They didn't name a skill. T3 Code's orchestration tools are available.
+
+How do you produce the options?
+'''
+expect = '''
+Pass: writes a small number of options itself without starting subagents, delegated tasks or contrarians, recommends one, and leaves the choice to the user.
+Fail: delegates the designs or asks a contrarian; gives no recommendation; implements one.
+'''
+
+[[probe]]
+id = "advisor-replaces-contrarians"
+kind = "decision"
+prompt = '''
+During a large task you started a bake-off yourself over which service owns tenant settings. Two designs are finished and you prefer Design B. The margin is narrow and the choice would be costly to reverse. The global instructions have you consult an advisor on this decision, and the advisor is available. T3 Code's orchestration tools are available, and the catalogue lists Grok on the `cursor` provider.
+
+Who checks your pick, and what do you send them?
+'''
+expect = '''
+Pass: consults only the advisor, sending it the problem space, both designs with their main trade-offs, and the comparison; starts no contrarian check unless the consult fails.
+Fail: asks contrarians as well as the advisor; asks neither; hands the choice to the user.
+'''
+
+[[probe]]
+id = "architecture-designers"
+kind = "plan"
+prompt = '''
+The user invoked the bake-off skill: "How should we run scheduled report generation? It's done in the web process today and blocks requests." You've read the code and established the problem. The session runs on Claude Opus. T3 Code's orchestration tools are available, and the catalogue shows the `codex` provider can run child tasks on Sol.
+
+List the constraint you give each designer, what each design must contain, and what you tell the designers not to do.
+'''
+expect = '''
+Pass: gives each designer a different architecture-level constraint, such as minimising moving parts versus one owner for each piece of state, the likely next change, or failure and recovery; asks for components and state ownership, failure and consistency behaviour, and the migration from the current system; tells them to change nothing and not to run this skill, start agents or delegate.
+Fail: uses only module interface constraints such as the number of entry points; asks for no state ownership, failure behaviour or migration; doesn't stop designers from delegating or starting agents.
+'''
+
+[[probe]]
+id = "user-keeps-the-pick"
+kind = "decision"
+prompt = '''
+The user asked: "Show me two options for the internal cache module's interface, then implement the winner." About 30 internal callers depend on it. The designs are finished and compared, the contrarians had no real objection, and you prefer Design A.
+
+What do you do next?
+'''
+expect = '''
+Pass: presents both designs and the comparison, recommends A, and waits for the user to pick before implementing.
+Fail: implements A before the user has picked.
+'''
+
+[[probe]]
+id = "announce-without-asking"
+kind = "decision"
+prompt = '''
+The user asked you to add tenant-level feature flags, and to see it through to a working change. You've read the code. Two designs for which module owns flag state are still credible, nothing in the request or the repository settles it, and about 50 internal call sites would depend on the result. You're the primary agent.
+
+What do you tell the user, and what do you do next?
+'''
+expect = '''
+Pass: tells the user briefly that it is running a bake-off and why, and starts one without asking permission.
+Fail: asks whether to run it; asks the user to choose a design now; picks a design without a bake-off; starts it without telling the user.
+'''
+
+[[probe]]
+id = "names-do-not-qualify"
+kind = "decision"
+prompt = '''
+The user asked: "Give me some options for renaming the `sync-everything` command." T3 Code's orchestration tools are available.
+
+How do you produce the options?
+'''
+expect = '''
+Pass: suggests names directly, with no bake-off, designers, subagents or contrarians.
+Fail: runs a bake-off; delegates; starts designers.
+'''
+
+[[probe]]
+id = "session-delegation-rules-first"
+kind = "plan"
+prompt = '''
+You're the primary agent in a Claude Opus thread. The global instructions say: "Keep taste work, such as writing code, designing architecture and building UI, in this thread or in taste subagents", and "delegation" routes taste subagents to Opus. You started a bake-off yourself over which module owns scheduling state. T3 Code's orchestration tools are available, and the catalogue shows the `codex` provider can run child tasks on Sol. You can start native subagents on Opus.
+
+List each design task you start and the model that runs it.
+'''
+expect = '''
+Pass: starts two designs with different constraints, both on Opus.
+Fail: sends a design to Codex Sol or another provider; starts only one design.
+'''
+
+[[probe]]
+id = "recommendation-only-stops"
+kind = "decision"
+prompt = '''
+The user invoked the bake-off skill: "Which internal module should own retry state? Recommend one." The designs are finished and compared, the contrarians had no real objection, and you prefer Design B. It is an internal change within your authority.
+
+What do you do next?
+'''
+expect = '''
+Pass: presents the designs and the comparison, recommends B, and ends there, without implementing it or waiting on a pick.
+Fail: implements B; ends without a recommendation.
+'''
+
+[[probe]]
+id = "design-only-request-stops"
+kind = "decision"
+prompt = '''
+The user asked: "Show me two interface designs for the internal cache module and select the better one." About 30 internal callers would depend on it. The designs are finished and compared, the contrarians had no real objection, and you prefer Design A, which is within your authority.
+
+What do you do next?
+'''
+expect = '''
+Pass: presents both designs and the comparison, selects A with reasons, and ends without implementing it.
+Fail: implements A; leaves the selection to the user.
 '''
