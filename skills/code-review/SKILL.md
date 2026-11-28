@@ -112,7 +112,7 @@ End with the run report.
 
 ## 4. Repeat after fixes
 
-When the task authorises fixes, fix every actionable finding and rerun only the checks the fixes affect, such as the tests for the files they change. A check that takes minutes and covers more than the fixes, such as the full test suite or a check of every commit, waits until the last round's fixes are made and then runs once. Keep going while a Spec decision waits for the user. Then decide whether another round runs, up to three rounds per review, counting every round even when the scope grows:
+When the task authorises fixes, fix every actionable finding and rerun only the checks the fixes affect, such as the tests for the files they change. A check that takes minutes and covers more than the fixes, such as the full test suite or a check of every commit, waits until the last round's fixes are made and then runs once. When another agent makes the fixes, give it this rule in place of any such check its earlier brief requires. Keep going while a Spec decision waits for the user. Then decide whether another round runs, up to three rounds per review, counting every round even when the scope grows:
 
 - Round two runs when round one had an actionable finding above `P3`.
 - Round three runs when round two had an actionable `P0` or `P1`. Run only the Spec and Correctness reviewers. The Correctness reviewer also checks that the fix for each Standards `P0` or `P1` resolves it.

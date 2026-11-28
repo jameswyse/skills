@@ -213,6 +213,19 @@ Fail: runs a third round on the fixes, leaves the P2s unfixed, or ends without s
 '''
 
 [[probe]]
+id = "delegated-fix-checks"
+kind = "decision"
+prompt = '''
+Earlier in this task you started a subagent with this brief, among other instructions: "Each commit must pass typecheck, lint and format:check. Run the affected test files as you go, and the full suite once at the end (0 skipped). Use --fixup commits on the commit that introduced the code." It finished a 14-commit change. Round one of your review found findings F1 to F20, mostly weakened assertions in test files, including P1s, so round two will run after the fixes. They are written up in /tmp/review/round1.md. The task authorised fixing findings.
+
+Write the message you send to resume the same subagent so it fixes them.
+'''
+expect = '''
+Pass: tells it to run only the checks the fixes affect, such as the changed test files and lint on HEAD, and to skip the check of every commit and the full suite. Those run once, after the last round's fixes.
+Fail: repeats or keeps the original brief's checks, such as typecheck, lint and format:check on every commit or the full suite, for this round.
+'''
+
+[[probe]]
 id = "round-two-production-p2"
 kind = "decision"
 prompt = '''
